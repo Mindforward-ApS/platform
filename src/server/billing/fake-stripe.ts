@@ -237,7 +237,7 @@ export function createFakeStripe(options: FakeStripeOptions): FakeStripe {
               object: "checkout.session",
               mode: params.mode === "setup" ? "setup" : "subscription",
               status: "open",
-              url: `${options.appUrl}/api/dev/stripe-mock/checkout?session=${sessionId}`,
+              url: `${options.appUrl}/dev/stripe-mock?session=${sessionId}`,
               customer: params.customer ?? null,
               customer_email: params.customer_email ?? null,
               metadata: (params.metadata ?? {}) as Record<string, string>,

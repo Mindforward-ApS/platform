@@ -125,6 +125,11 @@ export const daBilling = {
       generic: "Noget gik galt. Prøv igen.",
     },
   },
+  mock: {
+    title: "Testbetaling",
+    body: "Testtilstand (STRIPE_MOCK): her ville Stripes betalingsside stå. Ingen rigtig betaling.",
+    pay: "Gennemfør testbetaling",
+  },
   seats: {
     limitReached:
       "Alle {limit} pladser er i brug (aktive brugere og åbne invitationer tæller med). Ejeren kan tilføje flere pladser under Virksomhed → Abonnement.",
