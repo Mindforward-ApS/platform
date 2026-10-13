@@ -8,7 +8,12 @@ const FORBIDDEN_KEYS = ["correct", "verdict", "isError", "errorType", "explanati
 
 function keysDeep(value: unknown, out = new Set<string>()): Set<string> {
   if (Array.isArray(value)) value.forEach((v) => keysDeep(v, out));
-  else if (value && typeof value === "object") for (const [k, v] of Object.entries(value)) (out.add(k), keysDeep(v, out));
+  else if (value && typeof value === "object") {
+    for (const [k, v] of Object.entries(value)) {
+      out.add(k);
+      keysDeep(v, out);
+    }
+  }
   return out;
 }
 

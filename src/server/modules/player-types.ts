@@ -107,5 +107,5 @@ export interface PlayerState {
 
 /** What a server action returns to the player. */
 export type PlayerActionResult =
-  | { ok: true; state: PlayerState; notice?: "PII_REJECTED" | "GRADING_ERROR" | "CLICK_NOT_YET" | "CLICK_UNAVAILABLE" }
+  | { ok: true; state: PlayerState; notice?: "PII_REJECTED" | "GRADING_ERROR" | "NOT_IMPROVED" | "CLICK_NOT_YET" | "CLICK_UNAVAILABLE" }
   | { ok: false; error: string };

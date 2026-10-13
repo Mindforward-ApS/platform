@@ -8,7 +8,7 @@ import type { PlayerCriterion, PlayerHint, PlayerResult, PlayerState, PlayerStep
 
 // The ONLY builder of client-facing player data (docs/05 § 7): the client never receives `correct`, `verdict`,
 // `isError`, `assertion`, rubric `description` or `exampleSolution` before the step is answered (exampleSolution:
-// also after hint 3). Prompt text never leaves through here — the client keeps its own textarea.
+// also after hint 3). The learner's own prompt text is only added for the owner (ownerTexts from owner-feedback.ts).
 
 /** Owner-only feedback decoded from StepResult.aiFeedback (see src/server/scoring/owner-feedback.ts). */
 export interface OwnerFeedback {
