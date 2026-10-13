@@ -1,8 +1,10 @@
 import { stripeEventJob, withdrawalJob } from "./billing";
 import { consentExpireUnconfirmedJob } from "./consent-expire";
 import { helloJob } from "./hello";
+import { marketingNurtureJob } from "./marketing";
+import { monthlyAssignUsersJob, monthlyComposeCyclesJob, monthlyRemindersJob } from "./monthly";
 import { retentionPurgePromptTextJob } from "./retention-purge-prompt-text";
 import { sandboxExpireJob } from "./sandbox-expire";
 
 export { inngest } from "./client";
-export const functions = [helloJob, retentionPurgePromptTextJob, stripeEventJob, withdrawalJob, sandboxExpireJob, consentExpireUnconfirmedJob];
+export const functions = [helloJob, retentionPurgePromptTextJob, stripeEventJob, withdrawalJob, sandboxExpireJob, consentExpireUnconfirmedJob, monthlyComposeCyclesJob, monthlyAssignUsersJob, monthlyRemindersJob, marketingNurtureJob];
