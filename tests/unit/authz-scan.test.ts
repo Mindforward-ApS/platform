@@ -15,6 +15,12 @@ const ALLOWLIST: Record<string, string[]> = {
   "src/app/api/inngest/route.ts": ["GET", "POST", "PUT"], // signed by INNGEST_SIGNING_KEY in serve()
   "src/app/api/debug/sentry/route.ts": ["GET"], // throws only; disabled unless ENABLE_DEBUG_ROUTES (forbidden in prod)
   "src/app/(auth)/log-ind/actions.ts": ["requestMagicLink", "signInWithProvider"], // pre-login, rate-limited
+  // M5 public lead magnet: no login by design; honeypot + min time + rate limits in src/server/placement/submit.ts
+  "src/app/(marketing)/niveautest/[track]/actions.ts": ["submitPlacementTest"],
+  "src/app/(marketing)/niveautest/resultat/actions.ts": ["giveMarketingConsent"], // voluntary consent, 5/h per IP + email
+  "src/app/(marketing)/samtykke/bekraeft/actions.ts": ["confirmConsent"], // authenticated by the opt-in token
+  "src/app/(marketing)/afmeld/actions.ts": ["unsubscribe"], // authenticated by the HMAC unsubscribe token
+  "src/app/api/afmeld/route.ts": ["POST"], // RFC 8058 one-click, HMAC token
 };
 
 function walk(dir: string, out: string[] = []): string[] {

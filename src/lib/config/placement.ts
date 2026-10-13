@@ -32,7 +32,6 @@ export const placementRateLimits = {
   submitPerIp: { window: 60 * 60, max: 10 },
   consentPerIp: { window: 60 * 60, max: 5 },
   consentPerEmail: { window: 60 * 60, max: 5 },
-  unsubscribePerIp: { window: 60 * 60, max: 30 },
 } as const;
 
 /** Double opt-in (docs/09 § 2). */

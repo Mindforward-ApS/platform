@@ -287,6 +287,14 @@ export function unsubscribeUrl(email: string, opts: { appUrl?: string; secret?: 
   return `${base}/afmeld?t=${encodeURIComponent(signUnsubscribeToken(email, unsubscribeSecret(opts.secret)))}`;
 }
 
+/** /afmeld and the RFC 8058 one-click POST: verify the HMAC token, then withdraw. Throws EnvValidationError if unconfigured. */
+export async function unsubscribeWithToken(db: PrismaClient, token: string, meta: RequestMeta, opts: { secret?: string; pepper?: string } = {}): Promise<"DONE" | "INVALID"> {
+  const email = verifyUnsubscribeToken(token, unsubscribeSecret(opts.secret));
+  if (!email) return "INVALID";
+  await withdrawMarketingConsent(db, { email, source: "UNSUBSCRIBE_LINK", ...meta }, { pepper: opts.pepper });
+  return "DONE";
+}
+
 // ─── Retention ─────────────────────────────────────────────────────────
 
 /** docs/09 § 2: unconfirmed GRANTED rows are deleted after 30 days (job consent.expire-unconfirmed). */

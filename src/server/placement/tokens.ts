@@ -16,6 +16,11 @@ export function signStartToken(track: string, nowMs: number, secret: string): st
   return `${nowMs}.${sig}`;
 }
 
+/** Start token for a form rendered now (call only at request time, after `connection()`). */
+export function issueStartToken(track: string, secret: string): string {
+  return signStartToken(track, Date.now(), secret);
+}
+
 export type StartCheck = { ok: true; elapsedSeconds: number } | { ok: false; reason: "INVALID" | "TOO_FAST" | "EXPIRED" };
 
 export function checkStartToken(token: string, track: string, nowMs: number, secret: string, rules = placementConfig): StartCheck {
