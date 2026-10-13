@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { Button, Notice, Page } from "@/components/ui/primitives";
+import { Notice, Page } from "@/components/ui/primitives";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { getMessages } from "@/lib/i18n";
 import { requireUser } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
@@ -20,9 +21,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
   return (
     <>
       {sp.fejl === "adgang" && <Notice tone="error">{getMessages().business.errors.notAllowed}</Notice>}
-      <p>
-        {ctx.user.name} · {ctx.user.email}
-      </p>
+      <p>{[ctx.user.name, ctx.user.email].filter(Boolean).join(" · ")}</p>
       {active && (
         <dl className="grid grid-cols-2 gap-2" data-testid="active-org">
           <dt>{t.activeOrg}</dt>
@@ -43,18 +42,18 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
         .map((m) => (
           <form key={m.organization.id} action={switchOrganization}>
             <input type="hidden" name="organizationId" value={m.organization.id} />
-            <Button type="submit" variant="secondary">
+            <SubmitButton variant="secondary">
               {t.switchOrg} {m.organization.name}
-            </Button>
+            </SubmitButton>
           </form>
         ))}
       <a className="underline" href="/virksomhed/opret">
         {t.createBusiness}
       </a>
       <form action={signOut}>
-        <Button type="submit" variant="secondary">
+        <SubmitButton variant="secondary">
           {getMessages().auth.logout}
-        </Button>
+        </SubmitButton>
       </form>
     </>
   );

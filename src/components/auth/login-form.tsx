@@ -1,5 +1,6 @@
 import { requestMagicLink, signInWithProvider } from "@/app/(auth)/log-ind/actions";
-import { Button, Field, Notice } from "@/components/ui/primitives";
+import { Field, Notice } from "@/components/ui/primitives";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { getMessages } from "@/lib/i18n";
 
 const ERRORS = { email: "invalidEmail", rate: "rateLimited", generel: "generic", udbyder: "providerUnavailable", link: "linkExpired" } as const;
@@ -14,17 +15,17 @@ export function LoginForm({ mode, error, next }: { mode: "log-ind" | "opret"; er
         <input type="hidden" name="from" value={mode} />
         {next && <input type="hidden" name="next" value={next} />}
         <Field label={t.emailLabel} name="email" type="email" autoComplete="email" required />
-        <Button type="submit">{t.sendLink}</Button>
+        <SubmitButton>{t.sendLink}</SubmitButton>
       </form>
       <p className="text-center text-sm text-muted">{t.or}</p>
       <form action={signInWithProvider} className="flex flex-col gap-2">
         {next && <input type="hidden" name="next" value={next} />}
-        <Button type="submit" name="provider" value="microsoft" variant="secondary">
+        <SubmitButton name="provider" value="microsoft" variant="secondary">
           {t.microsoft}
-        </Button>
-        <Button type="submit" name="provider" value="google" variant="secondary">
+        </SubmitButton>
+        <SubmitButton name="provider" value="google" variant="secondary">
           {t.google}
-        </Button>
+        </SubmitButton>
       </form>
       <a className="text-sm underline" href={mode === "log-ind" ? "/opret" : "/log-ind"}>
         {mode === "log-ind" ? t.toSignup : t.toLogin}

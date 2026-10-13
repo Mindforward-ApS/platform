@@ -1,5 +1,6 @@
+import { SubmitButton } from "@/components/ui/submit-button";
 import { Suspense } from "react";
-import { Button, Notice, Page } from "@/components/ui/primitives";
+import { Notice, Page } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import { getAuthContext } from "@/server/auth/authz";
 import { db } from "@/server/db";
@@ -43,13 +44,13 @@ async function Content({ params, searchParams }: { params: Promise<{ id: string 
         <div className="flex gap-2">
           <form action={acceptInvitation}>
             <input type="hidden" name="invitationId" value={id} />
-            <Button type="submit">{t.accept}</Button>
+            <SubmitButton>{t.accept}</SubmitButton>
           </form>
           <form action={rejectInvitation}>
             <input type="hidden" name="invitationId" value={id} />
-            <Button type="submit" variant="secondary">
+            <SubmitButton variant="secondary">
               {t.reject}
-            </Button>
+            </SubmitButton>
           </form>
         </div>
       )}

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { Button, Field, Notice, Page } from "@/components/ui/primitives";
+import { Field, Notice, Page } from "@/components/ui/primitives";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { ADMIN_ROLES } from "@/server/auth/authz-core";
@@ -34,7 +35,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
         {members.map((m) => (
           <li key={m.id} className="flex items-center justify-between gap-2 rounded-md border border-border p-2">
             <span>
-              {m.user.name} · {m.user.email} · {roleNames[m.role]}
+              {[m.user.name, m.user.email, roleNames[m.role]].filter(Boolean).join(" · ")}
             </span>
             {isOwner && m.user.email !== ctx.user.email && (
               <form action={changeMemberRole} className="flex gap-1">
@@ -46,9 +47,9 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
                     </option>
                   ))}
                 </select>
-                <Button type="submit" variant="secondary">
+                <SubmitButton variant="secondary">
                   {t.save}
-                </Button>
+                </SubmitButton>
               </form>
             )}
           </li>
@@ -76,7 +77,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
             <option value="ADMIN">{roleNames.ADMIN}</option>
           </select>
         </label>
-        <Button type="submit">{t.invite}</Button>
+        <SubmitButton>{t.invite}</SubmitButton>
       </form>
     </>
   );

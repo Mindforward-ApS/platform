@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { Button, Field, Notice, Page } from "@/components/ui/primitives";
+import { Field, Notice, Page } from "@/components/ui/primitives";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { getMessages } from "@/lib/i18n";
 import { verifyTwoFactor } from "../actions";
 
@@ -10,7 +11,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
     <form action={verifyTwoFactor} className="flex flex-col gap-3">
       {sp.fejl && <Notice tone="error">{t.invalidCode}</Notice>}
       <Field label={t.codeLabel} name="code" inputMode="numeric" autoComplete="one-time-code" pattern="\d{6}" required />
-      <Button type="submit">{t.verify}</Button>
+      <SubmitButton>{t.verify}</SubmitButton>
     </form>
   );
 }

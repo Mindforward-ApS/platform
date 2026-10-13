@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { generateURI } from "otplib";
-import { Button, Field, Notice, Page } from "@/components/ui/primitives";
+import { Field, Notice, Page } from "@/components/ui/primitives";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { getMessages } from "@/lib/i18n";
 import { serverEnv } from "@/lib/env";
 import { requireUser } from "@/server/auth/authz";
@@ -22,7 +23,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
   if (!pending) {
     return (
       <form action={beginTwoFactorSetup}>
-        <Button type="submit">{t.setupTitle}</Button>
+        <SubmitButton>{t.setupTitle}</SubmitButton>
       </form>
     );
   }
@@ -38,7 +39,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
       {sp.fejl && <Notice tone="error">{t.invalidCode}</Notice>}
       <form action={confirmTwoFactorSetup} className="flex flex-col gap-3">
         <Field label={t.codeLabel} name="code" inputMode="numeric" autoComplete="one-time-code" pattern="\d{6}" required />
-        <Button type="submit">{t.verify}</Button>
+        <SubmitButton>{t.verify}</SubmitButton>
       </form>
     </>
   );
