@@ -323,35 +323,35 @@
     },
     {
       "id": "fortroligt-prisudkast",
-      "type": "QUIZ",
+      "type": "JUDGMENT",
       "title": "Det fortrolige prisudkast",
       "points": 15,
-      "question": "Jonas har sendt dig udkastet til prislisten for 2027. Det er fortroligt, indtil Mette har godkendt det. Du vil gerne vide, hvordan priserne ligger i forhold til konkurrenterne. Du overvejer at indsætte hele udkastet i en gratis, offentlig AI-chat med websøgning og bede den sammenligne med priser på nettet. Må du gøre det?",
-      "multiSelect": false,
-      "shuffle": true,
+      "category": "CONFIDENTIALITY",
+      "scenario": "Jonas har sendt dig udkastet til prislisten for 2027. Det er fortroligt, indtil Mette har godkendt det. Du vil gerne vide, hvordan priserne ligger i forhold til konkurrenterne. Du overvejer at indsætte hele udkastet i en gratis, offentlig AI-chat med websøgning og bede den sammenligne med priser på nettet.",
+      "question": "Må du gøre det?",
       "options": [
         {
           "id": "a",
           "text": "Ja. Priserne bliver alligevel sendt til kunderne om lidt.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Indtil Mette har godkendt udkastet, er det fortroligt. Tallene kan stadig ændre sig."
         },
         {
           "id": "b",
           "text": "Ja, hvis du fjerner Nordlys' navn fra filen først.",
-          "correct": false,
+          "verdict": "PARTIAL",
           "feedback": "Det mindsker risikoen lidt. Men de fortrolige tal forlader stadig Nordlys i et værktøj, der ikke er godkendt."
         },
         {
           "id": "c",
           "text": "Nej. Brug ikke den offentlige chat. Spørg Jonas, om udkastet må bruges til analysen, og brug i så fald kun Nordlys' godkendte værktøj.",
-          "correct": true,
+          "verdict": "CORRECT",
           "feedback": "Rigtigt. Fortroligt materiale hører kun hjemme i godkendte værktøjer. Og er du i tvivl, så spørg først."
         },
         {
           "id": "d",
           "text": "Ja, hvis du kun indsætter priserne og ikke undtagelserne.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Det er netop priserne, der er fortrolige."
         }
       ],
