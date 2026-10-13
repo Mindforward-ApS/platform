@@ -5,6 +5,7 @@ import addFormatsModule from "ajv-formats";
 import { moduleSchema, type ModuleContent, type Predicate } from "../src/lib/schemas/module";
 import { worldSchema, type World } from "../src/lib/schemas/world";
 import { validatePlacementContent } from "./placement-validate";
+import { loadArticles } from "../src/server/support/help";
 
 // `pnpm content:validate` (CI): every module passes JSON Schema AND Zod, references only existing Nordlys
 // files and known sandbox event types, and the seed world is valid. Exit code 1 on any error.
@@ -96,12 +97,19 @@ function main() {
   }
   const placement = validatePlacementContent();
   errors.push(...placement.errors);
+  // M10: help-center articles (frontmatter, slug = file name, related links, price tokens).
+  let helpCount = 0;
+  try {
+    helpCount = loadArticles().length;
+  } catch (err) {
+    errors.push(`content/help: ${err instanceof Error ? err.message : String(err)}`);
+  }
   if (errors.length > 0) {
     for (const e of errors) console.error(e);
     console.error(`\ncontent:validate: ${errors.length} fejl`);
     process.exit(1);
   }
-  console.log(`content:validate: OK (${files.length} moduler, ${placement.tests} niveautests, Nordlys-verden v${world?.version})`);
+  console.log(`content:validate: OK (${files.length} moduler, ${placement.tests} niveautests, ${helpCount} hjælpeartikler, Nordlys-verden v${world?.version})`);
 }
 
 if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) main();
