@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it } from "vitest";
 import { assignCycleBatch, composeCycles, syncMonthlyProgress } from "@/server/modules/monthly-cycle";
 import { copenhagenInstant, monthRange, parseMonthKey, previousMonthKey } from "@/server/modules/monthly-clock";
 import { orgMonthlyStatus } from "@/server/modules/monthly-queries";
@@ -26,6 +26,11 @@ async function setup(opts: { minutes?: number[] } = {}) {
   for (const [i, minutes] of (opts.minutes ?? [4, 4]).entries()) news.push(await makeModule(track.id, { minutes, publishedAt: inPrev, sortOrder: i }));
   return { track, month, news };
 }
+
+// The DB is shared with other files (seed.test.ts asserts no PUBLISHED versions): archive our fixtures afterwards.
+afterAll(async () => {
+  await testDb().moduleVersion.updateMany({ where: { module: { slug: { startsWith: "fx-" } }, status: "PUBLISHED" }, data: { status: "ARCHIVED" } });
+});
 
 describe("monthly.compose-cycles + monthly.assign-users", () => {
   it("composes one cycle per active track with last month's NEWS, idempotently", async () => {
