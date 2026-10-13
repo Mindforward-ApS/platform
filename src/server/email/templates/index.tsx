@@ -4,6 +4,7 @@ import type { EmailCategory } from "@/generated/prisma/enums";
 import * as billing from "./billing";
 import { InvitationEmail, invitationSubject, type InvitationVars } from "./invitation";
 import { MagicLinkEmail, magicLinkSubject, type MagicLinkVars } from "./magic-link";
+import * as orgAdmin from "./org-admin";
 import { MarketingConfirmEmail, marketingConfirmSubject, type MarketingConfirmVars } from "./marketing-confirm";
 
 // Category is a property of the template, not of the call (docs/09 § 1).
@@ -24,6 +25,10 @@ export const TEMPLATES = {
   "cancellation-confirmed": { category: "SERVICE", version: "1", subject: billing.cancellationConfirmedSubject, component: billing.CancellationConfirmedEmail } satisfies TemplateDef<billing.CancellationConfirmedVars>,
   "support-escalation": { category: "SERVICE", version: "1", subject: billing.supportEscalationSubject, component: billing.SupportEscalationEmail } satisfies TemplateDef<billing.SupportEscalationVars>,
   "marketing-confirm": { category: "SERVICE", version: "1", subject: marketingConfirmSubject, component: MarketingConfirmEmail } satisfies TemplateDef<MarketingConfirmVars>,
+  // M7 — company admin, certificates, GDPR
+  "certificate-issued": { category: "SERVICE", version: "1", subject: orgAdmin.certificateIssuedSubject, component: orgAdmin.CertificateIssuedEmail } satisfies TemplateDef<orgAdmin.CertificateIssuedVars>,
+  "account-deletion-confirm": { category: "SERVICE", version: "1", subject: orgAdmin.accountDeletionSubject, component: orgAdmin.AccountDeletionEmail } satisfies TemplateDef<orgAdmin.AccountDeletionVars>,
+  "report-ready": { category: "SERVICE", version: "1", subject: orgAdmin.reportReadySubject, component: orgAdmin.ReportReadyEmail } satisfies TemplateDef<orgAdmin.ReportReadyVars>,
 } as const;
 
 export type TemplateKey = keyof typeof TEMPLATES;
