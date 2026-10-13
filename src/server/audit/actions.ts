@@ -41,6 +41,7 @@ export const AUDIT_ACTIONS = [
   "REPORT_GENERATED",
   "CERTIFICATE_ISSUED",
   "CERTIFICATE_PUBLIC_TOGGLED",
+  "AI_POLICY_URL_CHANGED",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

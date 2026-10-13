@@ -26,7 +26,11 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/sandbox/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**"],
     "/sandkasse/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**"],
+    // M7: the DPA text is shown and hashed at acceptance (src/server/orgs/dpa.ts).
+    "/virksomhed/**": ["./content/legal/dpa.v1.md"],
   },
+  // M7: pdfkit reads its built-in font metrics (AFM files) from its package directory at runtime.
+  serverExternalPackages: ["pdfkit"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

@@ -35,6 +35,7 @@ export const orgAdminMessages = {
       certificates: "Certifikater udstedt",
     },
     trial: "Prøveperiode: dage tilbage vises, når abonnementet er sat op.",
+    trialDaysLeft: "Prøveperiode: {days} dage tilbage.",
     learningNote: "Tallene viser jeres træning samlet. De bruges til læring og dokumentation — ikke til at sammenligne kolleger.",
   },
   members: {
@@ -293,6 +294,14 @@ export const orgAdminMessages = {
       certificates: "Certifikater",
     },
     mailSubject: "Jeres rapport fra Mindforward er klar",
+    aiPolicyTitle: "Jeres egen AI-politik",
+    policyUrl: "Link til jeres egen AI-politik (https://…)",
+    policySave: "Gem link",
+    policySaved: "Linket er gemt.",
+    policyInvalid: "Skriv et link, der starter med https://",
+    inputError: "Tjek periode og filtre.",
+    exportTitle: "Eksportér",
+    previewNote: "Forhåndsvisningen viser hele perioden fra virksomhedens start til i dag uden filtre.",
   },
   jobRoles: {
     SALES: "Salg",
