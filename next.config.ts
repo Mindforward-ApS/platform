@@ -1,15 +1,13 @@
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs/config";
 
-// Static security headers (docs/02-arkitektur.md § 7). A nonce-based script-src needs per-request rendering of
-// every page; that trade-off is decided with the public pages in M5 (docs/OPEN-QUESTIONS.md).
+// Static security headers (docs/02-arkitektur.md § 7). No default-src/script-src yet: Next streams Suspense
+// content with inline scripts, so locking scripts down needs a per-request nonce — decided with the public
+// pages in M5 (docs/OPEN-QUESTIONS.md). Until then: no framing, no plugins, no foreign <base> or form targets.
 const csp = [
-  "default-src 'self'",
   "base-uri 'self'",
   "object-src 'none'",
   "frame-ancestors 'none'",
-  "img-src 'self' data: blob:",
-  "connect-src 'self' https://*.ingest.de.sentry.io",
   "form-action 'self' https://login.microsoftonline.com https://accounts.google.com https://checkout.stripe.com",
 ].join("; ");
 

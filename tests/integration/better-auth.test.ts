@@ -67,6 +67,17 @@ describe("invitations (Better Auth organization plugin)", () => {
   });
 });
 
+describe("PERSONAL orgs", () => {
+  it("rejects invitations into a PERSONAL (B2C) org, even from its OWNER", async () => {
+    const [org, owner] = await Promise.all([makeOrg("PERSONAL"), makeUser()]);
+    await addMember(org.id, owner.id, "OWNER");
+    await expect(
+      auth.api.createInvitation({ headers: await login(owner.id), body: { email: `p-${randomUUID()}@example.test`, role: "LEARNER", organizationId: org.id } }),
+    ).rejects.toThrow();
+    expect(await testDb().invitation.count({ where: { organizationId: org.id } })).toBe(0);
+  });
+});
+
 describe("role changes", () => {
   it("writes MEMBER_ROLE_CHANGED with the acting user", async () => {
     const { org, owner, ownerHeaders } = await businessWithOwner();
@@ -101,8 +112,4 @@ describe("magic link", () => {
     await expect(auth.api.signInMagicLink({ body: { email, callbackURL: "/start" }, headers: new Headers() })).rejects.toThrow();
     expect(await testDb().emailMessage.count({ where: { toEmail: email, template: "magic-link" } })).toBe(5);
   });
-});
-
-it("org fixtures exist", async () => {
-  expect(await makeOrg()).toBeTruthy();
 });

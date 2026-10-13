@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Button, Field, Notice, Page } from "@/components/ui/primitives";
 import { getMessages } from "@/lib/i18n";
@@ -16,6 +17,8 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
   const roleNames = getMessages().account.roles;
   const sp = await searchParams;
   const orgId = ctx.membership.organizationId;
+  const org = await db().organization.findUniqueOrThrow({ where: { id: orgId }, select: { type: true } });
+  if (org.type !== "BUSINESS") redirect("/konto?fejl=adgang");
   const [members, pending] = await Promise.all([
     db().membership.findMany({ where: { organizationId: orgId, deactivatedAt: null }, orderBy: { createdAt: "asc" }, select: { id: true, role: true, user: { select: { name: true, email: true } } } }),
     db().invitation.findMany({ where: { organizationId: orgId, status: "pending", expiresAt: { gt: new Date() } }, select: { id: true, email: true, role: true } }),

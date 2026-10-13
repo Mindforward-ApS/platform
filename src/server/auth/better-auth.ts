@@ -147,6 +147,11 @@ export function buildAuthOptions(deps: { db: PrismaClient; env: ServerEnv }) {
           });
         },
         organizationHooks: {
+          // PERSONAL (B2C) orgs have exactly one seat: nobody can be invited into them.
+          beforeCreateInvitation: async ({ organization: org }) => {
+            const row = await prisma.organization.findUnique({ where: { id: org.id }, select: { type: true } });
+            if (row?.type !== "BUSINESS") throw new APIError("FORBIDDEN", { message: "PERSONAL_ORG" });
+          },
           beforeUpdateMemberRole: async ({ member, newRole }) => {
             if (member.role !== "OWNER" || newRole === "OWNER") return;
             const owners = await prisma.membership.count({ where: { organizationId: member.organizationId, role: "OWNER", deactivatedAt: null } });
