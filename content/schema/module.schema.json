@@ -1,0 +1,1663 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://greb.dk/schema/module.schema.json",
+  "title": "Greb ModuleVersion content",
+  "description": "Contract for one module version (ModuleVersion.content). Spec: docs/05-moduler-og-scoring.md. Word limits (READ <= 120 words) are enforced additionally in Zod.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "version",
+    "locale",
+    "title",
+    "summary",
+    "level",
+    "type",
+    "format",
+    "tracks",
+    "minutes",
+    "objectives",
+    "passThreshold",
+    "requiresVerification",
+    "steps"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^(core|feat|role|news|case|exam)-[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "locale": {
+      "const": "da-DK"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 60
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 200
+    },
+    "level": {
+      "type": "integer",
+      "enum": [
+        1,
+        2,
+        3
+      ]
+    },
+    "type": {
+      "enum": [
+        "CORE",
+        "FEATURE",
+        "NEWS",
+        "ROLE"
+      ]
+    },
+    "format": {
+      "enum": [
+        "STANDARD",
+        "CASE",
+        "EXAM"
+      ]
+    },
+    "tracks": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "CHATGPT",
+          "COPILOT",
+          "CLAUDE",
+          "GEMINI"
+        ]
+      }
+    },
+    "requiresTier": {
+      "enum": [
+        null,
+        "COPILOT_CHAT",
+        "COPILOT_M365",
+        "unknown"
+      ],
+      "description": "Copilot level required. 'unknown' only allowed for AUTO/NEWS modules (shown as 'Tjek jeres licens')."
+    },
+    "roles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "SALES",
+          "HR",
+          "FINANCE",
+          "CUSTOMER_SERVICE",
+          "LEADERSHIP",
+          "OPERATIONS"
+        ]
+      }
+    },
+    "concepts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "ASSISTANTS",
+          "CONNECTORS",
+          "SCHEDULED_TASKS",
+          "AGENTS",
+          "PROMPTING",
+          "FILES_AND_DATA",
+          "SECURITY_PRIVACY",
+          "OTHER"
+        ]
+      }
+    },
+    "featureRefs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+\\.[a-z0-9-]+$"
+      },
+      "description": "Ids from content/features/registry.json (docs/06 §12)."
+    },
+    "minutes": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 25
+    },
+    "objectives": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 5,
+        "maxLength": 140
+      }
+    },
+    "prerequisites": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/moduleId"
+      }
+    },
+    "passThreshold": {
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 1
+    },
+    "requiresVerification": {
+      "type": "boolean"
+    },
+    "verifiedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "url",
+          "title",
+          "retrievedAt"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/localId"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "retrievedAt": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      }
+    },
+    "attribution": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 400,
+      "description": "Set by code from ContentSource.license (e.g. CC BY 4.0), never by a model."
+    },
+    "autoUpdatedAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Set by code for AUTO modules: 'Automatisk opdateret [dato]'."
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 15,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "tracks": {
+            "contains": {
+              "const": "COPILOT"
+            }
+          }
+        },
+        "required": [
+          "tracks"
+        ]
+      },
+      "then": {
+        "required": [
+          "requiresTier"
+        ],
+        "properties": {
+          "requiresTier": {
+            "enum": [
+              "COPILOT_CHAT",
+              "COPILOT_M365",
+              "unknown"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "ROLE"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "required": [
+          "roles"
+        ],
+        "properties": {
+          "roles": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "NEWS"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "steps": {
+            "items": {
+              "properties": {
+                "type": {
+                  "enum": [
+                    "READ",
+                    "QUIZ"
+                  ]
+                }
+              },
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "READ"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              },
+              "then": {
+                "required": [
+                  "claims"
+                ],
+                "properties": {
+                  "claims": {
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "requiresVerification": {
+            "const": true
+          },
+          "type": {
+            "not": {
+              "const": "NEWS"
+            }
+          }
+        },
+        "required": [
+          "requiresVerification",
+          "type"
+        ]
+      },
+      "then": {
+        "required": [
+          "sources"
+        ],
+        "properties": {
+          "sources": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "format": {
+            "const": "STANDARD"
+          }
+        },
+        "required": [
+          "format"
+        ]
+      },
+      "then": {
+        "properties": {
+          "minutes": {
+            "minimum": 5,
+            "maximum": 12
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "requiresTier": {
+            "const": "unknown"
+          }
+        },
+        "required": [
+          "requiresTier"
+        ]
+      },
+      "then": {
+        "properties": {
+          "type": {
+            "const": "NEWS"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "moduleId": {
+      "type": "string",
+      "pattern": "^(core|feat|role|news|case|exam)-[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "localId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 48
+    },
+    "targetId": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$",
+      "maxLength": 80
+    },
+    "sceneId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "fieldPath": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_]+(\\.[A-Za-z0-9_]+){0,5}$",
+      "not": {
+        "pattern": "(^|\\.)(__proto__|prototype|constructor)(\\.|$)"
+      }
+    },
+    "hints": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/hint",
+          "properties": {
+            "level": {
+              "const": 1
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/hint",
+          "properties": {
+            "level": {
+              "const": 2
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/hint",
+          "properties": {
+            "level": {
+              "const": 3
+            }
+          }
+        }
+      ],
+      "items": {
+        "$ref": "#/$defs/hint"
+      }
+    },
+    "hint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "text"
+      ],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 600
+        }
+      }
+    },
+    "stepBase": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "title",
+        "points"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/localId"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "points": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "mustPass": {
+          "type": "boolean",
+          "default": false
+        },
+        "hints": {
+          "$ref": "#/$defs/hints"
+        },
+        "sourceRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/localId"
+          }
+        }
+      }
+    },
+    "gradedStep": {
+      "required": [
+        "hints"
+      ],
+      "properties": {
+        "points": {
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "READ",
+            "DEMO",
+            "CLICK_TASK",
+            "PROMPT_TASK",
+            "QUIZ",
+            "SPOT_ERROR",
+            "JUDGMENT"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "READ"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/readStep"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "DEMO"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/demoStep"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "CLICK_TASK"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/clickTaskStep"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "PROMPT_TASK"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/promptTaskStep"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "QUIZ"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/quizStep"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "SPOT_ERROR"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/spotErrorStep"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "JUDGMENT"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/judgmentStep"
+          }
+        }
+      ]
+    },
+    "readStep": {
+      "$ref": "#/$defs/stepBase",
+      "required": [
+        "body"
+      ],
+      "properties": {
+        "type": {
+          "const": "READ"
+        },
+        "points": {
+          "const": 0
+        },
+        "body": {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 1000
+        },
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "src",
+            "alt"
+          ],
+          "properties": {
+            "src": {
+              "type": "string"
+            },
+            "alt": {
+              "type": "string",
+              "minLength": 3
+            }
+          }
+        },
+        "claims": {
+          "$ref": "#/$defs/claims"
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "demoStep": {
+      "$ref": "#/$defs/stepBase",
+      "required": [
+        "scene",
+        "frames"
+      ],
+      "properties": {
+        "type": {
+          "const": "DEMO"
+        },
+        "points": {
+          "const": 0
+        },
+        "scene": {
+          "$ref": "#/$defs/sceneId"
+        },
+        "frames": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "target",
+              "action",
+              "caption"
+            ],
+            "properties": {
+              "target": {
+                "$ref": "#/$defs/targetId"
+              },
+              "action": {
+                "enum": [
+                  "HIGHLIGHT",
+                  "CLICK",
+                  "TYPE"
+                ]
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "caption": {
+                "type": "string",
+                "maxLength": 200
+              }
+            }
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "clickTaskStep": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/stepBase"
+        },
+        {
+          "$ref": "#/$defs/gradedStep"
+        }
+      ],
+      "required": [
+        "instruction",
+        "scene",
+        "assertion",
+        "successMessage"
+      ],
+      "properties": {
+        "type": {
+          "const": "CLICK_TASK"
+        },
+        "instruction": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 400
+        },
+        "scene": {
+          "$ref": "#/$defs/sceneId"
+        },
+        "assertion": {
+          "$ref": "#/$defs/predicate"
+        },
+        "successMessage": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "timeoutHintSec": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 600
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "promptTaskStep": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/stepBase"
+        },
+        {
+          "$ref": "#/$defs/gradedStep"
+        }
+      ],
+      "required": [
+        "instruction",
+        "scenario",
+        "checks",
+        "rubric",
+        "goldenSet",
+        "exampleSolution"
+      ],
+      "properties": {
+        "type": {
+          "const": "PROMPT_TASK"
+        },
+        "instruction": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 600
+        },
+        "scenario": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 1500
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/localId"
+          }
+        },
+        "maxChars": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 4000,
+          "default": 2000
+        },
+        "maxSubmissions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "default": 3
+        },
+        "runModelAfter": {
+          "type": "boolean",
+          "default": true
+        },
+        "checks": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/check"
+          }
+        },
+        "rubric": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "passScore",
+            "criteria"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+\\.v[0-9]+$"
+            },
+            "passScore": {
+              "type": "number",
+              "minimum": 0.3,
+              "maximum": 1
+            },
+            "criteria": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 7,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "label",
+                  "description",
+                  "weight",
+                  "required"
+                ],
+                "properties": {
+                  "id": {
+                    "$ref": "#/$defs/localId"
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 80
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 600
+                  },
+                  "weight": {
+                    "type": "integer",
+                    "enum": [
+                      1,
+                      2,
+                      3
+                    ]
+                  },
+                  "required": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "goldenSet": {
+          "type": "string",
+          "pattern": "^content/golden/[a-z0-9-]+/[a-z0-9-]+\\.jsonl$"
+        },
+        "exampleSolution": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 2000
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "check": {
+      "type": "object",
+      "required": [
+        "kind",
+        "severity",
+        "message"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "MIN_WORDS",
+            "MAX_WORDS",
+            "MIN_CHARS",
+            "INCLUDES_ANY",
+            "INCLUDES_ALL",
+            "EXCLUDES_ALL",
+            "NO_PII"
+          ]
+        },
+        "severity": {
+          "enum": [
+            "BLOCK",
+            "WARN"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "value": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "terms": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 40,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "MIN_WORDS",
+                  "MAX_WORDS",
+                  "MIN_CHARS"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "value"
+            ],
+            "not": {
+              "required": [
+                "terms"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "INCLUDES_ANY",
+                  "INCLUDES_ALL",
+                  "EXCLUDES_ALL"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "terms"
+            ],
+            "not": {
+              "required": [
+                "value"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "NO_PII"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": false,
+              "terms": false
+            }
+          }
+        }
+      ]
+    },
+    "quizStep": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/stepBase"
+        },
+        {
+          "$ref": "#/$defs/gradedStep"
+        }
+      ],
+      "required": [
+        "question",
+        "multiSelect",
+        "options",
+        "explanation"
+      ],
+      "properties": {
+        "type": {
+          "const": "QUIZ"
+        },
+        "question": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 400
+        },
+        "multiSelect": {
+          "type": "boolean"
+        },
+        "shuffle": {
+          "type": "boolean",
+          "default": true
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 6,
+          "contains": {
+            "type": "object",
+            "properties": {
+              "correct": {
+                "const": true
+              }
+            },
+            "required": [
+              "correct"
+            ]
+          },
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "text",
+              "correct",
+              "feedback"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/localId"
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 300
+              },
+              "correct": {
+                "type": "boolean"
+              },
+              "feedback": {
+                "type": "string",
+                "maxLength": 300
+              }
+            }
+          }
+        },
+        "explanation": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "claims": {
+          "$ref": "#/$defs/claims"
+        }
+      },
+      "if": {
+        "properties": {
+          "multiSelect": {
+            "const": false
+          }
+        },
+        "required": [
+          "multiSelect"
+        ]
+      },
+      "then": {
+        "properties": {
+          "options": {
+            "contains": {
+              "properties": {
+                "correct": {
+                  "const": true
+                }
+              },
+              "required": [
+                "correct"
+              ]
+            },
+            "minContains": 1,
+            "maxContains": 1
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "spotErrorStep": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/stepBase"
+        },
+        {
+          "$ref": "#/$defs/gradedStep"
+        }
+      ],
+      "required": [
+        "instruction",
+        "userPrompt",
+        "referenceFacts",
+        "segments"
+      ],
+      "properties": {
+        "type": {
+          "const": "SPOT_ERROR"
+        },
+        "instruction": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "userPrompt": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "referenceFacts": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "segments": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 20,
+          "contains": {
+            "type": "object",
+            "properties": {
+              "isError": {
+                "const": true
+              }
+            },
+            "required": [
+              "isError"
+            ]
+          },
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "text",
+              "isError"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/localId"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "isError": {
+                "type": "boolean"
+              },
+              "errorType": {
+                "enum": [
+                  "FACT",
+                  "INVENTED",
+                  "MATH",
+                  "OUTDATED",
+                  "POLICY",
+                  "TONE"
+                ]
+              },
+              "explanation": {
+                "type": "string",
+                "maxLength": 400
+              }
+            },
+            "if": {
+              "properties": {
+                "isError": {
+                  "const": true
+                }
+              },
+              "required": [
+                "isError"
+              ]
+            },
+            "then": {
+              "required": [
+                "errorType",
+                "explanation"
+              ]
+            }
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "judgmentStep": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/stepBase"
+        },
+        {
+          "$ref": "#/$defs/gradedStep"
+        }
+      ],
+      "required": [
+        "category",
+        "scenario",
+        "question",
+        "options",
+        "explanation"
+      ],
+      "properties": {
+        "type": {
+          "const": "JUDGMENT"
+        },
+        "category": {
+          "enum": [
+            "DATA_SECURITY",
+            "GDPR",
+            "CONFIDENTIALITY",
+            "AI_POLICY",
+            "COPYRIGHT",
+            "RESPONSIBLE_USE"
+          ]
+        },
+        "scenario": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "question": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 5,
+          "contains": {
+            "type": "object",
+            "properties": {
+              "verdict": {
+                "const": "CORRECT"
+              }
+            },
+            "required": [
+              "verdict"
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "text",
+              "verdict",
+              "feedback"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/localId"
+              },
+              "text": {
+                "type": "string",
+                "maxLength": 300
+              },
+              "verdict": {
+                "enum": [
+                  "CORRECT",
+                  "PARTIAL",
+                  "WRONG"
+                ]
+              },
+              "feedback": {
+                "type": "string",
+                "maxLength": 400
+              }
+            }
+          }
+        },
+        "explanation": {
+          "type": "string",
+          "maxLength": 800
+        }
+      },
+      "if": {
+        "properties": {
+          "category": {
+            "enum": [
+              "DATA_SECURITY",
+              "GDPR"
+            ]
+          }
+        },
+        "required": [
+          "category"
+        ]
+      },
+      "then": {
+        "required": [
+          "mustPass"
+        ],
+        "properties": {
+          "mustPass": {
+            "const": true
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "predicate": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "oneOf": [
+        {
+          "required": [
+            "all"
+          ],
+          "properties": {
+            "all": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 10,
+              "items": {
+                "$ref": "#/$defs/predicate"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "any"
+          ],
+          "properties": {
+            "any": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 10,
+              "items": {
+                "$ref": "#/$defs/predicate"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "not"
+          ],
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/predicate"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "event"
+          ],
+          "properties": {
+            "event": {
+              "$ref": "#/$defs/eventMatcher"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "count"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "count": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "event",
+                "op",
+                "value"
+              ],
+              "properties": {
+                "event": {
+                  "$ref": "#/$defs/eventMatcher"
+                },
+                "op": {
+                  "enum": [
+                    "eq",
+                    "gte",
+                    "lte"
+                  ]
+                },
+                "value": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        },
+        {
+          "required": [
+            "sequence"
+          ],
+          "properties": {
+            "sequence": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 10,
+              "items": {
+                "$ref": "#/$defs/eventMatcher"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "$ref": "#/$defs/fieldCondition"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "eventMatcher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"
+        },
+        "target": {
+          "$ref": "#/$defs/targetId"
+        },
+        "where": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/fieldCondition"
+          }
+        }
+      }
+    },
+    "fieldCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "op"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/fieldPath"
+        },
+        "op": {
+          "enum": [
+            "eq",
+            "neq",
+            "in",
+            "contains",
+            "startsWith",
+            "exists",
+            "gte",
+            "lte",
+            "lengthGte"
+          ]
+        },
+        "value": {}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "exists"
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "value"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "in"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "array",
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "enum": [
+                  "gte",
+                  "lte",
+                  "lengthGte"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "startsWith"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "changeEventId",
+        "snapshotId",
+        "url",
+        "quote",
+        "charStart",
+        "charEnd"
+      ],
+      "properties": {
+        "changeEventId": {
+          "type": "string"
+        },
+        "snapshotId": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "charStart": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "charEnd": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text",
+        "kind"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "maxLength": 400
+        },
+        "kind": {
+          "enum": [
+            "FACT",
+            "GUIDANCE"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        }
+      },
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "FACT"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "sourceRef"
+        ]
+      }
+    },
+    "claims": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    }
+  }
+}
