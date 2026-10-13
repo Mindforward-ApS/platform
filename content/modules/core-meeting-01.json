@@ -1,0 +1,346 @@
+{
+  "$schema": "../schema/module.schema.json",
+  "schemaVersion": 1,
+  "id": "core-meeting-01",
+  "version": 1,
+  "locale": "da-DK",
+  "title": "Mødenoter og opsummeringer",
+  "summary": "Lav en liste med beslutninger og opgaver ud fra et mødereferat, kræv ansvarlig og frist på hver opgave, og fang opsummeringer, der finder på ting.",
+  "level": 1,
+  "type": "CORE",
+  "format": "STANDARD",
+  "tracks": [
+    "CHATGPT",
+    "COPILOT",
+    "CLAUDE",
+    "GEMINI"
+  ],
+  "requiresTier": "COPILOT_CHAT",
+  "roles": [],
+  "concepts": [
+    "FILES_AND_DATA"
+  ],
+  "featureRefs": [],
+  "minutes": 8,
+  "objectives": [
+    "Lav en liste med beslutninger og opgaver ud fra noter fra et møde.",
+    "Kræv en ansvarlig og en frist for hver opgave.",
+    "Find opsummeringer, der tillægger folk noget, de ikke har sagt eller besluttet."
+  ],
+  "prerequisites": [
+    "core-prompt-01"
+  ],
+  "passThreshold": 0.8,
+  "requiresVerification": false,
+  "sources": [],
+  "steps": [
+    {
+      "id": "intro",
+      "type": "READ",
+      "title": "Fra noter til handling",
+      "points": 0,
+      "body": "I går var der driftsmøde med Ali Yilmaz, Peter Skov og dig. Peter skrev referatet. Det ligger i filerne som \"Mødereferat driftsmøde uge 40\".\n\nEt referat er kun nyttigt, hvis alle ved, hvad de skal gøre bagefter. AI kan hurtigt lave en liste med:\n\n- **Beslutninger** — hvad blev besluttet?\n- **Opgaver** — hvem gør hvad, og hvornår?\n- **Åbne spørgsmål** — hvad er ikke afklaret?\n\nMen pas på: En opsummering kan lyde sikker og samtidig finde på en beslutning, ingen har truffet. Eller give en frist, ingen har sat. Bed derfor AI'en skrive \"frist mangler\", når der ikke står en."
+    },
+    {
+      "id": "hvad-mangler",
+      "type": "QUIZ",
+      "title": "Hvad mangler i opgaven?",
+      "points": 15,
+      "question": "I en opgaveliste står der: \"Kim rykker for prognoser fra Træstub Legetøj og Vindrose Elektronik.\" Hvad mangler for, at opgaven er klar?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "En frist — hvornår skal det være gjort?",
+          "correct": true,
+          "feedback": "Rigtigt. Der er en ansvarlig (Kim) og en handling, men ingen frist. Uden frist bliver opgaven let skubbet."
+        },
+        {
+          "id": "b",
+          "text": "En ansvarlig — hvem skal gøre det?",
+          "correct": false,
+          "feedback": "Kim står som ansvarlig. Det er noget andet, der mangler."
+        },
+        {
+          "id": "c",
+          "text": "Kundernes kontaktpersoner og telefonnumre.",
+          "correct": false,
+          "feedback": "Dem finder Kim i CRM'et. De hører ikke til i en opgaveliste."
+        },
+        {
+          "id": "d",
+          "text": "Ingenting. Opgaven er klar, som den står.",
+          "correct": false,
+          "feedback": "Næsten. En god opgave har hvad, hvem og hvornår."
+        }
+      ],
+      "explanation": "En god opgave svarer på tre spørgsmål: Hvad skal gøres? Hvem gør det? Hvornår? Står fristen ikke i noterne, skal listen sige det — ikke gætte.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tænk på hvad, hvem og hvornår."
+        },
+        {
+          "level": 2,
+          "text": "Hvad og hvem står der. Hvad med tidspunktet?"
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Der mangler en frist. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "opsummering",
+      "type": "PROMPT_TASK",
+      "title": "Prompt til opsummering af mødet",
+      "points": 35,
+      "instruction": "Skriv en prompt, der får AI'en til at lave en opsummering af driftsmødet ud fra det vedhæftede referat: beslutninger, opgaver med ansvarlig og frist, og åbne spørgsmål. Du skriver prompten — ikke selve opsummeringen.",
+      "scenario": "Referatet fra driftsmødet i uge 40 er vedhæftet. Deltagere: Ali Yilmaz (driftsleder), Peter Skov og dig. Der blev truffet fem beslutninger, fx at cut-off flyttes til kl. 13:00 i uge 47–51, og at kunderne skal varsles senest 2. november. Der er også løse ender, fx lagerkapacitet over 95 % og manglende prognoser fra to kunder. Nogle opgaver har ingen frist. Opsummeringen skal sendes til deltagerne før næste møde, torsdag i uge 41.",
+      "attachments": [
+        "f06"
+      ],
+      "maxChars": 2000,
+      "maxSubmissions": 3,
+      "runModelAfter": true,
+      "checks": [
+        {
+          "kind": "NO_PII",
+          "severity": "BLOCK",
+          "message": "Din prompt ser ud til at indeholde et CPR-, kort- eller kontonummer. Fjern det, og prøv igen — sådanne oplysninger hører aldrig hjemme i en prompt."
+        },
+        {
+          "kind": "MIN_WORDS",
+          "value": 12,
+          "severity": "BLOCK",
+          "message": "Din prompt er meget kort. Sig, hvordan opsummeringen skal være opbygget."
+        },
+        {
+          "kind": "MAX_WORDS",
+          "value": 300,
+          "severity": "WARN",
+          "message": "Din prompt er lang. Det er ikke forkert, men tjek om alt er nødvendigt."
+        },
+        {
+          "kind": "INCLUDES_ANY",
+          "terms": [
+            "ansvarlig",
+            "hvem",
+            "frist",
+            "deadline",
+            "hvornår"
+          ],
+          "severity": "WARN",
+          "message": "Har du bedt om en ansvarlig og en frist for hver opgave?"
+        }
+      ],
+      "rubric": {
+        "version": "core-meeting-01-opsummering.v1",
+        "passScore": 0.7,
+        "criteria": [
+          {
+            "id": "struktur",
+            "label": "Klar struktur",
+            "description": "Prompten beder om en opdelt opsummering med beslutninger, opgaver og åbne spørgsmål (eller tilsvarende overskrifter). 2 = alle tre dele nævnt. 1 = en eller to af delene, eller kun 'opsummér mødet i punkter'. 0 = ingen struktur ('opsummér referatet').",
+            "weight": 2,
+            "required": true
+          },
+          {
+            "id": "ansvarlig-frist",
+            "label": "Ansvarlig og frist",
+            "description": "Prompten kræver, at hver opgave har en ansvarlig og en frist. 2 = både ansvarlig og frist pr. opgave. 1 = kun én af delene. 0 = ingen af delene.",
+            "weight": 2,
+            "required": true
+          },
+          {
+            "id": "kun-referatet",
+            "label": "Kun det, der står",
+            "description": "Prompten sikrer, at AI'en kun bruger referatet og ikke finder på: fx 'brug kun det vedhæftede referat', 'skriv frist mangler, hvis der ikke står en', 'opfind ikke beslutninger'. 2 = eksplicit krav om ikke at gætte/opfinde ELLER at markere manglende frister. 1 = kun 'brug referatet'. 0 = intet.",
+            "weight": 2,
+            "required": false
+          },
+          {
+            "id": "modtager-format",
+            "label": "Modtager og form",
+            "description": "Prompten angiver modtager eller brug (mail til deltagerne før næste møde) og/eller en konkret form (punktform, tabel, maks længde). 2 = både modtager/brug og konkret form. 1 = kun én af delene. 0 = intet.",
+            "weight": 1,
+            "required": false
+          }
+        ]
+      },
+      "goldenSet": "content/golden/core-meeting-01/opsummering.jsonl",
+      "exampleSolution": "Lav en opsummering af det vedhæftede referat fra driftsmødet i uge 40. Den skal sendes på mail til deltagerne før næste møde. Brug tre overskrifter: Beslutninger, Opgaver og Åbne spørgsmål. Skriv opgaverne som en tabel med kolonnerne Opgave, Ansvarlig og Frist. Brug kun det, der står i referatet. Står der ingen frist, så skriv \"frist mangler\" — gæt ikke. Opfind ikke beslutninger, og skriv ikke, at nogen har sagt noget, der ikke står i referatet. Maks én side.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvilke tre dele skal opsummeringen have, og hvad skal hver opgave indeholde?"
+        },
+        {
+          "level": 2,
+          "text": "Bed om beslutninger, opgaver og åbne spørgsmål. Kræv ansvarlig og frist pr. opgave, og bed AI'en skrive \"frist mangler\" i stedet for at gætte."
+        },
+        {
+          "level": 3,
+          "text": "Se et eksempel på en prompt, der består. Du får 0 point for trinnet, men kan stadig bestå modulet på de andre trin."
+        }
+      ]
+    },
+    {
+      "id": "opfundet-beslutning",
+      "type": "SPOT_ERROR",
+      "title": "Find det, ingen har besluttet",
+      "points": 20,
+      "instruction": "En kollega fik AI'en til at opsummere driftsmødet. Sammenlign med referatet, og markér alle sætninger, der er forkerte eller opfundne.",
+      "userPrompt": "Opsummér driftsmødet i uge 40 kort med beslutninger og opgaver.",
+      "referenceFacts": "**Uddrag af referatet, driftsmøde uge 40**\n- Beslutning: Cut-off flyttes til kl. 13:00 i uge 47–51. Kunderne varsles senest 2. november. Ansvarlig: Kim.\n- Beslutning: 6 vikarer til pak fra uge 46 til uge 51. Ansvarlig: Ali og Line.\n- Løs ende: Ingen plan, hvis belægningen går over 95 %. Ali *undersøger* midlertidig ekstern lagerplads.\n- Løs ende: Træstub Legetøj og Vindrose Elektronik mangler prognoser. Kim rykker. Ingen frist.\n- Løs ende: Vestvind Transport — vi mangler en klar melding om, hvor længe forsinkelserne varer. Peter følger op.",
+      "segments": [
+        {
+          "id": "s1",
+          "text": "Cut-off flyttes til kl. 13:00 i uge 47–51, og Kim varsler kunderne senest 2. november.",
+          "isError": false
+        },
+        {
+          "id": "s2",
+          "text": "Der bestilles 6 vikarer til pak fra uge 46 til uge 51 (Ali og Line).",
+          "isError": false
+        },
+        {
+          "id": "s3",
+          "text": "Det blev besluttet at leje ekstern lagerplads fra uge 47.",
+          "isError": true,
+          "errorType": "INVENTED",
+          "explanation": "Der blev ikke besluttet noget. Ali undersøger kun muligheden. AI'en har gjort en løs ende til en beslutning."
+        },
+        {
+          "id": "s4",
+          "text": "Kim rykker Træstub Legetøj og Vindrose Elektronik for prognoser senest fredag.",
+          "isError": true,
+          "errorType": "INVENTED",
+          "explanation": "Referatet nævner ingen frist. AI'en har fundet på \"senest fredag\". Den skulle have skrevet \"frist mangler\"."
+        },
+        {
+          "id": "s5",
+          "text": "Peter oplyste, at Vestvind Transport er tilbage i normal drift.",
+          "isError": true,
+          "errorType": "INVENTED",
+          "explanation": "Det sagde Peter ikke. Tværtimod mangler vi en melding om, hvor længe forsinkelserne varer, og Peter følger op. AI'en har lagt ord i munden på ham."
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tjek hver beslutning, hver frist og hvem der har sagt hvad."
+        },
+        {
+          "level": 2,
+          "text": "Der er tre fejl: en beslutning, der kun er en undersøgelse, en frist, der ikke findes, og noget Peter ikke har sagt."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: ekstern lagerplads fra uge 47 (kun undersøgt), \"senest fredag\" (ingen frist) og Vestvind i normal drift (ikke sagt). Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "optage-moedet",
+      "type": "QUIZ",
+      "title": "Optage kundemødet?",
+      "points": 15,
+      "question": "I morgen har du og Jonas møde med Rasmus fra Fjordlys Møbler. Du vil optage mødet på telefonen og lade AI'en skrive et referat bagefter. Du overvejer ikke at sige det, så stemningen ikke bliver anspændt. Hvad er det rigtige at gøre?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Optage i det skjulte. Det er jo kun til dine egne noter.",
+          "correct": false,
+          "feedback": "Optagelsen indeholder Rasmus' stemme og ord. Han har ret til at vide det, og det kan skade tilliden alvorligt, hvis han finder ud af det."
+        },
+        {
+          "id": "b",
+          "text": "Fortælle alle deltagere på forhånd, at du gerne vil optage, og kun gøre det, hvis de siger ja — og hvis Nordlys' regler tillader det.",
+          "correct": true,
+          "feedback": "Rigtigt. Åbenhed først. Siger nogen nej, tager du noter selv og bruger AI'en til at rydde op i dem."
+        },
+        {
+          "id": "c",
+          "text": "Optage, og slette lydfilen, når AI'en har lavet referatet.",
+          "correct": false,
+          "feedback": "Det er godt ikke at gemme den. Men deltagerne ved stadig ikke, at de bliver optaget."
+        },
+        {
+          "id": "d",
+          "text": "Spørge Jonas, men ikke Rasmus.",
+          "correct": false,
+          "feedback": "Alle deltagere skal vide det — også kunden."
+        }
+      ],
+      "explanation": "En optagelse af et møde er persondata om alle, der taler. Sig det altid på forhånd, og få et ja. Tjek også, om Nordlys tillader optagelse og det værktøj, du vil bruge. Er du i tvivl, så spørg din leder.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvordan ville du selv have det, hvis du blev optaget uden at vide det?"
+        },
+        {
+          "level": 2,
+          "text": "Alle deltagere skal vide det på forhånd — både kollegaer og kunden."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Fortæl alle på forhånd, og optag kun, hvis de siger ja og Nordlys tillader det. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "laes-foer-send",
+      "type": "QUIZ",
+      "title": "Hvorfor læse referatet igennem?",
+      "points": 15,
+      "question": "AI'en har lavet en flot opsummering af driftsmødet. Hvorfor skal du læse den igennem, før du sender den til deltagerne?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "For at rette stavefejl. Indholdet er altid rigtigt.",
+          "correct": false,
+          "feedback": "Stavefejl er det mindste problem. Indholdet kan være forkert."
+        },
+        {
+          "id": "b",
+          "text": "Fordi AI'en kan finde på beslutninger, frister eller udsagn, som ingen har sagt — og så handler folk på noget forkert.",
+          "correct": true,
+          "feedback": "Rigtigt. En opfundet beslutning i et referat kan sætte gang i arbejde, ingen har besluttet."
+        },
+        {
+          "id": "c",
+          "text": "Det behøver du ikke, hvis prompten var god.",
+          "correct": false,
+          "feedback": "En god prompt mindsker fejl, men fjerner dem ikke. Du har ansvaret for det, du sender."
+        },
+        {
+          "id": "d",
+          "text": "For at gøre den længere og mere detaljeret.",
+          "correct": false,
+          "feedback": "Længden er ikke pointen. Det handler om, at indholdet passer med mødet."
+        }
+      ],
+      "explanation": "Et referat bliver brugt som sandheden om, hvad der skete. Tjek beslutninger, ansvarlige og frister mod dine egne noter, før du sender det.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tænk på fejlene, du lige fandt."
+        },
+        {
+          "level": 2,
+          "text": "Det handler om indhold, ikke om stavning eller længde."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: AI'en kan finde på beslutninger, frister og udsagn. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    }
+  ]
+}
