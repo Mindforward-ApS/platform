@@ -1,11 +1,9 @@
 import { Suspense } from "react";
 import { Page } from "@/components/ui/primitives";
-import { SubmitButton } from "@/components/ui/submit-button";
 import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
 import { db } from "@/server/db";
-import { acknowledgeDataInfo } from "./actions";
 
 // First-login information for B2B employees (docs/10 § 1.6): what the admin can see, cannot see, retention, links.
 
@@ -46,8 +44,11 @@ async function Content() {
       <a className="underline" href="/konto/data">
         {t.myData}
       </a>
-      <form action={acknowledgeDataInfo}>
-        <SubmitButton>{t.continue}</SubmitButton>
+      {/* Plain POST (full navigation) so the client router never replays the pre-acknowledgement /konto redirect. */}
+      <form method="post" action="/api/me/data-info">
+        <button type="submit" className="rounded-md bg-accent px-4 py-2 text-accent-fg">
+          {t.continue}
+        </button>
       </form>
     </>
   );
