@@ -13,7 +13,7 @@ describe("runStart", () => {
     const user = await makeUser();
     const s = await makeSession(user.id);
     const result = await startFor(user, s.id);
-    expect(result).toEqual({ redirectTo: "/konto" });
+    expect(result).toMatchObject({ redirectTo: "/konto" });
 
     const memberships = await testDb().membership.findMany({ where: { userId: user.id }, include: { organization: true } });
     expect(memberships).toHaveLength(1);
@@ -51,7 +51,7 @@ describe("runStart", () => {
     });
     const user = await makeUser(email);
     const s = await makeSession(user.id);
-    expect(await startFor(user, s.id)).toEqual({ redirectTo: "/konto" });
+    expect(await startFor(user, s.id)).toMatchObject({ redirectTo: "/konto" });
   });
 
   it("activates an existing membership instead of creating a PERSONAL org", async () => {

@@ -1,0 +1,446 @@
+{
+  "$comment": "Placement test v1 (docs/01 § 4.1, content/curriculum.md 'Niveautest → plan'). Answers store option ids only. No LLM calls.",
+  "id": "placement-copilot",
+  "version": 1,
+  "track": "COPILOT",
+  "locale": "da-DK",
+  "title": "AI-niveautest: Microsoft 365 Copilot",
+  "intro": "12 korte spørgsmål om begreber — ikke knapper. Der er ingen tidsgrænse, og du kan tage testen på mobilen.",
+  "areas": [
+    {
+      "id": "MODEL",
+      "label": "Model-forståelse",
+      "moduleIds": [
+        "core-llm-01"
+      ],
+      "advice": {
+        "improve": "Start med at forstå, hvordan en sprogmodel laver sine svar — så ved du, hvornår du kan stole på dem.",
+        "next": "Du forstår, hvordan modellen arbejder. Brug den viden til at vælge, hvornår AI er det rigtige værktøj."
+      }
+    },
+    {
+      "id": "PROMPTING",
+      "label": "Prompting",
+      "moduleIds": [
+        "core-prompt-01",
+        "core-prompt-02"
+      ],
+      "advice": {
+        "improve": "Øv de fem byggesten i en god prompt: opgave, kontekst, målgruppe, format og begrænsninger.",
+        "next": "Dine prompts er gode. Næste skridt er genbrugelige skabeloner til dine faste opgaver."
+      }
+    },
+    {
+      "id": "FACT_CHECK",
+      "label": "Faktatjek",
+      "moduleIds": [
+        "core-fact-01"
+      ],
+      "advice": {
+        "improve": "Gør det til en vane at tjekke tal, kilder og løfter, før du bruger et AI-svar.",
+        "next": "Du tjekker AI-svar. Bed også AI'en om at markere, hvad den er usikker på."
+      }
+    },
+    {
+      "id": "DATA_SECURITY",
+      "label": "Datasikkerhed",
+      "moduleIds": [
+        "core-data-01",
+        "core-policy-01"
+      ],
+      "advice": {
+        "improve": "Lær hvad du må og ikke må indsætte — det beskytter kunder, kolleger og dig selv.",
+        "next": "Du kender reglerne for data. Hold dig opdateret med jeres egen AI-politik."
+      }
+    },
+    {
+      "id": "ADVANCED",
+      "label": "Avancerede begreber",
+      "moduleIds": [
+        "feat-assist-01",
+        "feat-connect-01",
+        "feat-sched-01",
+        "feat-agent-01"
+      ],
+      "advice": {
+        "improve": "Lær begreberne egne assistenter, forbindelser, planlagte opgaver og agenter — og hvornår de giver mening i Copilot.",
+        "next": "Du kender de avancerede begreber. Prøv dem af i øvemiljøet med mindst mulig adgang."
+      }
+    }
+  ],
+  "profileQuestions": [
+    {
+      "id": "jobRole",
+      "kind": "JOB_ROLE",
+      "question": "Hvad er din rolle på arbejdet?",
+      "required": false,
+      "help": "Valgfrit. Bruges til at foreslå et modul til din rolle.",
+      "options": [
+        {
+          "id": "SALES",
+          "text": "Salg"
+        },
+        {
+          "id": "HR",
+          "text": "HR"
+        },
+        {
+          "id": "FINANCE",
+          "text": "Økonomi"
+        },
+        {
+          "id": "CUSTOMER_SERVICE",
+          "text": "Kundeservice"
+        },
+        {
+          "id": "LEADERSHIP",
+          "text": "Ledelse"
+        },
+        {
+          "id": "OPERATIONS",
+          "text": "Drift/håndværk"
+        },
+        {
+          "id": "OTHER",
+          "text": "Andet"
+        }
+      ]
+    },
+    {
+      "id": "licenseTier",
+      "kind": "LICENSE_TIER",
+      "question": "Har I Microsoft 365 Copilot-licens?",
+      "required": true,
+      "help": "Svarer du \"Ved ikke\", bygger vi planen på Copilot Chat.",
+      "options": [
+        {
+          "id": "COPILOT_M365",
+          "text": "Ja, vi har licens"
+        },
+        {
+          "id": "COPILOT_CHAT",
+          "text": "Nej, kun Copilot Chat"
+        },
+        {
+          "id": "UNKNOWN",
+          "text": "Ved ikke"
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "q01",
+      "area": "MODEL",
+      "type": "QUIZ",
+      "prompt": "Hvordan laver en sprogmodel som Copilot typisk et svar?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Den forudsiger den mest sandsynlige tekst ud fra mønstre i det, den er trænet på."
+        },
+        {
+          "id": "b",
+          "text": "Den kopierer svaret fra den første side på nettet."
+        },
+        {
+          "id": "c",
+          "text": "En medarbejder hos leverandøren skriver svaret."
+        },
+        {
+          "id": "d",
+          "text": "Den slår svaret op i en database med kontrollerede fakta."
+        }
+      ],
+      "correct": "a",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q02",
+      "area": "MODEL",
+      "type": "QUIZ",
+      "prompt": "Copilot viser, at et svar bygger på \"web\". Hvad betyder det?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Svaret bygger på virksomhedens egne mails og filer."
+        },
+        {
+          "id": "b",
+          "text": "Svaret bygger på offentlige kilder fra nettet — ikke på jeres interne dokumenter."
+        },
+        {
+          "id": "c",
+          "text": "Svaret er kontrolleret af leverandøren."
+        },
+        {
+          "id": "d",
+          "text": "Svaret gemmes automatisk på jeres intranet."
+        }
+      ],
+      "correct": "b",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q03",
+      "area": "PROMPTING",
+      "type": "QUIZ",
+      "prompt": "Hvilken prompt giver sandsynligvis det mest brugbare svar?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Mail, kunde, forsinkelse, hurtigt!"
+        },
+        {
+          "id": "b",
+          "text": "Skriv en mail."
+        },
+        {
+          "id": "c",
+          "text": "Skriv en mail til kunden."
+        },
+        {
+          "id": "d",
+          "text": "Skriv en kort, venlig mail på dansk til en kunde, hvis levering er forsinket 2 dage. Sig undskyld, giv den nye leveringsdato, maks. 80 ord."
+        }
+      ],
+      "correct": "d",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q04",
+      "area": "PROMPTING",
+      "type": "QUIZ",
+      "prompt": "Svaret fra Copilot er for langt og for formelt. Hvad gør du først?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Bruger svaret alligevel — AI'en ved bedst."
+        },
+        {
+          "id": "b",
+          "text": "Kopierer svaret over i et andet værktøj."
+        },
+        {
+          "id": "c",
+          "text": "Starter en helt ny samtale og skriver det hele igen."
+        },
+        {
+          "id": "d",
+          "text": "Beder i samme samtale om en kortere version i en mere uformel tone."
+        }
+      ],
+      "correct": "d",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q05",
+      "area": "PROMPTING",
+      "type": "QUIZ",
+      "prompt": "Hvilke byggesten hører typisk med i en god prompt?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Kun ét nøgleord."
+        },
+        {
+          "id": "b",
+          "text": "Dit fulde navn og CPR-nummer, så svaret bliver personligt."
+        },
+        {
+          "id": "c",
+          "text": "Så mange udråbstegn som muligt."
+        },
+        {
+          "id": "d",
+          "text": "Opgave, kontekst, målgruppe, format og begrænsninger."
+        }
+      ],
+      "correct": "d",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q06",
+      "area": "FACT_CHECK",
+      "type": "SPOT_ERROR",
+      "prompt": "Hvad er problemet med AI-svaret?",
+      "context": "AI-svar: \"Fragt for 3 paller á 450 kr. koster i alt 1.150 kr. Ifølge færdselslovens § 512 må en palle højst veje 2 ton.\"",
+      "options": [
+        {
+          "id": "a",
+          "text": "Der er intet problem."
+        },
+        {
+          "id": "b",
+          "text": "Summen er forkert (3 × 450 kr. er 1.350 kr.), og lovhenvisningen ser opfundet ud — begge dele skal tjekkes."
+        },
+        {
+          "id": "c",
+          "text": "Svaret er for kort."
+        },
+        {
+          "id": "d",
+          "text": "Svaret burde være på engelsk."
+        }
+      ],
+      "correct": "b",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q07",
+      "area": "FACT_CHECK",
+      "type": "QUIZ",
+      "prompt": "Copilot giver dig et tal og en kilde, som du vil bruge i et notat til ledelsen. Hvad er den bedste vane?",
+      "options": [
+        {
+          "id": "a",
+          "text": "At runde tallet op, så det ser pænere ud."
+        },
+        {
+          "id": "b",
+          "text": "At bruge tallet — der står jo en kilde."
+        },
+        {
+          "id": "c",
+          "text": "At åbne kilden og kontrollere, at tallet faktisk står der."
+        },
+        {
+          "id": "d",
+          "text": "At bede AI'en om at love, at tallet er rigtigt."
+        }
+      ],
+      "correct": "c",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q08",
+      "area": "DATA_SECURITY",
+      "type": "JUDGMENT",
+      "prompt": "Du skal have hjælp til en lønsag. Må du indsætte medarbejderens CPR-nummer og sygefravær i Copilot?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Ja, AI-værktøjer må altid bruges til persondata."
+        },
+        {
+          "id": "b",
+          "text": "Ja, hvis jeg skriver \"fortroligt\" i prompten."
+        },
+        {
+          "id": "c",
+          "text": "Ja, hvis jeg sletter samtalen bagefter."
+        },
+        {
+          "id": "d",
+          "text": "Nej. Persondata og følsomme oplysninger hører ikke hjemme i prompten — anonymisér, og følg jeres regler for godkendte værktøjer."
+        }
+      ],
+      "correct": "d",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q09",
+      "area": "DATA_SECURITY",
+      "type": "JUDGMENT",
+      "prompt": "Du vil bruge Copilot til en opgave med kundedata, men du er logget ind med din private Microsoft-konto. Hvad gør du?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Logger ind med arbejdskontoen, så virksomhedens beskyttelse gælder. Kundedata hører ikke hjemme under en privat konto."
+        },
+        {
+          "id": "b",
+          "text": "Sender kundedata til min private mail først."
+        },
+        {
+          "id": "c",
+          "text": "Bruger en kollegas login."
+        },
+        {
+          "id": "d",
+          "text": "Fortsætter — kontoen er ligegyldig."
+        }
+      ],
+      "correct": "a",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q10",
+      "area": "DATA_SECURITY",
+      "type": "QUIZ",
+      "prompt": "Hvilken oplysning kan du som udgangspunkt trygt bruge i en prompt?",
+      "options": [
+        {
+          "id": "a",
+          "text": "En kundes fulde navn, adresse og kontonummer."
+        },
+        {
+          "id": "b",
+          "text": "En kollegas helbredsoplysninger."
+        },
+        {
+          "id": "c",
+          "text": "Et offentligt tilgængeligt produktdatablad."
+        },
+        {
+          "id": "d",
+          "text": "Et fortroligt tilbud til en anden virksomhed."
+        }
+      ],
+      "correct": "c",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q11",
+      "area": "ADVANCED",
+      "type": "QUIZ",
+      "prompt": "Hvad er en \"egen assistent\" i et AI-værktøj?",
+      "options": [
+        {
+          "id": "a",
+          "text": "En supportaftale med leverandøren."
+        },
+        {
+          "id": "b",
+          "text": "En AI-opsætning med faste instrukser, viden og grænser til en bestemt, tilbagevendende opgave."
+        },
+        {
+          "id": "c",
+          "text": "En kollega, der læser med på dine prompts."
+        },
+        {
+          "id": "d",
+          "text": "En tastaturgenvej."
+        }
+      ],
+      "correct": "b",
+      "estimatedSeconds": 20
+    },
+    {
+      "id": "q12",
+      "area": "ADVANCED",
+      "type": "JUDGMENT",
+      "prompt": "En AI-agent kan sende mails til kunder og betale fakturaer på egen hånd. Hvad er den sikreste opsætning?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Ingen aktivitetslog, så den bliver hurtigere."
+        },
+        {
+          "id": "b",
+          "text": "Lad agenten selv vælge sine rettigheder."
+        },
+        {
+          "id": "c",
+          "text": "Fuld adgang, så den kan arbejde uforstyrret."
+        },
+        {
+          "id": "d",
+          "text": "Mindst mulig adgang og et menneskeligt godkendelsestrin, før noget sendes eller betales."
+        }
+      ],
+      "correct": "d",
+      "estimatedSeconds": 20
+    }
+  ]
+}

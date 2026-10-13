@@ -23,6 +23,7 @@ const sampleVars = {
   "withdrawal-completed": { url: "https://greb.example/konto/abonnement", amount: "10,00 kr." },
   "cancellation-confirmed": { url: "https://greb.example/konto/abonnement", date: "13. oktober 2026", time: "14.05", endDate: "12. november 2026" },
   "support-escalation": { url: "https://greb.example/admin", reason: "WITHDRAWAL_UNMATCHED", summary: "Fortrydelse uden match" },
+  "marketing-confirm": { url: "https://greb.example/samtykke/bekraeft?t=abc", expiresDays: 7 },
 } as const;
 
 describe("email templates", () => {

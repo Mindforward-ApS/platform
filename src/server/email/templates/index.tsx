@@ -4,6 +4,7 @@ import type { EmailCategory } from "@/generated/prisma/enums";
 import * as billing from "./billing";
 import { InvitationEmail, invitationSubject, type InvitationVars } from "./invitation";
 import { MagicLinkEmail, magicLinkSubject, type MagicLinkVars } from "./magic-link";
+import { MarketingConfirmEmail, marketingConfirmSubject, type MarketingConfirmVars } from "./marketing-confirm";
 
 // Category is a property of the template, not of the call (docs/09 § 1).
 interface TemplateDef<V> {
@@ -22,6 +23,7 @@ export const TEMPLATES = {
   "withdrawal-completed": { category: "SERVICE", version: "1", subject: billing.withdrawalCompletedSubject, component: billing.WithdrawalCompletedEmail } satisfies TemplateDef<billing.WithdrawalCompletedVars>,
   "cancellation-confirmed": { category: "SERVICE", version: "1", subject: billing.cancellationConfirmedSubject, component: billing.CancellationConfirmedEmail } satisfies TemplateDef<billing.CancellationConfirmedVars>,
   "support-escalation": { category: "SERVICE", version: "1", subject: billing.supportEscalationSubject, component: billing.SupportEscalationEmail } satisfies TemplateDef<billing.SupportEscalationVars>,
+  "marketing-confirm": { category: "SERVICE", version: "1", subject: marketingConfirmSubject, component: MarketingConfirmEmail } satisfies TemplateDef<MarketingConfirmVars>,
 } as const;
 
 export type TemplateKey = keyof typeof TEMPLATES;
