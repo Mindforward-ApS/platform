@@ -1,0 +1,5 @@
+docs/
+content/
+pnpm-lock.yaml
+src/generated/
+.next/

@@ -19,3 +19,16 @@ Komplet spec-pakke til at bygge **Greb**: dansk SaaS hvor medarbejdere lærer Ch
 | `docs/10-compliance.md` | Lov, GDPR, varemærker, launch gate |
 | `docs/11-roadmap.md` | Milestones M0–M10 med acceptkriterier og designsessioner |
 | `forretningsplan.md` | Forretningsplan (kontekst, ikke byggekrav) |
+
+## Udvikling (fra M0)
+
+Kræver Node 24 og pnpm 10.
+
+```bash
+pnpm install                 # kører også prisma generate
+cp .env.example .env.local   # udfyld mindst APP_URL og DATABASE_URL (Neon, Frankfurt)
+pnpm dev                     # http://localhost:3000
+pnpm inngest:dev             # Inngest Dev Server på :8288 (sæt INNGEST_DEV=1)
+```
+
+Checks før PR: `pnpm typecheck && pnpm lint && pnpm check:tokens && pnpm test && pnpm build && pnpm e2e`.
