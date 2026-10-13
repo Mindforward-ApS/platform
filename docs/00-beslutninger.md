@@ -110,5 +110,10 @@ Gælder forud for resten af pakken, inkl. § 10. Detaljer i `docs/OPEN-QUESTIONS
 - Kodenavnet `greb` bevares internt (repo, Vercel/Neon/Sentry-projekter, filnavne). "Greb" i spec-dokumenterne betyder produktet Mindforward.
 - Varemærke ikke tjekket: `mindforward.com` og `mindforward.eu` er i brug af andre → DKPTO/EUIPO-tjek før launch (launch gate).
 
+## 10c. Arbejdsform (besluttet af Marco 13. okt 2026)
+- **Tempo før ceremoni:** Marco vil se et færdigt produkt hurtigt og rette bagefter. Claude Code bygger milestones i træk og parallelt med flere agenter, hvor opgaverne ikke rører de samme filer. Planen skrives i PR'en i stedet for at vente på "Godkendt" pr. milestone.
+- **Designsessioner flyttes til efter første gennemkørsel:** alt bygges med neutrale tokens; Marco vælger visuel retning, når han kan klikke hele produktet igennem. Designreglerne (ingen leverandør-look, tokens kun i `tokens.css`) gælder fortsat.
+- Juridiske regler, sikkerhed og tests er uændrede krav.
+
 ## 11. Ejer-tid (mål)
 Marco ≤ 2 timer/uge efter launch: 1-klik-godkendelse af indhold, læse daglig digest, håndtere eskalationer.

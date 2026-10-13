@@ -174,7 +174,7 @@ Nordlys Logistik ApS — 3PL-lager og distribution for webshops og mindre produc
 | k11 | Stormhat Regntøj ApS | Tøj | Esbjerg | B | Prøve | 0 | Anders | −4 | Prøve udløber +10 |
 | k12 | Egebark Hundefoder ApS | Dyr | Viborg | A | Aktiv | 1.900.000 | Sofie | −2 | Stor volumen |
 | k13 | Mosebo Lys ApS | Bolig | Skanderborg | C | Opsagt | 0 | Kirsten | −90 | Opsagt pga. pris |
-| k14 | Havblik Fiskeudstyr | Sport | Hvide Sande | C | Aktiv | 120.000 | Ole | −20 | — |
+| k14 | Saltvind Fiskeudstyr | Sport | Hvide Sande | C | Aktiv | 120.000 | Ole | −20 | — |
 | k15 | Lyngbakke Honning | Fødevarer | Grenaa | C | Aktiv | 75.000 | Pia | −35 | — |
 | k16 | Vindrose Elektronik A/S | Elektronik | Aarhus | A | Aktiv | 2.600.000 | Henrik, supply | −6 | Største kunde |
 | k17 | Skovsti Naturkost ApS | Fødevarer | Kolding | B | Aktiv | 560.000 | Maria | −15 | Kølekrav |

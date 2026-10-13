@@ -3,5 +3,5 @@
   "regions": [
     "fra1"
   ],
-  "buildCommand": "pnpm db:deploy && pnpm build"
+  "buildCommand": "pnpm db:deploy && if [ \"$VERCEL_ENV\" = \"preview\" ]; then pnpm db:seed; fi && pnpm build"
 }

@@ -1014,6 +1014,36 @@
         },
         {
           "$ref": "#/$defs/gradedStep"
+        },
+        {
+          "if": {
+            "properties": {
+              "multiSelect": {
+                "const": false
+              }
+            },
+            "required": [
+              "multiSelect"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "contains": {
+                  "properties": {
+                    "correct": {
+                      "const": true
+                    }
+                  },
+                  "required": [
+                    "correct"
+                  ]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            }
+          }
         }
       ],
       "required": [
@@ -1086,34 +1116,6 @@
         },
         "claims": {
           "$ref": "#/$defs/claims"
-        }
-      },
-      "if": {
-        "properties": {
-          "multiSelect": {
-            "const": false
-          }
-        },
-        "required": [
-          "multiSelect"
-        ]
-      },
-      "then": {
-        "properties": {
-          "options": {
-            "contains": {
-              "properties": {
-                "correct": {
-                  "const": true
-                }
-              },
-              "required": [
-                "correct"
-              ]
-            },
-            "minContains": 1,
-            "maxContains": 1
-          }
         }
       },
       "unevaluatedProperties": false

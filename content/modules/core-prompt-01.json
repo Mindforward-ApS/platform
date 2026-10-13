@@ -9,10 +9,18 @@
   "level": 1,
   "type": "CORE",
   "format": "STANDARD",
-  "tracks": ["CHATGPT", "COPILOT", "CLAUDE", "GEMINI"],
+  "tracks": [
+    "CHATGPT",
+    "COPILOT",
+    "CLAUDE",
+    "GEMINI"
+  ],
   "requiresTier": "COPILOT_CHAT",
   "roles": [],
-  "concepts": ["PROMPTING", "SECURITY_PRIVACY"],
+  "concepts": [
+    "PROMPTING",
+    "SECURITY_PRIVACY"
+  ],
   "featureRefs": [],
   "minutes": 10,
   "objectives": [
@@ -20,7 +28,9 @@
     "Kontrollér et AI-svar mod fakta, før du bruger det.",
     "Vurdér hvilke oplysninger du må indsætte i et AI-værktøj."
   ],
-  "prerequisites": ["core-llm-01"],
+  "prerequisites": [
+    "core-llm-01"
+  ],
   "passThreshold": 0.8,
   "requiresVerification": false,
   "sources": [],
@@ -30,35 +40,59 @@
       "type": "READ",
       "title": "Hvorfor prompten betyder noget",
       "points": 0,
-      "body": "Du er ny på kundeservice hos **Nordlys Logistik ApS** i Aarhus. Kunden Hansen Byg A/S har skrevet en vred mail: Deres levering af tagsten er forsinket.\n\nEn AI-assistent kan skrive et udkast til svaret på få sekunder. Men den ved kun det, du fortæller den. Skriver du \"svar kunden\", får du et pænt, men generisk svar — måske med løfter, Nordlys aldrig har givet.\n\nI dette modul lærer du at give AI'en det, den skal bruge. Det tager under et minut at skrive en god prompt, og det sparer dig for at rette svaret bagefter."
+      "body": "Du er Kim Lund, kunde- og salgskoordinator hos **Nordlys Logistik ApS** i Aarhus. Kunden Bølgegrøn Kaffe har skrevet en vred mail: tre leverancer er kommet for sent.\n\nEn AI-assistent kan skrive et udkast til svaret på få sekunder. Men den ved kun det, du fortæller den. Skriver du \"svar kunden\", får du et pænt, men generisk svar — måske med løfter, Nordlys aldrig har givet.\n\nI dette modul lærer du at give AI'en det, den skal bruge. Det tager under et minut at skrive en god prompt, og det sparer dig for at rette svaret bagefter."
     },
     {
       "id": "ny-samtale",
       "type": "CLICK_TASK",
-      "title": "Start en ny samtale med kundens mail",
+      "title": "Start en ny samtale med Nordlys' skrivestil",
       "points": 10,
-      "instruction": "Start en ny samtale i øvemiljøet, og vedhæft kundens mail \"Forsinket levering – ordre 4471\" fra filerne.",
+      "instruction": "Start en ny samtale i øvemiljøet, og vedhæft filen \"Tone of voice Nordlys\" fra filerne, så AI'en kender Nordlys' skrivestil.",
       "scene": "chat-basic",
       "assertion": {
         "all": [
           {
             "sequence": [
-              { "type": "UI_CLICKED", "target": "nav.new-chat" },
+              {
+                "type": "UI_CLICKED",
+                "target": "nav.new-chat"
+              },
               {
                 "type": "CHAT_FILE_ATTACHED",
-                "where": [ { "path": "payload.fileId", "op": "eq", "value": "nordlys-mail-hansen-byg-4471" } ]
+                "where": [
+                  {
+                    "path": "payload.fileId",
+                    "op": "eq",
+                    "value": "f11"
+                  }
+                ]
               }
             ]
           },
-          { "state": { "path": "chat.active.attachments", "op": "lengthGte", "value": 1 } }
+          {
+            "state": {
+              "path": "chat.active.attachments",
+              "op": "lengthGte",
+              "value": 1
+            }
+          }
         ]
       },
-      "successMessage": "Godt. En ny samtale betyder, at AI'en ikke blandes sammen med tidligere opgaver — og nu har den kundens mail at arbejde ud fra.",
+      "successMessage": "Godt. En ny samtale betyder, at AI'en ikke blandes sammen med tidligere opgaver — og nu kender den Nordlys' skrivestil.",
       "timeoutHintSec": 60,
       "hints": [
-        { "level": 1, "text": "En ny samtale starter du typisk øverst i menuen i venstre side." },
-        { "level": 2, "text": "Klik på \"Ny samtale\". Brug derefter vedhæft-knappen ved tekstfeltet, og vælg mailen fra Hansen Byg." },
-        { "level": 3, "text": "Løsning: 1) Klik \"Ny samtale\" i venstremenuen. 2) Klik på papirclipsen ved tekstfeltet. 3) Vælg \"Forsinket levering – ordre 4471\". (Trinnet giver 0 point, når løsningen vises.)" }
+        {
+          "level": 1,
+          "text": "En ny samtale starter du typisk øverst i menuen i venstre side."
+        },
+        {
+          "level": 2,
+          "text": "Klik på \"Ny chat\". Brug derefter vedhæft-knappen ved tekstfeltet, og vælg \"Tone of voice Nordlys\"."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: 1) Klik \"Ny chat\" i menuen. 2) Klik på \"Vedhæft\" ved tekstfeltet. 3) Vælg \"Tone of voice Nordlys\". (Trinnet giver 0 point, når løsningen vises.)"
+        }
       ]
     },
     {
@@ -66,14 +100,14 @@
       "type": "READ",
       "title": "De fem byggesten",
       "points": 0,
-      "body": "En god prompt svarer på fem spørgsmål:\n\n1. **Opgave** — hvad skal AI'en lave? (\"Skriv et udkast til et svar på mailen\")\n2. **Kontekst** — hvad er situationen? (\"Leveringen er flyttet til 16. oktober pga. en defekt lastbil\")\n3. **Målgruppe og tone** — hvem læser det, og hvordan skal det lyde? (\"Indkøbschef, sur, skal tages alvorligt — venlig og professionel\")\n4. **Format** — hvordan skal svaret se ud? (\"Maks 120 ord, med emnelinje\")\n5. **Begrænsninger** — hvad må den ikke? (\"Lov ikke rabat eller kompensation\")\n\nDu behøver ikke skrive det i den rækkefølge. Men mangler en byggesten, gætter AI'en."
+      "body": "En god prompt svarer på fem spørgsmål:\n\n1. **Opgave** — hvad skal AI'en lave? (\"Skriv et udkast til et svar på mailen\")\n2. **Kontekst** — hvad er situationen? (\"Vores fragtpartner er en dag forsinket. Næste levering er fredag kl. 7–10\")\n3. **Målgruppe og tone** — hvem læser det, og hvordan skal det lyde? (\"Indkøbschef, sur, skal tages alvorligt — venlig og professionel\")\n4. **Format** — hvordan skal svaret se ud? (\"Maks 120 ord, med emnelinje\")\n5. **Begrænsninger** — hvad må den ikke? (\"Lov ikke rabat eller kompensation\")\n\nDu behøver ikke skrive det i den rækkefølge. Men mangler en byggesten, gætter AI'en."
     },
     {
       "id": "bedste-prompt",
       "type": "QUIZ",
       "title": "Hvilken prompt er bedst?",
       "points": 10,
-      "question": "Du vil have et udkast til svar på Hansen Bygs mail. Hvilken prompt giver mest sandsynligt et svar, du kan bruge med få rettelser?",
+      "question": "Du vil have et udkast til svar på Bølgegrøn Kaffes klage. Hvilken prompt giver mest sandsynligt et svar, du kan bruge med få rettelser?",
       "multiSelect": false,
       "shuffle": true,
       "options": [
@@ -91,7 +125,7 @@
         },
         {
           "id": "c",
-          "text": "Skriv et udkast til et svar på den vedhæftede mail fra Hansen Byg. Leveringen er flyttet til 16. oktober kl. 7–10 pga. en defekt lastbil. Tonen skal være venlig og professionel. Maks 120 ord med emnelinje. Lov ikke kompensation.",
+          "text": "Skriv et udkast til et svar på klagen fra Hanne hos Bølgegrøn Kaffe. Tre leverancer kom for sent, fordi vores fragtpartner er en dag forsinket. Næste levering er fredag kl. 7–10. Tonen skal være venlig og professionel. Maks 120 ord med emnelinje. Lov ikke kompensation.",
           "correct": true,
           "feedback": "Rigtigt. Opgave, kontekst, tone, format og en klar begrænsning — alle fem byggesten er med."
         },
@@ -104,9 +138,18 @@
       ],
       "explanation": "Den bedste prompt giver AI'en de fakta, den ikke selv kan kende, og siger tydeligt, hvad den ikke må. Længde i sig selv er ikke målet — indholdet er.",
       "hints": [
-        { "level": 1, "text": "Hvilken prompt fortæller AI'en noget, den ikke selv kan vide?" },
-        { "level": 2, "text": "Tjek hver mulighed for de fem byggesten: opgave, kontekst, målgruppe/tone, format, begrænsninger." },
-        { "level": 3, "text": "Løsning: Prompten der nævner den nye leveringsdato, tonen, længden og at der ikke må loves kompensation." }
+        {
+          "level": 1,
+          "text": "Hvilken prompt fortæller AI'en noget, den ikke selv kan vide?"
+        },
+        {
+          "level": 2,
+          "text": "Tjek hver mulighed for de fem byggesten: opgave, kontekst, målgruppe/tone, format, begrænsninger."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Prompten der nævner årsagen, den næste levering, tonen, længden og at der ikke må loves kompensation."
+        }
       ]
     },
     {
@@ -114,17 +157,45 @@
       "type": "PROMPT_TASK",
       "title": "Skriv din prompt",
       "points": 35,
-      "instruction": "Skriv en prompt, der får AI'en til at lave et udkast til et svar på Hansen Bygs mail. Brug de fem byggesten. Du skriver prompten — ikke selve mailen.",
-      "scenario": "Nordlys Logistik ApS skulle levere 12 paller tagsten (ordre 4471) til Hansen Byg A/S i Vejle onsdag 14. oktober. En lastbil er gået i stykker, og ny levering er fredag 16. oktober kl. 7–10. Indkøbschef Lars Hansen har skrevet en irriteret mail, fordi hans tømrere står uden materialer. Din leder har sagt, at du ikke må love rabat eller kompensation — det afgør salgschefen.",
-      "attachments": ["nordlys-mail-hansen-byg-4471"],
+      "instruction": "Skriv en prompt, der får AI'en til at lave et udkast til et svar på Bølgegrøn Kaffes klage. Brug de fem byggesten. Du skriver prompten — ikke selve mailen.",
+      "scenario": "Bølgegrøn Kaffe ApS i Aarhus har fået tre leverancer for sent (ordre 40118, 40127 og 40133), fordi Nordlys' fragtpartner Vestvind Transport er en dag forsinket i en periode. Næste levering kommer fredag kl. 7–10. Indkøbschef Hanne har skrevet en vred mail og overvejer at skifte leverandør. Din leder har sagt, at du ikke må love rabat eller kompensation — det afgør salgschef Jonas Bak.",
+      "attachments": [
+        "f11"
+      ],
       "maxChars": 2000,
       "maxSubmissions": 3,
       "runModelAfter": true,
       "checks": [
-        { "kind": "NO_PII", "severity": "BLOCK", "message": "Din prompt ser ud til at indeholde et CPR-, kort- eller kontonummer. Fjern det, og prøv igen — sådanne oplysninger hører aldrig hjemme i en prompt." },
-        { "kind": "MIN_WORDS", "value": 12, "severity": "BLOCK", "message": "Din prompt er meget kort. Fortæl AI'en mere om situationen — prøv mindst 2–3 sætninger." },
-        { "kind": "MAX_WORDS", "value": 300, "severity": "WARN", "message": "Din prompt er lang. Det er ikke forkert, men tjek om alt er nødvendigt." },
-        { "kind": "INCLUDES_ANY", "terms": ["16", "fredag", "ny levering", "ny leveringsdato", "lastbil"], "severity": "WARN", "message": "Har du fortalt AI'en, hvad der er sket, og hvornår kunden får sine varer? Det kan den ikke vide selv." }
+        {
+          "kind": "NO_PII",
+          "severity": "BLOCK",
+          "message": "Din prompt ser ud til at indeholde et CPR-, kort- eller kontonummer. Fjern det, og prøv igen — sådanne oplysninger hører aldrig hjemme i en prompt."
+        },
+        {
+          "kind": "MIN_WORDS",
+          "value": 12,
+          "severity": "BLOCK",
+          "message": "Din prompt er meget kort. Fortæl AI'en mere om situationen — prøv mindst 2–3 sætninger."
+        },
+        {
+          "kind": "MAX_WORDS",
+          "value": 300,
+          "severity": "WARN",
+          "message": "Din prompt er lang. Det er ikke forkert, men tjek om alt er nødvendigt."
+        },
+        {
+          "kind": "INCLUDES_ANY",
+          "terms": [
+            "fredag",
+            "ny levering",
+            "næste levering",
+            "fragtpartner",
+            "vestvind",
+            "forsink"
+          ],
+          "severity": "WARN",
+          "message": "Har du fortalt AI'en, hvad der er sket, og hvornår kunden får sine varer? Det kan den ikke vide selv."
+        }
       ],
       "rubric": {
         "version": "core-prompt-01-svarmail.v1",
@@ -140,7 +211,7 @@
           {
             "id": "kontekst",
             "label": "Relevant kontekst",
-            "description": "Prompten giver de fakta AI'en ikke selv kan kende: at leveringen er forsinket, den nye leveringstid (16. okt. / fredag, evt. kl. 7–10) og gerne årsagen (defekt lastbil). 2 = ny leveringstid OG mindst én yderligere fakta (årsag, ordre, varer). 1 = kun at leveringen er forsinket, eller kun dato uden situation. 0 = ingen fakta ud over 'svar kunden'. Henvisning til den vedhæftede mail alene giver højst 1.",
+            "description": "Prompten giver de fakta AI'en ikke selv kan kende: at leverancerne er forsinket, hvornår næste levering kommer (fredag, evt. kl. 7–10) og gerne årsagen (fragtpartneren er forsinket). 2 = næste levering OG mindst én yderligere fakta (årsag, ordrenumre, antal leverancer). 1 = kun at leverancerne er forsinket, eller kun tidspunkt uden situation. 0 = ingen fakta ud over 'svar kunden'. Henvisning til mailen alene giver højst 1.",
             "weight": 2,
             "required": true
           },
@@ -168,11 +239,20 @@
         ]
       },
       "goldenSet": "content/golden/core-prompt-01/prompt-svarmail.jsonl",
-      "exampleSolution": "Skriv et udkast til et svar på den vedhæftede mail fra Lars Hansen, indkøbschef hos Hansen Byg A/S. Situationen: Vores levering af 12 paller tagsten (ordre 4471) er flyttet fra onsdag 14. oktober til fredag 16. oktober kl. 7–10, fordi en af vores lastbiler er gået i stykker. Han er irriteret, fordi hans tømrere mangler materialer. Tonen skal være venlig, professionel og tage hans frustration alvorligt — uden at være undskyldende i overdreven grad. Maks 120 ord, med emnelinje. Lov ikke rabat eller kompensation, og skriv ikke noget, der ikke står her. Afslut med, at han kan ringe til mig direkte.",
+      "exampleSolution": "Skriv et udkast til et svar på klagen fra Hanne, indkøbschef hos Bølgegrøn Kaffe ApS. Situationen: Tre af deres leverancer (ordre 40118, 40127 og 40133) er kommet for sent, fordi vores fragtpartner Vestvind Transport er en dag forsinket i en periode. Næste levering kommer fredag kl. 7–10. Hun er vred og overvejer at skifte leverandør. Tonen skal være venlig, professionel og tage hendes frustration alvorligt — brug Nordlys' skrivestil fra den vedhæftede fil. Maks 120 ord, med emnelinje. Lov ikke rabat eller kompensation, og skriv ikke noget, der ikke står her. Afslut med, at hun kan ringe til mig direkte.",
       "hints": [
-        { "level": 1, "text": "Gå de fem byggesten igennem: Har du sagt hvad AI'en skal lave, hvad der er sket, hvem der læser, hvordan svaret skal se ud, og hvad den ikke må?" },
-        { "level": 2, "text": "Husk den nye leveringstid (fredag 16. oktober kl. 7–10), årsagen (defekt lastbil), og at du ikke må love kompensation. Angiv også længde, fx \"maks 120 ord\"." },
-        { "level": 3, "text": "Se et eksempel på en prompt, der består. Du får 0 point for trinnet, men kan stadig bestå modulet på de andre trin." }
+        {
+          "level": 1,
+          "text": "Gå de fem byggesten igennem: Har du sagt hvad AI'en skal lave, hvad der er sket, hvem der læser, hvordan svaret skal se ud, og hvad den ikke må?"
+        },
+        {
+          "level": 2,
+          "text": "Husk hvornår næste levering kommer (fredag kl. 7–10), årsagen (fragtpartneren er forsinket), og at du ikke må love kompensation. Angiv også længde, fx \"maks 120 ord\"."
+        },
+        {
+          "level": 3,
+          "text": "Se et eksempel på en prompt, der består. Du får 0 point for trinnet, men kan stadig bestå modulet på de andre trin."
+        }
       ]
     },
     {
@@ -180,21 +260,60 @@
       "type": "SPOT_ERROR",
       "title": "Find fejlene i AI'ens opsummering",
       "points": 20,
-      "instruction": "En kollega bad AI'en om en status på ordren. Sammenlign svaret med ordredata, og markér alle sætninger, der er forkerte eller opfundet.",
-      "userPrompt": "Giv mig en kort status på ordre 4471 til Hansen Byg.",
-      "referenceFacts": "**Ordre 4471 — Nordlys Logistik ApS**\n- Kunde: Hansen Byg A/S, Vejle\n- Varer: 12 paller tagsten, ca. 800 kg pr. palle\n- Oprindelig levering: onsdag 14. oktober\n- Ny levering: fredag 16. oktober kl. 7–10\n- Årsag: defekt lastbil\n- Kompensation: ikke aftalt — afgøres af salgschef\n- Kontakt hos Nordlys: disponent Mette Lund",
+      "instruction": "En kollega bad AI'en om en status på leverancerne til Bølgegrøn Kaffe. Sammenlign svaret med fakta, og markér alle sætninger, der er forkerte eller opfundet.",
+      "userPrompt": "Giv mig en kort status på de forsinkede leverancer til Bølgegrøn Kaffe.",
+      "referenceFacts": "**Bølgegrøn Kaffe ApS — status**\n- Forsinkede leverancer: 3 (ordre 40118, 40127, 40133)\n- Hver leverance: 14 kasser kaffe\n- Årsag: fragtpartneren Vestvind Transport er en dag forsinket\n- Næste levering: fredag kl. 7–10\n- Kompensation: ikke aftalt — afgøres af salgschef Jonas Bak\n- Kontakt hos Nordlys: Kim Lund, kunde- og salgskoordinator",
       "segments": [
-        { "id": "s1", "text": "Ordre 4471 til Hansen Byg A/S i Vejle indeholder 12 paller tagsten.", "isError": false },
-        { "id": "s2", "text": "Leveringen er flyttet fra 14. oktober til 19. oktober på grund af en defekt lastbil.", "isError": true, "errorType": "FACT", "explanation": "Den nye leveringsdato er 16. oktober, ikke 19. oktober. AI'en kan blande datoer sammen — tjek altid datoer og tal mod kilden." },
-        { "id": "s3", "text": "Den samlede vægt er cirka 6,4 ton (12 paller á 800 kg).", "isError": true, "errorType": "MATH", "explanation": "12 × 800 kg = 9,6 ton. Sprogmodeller regner ikke altid rigtigt — regn efter, eller bed om udregningen." },
-        { "id": "s4", "text": "Nordlys har tilbudt kunden 10 % rabat på fragten som kompensation.", "isError": true, "errorType": "INVENTED", "explanation": "Der er ikke aftalt nogen kompensation. AI'en har opfundet et tilbud, der lyder plausibelt — det kaldes en hallucination og kan blive dyrt, hvis det sendes til kunden." },
-        { "id": "s5", "text": "Ny levering sker mellem kl. 7 og 10.", "isError": false },
-        { "id": "s6", "text": "Spørgsmål kan rettes til disponent Mette Lund.", "isError": false }
+        {
+          "id": "s1",
+          "text": "Tre leverancer til Bølgegrøn Kaffe ApS er kommet for sent.",
+          "isError": false
+        },
+        {
+          "id": "s2",
+          "text": "Næste levering er mandag kl. 7–10, fordi fragtpartneren er forsinket.",
+          "isError": true,
+          "errorType": "FACT",
+          "explanation": "Næste levering er fredag, ikke mandag. AI'en kan blande datoer og dage sammen — tjek altid mod kilden."
+        },
+        {
+          "id": "s3",
+          "text": "I alt drejer det sig om 36 kasser kaffe (3 leverancer á 14 kasser).",
+          "isError": true,
+          "errorType": "MATH",
+          "explanation": "3 × 14 = 42 kasser. Sprogmodeller regner ikke altid rigtigt — regn efter, eller bed om udregningen."
+        },
+        {
+          "id": "s4",
+          "text": "Nordlys har tilbudt kunden 10 % rabat på fragten som kompensation.",
+          "isError": true,
+          "errorType": "INVENTED",
+          "explanation": "Der er ikke aftalt nogen kompensation. AI'en har opfundet et tilbud, der lyder plausibelt — det kaldes en hallucination og kan blive dyrt, hvis det sendes til kunden."
+        },
+        {
+          "id": "s5",
+          "text": "Årsagen er, at fragtpartneren Vestvind Transport er en dag forsinket.",
+          "isError": false
+        },
+        {
+          "id": "s6",
+          "text": "Spørgsmål kan rettes til Kim Lund, kunde- og salgskoordinator.",
+          "isError": false
+        }
       ],
       "hints": [
-        { "level": 1, "text": "Tjek hver sætning mod ordredata — især datoer, tal og løfter." },
-        { "level": 2, "text": "Der er tre fejl: én forkert dato, én regnefejl og én oplysning, der slet ikke står i ordredata." },
-        { "level": 3, "text": "Løsning: Datoen 19. oktober (skal være 16.), vægten 6,4 ton (skal være 9,6 ton) og rabatten på 10 % (findes ikke)." }
+        {
+          "level": 1,
+          "text": "Tjek hver sætning mod ordredata — især datoer, tal og løfter."
+        },
+        {
+          "level": 2,
+          "text": "Der er tre fejl: én forkert dato, én regnefejl og én oplysning, der slet ikke står i ordredata."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Mandag (skal være fredag), 36 kasser (skal være 42) og rabatten på 10 % (findes ikke)."
+        }
       ]
     },
     {
@@ -234,9 +353,18 @@
       ],
       "explanation": "To spørgsmål før du indsætter noget: 1) Er værktøjet godkendt af min arbejdsplads? 2) Er alt, jeg indsætter, nødvendigt for opgaven? Personoplysninger og især følsomme oplysninger som helbred skal holdes ude, medmindre virksomheden udtrykkeligt har godkendt det. Er du i tvivl, så spørg din leder eller tjek AI-politikken.",
       "hints": [
-        { "level": 1, "text": "Tænk på to ting: hvilket værktøj, og hvilke oplysninger." },
-        { "level": 2, "text": "Hvad siger Nordlys' AI-politik om private apps? Og er sygemeldingen nødvendig for at skrive et svar?" },
-        { "level": 3, "text": "Løsning: Brug det godkendte værktøj, og indsæt kun det nødvendige — uden adresse, telefonnummer og helbredsoplysning." }
+        {
+          "level": 1,
+          "text": "Tænk på to ting: hvilket værktøj, og hvilke oplysninger."
+        },
+        {
+          "level": 2,
+          "text": "Hvad siger Nordlys' AI-politik om private apps? Og er sygemeldingen nødvendig for at skrive et svar?"
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Brug det godkendte værktøj, og indsæt kun det nødvendige — uden adresse, telefonnummer og helbredsoplysning."
+        }
       ]
     },
     {
@@ -248,18 +376,57 @@
       "multiSelect": true,
       "shuffle": true,
       "options": [
-        { "id": "a", "text": "Hvad AI'en skal lave", "correct": true, "feedback": "Ja — opgaven er det vigtigste." },
-        { "id": "b", "text": "De fakta, AI'en ikke selv kan kende", "correct": true, "feedback": "Ja — ellers gætter den." },
-        { "id": "c", "text": "Hvordan svaret skal se ud (længde, form)", "correct": true, "feedback": "Ja — så slipper du for at rette bagefter." },
-        { "id": "d", "text": "Hvad AI'en ikke må skrive eller love", "correct": true, "feedback": "Ja — begrænsninger forebygger dyre fejl." },
-        { "id": "e", "text": "Kundens CPR-nummer, så svaret bliver personligt", "correct": false, "feedback": "Nej. CPR-numre og andre følsomme oplysninger hører aldrig hjemme i en prompt." },
-        { "id": "f", "text": "Mange høflighedsfraser til AI'en, så den gør sig mere umage", "correct": false, "feedback": "Nej. Høflighed skader ikke, men det er indholdet, der gør forskellen." }
+        {
+          "id": "a",
+          "text": "Hvad AI'en skal lave",
+          "correct": true,
+          "feedback": "Ja — opgaven er det vigtigste."
+        },
+        {
+          "id": "b",
+          "text": "De fakta, AI'en ikke selv kan kende",
+          "correct": true,
+          "feedback": "Ja — ellers gætter den."
+        },
+        {
+          "id": "c",
+          "text": "Hvordan svaret skal se ud (længde, form)",
+          "correct": true,
+          "feedback": "Ja — så slipper du for at rette bagefter."
+        },
+        {
+          "id": "d",
+          "text": "Hvad AI'en ikke må skrive eller love",
+          "correct": true,
+          "feedback": "Ja — begrænsninger forebygger dyre fejl."
+        },
+        {
+          "id": "e",
+          "text": "Kundens CPR-nummer, så svaret bliver personligt",
+          "correct": false,
+          "feedback": "Nej. CPR-numre og andre følsomme oplysninger hører aldrig hjemme i en prompt."
+        },
+        {
+          "id": "f",
+          "text": "Mange høflighedsfraser til AI'en, så den gør sig mere umage",
+          "correct": false,
+          "feedback": "Nej. Høflighed skader ikke, men det er indholdet, der gør forskellen."
+        }
       ],
       "explanation": "Opgave, kontekst, målgruppe/tone, format og begrænsninger. Det er de fem byggesten — og persondata, der ikke er nødvendige, holdes ude.",
       "hints": [
-        { "level": 1, "text": "Tænk tilbage på de fem byggesten." },
-        { "level": 2, "text": "Fire af svarene er rigtige. Ét er direkte i strid med datasikkerhed." },
-        { "level": 3, "text": "Løsning: Opgave, fakta, format og begrænsninger. Ikke CPR-nummer og ikke høflighedsfraser." }
+        {
+          "level": 1,
+          "text": "Tænk tilbage på de fem byggesten."
+        },
+        {
+          "level": 2,
+          "text": "Fire af svarene er rigtige. Ét er direkte i strid med datasikkerhed."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Opgave, fakta, format og begrænsninger. Ikke CPR-nummer og ikke høflighedsfraser."
+        }
       ]
     }
   ]

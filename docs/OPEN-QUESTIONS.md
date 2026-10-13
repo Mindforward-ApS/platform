@@ -74,3 +74,10 @@
 - [ ] **Delvis migration i M1:** spec-skemaet indeholder alle tabeller med relationer på tværs. · Forslag: M1 migrerer kun auth/org/audit/email-tabeller fra et beskåret skema; hele spec-skemaet gemmes som `prisma/spec/schema.full.prisma` og resten migreres i M2.
 - [ ] **CSP med nonce (M5):** Next streamer `<Suspense>`-indhold med inline-scripts; en statisk `script-src`/`default-src` blokerer siderne. M1 har derfor kun `base-uri`, `object-src`, `frame-ancestors`, `form-action` + HSTS m.fl. · Forslag: nonce-CSP i `proxy.ts` sammen med de offentlige sider i M5 (koster dynamisk rendering af alle sider — vurderes mod performance-budgettet). · Blokerer: intet.
 - [x] **E-mail via Inngest-kø (02 § 5 `email.send`):** M1 sender synkront via HTTP-hjælperen (timeout + retry) med Resends idempotency-key, og logger alt i `EmailMessage`. Magic links er tidskritiske, så en kø giver ingen værdi her. Kø tilføjes, når der kommer mails uden en ventende bruger (M8).
+
+## M2 — Datamodel + seed (13. okt 2026)
+- [x] **CVR-tjek af kundenavne (04 § 4):** alle 30 navne slået op via cvrapi.dk; ingen eksakte match. k14 "Havblik Fiskeudstyr" omdøbt til "Saltvind Fiskeudstyr" (findes "HAVBLIK ApS"). Nærmeste øvrige: "Vindrose Rejser A/S" (anden branche), "Sneglehuset Lund ApS" — beholdt.
+- [x] **Fejl i `module.schema.json`:** `quizStep` havde `if/then` på samme niveau som `unevaluatedProperties`, så Ajv afviste gyldige multi-select-quizzer. `if/then` er flyttet ind i `allOf` (samme betydning).
+- [x] **`core-prompt-01` rettet til Nordlys-verdenen:** case = Bølgegrøn Kaffes klage (m02), vedhæftning = f11 "Tone of voice", ugedage i stedet for datoer, kontakt = Kim Lund.
+- [ ] **Golden set for `core-prompt-01`** mangler stadig (≥ 20 mærkede svar) → modulet seedes som `IN_REVIEW` og publiceres først, når golden set findes (M4).
+- [ ] **`prerequisites: core-llm-01`** peger på et modul, der ikke er skrevet endnu (kun anbefaling, blokerer ikke).
