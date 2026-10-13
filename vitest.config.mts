@@ -1,6 +1,8 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
+const testDatabaseUrl = process.env.TEST_DATABASE_URL ?? "postgresql://greb@127.0.0.1:5435/greb_test";
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -21,7 +23,13 @@ export default defineConfig({
           globalSetup: ["tests/integration/setup.ts"],
           // One shared database: run files serially so tests do not race on rows.
           fileParallelism: false,
-          env: { BETTER_AUTH_SECRET: "integration-test-secret-integration-test", APP_URL: "http://localhost:3000" },
+          env: {
+            TEST_DATABASE_URL: testDatabaseUrl,
+            DATABASE_URL: testDatabaseUrl,
+            BETTER_AUTH_SECRET: "integration-test-secret-integration-test",
+            APP_URL: "http://localhost:3000",
+            EMAIL_TRANSPORT: "log",
+          },
         },
       },
     ],
