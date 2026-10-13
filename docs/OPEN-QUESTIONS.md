@@ -81,3 +81,13 @@
 - [x] **`core-prompt-01` rettet til Nordlys-verdenen:** case = Bølgegrøn Kaffes klage (m02), vedhæftning = f11 "Tone of voice", ugedage i stedet for datoer, kontakt = Kim Lund.
 - [ ] **Golden set for `core-prompt-01`** mangler stadig (≥ 20 mærkede svar) → modulet seedes som `IN_REVIEW` og publiceres først, når golden set findes (M4).
 - [ ] **`prerequisites: core-llm-01`** peger på et modul, der ikke er skrevet endnu (kun anbefaling, blokerer ikke).
+
+## M3 — Sandkasse-motor (13. okt 2026)
+- [x] **Overlay-id'er og targets følger 10a:** `asst-…`, `auto-…`, `conv-…`, `draft-…` (bindestreg, ikke `asst_…` som i 04 § 9), targets `nav.new-chat`, `mail.m08`, `file.f13`, `crm.k12`, `cal.c04`, `asst.<id>`, `auto.<id>`, `composer.attach`, `connectors.<id>.connect`.
+- [x] **Predikat-evaluatoren** ligger i `src/server/sandbox/assertions.ts` (opgaven), ikke `src/server/modules/predicate.ts` (05 § 3). M4 kan re-eksportere den derfra.
+- [x] **Seed-verden og skins læses fra `content/` ved runtime** (fs + `outputFileTracingIncludes` i `next.config.ts`) i stedet for JS-imports, så Turbopack ikke skal have en raw-loader til .md/.csv. Zod-valideres én gang pr. proces.
+- [ ] **Prompt caching på Haiku 4.5:** minimumslængden for et cachebart prefix er model-afhængig (op til 4.096 tokens). System-prompt + skin-tillæg + verdensresumé er ca. 2–3k tokens og bliver måske ikke cachet. · Forslag: mål `cache_read_input_tokens` på preview; udvid evt. verdensresuméet (ikke padding) eller accepter det. · Blokerer: intet.
+- [ ] **Fallback-model:** `AI_MODEL_FALLBACK` er tom som standard (= ingen fallback), da en større model strider mod omkostningsreglen. · Forslag: Marco vælger, om fallback skal være en anden lille model. · Blokerer: intet.
+- [ ] **Ikke bygget i M3 (følger med modulafspiller/M4+):** model-værktøjer med side-effekt (`mail_draft/send`, `calendar_create`, `crm_update`, `sheet_write`, `files_create`) med godkendelseskort, agent-flow (kun stub), "Spol frem" for planlagte opgaver, scener (`content/sandbox-world/scenes/`), chat-evals live på preview. Global månedsloft-blokering/80 %-alarm er M10 (forbrug registreres allerede på `BudgetMonth(GLOBAL_AI)`).
+- [ ] **Global Prisma-`omit` af `SandboxEvent.contentText` (02 § 7)** er ikke indført, da `src/server/db.ts` er delt; sandkassens queries vælger felter eksplicit, og kun `loadChatTurns` (ejer-tjekket) læser `contentText`. · Forslag: indfør global omit samlet med `StepResult.promptText` i M4.
+- [ ] **WARN i assistent-/automationsformularer** viser serverens besked i stedet for modal (kun chatten har "Ret teksten"/"Det er fiktivt — fortsæt"-modalen i M3).
