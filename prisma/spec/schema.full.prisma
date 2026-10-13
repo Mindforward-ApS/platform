@@ -1,0 +1,1451 @@
+// Greb — Prisma schema (Prisma 7, PostgreSQL on Neon AWS Frankfurt).
+// Canonical entity names: docs/00-beslutninger.md §9. Field docs: docs/03-datamodel.md.
+//
+// Conventions
+// - Tables are snake_case via @@map; columns keep Prisma camelCase (Better Auth reads Prisma field names).
+// - Every org-owned row carries organizationId and every query filters on it (src/server/auth/scope.ts).
+// - Money: integer øre (prices) or Decimal(12,4) DKK (AI/content cost). Never Float for money.
+// - Prompt free text (StepResult.promptText/aiFeedback, SandboxEvent.contentText) is deleted after 30 days
+//   by the Inngest job `retention.purge-prompt-text`. Admin queries must never select these fields.
+//
+// Prisma 7 notes (verify at project start):
+// - datasource `url` lives in prisma.config.ts (DATABASE_URL_UNPOOLED for CLI/migrations).
+// - Runtime client needs a driver adapter (@prisma/adapter-neon or @prisma/adapter-pg) with DATABASE_URL (pooled).
+//
+// Better Auth tables (User, Session, Account, Verification, TwoFactor, RateLimit, Organization, Membership,
+// Invitation) follow the Better Auth core + organization plugin schema as documented 12 Oct 2026.
+// TODO(M1): run `npx auth@latest generate` against this file and diff — Better Auth's CLI is the source of truth
+// for its own fields. Organization plugin must be configured with schema.member.modelName = "membership"
+// and custom roles named exactly OWNER | ADMIN | LEARNER (creatorRole: "OWNER") so writes match MembershipRole.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ───────────────────────────── Enums ─────────────────────────────
+
+enum OrganizationType {
+  BUSINESS
+  PERSONAL
+}
+
+enum MembershipRole {
+  OWNER
+  ADMIN
+  LEARNER
+}
+
+enum PlatformRole {
+  USER
+  GREB_ADMIN // internal operator (Marco); 2FA required
+}
+
+enum JobRole {
+  SALES
+  HR
+  FINANCE
+  CUSTOMER_SERVICE
+  LEADERSHIP
+  OPERATIONS
+  OTHER
+}
+
+enum TrackKey {
+  CHATGPT
+  COPILOT
+  CLAUDE
+  GEMINI
+}
+
+/// License level a module requires / a learner has. null on Module = no special license required.
+enum LicenseTier {
+  COPILOT_CHAT // free with Microsoft 365
+  COPILOT_M365 // paid Microsoft 365 Copilot license
+  UNKNOWN // "check your license" — learner unsure / source unclear
+}
+
+enum ModuleType {
+  CORE
+  FEATURE
+  NEWS
+  ROLE
+}
+
+enum ModuleVersionStatus {
+  DRAFT
+  IN_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ModuleOrigin {
+  MANUAL
+  AUTO
+}
+
+enum StepType {
+  READ
+  DEMO
+  CLICK_TASK
+  PROMPT_TASK
+  QUIZ
+  SPOT_ERROR
+  JUDGMENT
+}
+
+enum AssignmentSource {
+  PLACEMENT
+  ADMIN
+  MONTHLY
+  SELF
+}
+
+enum AssignmentStatus {
+  ASSIGNED
+  IN_PROGRESS
+  PASSED
+  REMOVED
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum GradingStatus {
+  PENDING
+  GRADED
+  ERROR // grader failed (invalid LLM output, timeout) — never silently 0 points
+}
+
+enum MonthlyAssignmentStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum PlanAudience {
+  B2C
+  B2B
+}
+
+enum BillingInterval {
+  MONTH
+  YEAR
+}
+
+enum TaxBehavior {
+  INCLUSIVE // B2C: price incl. 25 % moms
+  EXCLUSIVE // B2B: price ex. moms
+}
+
+/// Mirrors Stripe subscription.status 1:1 (lowercase in Stripe → uppercase here).
+enum SubscriptionStatus {
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+  PAUSED
+}
+
+enum WithdrawalStatus {
+  RECEIVED // "Bekræft fortrydelse" clicked; receipt must be sent
+  RECEIPT_SENT
+  PROCESSED // subscription canceled + refund decided
+}
+
+enum ParserType {
+  HTML
+  MARKDOWN
+  JSON
+  ATOM
+}
+
+enum FetchMode {
+  DIRECT
+  BROWSER_FALLBACK
+}
+
+enum SourceStatus {
+  ACTIVE
+  DEGRADED
+  MANUAL_ONLY
+}
+
+enum SnapshotOrigin {
+  FETCH
+  BROWSER
+  MANUAL_PASTE
+}
+
+enum ChangeKind {
+  BASELINE
+  ADDED
+  MODIFIED
+}
+
+enum ChangeEventStatus {
+  NEW
+  HELD // anomaly (> 20 new entries) — no classify
+  SKIPPED // classified irrelevant
+  CLASSIFIED
+  DRAFTED
+  IN_REVIEW
+  PUBLISHED
+  FAILED
+}
+
+enum PipelineRunKind {
+  DAILY_SOURCE
+  FRESHNESS_AUDIT
+  RETIRE_DATE
+  MANUAL
+}
+
+enum PipelineRunStatus {
+  RUNNING
+  NO_CHANGE
+  SUCCESS
+  PARTIAL
+  FAILED
+  SKIPPED_KILL_SWITCH
+  SKIPPED_BUDGET
+}
+
+enum ConsentChannel {
+  EMAIL
+  SMS
+}
+
+/// Marketing consent (MFL § 10) and B2C checkout declarations (forbrugeraftaleloven § 18 stk. 2 nr. 13).
+enum ConsentPurpose {
+  MARKETING_EMAIL // tips, Greb news and offers by email (one specific consent text, docs/09 § 2)
+  IMMEDIATE_ACCESS_REQUEST // B2C checkout: "I want access immediately"
+  WITHDRAWAL_LOSS_ACK // B2C checkout: acknowledges loss/limitation of right of withdrawal
+}
+
+enum ConsentAction {
+  GRANTED // checkbox ticked (marketing: not yet valid)
+  CONFIRMED // double opt-in link clicked — only CONFIRMED is valid for MARKETING
+  WITHDRAWN
+}
+
+enum ConsentSource {
+  PLACEMENT_RESULT
+  SIGNUP
+  ACCOUNT_SETTINGS
+  CHECKOUT
+  FOOTER_FORM
+  CONFIRMATION_LINK
+  UNSUBSCRIBE_LINK
+  EMAIL_COMPLAINT
+  SUPPORT
+}
+
+enum SuppressionReason {
+  UNSUBSCRIBED
+  HARD_BOUNCE
+  COMPLAINT
+  MANUAL
+}
+
+enum EmailCategory {
+  SERVICE
+  MARKETING
+}
+
+enum EmailStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  BOUNCED
+  COMPLAINED
+  FAILED
+  SUPPRESSED // blocked by consent gate or suppression list
+}
+
+enum SupportConversationStatus {
+  OPEN
+  RESOLVED
+  ESCALATED
+}
+
+enum SupportMessageRole {
+  USER
+  ASSISTANT
+  TOOL
+}
+
+/// Aligned with docs/08-support.md (escalate_to_human) + docs/07-betaling.md (WITHDRAWAL_UNMATCHED, disputes).
+enum EscalationReason {
+  REFUND_OR_BILLING_DISPUTE
+  WITHDRAWAL_HELP
+  WITHDRAWAL_UNMATCHED
+  LEGAL_OR_PRIVACY
+  DATA_REQUEST
+  BUG
+  ACCOUNT_ACCESS
+  PRICING_OR_DISCOUNT
+  B2B_SALES
+  ANGRY_OR_COMPLAINT
+  SECURITY
+  OTHER
+}
+
+enum EscalationPriority {
+  LOW
+  NORMAL
+  HIGH
+}
+
+enum EscalationStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum ActorType {
+  USER
+  SYSTEM
+  SUPPORT_AGENT
+  CONTENT_ENGINE
+  STRIPE_WEBHOOK
+}
+
+enum SandboxSessionStatus {
+  ACTIVE
+  RESET
+  CLOSED
+}
+
+/// Event types emitted by the sandbox; payload schemas in docs/04-sandkasse.md §7 (Zod: src/server/sandbox/events.ts).
+enum SandboxEventType {
+  SESSION_STARTED
+  SESSION_RESET
+  UI_CLICKED
+  UI_NAVIGATED
+  SETTING_CHANGED
+  CHAT_CONVERSATION_STARTED
+  CHAT_MESSAGE_SENT
+  CHAT_RESPONSE_RECEIVED
+  CHAT_RESPONSE_REGENERATED
+  CHAT_RESPONSE_COPIED
+  CHAT_RESPONSE_RATED
+  CHAT_FILE_ATTACHED
+  PII_WARNING_SHOWN
+  PII_BLOCKED
+  MAIL_OPENED
+  MAIL_DRAFT_SAVED
+  MAIL_SENT
+  CALENDAR_EVENT_OPENED
+  CALENDAR_EVENT_CREATED
+  FILE_OPENED
+  FILE_CREATED
+  CRM_RECORD_OPENED
+  CRM_RECORD_UPDATED
+  CRM_FILTER_APPLIED
+  SHEET_OPENED
+  SHEET_CELL_EDITED
+  ASSISTANT_CREATED
+  ASSISTANT_UPDATED
+  ASSISTANT_KNOWLEDGE_ADDED
+  ASSISTANT_USED
+  CONNECTOR_CONNECT_STARTED
+  CONNECTOR_PERMISSION_GRANTED
+  CONNECTOR_PERMISSION_DENIED
+  CONNECTOR_DISCONNECTED
+  TOOL_CALL_EXECUTED
+  AUTOMATION_CREATED
+  AUTOMATION_UPDATED
+  AUTOMATION_ENABLED
+  AUTOMATION_DISABLED
+  AUTOMATION_TEST_RUN
+  AUTOMATION_RUN_SIMULATED
+  AGENT_TASK_STARTED
+  AGENT_STEP_APPROVED
+  AGENT_STEP_REJECTED
+  AGENT_TASK_COMPLETED
+}
+
+enum AiFeature {
+  SANDBOX_CHAT
+  SANDBOX_AGENT
+  GRADE_PROMPT_TASK
+  SUPPORT_AGENT
+  CONTENT_CLASSIFY
+  CONTENT_DRAFT
+  CONTENT_VERIFY
+}
+
+enum AiCallStatus {
+  OK
+  ERROR
+  TIMEOUT
+  FALLBACK // served by fallback model
+  BLOCKED_USER_CAP
+  BLOCKED_GLOBAL_CAP
+  BLOCKED_PII
+  BLOCKED_RATE_LIMIT
+}
+
+enum BudgetScope {
+  GLOBAL_AI // all AI spend
+  CONTENT_ENGINE // sub-budget, CONTENT_MONTHLY_BUDGET_DKK
+  MARKETING_ADS // hard cap 20.000 kr/md
+}
+
+enum WebhookProvider {
+  STRIPE
+  RESEND
+}
+
+enum WebhookStatus {
+  RECEIVED
+  PROCESSED
+  IGNORED
+  FAILED
+}
+
+// ───────────────────────────── Auth (Better Auth) ─────────────────────────────
+
+model User {
+  id            String   @id
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Better Auth twoFactor plugin (required for GREB_ADMIN)
+  twoFactorEnabled Boolean? @default(false)
+
+  // Greb fields
+  platformRole             PlatformRole @default(USER)
+  locale                   String       @default("da")
+  trainingRemindersEnabled Boolean      @default(true) // SERVICE reminders day 1/14/25 opt-out
+  lastActiveAt             DateTime?
+  deletionRequestedAt      DateTime? // GDPR erasure: hard-deleted by job within 30 days
+
+  sessions             Session[]
+  accounts             Account[]
+  twoFactors           TwoFactor[]
+  memberships          Membership[]
+  invitationsSent      Invitation[]
+  assignments          Assignment[]          @relation("AssignmentLearner")
+  assignmentsCreated   Assignment[]          @relation("AssignmentAssigner")
+  attempts             Attempt[]
+  certificates         Certificate[]
+  monthlyAssignments   MonthlyAssignment[]
+  placementResults     PlacementResult[]
+  consentRecords       ConsentRecord[]
+  emailMessages        EmailMessage[]
+  supportConversations SupportConversation[]
+  escalations          Escalation[]          @relation("EscalationUser")
+  escalationsResolved  Escalation[]          @relation("EscalationResolver")
+  auditLogs            AuditLog[]
+  sandboxSessions      SandboxSession[]
+  sandboxEvents        SandboxEvent[]
+  aiUsageDaily         AiUsageDaily[]
+  aiCalls              AiCall[]
+  withdrawalRequests   WithdrawalRequest[]
+  trackEnrollments     TrackEnrollment[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // organization plugin
+  activeOrganizationId String?
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String // "credential" | "microsoft" | "google" | magic link uses Verification
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([providerId, accountId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+/// Better Auth twoFactor plugin. TODO(M1): verify fields with `npx auth@latest generate`.
+model TwoFactor {
+  id          String @id
+  secret      String
+  backupCodes String
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("two_factor")
+}
+
+/// Rate-limit counters (Better Auth `rateLimit.storage = "database"` + our own limiter in src/server/security/rate-limit.ts).
+model RateLimit {
+  id          String @id @default(cuid())
+  key         String @unique
+  count       Int
+  lastRequest BigInt
+
+  @@map("rate_limit")
+}
+
+// ───────────────────────────── Organizations ─────────────────────────────
+
+model Organization {
+  // Better Auth organization plugin fields
+  id        String   @id
+  name      String
+  slug      String   @unique
+  logo      String?
+  metadata  String?
+  createdAt DateTime @default(now())
+
+  // Greb fields (declared as additionalFields in the plugin config; all have defaults or are optional)
+  updatedAt               DateTime         @updatedAt
+  type                    OrganizationType @default(PERSONAL) // BUSINESS set explicitly on B2B create
+  seatLimit               Int              @default(1) // = Subscription.quantity (webhook), trial: 5
+  stripeCustomerId        String?          @unique
+  billingEmail            String?
+  cvr                     String?
+  vatNumber               String? // EU B2B reverse charge (phase 2)
+  ean                     String? // public customers (phase 2, e-conomic)
+  country                 String           @default("DK")
+  verifiedDomain          String?          @unique // domain join (M7)
+  domainVerificationToken String?
+  domainVerifiedAt        DateTime?
+  joinLinkTokenHash       String?          @unique // invite-by-link (M7); store hash only
+  joinLinkEnabled         Boolean          @default(false)
+  dpaAcceptedAt           DateTime? // databehandleraftale (B2B)
+  dpaVersion              String?
+  deletedAt               DateTime? // soft delete → hard delete job after 30 days (legal records kept)
+
+  members              Membership[]
+  invitations          Invitation[]
+  subscriptions        Subscription[]
+  assignments          Assignment[]
+  attempts             Attempt[]
+  certificates         Certificate[]
+  monthlyAssignments   MonthlyAssignment[]
+  placementResults     PlacementResult[]
+  emailMessages        EmailMessage[]
+  supportConversations SupportConversation[]
+  escalations          Escalation[]
+  auditLogs            AuditLog[]
+  sandboxSessions      SandboxSession[]
+  withdrawalRequests   WithdrawalRequest[]
+  trackEnrollments     TrackEnrollment[]
+
+  @@index([type])
+  @@map("organization")
+}
+
+/// Better Auth `member` table, renamed via schema.member.modelName = "membership".
+model Membership {
+  id             String         @id
+  organizationId String
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           MembershipRole @default(LEARNER)
+  createdAt      DateTime       @default(now())
+
+  // Greb fields
+  updatedAt     DateTime  @updatedAt
+  jobRole       JobRole? // drives ROLE modules
+  deactivatedAt DateTime? // seat freed; data kept for org report until user deletion
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@map("membership")
+}
+
+/// Better Auth invitation (email invites). Link/domain join live on Organization.
+model Invitation {
+  id             String          @id
+  organizationId String
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           MembershipRole? @default(LEARNER)
+  status         String          @default("pending") // Better Auth: pending | accepted | rejected | canceled
+  expiresAt      DateTime
+  createdAt      DateTime        @default(now())
+  inviterId      String
+  inviter        User            @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, status])
+  @@index([email])
+  @@map("invitation")
+}
+
+// ───────────────────────────── Billing ─────────────────────────────
+
+/// DB mirror of src/lib/config/plans.ts (docs/07-betaling.md). Amount shown to users comes from the Stripe Price;
+/// unitAmountOre = expectedUnitAmountOre cross-check. Never hardcode prices in components.
+model Plan {
+  id               String          @id @default(cuid())
+  code             String          @unique // B2C_MONTHLY | B2C_ANNUAL | B2B_MONTHLY | B2B_ANNUAL (FREE has no row)
+  audience         PlanAudience
+  interval         BillingInterval
+  unitAmountOre    Int // 4900 = 49 kr
+  currency         String          @default("dkk")
+  taxBehavior      TaxBehavior
+  minSeats         Int             @default(1) // B2B: 5
+  trialDays        Int             @default(0) // B2B: 14
+  trialMaxSeats    Int? // B2B: 5
+  stripePriceId    String?         @unique
+  active           Boolean         @default(true)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  subscriptions    Subscription[]
+
+  @@map("plan")
+}
+
+/// Mirror of a Stripe subscription. Written ONLY by the Stripe webhook handler.
+/// Max ONE non-terminal subscription per organization: enforced in code + partial unique index added by hand
+/// in the migration (Prisma cannot express it):
+///   CREATE UNIQUE INDEX subscription_one_open_per_org ON subscription ("organizationId")
+///   WHERE status NOT IN ('CANCELED','INCOMPLETE_EXPIRED');
+model Subscription {
+  id                   String             @id @default(cuid())
+  organizationId       String
+  organization         Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  planId               String?
+  plan                 Plan?              @relation(fields: [planId], references: [id])
+  planKey              String // plan key from config (B2C_MONTHLY …), resolved from Stripe price id
+  stripeSubscriptionId String             @unique
+  stripeCustomerId     String
+  stripePriceId        String
+  status               SubscriptionStatus
+  quantity             Int                @default(1)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  trialEnd             DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  canceledAt           DateTime?
+  endedAt              DateTime?
+  lastStripeEventAt    DateTime // ignore out-of-order events older than this
+  lastStripeEventId    String
+
+  // Consumer-law (B2C) — copied from Checkout Session metadata set server-side before redirect
+  immediateAccessConsentAt          DateTime? // "Jeg ønsker adgang straks …" checkbox
+  withdrawalWaiverAcknowledgedAt    DateTime? // erkendelse: fortrydelsesret bortfalder/begrænses
+  withdrawalConsentTextVersion      String? // e.g. "withdrawal-consent.v1"
+  withdrawalDeadlineAt              DateTime? // purchase + 14 days → "Fortryd aftale" button visible until then
+  orderConfirmationEmailMessageId   String? // durable-medium confirmation (EmailMessage.id)
+  cancellationRequestedInAppAt      DateTime? // § 28 a: in-app cancellation
+
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  withdrawalRequests WithdrawalRequest[]
+
+  @@index([organizationId, status])
+  @@map("subscription")
+}
+
+/// "Fortryd aftale" (forbrugeraftaleloven § 20 a). Kept 5 years as evidence.
+model WithdrawalRequest {
+  id                    String           @id @default(cuid())
+  organizationId        String?
+  organization          Organization?    @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  subscriptionId        String?
+  subscription          Subscription?    @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  userId                String?
+  user                  User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name                  String
+  email                 String
+  agreementReference    String // which agreement (plan + order date / subscription id)
+  submittedAt           DateTime // "Bekræft fortrydelse" click = receipt timestamp
+  ip                    String?
+  userAgent             String?
+  status                WithdrawalStatus @default(RECEIVED)
+  receiptEmailMessageId String?          @unique
+  receiptEmailMessage   EmailMessage?    @relation(fields: [receiptEmailMessageId], references: [id], onDelete: SetNull)
+  receiptSentAt         DateTime?
+  refundAmountOre       Int?
+  stripeRefundId        String?
+  processedAt           DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  @@index([organizationId])
+  @@index([status, submittedAt])
+  @@map("withdrawal_request")
+}
+
+// ───────────────────────────── Curriculum ─────────────────────────────
+
+model Track {
+  id              String        @id @default(cuid())
+  key             TrackKey      @unique
+  displayName     String // descriptive only, e.g. "Microsoft 365 Copilot"
+  vendorName      String // "Microsoft" — used in disclaimer copy only
+  skinKey         String // content/sandbox-skins/<skinKey>.json
+  isActive        Boolean       @default(false) // MVP: CHATGPT + COPILOT + CLAUDE
+  sortOrder       Int           @default(0)
+  licenseTiers    LicenseTier[] @default([]) // COPILOT: [COPILOT_CHAT, COPILOT_M365]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  modules          Module[]
+  certificates     Certificate[]
+  monthlyCycles    MonthlyCycle[]
+  placementResults PlacementResult[]
+  contentSources   ContentSource[]
+  sandboxSessions  SandboxSession[]
+  enrollments      TrackEnrollment[]
+
+  @@map("track")
+}
+
+model Module {
+  id                 String       @id @default(cuid())
+  slug               String       @unique // = module JSON "id", e.g. "core-prompt-01"
+  trackId            String
+  track              Track        @relation(fields: [trackId], references: [id])
+  type               ModuleType
+  jobRole            JobRole? // only for type ROLE
+  requiredLicense    LicenseTier? // denormalized from published version (module JSON requiresTier)
+  sortOrder          Int          @default(0) // curriculum order; "first 3 free" is computed from config + order
+  publishedVersionId String?      @unique
+  publishedVersion   ModuleVersion? @relation("PublishedVersion", fields: [publishedVersionId], references: [id])
+  isStale            Boolean      @default(false) // freshness audit flag
+  retiringAt         DateTime? // feature-registry retire date → banner
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  versions           ModuleVersion[]     @relation("ModuleVersions")
+  assignments        Assignment[]
+  refresherFor       MonthlyAssignment[]
+
+  @@index([trackId, type])
+  @@map("module")
+}
+
+/// Immutable once PUBLISHED. Steps live in `content` (JSON validated by content/schema/module.schema.json).
+model ModuleVersion {
+  id               String              @id @default(cuid())
+  moduleId         String
+  module           Module              @relation("ModuleVersions", fields: [moduleId], references: [id], onDelete: Cascade)
+  version          Int
+  status           ModuleVersionStatus @default(DRAFT)
+  origin           ModuleOrigin        @default(MANUAL)
+  schemaVersion    String // module.schema.json version
+  title            String
+  content          Json // full module JSON incl. steps, rubrics, sourceRefs
+  maxPoints        Int
+  estimatedMinutes Int
+  requiredLicense  LicenseTier?
+  featureRefs      String[]            @default([]) // content/features/registry.json ids
+  searchText       String              @db.Text // denormalized text for alias ILIKE (impact analysis)
+  contentHash      String // sha256 of canonical JSON
+
+  // Content-engine provenance (origin = AUTO)
+  changeEventId    String?
+  changeEvent      ChangeEvent?        @relation(fields: [changeEventId], references: [id], onDelete: SetNull)
+  pipelineRunId    String?
+  pipelineRun      PipelineRun?        @relation(fields: [pipelineRunId], references: [id], onDelete: SetNull)
+  draftAttempt     Int                 @default(0)
+  promptVersions   Json? // { draft: "content-draft.v1", verify: "content-verify.v1" }
+  modelIds         Json?
+  verifyReport     Json?
+
+  publishedAt      DateTime?
+  publishedById    String? // User.id or null for auto-publish
+  archivedAt       DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  publishedIn      Module?             @relation("PublishedVersion")
+  attempts         Attempt[]
+  sandboxSessions  SandboxSession[]
+
+  @@unique([moduleId, version])
+  @@unique([changeEventId, draftAttempt])
+  @@index([status, origin])
+  @@index([pipelineRunId])
+  @@map("module_version")
+}
+
+// ───────────────────────────── Learning ─────────────────────────────
+
+/// A learner's chosen track (+ Copilot license level). Drives plan, monthly package and license filtering.
+model TrackEnrollment {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackId        String
+  track          Track        @relation(fields: [trackId], references: [id])
+  licenseTier    LicenseTier? // COPILOT only; null = not asked / not relevant
+  level          Int          @default(0) // from latest PlacementResult
+  active         Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([organizationId, userId, trackId])
+  @@index([trackId, active])
+  @@map("track_enrollment")
+}
+
+model PlacementResult {
+  id                   String        @id @default(cuid())
+  userId               String?
+  user                 User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId       String?
+  organization         Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  anonymousTokenHash   String?       @unique // public lead-magnet test before signup (cookie token, hashed)
+  trackId              String
+  track                Track         @relation(fields: [trackId], references: [id])
+  licenseTier          LicenseTier? // Copilot level asked in the test
+  jobRole              JobRole?
+  testVersion          String
+  answers              Json // option ids only — no free text
+  scorePct             Decimal       @db.Decimal(5, 2)
+  level                Int
+  recommendedModuleIds String[]      @default([])
+  durationSeconds      Int?
+  claimedAt            DateTime? // anonymous result attached to a new account
+  createdAt            DateTime      @default(now())
+
+  @@index([userId, trackId, createdAt])
+  @@index([organizationId])
+  @@map("placement_result")
+}
+
+model Assignment {
+  id             String           @id @default(cuid())
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User             @relation("AssignmentLearner", fields: [userId], references: [id], onDelete: Cascade)
+  moduleId       String
+  module         Module           @relation(fields: [moduleId], references: [id])
+  source         AssignmentSource
+  assignedById   String?
+  assignedBy     User?            @relation("AssignmentAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
+  sortOrder      Int              @default(0)
+  status         AssignmentStatus @default(ASSIGNED)
+  dueAt          DateTime?
+  bestAttemptId  String?
+  bestScorePct   Decimal?         @db.Decimal(5, 2)
+  passedAt       DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  attempts       Attempt[]
+
+  @@unique([organizationId, userId, moduleId])
+  @@index([userId, status])
+  @@index([organizationId, status])
+  @@map("assignment")
+}
+
+model Attempt {
+  id              String        @id @default(cuid())
+  organizationId  String
+  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignmentId    String?
+  assignment      Assignment?   @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+  moduleVersionId String
+  moduleVersion   ModuleVersion @relation(fields: [moduleVersionId], references: [id])
+  status          AttemptStatus @default(IN_PROGRESS)
+  points          Int           @default(0)
+  maxPoints       Int
+  scorePct        Decimal?      @db.Decimal(5, 2)
+  passed          Boolean       @default(false)
+  mustPassFailed  Boolean       @default(false) // data-security JUDGMENT failed → not passed regardless of %
+  startedAt       DateTime      @default(now())
+  completedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  stepResults     StepResult[]
+  sandboxSessions SandboxSession[]
+
+  @@index([userId, moduleVersionId])
+  @@index([organizationId, completedAt])
+  @@index([assignmentId])
+  @@map("attempt")
+}
+
+model StepResult {
+  id                  String        @id @default(cuid())
+  attemptId           String
+  attempt             Attempt       @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  stepId              String // step id inside ModuleVersion.content
+  stepType            StepType
+  points              Int           @default(0)
+  maxPoints           Int
+  passed              Boolean       @default(false)
+  hintLevelUsed       Int           @default(0) // 0–3; 3 = solution shown → 0 points
+  tryCount            Int           @default(1)
+  answer              Json? // structured answers only (option ids, spot-error selection) — never free text
+  gradingStatus       GradingStatus @default(GRADED)
+  checksReport        Json? // deterministic PROMPT_TASK checks (ids + pass/fail)
+  rubricScores        Json? // [{ criterionId, met, points }] — no quotes of the learner's text
+  rubricVersion       String?
+  modelId             String?
+  promptVersion       String?
+  matchedSandboxEventId String? // CLICK_TASK: the SandboxEvent that satisfied the assertion
+  flags               Json? // statistics only, e.g. { fastAnswer: true } (docs/05 § 7) — no sanctions
+
+  // Free text — owner-only, purged after 30 days (retention.purge-prompt-text)
+  promptText          String?       @db.Text
+  aiFeedback          String?       @db.Text
+  promptTextPurgedAt  DateTime?
+
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@unique([attemptId, stepId])
+  @@index([createdAt]) // retention scan
+  @@map("step_result")
+}
+
+model Certificate {
+  id               String       @id @default(cuid())
+  verificationCode String       @unique // public verify URL /certifikat/<code>
+  userId           String
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId   String
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  trackId          String
+  track            Track        @relation(fields: [trackId], references: [id])
+  level            Int
+  levelLabel       String // snapshot of the label at issue time
+  licenseTier      LicenseTier?
+  holderName       String // snapshot
+  moduleVersionIds String[]     @default([]) // evidence snapshot
+  pdfStorageKey    String?
+  contentVersion   String // curriculum/content version shown on the certificate
+  publicVerificationEnabled Boolean @default(true) // learner can turn the public page off
+  issuedAt         DateTime     @default(now())
+  revokedAt        DateTime?
+
+  @@unique([userId, organizationId, trackId, level])
+  @@index([organizationId])
+  @@map("certificate")
+}
+
+/// One per (calendar month, track): the NEWS package shared by all learners on that track.
+model MonthlyCycle {
+  id          String              @id @default(cuid())
+  month       String // "2026-11"
+  trackId     String
+  track       Track               @relation(fields: [trackId], references: [id])
+  moduleIds   String[]            @default([]) // NEWS modules (ordered)
+  composedAt  DateTime            @default(now())
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  assignments MonthlyAssignment[]
+
+  @@unique([month, trackId])
+  @@map("monthly_cycle")
+}
+
+/// Personal monthly package: cycle NEWS modules filtered by license tier + 1 refresher. Target ≤ 15 min.
+model MonthlyAssignment {
+  id                 String                  @id @default(cuid())
+  cycleId            String
+  cycle              MonthlyCycle            @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  organizationId     String
+  organization       Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moduleIds          String[]                @default([])
+  refresherModuleId  String?
+  refresherModule    Module?                 @relation(fields: [refresherModuleId], references: [id], onDelete: SetNull)
+  estimatedMinutes   Int
+  status             MonthlyAssignmentStatus @default(PENDING)
+  completedAt        DateTime?
+  reminderDay1SentAt  DateTime?
+  reminderDay14SentAt DateTime?
+  reminderDay25SentAt DateTime?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+
+  @@unique([cycleId, userId, organizationId])
+  @@index([organizationId, status])
+  @@index([userId])
+  @@map("monthly_assignment")
+}
+
+// ───────────────────────────── Content engine ─────────────────────────────
+
+model ContentSource {
+  id                 String       @id @default(cuid())
+  key                String       @unique // content/sources.json key
+  trackId            String
+  track              Track        @relation(fields: [trackId], references: [id])
+  url                String
+  parserType         ParserType
+  parserVersion      String
+  fetchMode          FetchMode    @default(DIRECT)
+  status             SourceStatus @default(ACTIVE)
+  enabled            Boolean      @default(true) // per-source kill switch
+  autoPublishAllowed Boolean      @default(true)
+  attribution        String? // e.g. "Microsoft Learn, CC BY 4.0"
+  etag               String?
+  lastModified       String?
+  lastFetchedAt      DateTime?
+  lastSuccessAt      DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  snapshots          SourceSnapshot[]
+  changeEvents       ChangeEvent[]
+  pipelineRuns       PipelineRun[]
+
+  @@map("content_source")
+}
+
+model SourceSnapshot {
+  id            String         @id @default(cuid())
+  sourceId      String
+  source        ContentSource  @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  fetchedAt     DateTime
+  httpStatus    Int
+  etag          String?
+  origin        SnapshotOrigin
+  parserVersion String
+  contentHash   String
+  raw           Bytes? // gzip; purged after 90 days
+  rawPurgedAt   DateTime?
+  entries       Json // ParsedEntry[] — kept while a PUBLISHED module cites it
+  createdAt     DateTime       @default(now())
+
+  changeEvents  ChangeEvent[]
+
+  @@unique([sourceId, contentHash])
+  @@index([sourceId, fetchedAt])
+  @@map("source_snapshot")
+}
+
+model ChangeEvent {
+  id                String            @id @default(cuid())
+  sourceId          String
+  source            ContentSource     @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  snapshotId        String
+  snapshot          SourceSnapshot    @relation(fields: [snapshotId], references: [id], onDelete: Cascade)
+  pipelineRunId     String?
+  pipelineRun       PipelineRun?      @relation(fields: [pipelineRunId], references: [id], onDelete: SetNull)
+  entryKey          String
+  entryHash         String
+  entryDate         DateTime?
+  title             String
+  text              String            @db.Text
+  previousText      String?           @db.Text
+  kind              ChangeKind
+  status            ChangeEventStatus @default(NEW)
+  changeType        String? // classify output (FEATURE | DEPRECATION | RETIREMENT | …) — see docs/06
+  relevance         Float?
+  classification    Json?
+  affectedModuleIds String[]          @default([])
+  githubIssueUrl    String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  moduleVersions    ModuleVersion[]
+
+  @@unique([sourceId, entryKey, entryHash])
+  @@index([status])
+  @@map("change_event")
+}
+
+model PipelineRun {
+  id             String            @id @default(cuid())
+  kind           PipelineRunKind
+  sourceId       String?
+  source         ContentSource?    @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  idempotencyKey String            @unique // "{sourceId}:{yyyy-mm-dd}" | "freshness:{isoWeek}"
+  status         PipelineRunStatus @default(RUNNING)
+  steps          Json? // per-step status/timing/errors
+  tokensIn       Int               @default(0)
+  tokensOut      Int               @default(0)
+  costDkk        Decimal           @default(0) @db.Decimal(12, 4)
+  promptVersions Json?
+  modelIds       Json?
+  verifyReport   Json?
+  error          String?           @db.Text
+  startedAt      DateTime          @default(now())
+  finishedAt     DateTime?
+
+  changeEvents   ChangeEvent[]
+  moduleVersions ModuleVersion[]
+
+  @@index([kind, startedAt])
+  @@index([sourceId, startedAt])
+  @@map("pipeline_run")
+}
+
+// ───────────────────────────── Email & consent ─────────────────────────────
+
+/// Consent evidence — APPEND-ONLY. The latest row per (subjectEmail, purpose, channel) is the current state.
+/// Marketing gate: latest row must be action = CONFIRMED (docs/09-email-og-marketing.md § 2.1).
+/// Checkout declarations: two GRANTED rows (IMMEDIATE_ACCESS_REQUEST, WITHDRAWAL_LOSS_ACK) written BEFORE payment.
+/// confirmedAt / withdrawnAt are denormalized onto the GRANTED row for fast lookups; the action rows are the evidence.
+model ConsentRecord {
+  id                    String         @id @default(cuid())
+  userId                String?
+  user                  User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId        String?
+  subjectEmail          String // normalized: lowercase + trim
+  channel               ConsentChannel @default(EMAIL)
+  purpose               ConsentPurpose
+  action                ConsentAction
+  grantId               String? // CONFIRMED/WITHDRAWN rows point to the GRANTED row they act on
+  grant                 ConsentRecord? @relation("ConsentGrant", fields: [grantId], references: [id], onDelete: SetNull)
+  followUps             ConsentRecord[] @relation("ConsentGrant")
+  textVersion           String // e.g. "marketing-consent.v1" (content/legal/)
+  textHash              String // sha256 of the exact text shown
+  source                ConsentSource
+  ip                    String?
+  userAgent             String?
+  checkoutSessionId     String? // checkout declarations only
+  confirmationTokenHash String?        @unique // double opt-in token (hash), on GRANTED row; expires after 7 days
+  confirmationSentAt    DateTime?
+  confirmedAt           DateTime? // double opt-in completed (set on GRANTED row)
+  withdrawnAt           DateTime? // withdrawn (set on GRANTED row)
+  createdAt             DateTime       @default(now()) // = timestamp of this action
+
+  emailMessages         EmailMessage[]
+
+  @@index([subjectEmail, purpose, channel, createdAt])
+  @@index([userId])
+  @@index([checkoutSessionId])
+  @@map("consent_record")
+}
+
+model EmailMessage {
+  id                String        @id @default(cuid())
+  category          EmailCategory
+  template          String // e.g. "service/reminder-day-14"
+  templateVersion   String
+  toEmail           String
+  userId            String?
+  user              User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId    String?
+  organization      Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  consentRecordId   String? // REQUIRED by code when category = MARKETING
+  consentRecord     ConsentRecord? @relation(fields: [consentRecordId], references: [id], onDelete: SetNull)
+  idempotencyKey    String        @unique // e.g. "reminder:{monthlyAssignmentId}:14"
+  resendId          String?       @unique
+  status            EmailStatus   @default(QUEUED)
+  subject           String
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  lastEventAt       DateTime?
+  error             String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  withdrawalReceipt WithdrawalRequest?
+
+  @@index([userId, category])
+  @@index([organizationId])
+  @@index([status, createdAt])
+  @@map("email_message")
+}
+
+/// Suppression list, checked before every send. Stores only a hash of the normalized email.
+/// UNSUBSCRIBED/COMPLAINT block MARKETING; HARD_BOUNCE also blocks SERVICE except security/login mails to a new address.
+model EmailSuppression {
+  id               String            @id @default(cuid())
+  emailHash        String            @unique // sha256(normalized email + EMAIL_HASH_PEPPER)
+  reason           SuppressionReason
+  appliesToService Boolean           @default(false)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@map("email_suppression")
+}
+
+// ───────────────────────────── Support ─────────────────────────────
+
+model SupportConversation {
+  id             String                    @id @default(cuid())
+  userId         String
+  user           User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  status         SupportConversationStatus @default(OPEN)
+  promptVersion  String
+  modelId        String
+  lastMessageAt  DateTime                  @default(now())
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+
+  messages       SupportMessage[]
+  escalations    Escalation[]
+
+  @@index([userId, lastMessageAt])
+  @@index([organizationId])
+  @@map("support_conversation")
+}
+
+model SupportMessage {
+  id             String              @id @default(cuid())
+  conversationId String
+  conversation   SupportConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           SupportMessageRole
+  content        String              @db.Text
+  toolName       String?
+  toolInput      Json?
+  toolResult     Json?
+  createdAt      DateTime            @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("support_message")
+}
+
+model Escalation {
+  id               String               @id @default(cuid())
+  conversationId   String?
+  conversation     SupportConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  userId           String?
+  user             User?                @relation("EscalationUser", fields: [userId], references: [id], onDelete: SetNull)
+  organizationId   String?
+  organization     Organization?        @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  reason           EscalationReason
+  priority         EscalationPriority   @default(NORMAL)
+  summary          String               @db.Text
+  status           EscalationStatus     @default(OPEN)
+  resolvedById     String?
+  resolvedBy       User?                @relation("EscalationResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  resolvedAt       DateTime?
+  digestIncludedAt DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  @@index([status, priority, createdAt])
+  @@map("escalation")
+}
+
+// ───────────────────────────── Audit ─────────────────────────────
+
+model AuditLog {
+  id             String        @id @default(cuid())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  actorType      ActorType
+  actorUserId    String?
+  actorUser      User?         @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  action         String // typed union in src/server/audit/actions.ts, e.g. "MEMBER_ROLE_CHANGE", "MODULE_PUBLISH"
+  targetType     String?
+  targetId       String?
+  metadata       Json? // never prompt text, never secrets
+  ip             String?
+  userAgent      String?
+  createdAt      DateTime      @default(now())
+
+  @@index([organizationId, createdAt])
+  @@index([action, createdAt])
+  @@index([targetType, targetId])
+  @@map("audit_log")
+}
+
+// ───────────────────────────── Sandbox ─────────────────────────────
+
+model SandboxSession {
+  id              String               @id @default(cuid())
+  userId          String
+  user            User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId  String
+  organization    Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  trackId         String
+  track           Track                @relation(fields: [trackId], references: [id])
+  skinKey         String
+  worldVersion    String // content/sandbox-world version used for this session
+  moduleVersionId String?
+  moduleVersion   ModuleVersion?       @relation(fields: [moduleVersionId], references: [id], onDelete: SetNull)
+  sceneId         String? // content/sandbox-world/scenes/<sceneId>.json applied at start (step `scene`)
+  attemptId       String?
+  attempt         Attempt?             @relation(fields: [attemptId], references: [id], onDelete: SetNull)
+  state           Json // overlay on seed world: connectors, automations, assistants, drafts, edits
+  nextSeq         Int                  @default(1)
+  status          SandboxSessionStatus @default(ACTIVE)
+  lastActivityAt  DateTime             @default(now())
+  expiresAt       DateTime // idle sessions closed after 7 days
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  events          SandboxEvent[]
+
+  @@index([userId, status])
+  @@index([attemptId])
+  @@index([organizationId])
+  @@map("sandbox_session")
+}
+
+model SandboxEvent {
+  id               String           @id @default(cuid())
+  sessionId        String
+  session          SandboxSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId   String
+  seq              Int // monotonically increasing per session (server-assigned)
+  type             SandboxEventType
+  actor            String           @default("USER") // USER | MODEL | AUTOMATION | SYSTEM
+  target           String? // stable UI/object target, e.g. "nav.newChat", "mail:m08" (Predicate `target`, docs/05 § 3)
+  payload          Json // Zod-validated per type; NO free text here
+  contentText      String?          @db.Text // free text (chat prompt/reply, drafts) — purged after 30 days
+  contentPurgedAt  DateTime?
+  stepId           String? // module step active when emitted
+  createdAt        DateTime         @default(now())
+
+  @@unique([sessionId, seq])
+  @@index([sessionId, type])
+  @@index([organizationId, createdAt])
+  @@index([createdAt]) // retention scan
+  @@map("sandbox_event")
+}
+
+// ───────────────────────────── AI usage & budgets ─────────────────────────────
+
+/// Per-user daily ledger used to enforce AI_USER_DAILY_TOKEN_CAP (Europe/Copenhagen day).
+model AiUsageDaily {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day              DateTime @db.Date
+  inputTokens      Int      @default(0)
+  outputTokens     Int      @default(0)
+  cacheReadTokens  Int      @default(0)
+  cacheWriteTokens Int      @default(0)
+  callCount        Int      @default(0)
+  costDkk          Decimal  @default(0) @db.Decimal(12, 4)
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, day])
+  @@index([day])
+  @@map("ai_usage_daily")
+}
+
+/// One row per LLM call (no prompt/response text). Kept 13 months.
+model AiCall {
+  id               String       @id @default(cuid())
+  userId           String?
+  user             User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId   String?
+  feature          AiFeature
+  model            String
+  promptKey        String // e.g. "sandbox-chat"
+  promptVersion    String // e.g. "v3"
+  inputTokens      Int          @default(0)
+  outputTokens     Int          @default(0)
+  cacheReadTokens  Int          @default(0)
+  cacheWriteTokens Int          @default(0)
+  costDkk          Decimal      @default(0) @db.Decimal(12, 4)
+  latencyMs        Int?
+  status           AiCallStatus
+  errorCode        String?
+  providerRequestId String?
+  createdAt        DateTime     @default(now())
+
+  @@index([createdAt])
+  @@index([feature, createdAt])
+  @@index([organizationId, createdAt])
+  @@map("ai_call")
+}
+
+/// Monthly budget state per scope. alert80SentAt guarantees exactly one 80 % alert per month.
+model BudgetMonth {
+  id            String      @id @default(cuid())
+  scope         BudgetScope
+  month         String // "2026-11" (Europe/Copenhagen)
+  limitDkk      Decimal     @db.Decimal(12, 2)
+  spentDkk      Decimal     @default(0) @db.Decimal(12, 4)
+  alert80SentAt DateTime?
+  alert100SentAt DateTime?
+  degradedAt    DateTime? // graceful degradation switched on
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([scope, month])
+  @@map("budget_month")
+}
+
+// ───────────────────────────── Platform ─────────────────────────────
+
+/// Processed webhook ids (Stripe, Resend) for idempotency. Payload purged after 30 days.
+model WebhookEvent {
+  id          String          @id @default(cuid())
+  provider    WebhookProvider
+  externalId  String // Stripe event.id / Resend svix-id
+  type        String
+  status      WebhookStatus   @default(RECEIVED)
+  payload     Json?
+  error       String?
+  receivedAt  DateTime        @default(now())
+  processedAt DateTime?
+
+  @@unique([provider, externalId])
+  @@index([receivedAt])
+  @@map("webhook_event")
+}
+
+/// Kill switches and runtime flags (cached ≤ 60 s). Env vars are fallback only.
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique // CONTENT_PIPELINE_ENABLED, CONTENT_AUTOPUBLISH_ENABLED, AI_DEGRADED_MODE, …
+  enabled     Boolean  @default(false)
+  value       Json?
+  updatedById String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  @@map("feature_flag")
+}
