@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 
 export const COOKIE_CHOICE = "greb_cookie_choice";
 const OPEN_EVENT = "greb:cookie-settings";
+/** M10: fired on every choice so analytics (PostHog) can switch persistence without a reload. */
+export const COOKIE_CHOICE_EVENT = "greb:cookie-choice";
 const MAX_AGE = 180 * 24 * 60 * 60;
 
 export type CookieChoice = "necessary" | "statistics";
@@ -45,6 +47,7 @@ export function CookieBanner({ t }: { t: Strings }) {
   function choose(choice: CookieChoice) {
     document.cookie = `${COOKIE_CHOICE}=v1.${choice}; Max-Age=${MAX_AGE}; Path=/; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`;
     setOpen(false);
+    window.dispatchEvent(new CustomEvent<CookieChoice>(COOKIE_CHOICE_EVENT, { detail: choice }));
   }
 
   if (!open) return null;

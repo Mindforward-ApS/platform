@@ -85,6 +85,21 @@ describe("ai.budget-watch (docs/02 § 6)", () => {
   });
 });
 
+describe("owner cost overview data (/admin/forbrug)", () => {
+  it("aggregates per feature/day/user without names or e-mails", async () => {
+    const { usageReport, pseudonym } = await import("@/server/ai/usage-report");
+    const user = await makeUser();
+    const now = new Date();
+    await db.aiCall.create({ data: { userId: user.id, feature: "SUPPORT_AGENT", model: "m", promptKey: "support-agent", promptVersion: "v1", status: "OK", inputTokens: 100, outputTokens: 20, costDkk: 0.5, createdAt: now } });
+    await db.aiUsageDaily.upsert({ where: { userId_day: { userId: user.id, day: usageDay(now) } }, create: { userId: user.id, day: usageDay(now), inputTokens: 100, outputTokens: 20, costDkk: 0.5, callCount: 1 }, update: {} });
+    const r = await usageReport(db, { limitDkk: 5000, alertPct: 0.8, now });
+    expect(r.byFeature.find((f) => f.feature === "SUPPORT_AGENT")?.calls).toBeGreaterThanOrEqual(1);
+    expect(r.byDay.length).toBeGreaterThanOrEqual(1);
+    expect(r.topUsersToday.map((u) => u.user)).toContain(pseudonym(user.id));
+    expect(JSON.stringify(r)).not.toContain(user.email);
+  });
+});
+
 describe("gateway behaviour at the global cap", () => {
   async function owner() {
     const user = await makeUser();
