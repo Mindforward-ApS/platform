@@ -4,6 +4,7 @@ import { Ajv2020 } from "ajv/dist/2020.js";
 import addFormatsModule from "ajv-formats";
 import { moduleSchema, type ModuleContent, type Predicate } from "../src/lib/schemas/module";
 import { worldSchema, type World } from "../src/lib/schemas/world";
+import { validatePlacementContent } from "./placement-validate";
 
 // `pnpm content:validate` (CI): every module passes JSON Schema AND Zod, references only existing Nordlys
 // files and known sandbox event types, and the seed world is valid. Exit code 1 on any error.
@@ -93,12 +94,14 @@ function main() {
     if (data.id) ids.add(data.id);
     errors.push(...validateModule(data, world, f));
   }
+  const placement = validatePlacementContent();
+  errors.push(...placement.errors);
   if (errors.length > 0) {
     for (const e of errors) console.error(e);
     console.error(`\ncontent:validate: ${errors.length} fejl`);
     process.exit(1);
   }
-  console.log(`content:validate: OK (${files.length} moduler, Nordlys-verden v${world?.version})`);
+  console.log(`content:validate: OK (${files.length} moduler, ${placement.tests} niveautests, Nordlys-verden v${world?.version})`);
 }
 
 if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) main();
