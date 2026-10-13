@@ -91,6 +91,8 @@ export const serverEnvSchema = z
     EMAIL_HASH_PEPPER: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16, "skal være mindst 16 tegn").optional()),
     // Marketing kill switch fallback (FeatureFlag wins once it exists). M5 sends no marketing mail.
     MARKETING_EMAIL_ENABLED: boolFlag,
+    // M8 — Resend webhooks (Svix signature). Optional at boot; the webhook route answers 503 without it.
+    RESEND_WEBHOOK_SECRET: z.preprocess((v) => (v === "" || v === "whsec_" ? undefined : v), z.string().startsWith("whsec_", "skal starte med whsec_").optional()),
   })
   .superRefine((env, ctx) => {
     const pairs = [

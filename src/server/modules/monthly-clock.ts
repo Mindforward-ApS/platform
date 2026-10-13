@@ -29,6 +29,18 @@ export function cphParts(at: Date): CphParts {
   return { year: Number(get("year")), month: Number(get("month")), day: Number(get("day")), hour: Number(get("hour")) % 24, weekday: WEEKDAYS.indexOf(get("weekday")) };
 }
 
+/** UTC instant of a Copenhagen wall-clock time (day may overflow, e.g. 32 → next month). */
+export function copenhagenInstant(year: number, month: number, day: number, hour: number): Date {
+  const wall = Date.UTC(year, month - 1, day, hour);
+  let instant = wall;
+  for (let i = 0; i < 2; i++) {
+    const p = cphParts(new Date(instant));
+    const shown = Date.UTC(p.year, p.month - 1, p.day, p.hour, new Date(instant).getUTCMinutes());
+    instant = wall - (shown - instant);
+  }
+  return new Date(instant);
+}
+
 /** "2026-11" — MonthlyCycle.month for the Copenhagen calendar month containing `at`. */
 export function monthKey(at: Date): string {
   const { year, month } = cphParts(at);
