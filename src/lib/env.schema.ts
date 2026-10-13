@@ -91,6 +91,11 @@ export const serverEnvSchema = z
     EMAIL_HASH_PEPPER: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16, "skal være mindst 16 tegn").optional()),
     // Marketing kill switch fallback (FeatureFlag wins once it exists). M5 sends no marketing mail.
     MARKETING_EMAIL_ENABLED: boolFlag,
+    // M10 — owner digest, budget alert threshold, server-side PostHog (EU). All optional at boot.
+    OWNER_DIGEST_EMAIL: optionalEmail,
+    AI_BUDGET_ALERT_PCT: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().gt(0).lt(1).default(0.8)),
+    POSTHOG_API_KEY: z.preprocess((v) => (v === "" || v === "phc_" ? undefined : v), z.string().optional()),
+    POSTHOG_HOST: z.preprocess((v) => (v === "" ? undefined : v), z.url().default("https://eu.i.posthog.com")),
   })
   .superRefine((env, ctx) => {
     const pairs = [

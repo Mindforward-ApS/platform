@@ -17,6 +17,11 @@ export const AUDIT_ACTIONS = [
   "CONTRACT_WITHDRAWAL_REQUESTED",
   "CONTRACT_WITHDRAWAL_PROCESSED",
   "REFUND_RECORDED",
+  // M10 — support agent + AI budget watch
+  "SUPPORT_MODULE_RESET",
+  "SUPPORT_INVOICE_LINK_SENT",
+  "SUPPORT_ESCALATED",
+  "AI_BUDGET_MODE_CHANGED",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
