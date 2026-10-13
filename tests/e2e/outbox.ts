@@ -11,7 +11,7 @@ interface OutboxMail {
 }
 
 /** Waits for the newest mail of a template to an address (written by the file transport) and returns its first link. */
-export async function waitForLink(to: string, template: "magic-link" | "invitation", timeoutMs = 15_000): Promise<string> {
+export async function waitForLink(to: string, template: "magic-link" | "invitation" | "marketing-confirm", timeoutMs = 15_000): Promise<string> {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     const files = (await readdir(OUTBOX_DIR).catch(() => [])).sort().reverse();

@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { detectPii } from "@/lib/pii";
 import { loadWorld, validateModule } from "../../scripts/content-validate";
 
 const WORLD = "content/sandbox-world";
@@ -14,14 +15,6 @@ function allFiles(dir: string, out: string[] = []): string[] {
   return out;
 }
 
-// M2: the seed world must contain no real-looking personal data (regex check; the full PII filter arrives in M3).
-const PII_PATTERNS: Record<string, RegExp> = {
-  cpr: /\b(0[1-9]|[12]\d|3[01])(0[1-9]|1[0-2])\d{2}[-\s]?\d{4}\b/,
-  iban: /\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){3,7}\b/,
-  card: /\b(?:\d[ -]?){13,19}\b/,
-  dkAccount: /\b(reg\.?\s?nr|kontonr|konto)\D{0,10}\d{4}[\s-]?\d{6,10}\b/i,
-};
-
 describe("Nordlys seed world", () => {
   it("validates (Zod) with all referenced files present", () => {
     const { world, errors } = loadWorld();
@@ -32,13 +25,9 @@ describe("Nordlys seed world", () => {
 
   const files = allFiles(WORLD);
   for (const file of files) {
-    it(`${file}: no real personal data`, () => {
-      const text = readFileSync(file, "utf8");
-      for (const [kind, re] of Object.entries(PII_PATTERNS)) expect(text, `${kind} in ${file}`).not.toMatch(re);
-      const emails = text.match(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g) ?? [];
-      expect(emails.filter((e) => !e.replace(/\.$/, "").endsWith(".example"))).toEqual([]);
-      const phones = text.match(/\+45[\s\d]{8,12}/g) ?? [];
-      expect(phones.filter((p) => !/^\+45 0000 0\d{3}/.test(p.trim()))).toEqual([]);
+    it(`${file}: PII filter gives 0 BLOCK and 0 WARN findings`, () => {
+      const result = detectPii(readFileSync(file, "utf8"));
+      expect(result.findings, file).toEqual([]);
     });
   }
 

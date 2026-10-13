@@ -22,6 +22,8 @@ export async function inviteMember(formData: FormData) {
     });
   } catch (err) {
     logger.warn("invitation.create_failed", { err });
+    // M6: seat cap (src/server/billing/seats.ts) — show the Danish explanation.
+    if (err instanceof APIError && (err.body?.code === "SEAT_LIMIT_REACHED" || err.body?.code === "READ_ONLY")) redirect(`/virksomhed/medarbejdere?fejl=${err.body.code === "READ_ONLY" ? "laest" : "pladser"}`);
     redirect(`/virksomhed/medarbejdere?fejl=${err instanceof APIError && err.status === "BAD_REQUEST" ? "medlem" : "generel"}`);
   }
   redirect("/virksomhed/medarbejdere?ok=invitation");

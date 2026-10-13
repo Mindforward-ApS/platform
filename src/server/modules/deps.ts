@@ -1,56 +1,54 @@
 import "server-only";
+import { z } from "zod";
+import { blockingKinds, detectPii } from "@/lib/pii";
 import { serverEnv } from "@/lib/env";
+import { gateway } from "@/server/ai/gateway";
+import { db } from "@/server/db";
+import { evaluatePredicate } from "@/server/sandbox/assertions";
 import type { PiiDetector } from "@/server/scoring/deterministic-checks";
 import { mockGradeWithModel, type GradeWithModel } from "@/server/scoring/prompt-task-grader";
 import type { AttemptDeps, PlayableOptions } from "./attempts";
-import { mockClickTaskEvaluator, unavailableClickTaskEvaluator, type EvaluateClickTask } from "./click-task";
+import { createSandboxClickTaskEvaluator, mockClickTaskEvaluator, type EvaluateClickTask, type EvaluatePredicate } from "./click-task";
 
-// Composition root for the module player. INTEGRATION POINTS (wired when M3 lands):
-//   gradeWithModel     → src/server/ai/gateway.ts (feature GRADE_PROMPT_TASK, forced tool, temperature 0)
-//   detectPii          → src/lib/pii (the sandbox's PII filter, docs/04)
-//   evaluateClickTask  → createSandboxClickTaskEvaluator(db(), evaluatePredicate) from ./click-task with
-//                        M3's src/server/modules/predicate.ts
-// Until then: GRADER_MOCK=1 / CLICK_TASK_MOCK=1 give deterministic passing results (dev/e2e only), otherwise the
-// grader reports a controlled ERROR (never 0 points) and CLICK_TASK shows "sandbox not available yet".
+// Composition root for the module player: real grader (AI gateway, GRADE_PROMPT_TASK, forced tool, temperature 0),
+// the shared PII filter (src/lib/pii) and the sandbox predicate evaluator. GRADER_MOCK / CLICK_TASK_MOCK give
+// deterministic results for dev/e2e only (forbidden in production by env validation).
 
-/** Placeholder until the AI gateway exists: throws, so grading ends as GradingStatus ERROR — never 0 points. */
-const notWiredGradeWithModel: GradeWithModel = async () => {
-  throw new Error("AI gateway not wired (src/server/ai/gateway.ts, M3)");
-};
+/** PROMPT_TASK rejects BLOCK kinds (CPR, card, account, IBAN). WARN kinds (phone, external e-mail) do not reject. */
+export const promptPiiDetector: PiiDetector = (text) => ({ found: blockingKinds(detectPii(text)).length > 0 });
 
-/**
- * Minimal fallback until src/lib/pii exists: Danish CPR (ddmmyy-xxxx), 13–19 digit card numbers and
- * Danish account numbers (4-digit reg. + 6–10 digit account). Deliberately conservative.
- */
-export const fallbackPiiDetector: PiiDetector = (text) => {
-  const compact = text.replace(/[  ]/g, " ");
-  const cpr = /\b(0[1-9]|[12]\d|3[01])(0[1-9]|1[0-2])\d{2}[- ]?\d{4}\b/.test(compact);
-  const card = /\b(?:\d[ -]?){13,19}\b/.test(compact);
-  const account = /\b\d{4}[ -]\d{6,10}\b/.test(compact);
-  return { found: cpr || card || account };
-};
-
-export interface PlayerDepsOverrides {
-  gradeWithModel?: GradeWithModel;
-  detectPii?: PiiDetector;
-  evaluateClickTask?: EvaluateClickTask;
+function gatewayGrader(actor: { userId: string; organizationId: string }): GradeWithModel {
+  return async (req) => {
+    const g = await gateway();
+    const result = await g.callStructured({
+      feature: "GRADE_PROMPT_TASK",
+      promptKey: "grade-prompt-task",
+      userId: actor.userId,
+      organizationId: actor.organizationId,
+      userText: req.user,
+      // The submission already passed the PII gate in the grader; the gateway re-checks BLOCK kinds itself.
+      piiOverride: true,
+      messages: [{ role: "user", content: req.user }],
+      // The grader validates the exact rubric shape; here we only require an object.
+      schema: z.record(z.string(), z.unknown()),
+      toolName: req.tool.name,
+      toolInputSchema: req.tool.inputSchema as unknown as Record<string, unknown>,
+    });
+    return { modelId: result.model, output: result.data };
+  };
 }
 
-let overrides: PlayerDepsOverrides = {};
+const sandboxEvaluator: EvaluateClickTask = (attemptId, step) =>
+  createSandboxClickTaskEvaluator(db(), evaluatePredicate as unknown as EvaluatePredicate)(attemptId, step);
 
-/** The integrator calls this once at boot (e.g. from src/server/boot.ts) to inject the real implementations. */
-export function configurePlayerDeps(next: PlayerDepsOverrides): void {
-  overrides = { ...overrides, ...next };
-}
-
-export function playerDeps(): AttemptDeps {
+export function playerDeps(actor: { userId: string; organizationId: string }): AttemptDeps {
   const env = serverEnv();
   return {
     grader: {
-      detectPii: overrides.detectPii ?? fallbackPiiDetector,
-      gradeWithModel: env.GRADER_MOCK ? mockGradeWithModel : (overrides.gradeWithModel ?? notWiredGradeWithModel),
+      detectPii: promptPiiDetector,
+      gradeWithModel: env.GRADER_MOCK ? mockGradeWithModel : gatewayGrader(actor),
     },
-    evaluateClickTask: env.CLICK_TASK_MOCK ? mockClickTaskEvaluator : (overrides.evaluateClickTask ?? unavailableClickTaskEvaluator),
+    evaluateClickTask: env.CLICK_TASK_MOCK ? mockClickTaskEvaluator : sandboxEvaluator,
   };
 }
 

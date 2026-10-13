@@ -90,3 +90,45 @@
 - [ ] **CLICK_TASK-events pr. trin:** evaluatoren læser `SandboxEvent` med `stepId = trinnets id` for sessioner bundet til forsøget (i stedet for "seq > trinnets start-seq", som ikke er gemt). Sandkassen (M3) skal sætte `stepId` på events.
 - [ ] **Grader-prompt-placering:** `grade-prompt-task.v1.ts` ligger i `src/server/scoring/` (ikke `src/server/ai/prompts/`), fordi M3 bygger `src/server/ai/` parallelt. Kan flyttes uden versionsbump.
 - [ ] **Svartid-flag (05 § 7):** `StepResult.flags.fastAnswer` sættes ikke endnu (kræver visningstidspunkt pr. trin).
+
+## M6 — Stripe-betaling + forbrugerflows (13. okt 2026)
+### Til advokat [JURA]
+- [ ] **Digitalt indhold vs. tjenesteydelse** (uændret, blokerer endelig ordlyd): checkbokse-teksterne står som udkast i `content/legal/checkout-consent.v1.json`. "Fortryd aftale" og fuld refusion er bygget uanset svaret.
+- [ ] **Refusionsregel ved fortrydelse:** MVP refunderer det fulde beløb for den betalte måned straks via Stripe (ingen forholdsmæssig betaling for leveret ydelse). Gentagen fortrydelse fra samme email → abonnement stoppes, refusion afventer manuel vurdering (eskalation). Er det i orden, og hvad er lovens refusionsfrist?
+- [ ] **Hostet Stripe Checkout efter "Køb":** vores side har knappen "Køb" + fed pris inkl. moms + de to checkbokse; derefter sendes kunden til Stripes hostede betalingsside, hvis egen knap Stripe styrer ("Abonner"/"Betal"). Er § 12-kravet opfyldt, når bindingen sker ved "Køb" hos os? Ellers: skift til `ui_mode: "elements"` (Payment Element på vores side, vores "Køb" kalder `checkout.confirm()`) — kræver publishable key og @stripe/stripe-js.
+- [ ] **Fristberegning:** "Fortryd aftale" vises fra købet til udgangen af dag 14 efter købsdagen (Europe/Copenhagen), fx køb 1. okt → synlig til og med 15. okt 23:59. Korrekt?
+- [ ] **Ordrebekræftelse som varigt medium:** mailen indeholder sælger, plan, pris inkl. moms, frekvens, automatisk fornyelse, startdato, samtykketekster med tidspunkt, fortrydelsesfrist + link og opsigelsesvejledning, men **ingen PDF med handelsbetingelser** (betingelserne findes ikke endnu, M5) — kun link til `/vilkaar/forbruger`. Standardfortrydelsesformular mangler også i mailen.
+- [ ] **Sælgeroplysninger:** `COMPANY_CVR` og `COMPANY_ADDRESS` skal udfyldes i Vercel før launch (vises i ordrebekræftelse og kvittering).
+
+### Tekniske / til Marco
+- [ ] **Ordrebekræftelse sendes på `checkout.session.completed`** (ikke `invoice.paid` som 07 § 8.3), fordi samtykkerne er bundet til checkout-sessionens id. Idempotensnøgle `stripe:{sessionId}:order-confirmation`.
+- [ ] **Seat-ned midt i perioden** sker straks med `proration_behavior: "none"` (ingen kreditering), ikke planlagt til periodens udløb (07 § 4.3). Altid ≥ 5 og ≥ pladser i brug.
+- [ ] **Seat-loft tæller ejeren med** (00 § 10a): i prøveperioden er ejer + 4 invitationer = 5 pladser; den næste (6. plads) afvises. 07 § 15 siger "6. invitation".
+- [ ] **Udløbet B2B-prøve (paused) → køb:** den pausede prøve opsiges og der oprettes et nyt abonnement via Checkout (i stedet for `subscriptions.resume`). Løbende prøve → kort via Checkout `mode: "setup"` og samme abonnement konverteres (`trial_end: "now"`).
+- [ ] **Customer Portal-konfiguration** (`scripts/stripe-setup.ts`, 07 § 4.4) og oprettelse af Products/Prices/Tax Rates er ikke lavet — der var ingen Stripe-nøgler. Kræves før rigtig betaling. Stripe-nøgler valideres først ved brug (ikke ved boot), så andre milestones' previews starter uden dem.
+- [ ] **Dunning-mails, trial-mails (dag 11/13), `charge.dispute.created`-alarm og `customer.updated`-sync** er ikke bygget i M6 (kun status-sync + banner). Foreslås til M8 (mails) / M10 (alarmer).
+- [ ] **Race på seat-loft:** to samtidige invitationer kan i sjældne tilfælde begge passere (hook kører uden lås). Acceptabelt i MVP.
+- [ ] **Eskalationer:** `Escalation`-række + SERVICE-mail til `SUPPORT_INBOX` (allowlist gælder uden for produktion).
+
+## M3 — Sandkasse-motor (13. okt 2026)
+- [x] **Overlay-id'er og targets følger 10a:** `asst-…`, `auto-…`, `conv-…`, `draft-…` (bindestreg, ikke `asst_…` som i 04 § 9), targets `nav.new-chat`, `mail.m08`, `file.f13`, `crm.k12`, `cal.c04`, `asst.<id>`, `auto.<id>`, `composer.attach`, `connectors.<id>.connect`.
+- [x] **Predikat-evaluatoren** ligger i `src/server/sandbox/assertions.ts` (opgaven), ikke `src/server/modules/predicate.ts` (05 § 3). M4 kan re-eksportere den derfra.
+- [x] **Seed-verden og skins læses fra `content/` ved runtime** (fs + `outputFileTracingIncludes` i `next.config.ts`) i stedet for JS-imports, så Turbopack ikke skal have en raw-loader til .md/.csv. Zod-valideres én gang pr. proces.
+- [ ] **Prompt caching på Haiku 4.5:** minimumslængden for et cachebart prefix er model-afhængig (op til 4.096 tokens). System-prompt + skin-tillæg + verdensresumé er ca. 2–3k tokens og bliver måske ikke cachet. · Forslag: mål `cache_read_input_tokens` på preview; udvid evt. verdensresuméet (ikke padding) eller accepter det. · Blokerer: intet.
+- [ ] **Fallback-model:** `AI_MODEL_FALLBACK` er tom som standard (= ingen fallback), da en større model strider mod omkostningsreglen. · Forslag: Marco vælger, om fallback skal være en anden lille model. · Blokerer: intet.
+- [ ] **Ikke bygget i M3 (følger med modulafspiller/M4+):** model-værktøjer med side-effekt (`mail_draft/send`, `calendar_create`, `crm_update`, `sheet_write`, `files_create`) med godkendelseskort, agent-flow (kun stub), "Spol frem" for planlagte opgaver, scener (`content/sandbox-world/scenes/`), chat-evals live på preview. Global månedsloft-blokering/80 %-alarm er M10 (forbrug registreres allerede på `BudgetMonth(GLOBAL_AI)`).
+- [ ] **Global Prisma-`omit` af `SandboxEvent.contentText` (02 § 7)** er ikke indført, da `src/server/db.ts` er delt; sandkassens queries vælger felter eksplicit, og kun `loadChatTurns` (ejer-tjekket) læser `contentText`. · Forslag: indfør global omit samlet med `StepResult.promptText` i M4.
+- [ ] **WARN i assistent-/automationsformularer** viser serverens besked i stedet for modal (kun chatten har "Ret teksten"/"Det er fiktivt — fortsæt"-modalen i M3).
+
+## M5 — Niveautest + læringsplan + leadmagnet (13. okt 2026)
+- [ ] **[JURA] Samtykketekst v1** (`content/legal/marketing-consent.v1.md`): 09 § 2-teksten er valgt som kanonisk (01 § 4.1 har en anden ordlyd); "Greb" → "Mindforward" jf. 10b. Afklar: skal selskabsnavn (Esther Gruppen ApS) stå i selve teksten, og er "tilbud på abonnementer" specifik nok? Ny ordlyd = ny versionsfil.
+- [ ] **[JURA] Juridiske sider** (`/privatliv`, `/cookies`, `/handelsbetingelser`, `/tilgaengelighed`) er pladsholdere mærket "Udkast — afventer advokatgennemgang"; teksten ligger i `src/lib/i18n/da-placement.ts`, ikke i `content/legal/` (10 § 8). Flyttes dertil med versionering, når advokaten har godkendt. Task-ruten `/handelsbetingelser` afviger fra 10 § 8 (`/vilkaar/forbruger` + `/vilkaar/virksomhed`) — én side med to afsnit indtil videre.
+- [ ] **[JURA] Cookiebanner:** kun nødvendige cookies i dag (session, cookievalg, niveautest-nøgle). Kræver det overhovedet et banner, når intet ikke-nødvendigt bruges? Banneret er bygget (10a) og gemmer valget 180 dage — bekræft varighed.
+- [ ] **[JURA] Opbevaring af anonym niveautest:** 03 siger 30 dage, 10 siger 90 dage; cookien lever 30 dage. Sletjobbet (`retention.purge-misc`) er M4/M10 — ikke bygget i M5.
+- [ ] **Dobbelt opt-in kræver et klik på en knap** på `/samtykke/bekraeft` (ikke kun GET på linket), så mailscannere ikke kan bekræfte på brugerens vegne. Afmelding: samme mønster + RFC 8058 one-click på `POST /api/afmeld?t=…`.
+- [ ] **Allerede bekræftet adresse:** en ny tilmelding laver ingen ny GRANTED-række (den ville slå samtykket fra), og formularen svarer ens, så den ikke afslører, om en adresse er tilmeldt. Et nyt bekræftet samtykke fjerner en tidligere `UNSUBSCRIBED`-suppression (aldrig bounce/klage).
+- [ ] **Plan-rækkefølge i Niveau 1:** "de 3 gratis moduler først" (curriculum) og "usikker → øverst" kan kollidere. Valgt: gratis-modulerne først (medmindre de kan springes over), derefter moduler fra usikre områder, så resten, og "kan springes over" sidst. Bekræft.
+- [ ] **Moduler findes endnu ikke:** kun `core-prompt-01` er seedet (IN_REVIEW, intet golden set). Planen bygges derfor fra `content/placement/catalog.v1.json` (fra curriculum.md); `Assignment`s oprettes kun for publicerede moduler, resten vises som "Kommer snart". Planen gensynkroniseres ikke automatisk, når nye moduler publiceres — forslag: kør `applyPlacementPlan` igen ved publicering (M4/M9).
+- [ ] **Område-tærskler** (sikker = alle rigtige, usikker < 50 %, niveau 2 ≥ 50 %, niveau 3 ≥ 80 %) og minimumtid 10 s er antagelser i `src/lib/config/placement.ts`.
+- [ ] **`/plan` er bygget i M5** (01 § 4.1 trin 6). Overlap med M4's modulafspiller mulig ved merge.
+- [ ] **CSP med nonce** (punktet under M1) er ikke lavet i M5 — ikke en del af opgaven; stadig åbent.

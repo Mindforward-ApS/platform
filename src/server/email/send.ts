@@ -4,13 +4,14 @@ import { Prisma, type EmailMessage, type PrismaClient } from "@/generated/prisma
 import { serverEnv } from "@/lib/env";
 import { logger } from "@/server/observability/logger";
 import { isAllowedRecipient } from "./allowlist";
+import { canSendMarketing } from "./consent";
 import { renderTemplate, TEMPLATES, type TemplateKey, type TemplateVars } from "./templates";
 import { fileTransport, logTransport, resendTransport, type EmailTransport } from "./transports";
 
 export type { EmailTransport } from "./transports";
 
-// The single way out for email (docs/02-arkitektur.md § 1). M1 supports SERVICE mail only;
-// MARKETING goes through the consent gate added in M5/M8 and is rejected here.
+// The single way out for email (docs/02-arkitektur.md § 1). SERVICE mail via sendServiceEmail; MARKETING only
+// via sendMarketingEmail below, which enforces the consent gate (M5) — actual marketing delivery arrives in M8.
 
 export interface SendArgs<K extends TemplateKey> {
   template: K;
@@ -90,4 +91,41 @@ export async function sendServiceEmail<K extends TemplateKey>(db: PrismaClient, 
     await db.emailMessage.update({ where: { id: message.id }, data: { status: "FAILED", error: err instanceof Error ? err.message.slice(0, 500) : "unknown" } });
     throw err;
   }
+}
+
+// ─── MARKETING (M5: consent gate only — no marketing mail is sent before M8) ───
+
+export type MarketingRefusal = "KILL_SWITCH" | "NO_CONSENT" | "NOT_CONFIRMED" | "WITHDRAWN" | "SUPPRESSED" | "CONSENT_MISMATCH";
+
+export interface MarketingSendArgs<K extends TemplateKey> extends SendArgs<K> {
+  /** REQUIRED (docs/03 § 8): the CONFIRMED ConsentRecord this mail relies on; must be the address's latest record. */
+  consentRecordId: string;
+}
+
+/**
+ * The only way a MARKETING mail may leave (docs/09 § 2.1). Checked at send time, never at scheduling time:
+ * kill switch → latest ConsentRecord must be CONFIRMED (double opt-in) → no EmailSuppression → the caller's
+ * consentRecordId must be that record. Refusals are returned, never thrown, so flows can skip and move on.
+ */
+export async function sendMarketingEmail<K extends TemplateKey>(
+  db: PrismaClient,
+  args: MarketingSendArgs<K>,
+  opts: SendOptions & { marketingEnabled?: boolean; pepper?: string } = {},
+): Promise<{ sent: false; reason: MarketingRefusal }> {
+  if (!args.consentRecordId) throw new Error("sendMarketingEmail requires consentRecordId");
+  const enabled = opts.marketingEnabled ?? serverEnv().MARKETING_EMAIL_ENABLED;
+  const refuse = (reason: MarketingRefusal) => {
+    logger.info("email.marketing_refused", { template: args.template, reason });
+    return { sent: false as const, reason };
+  };
+  if (!enabled) return refuse("KILL_SWITCH");
+
+  const gate = await canSendMarketing(db, args.to, { pepper: opts.pepper });
+  if (!gate.allowed) return refuse(gate.reason);
+  if (gate.consentRecordId !== args.consentRecordId) return refuse("CONSENT_MISMATCH");
+
+  const categoryOf = (key: TemplateKey): EmailMessage["category"] => TEMPLATES[key].category;
+  if (categoryOf(args.template) !== "MARKETING") throw new Error(`Template ${args.template} is not a MARKETING template`);
+  // Delivery (EMAIL_FROM_MARKETING, List-Unsubscribe + one-click, sender footer, frequency caps, quiet hours) is M8.
+  throw new Error("MARKETING delivery is not available before M8");
 }

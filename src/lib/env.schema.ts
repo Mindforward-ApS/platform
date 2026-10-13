@@ -10,6 +10,8 @@ const optionalString = z.preprocess((v) => (v === "" ? undefined : v), z.string(
 const requiredString = z.preprocess((v) => (v === "" ? undefined : v), z.string({ error: "mangler" }).min(1));
 const optionalUrl = z.preprocess((v) => (v === "" ? undefined : v), z.url().optional());
 const optionalEmail = z.preprocess((v) => (v === "" ? undefined : v), z.email().optional());
+// Accepts 0/1 and true/false (.env.example uses true/false for kill switches).
+const boolFlag = z.preprocess((v) => (v === "" || v === undefined ? "false" : v), z.enum(["0", "1", "true", "false"])).transform((v) => v === "1" || v === "true");
 const flag = z.preprocess((v) => (v === "" || v === undefined ? "0" : v), z.enum(["0", "1"])).transform((v) => v === "1");
 
 export const serverEnvSchema = z
@@ -53,6 +55,42 @@ export const serverEnvSchema = z
     ALLOW_UNPUBLISHED_MODULES: flag,
     GRADER_MOCK: flag,
     CLICK_TASK_MOCK: flag,
+    // M6 — billing (Stripe). Keys are checked when billing is first used (src/server/billing/stripe.ts),
+    // so previews of other milestones start without them. STRIPE_MOCK=1 = in-process fake Stripe (tests/e2e).
+    STRIPE_SECRET_KEY: optionalString,
+    STRIPE_WEBHOOK_SECRET: optionalString,
+    STRIPE_PRICE_B2C_MONTHLY: optionalString,
+    STRIPE_PRICE_B2B_MONTHLY: optionalString,
+    STRIPE_PRICE_B2B_ANNUAL: optionalString,
+    TAX_RATE_DK_25_INCLUSIVE: optionalString,
+    TAX_RATE_DK_25_EXCLUSIVE: optionalString,
+    STRIPE_PORTAL_CONFIGURATION_ID: optionalString,
+    STRIPE_MOCK: flag,
+    // 1 = run Inngest-triggered billing jobs inline in the request (tests/e2e without the Inngest Dev Server).
+    JOBS_INLINE: flag,
+    SUPPORT_INBOX: optionalEmail,
+    COMPANY_LEGAL_NAME: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("Mindforward (Esther Gruppen ApS)")),
+    COMPANY_CVR: optionalString,
+    COMPANY_ADDRESS: optionalString,
+    // M3 — AI gateway (src/server/ai/). Model ids live ONLY here/in models.ts, never at call sites.
+    ANTHROPIC_API_KEY: optionalString,
+    AI_ENABLED: z.preprocess((v) => (v === "" || v === undefined ? "1" : v), z.enum(["0", "1"])).transform((v) => v === "1"),
+    AI_MOCK: flag,
+    AI_MODEL_DEFAULT: z.preprocess((v) => (v === "" ? undefined : v), z.string().regex(/^[a-z0-9.-]+$/).default("claude-haiku-4-5")),
+    AI_MODEL_FALLBACK: optionalString,
+    AI_MODEL_GRADER: optionalString,
+    SUPPORT_MODEL: optionalString,
+    AI_TIMEOUT_MS: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(1000).max(300_000).default(30_000)),
+    AI_USER_DAILY_TOKEN_CAP: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(0).default(60_000)),
+    AI_USER_DAILY_GRADING_CAP: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(0).default(60)),
+    AI_GLOBAL_MONTHLY_BUDGET_DKK: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().min(0).default(5000)),
+    AI_USD_DKK_RATE: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().positive().default(6.9)),
+    // M5 — consent + unsubscribe. Optional at boot; code that needs them throws a clear EnvValidationError.
+    EMAIL_FROM_MARKETING: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("Mindforward <nyt@news.mindforward.dk>")),
+    UNSUBSCRIBE_TOKEN_SECRET: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(32, "skal være mindst 32 tegn (openssl rand -base64 32)").optional()),
+    EMAIL_HASH_PEPPER: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16, "skal være mindst 16 tegn").optional()),
+    // Marketing kill switch fallback (FeatureFlag wins once it exists). M5 sends no marketing mail.
+    MARKETING_EMAIL_ENABLED: boolFlag,
   })
   .superRefine((env, ctx) => {
     const pairs = [
@@ -75,10 +113,12 @@ export const serverEnvSchema = z
     for (const key of ["SENTRY_DSN", "INNGEST_SIGNING_KEY", "INNGEST_EVENT_KEY"] as const) {
       if (!env[key]) ctx.addIssue({ code: "custom", path: [key], message: "påkrævet i produktion" });
     }
+    if (env.AI_MOCK) ctx.addIssue({ code: "custom", path: ["AI_MOCK"], message: "må ikke være slået til i produktion" });
+    if (env.AI_ENABLED && !env.ANTHROPIC_API_KEY) ctx.addIssue({ code: "custom", path: ["ANTHROPIC_API_KEY"], message: "påkrævet i produktion (eller sæt AI_ENABLED=0)" });
     if (env.ENABLE_DEBUG_ROUTES) {
       ctx.addIssue({ code: "custom", path: ["ENABLE_DEBUG_ROUTES"], message: "må ikke være slået til i produktion" });
     }
-    for (const key of ["ALLOW_UNPUBLISHED_MODULES", "GRADER_MOCK", "CLICK_TASK_MOCK"] as const) {
+    for (const key of ["ALLOW_UNPUBLISHED_MODULES", "GRADER_MOCK", "CLICK_TASK_MOCK", "STRIPE_MOCK", "JOBS_INLINE"] as const) {
       if (env[key]) ctx.addIssue({ code: "custom", path: [key], message: "må ikke være slået til i produktion" });
     }
   });

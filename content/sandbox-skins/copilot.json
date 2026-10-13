@@ -1,0 +1,21 @@
+{
+  "key": "copilot",
+  "version": "1",
+  "shell": "APP_RAIL_SIDE_PANEL",
+  "regions": ["nav", "workspace", "sidePanel", "composer", "notifications"],
+  "nav": [
+    { "id": "mail", "labelKey": "mail", "concept": "MAIL" },
+    { "id": "calendar", "labelKey": "calendar", "concept": "CALENDAR" },
+    { "id": "files", "labelKey": "files", "concept": "FILES" },
+    { "id": "crm", "labelKey": "crm", "concept": "CRM" },
+    { "id": "sheet", "labelKey": "sheet", "concept": "SHEET" },
+    { "id": "chat", "labelKey": "chat", "concept": "CHAT" },
+    { "id": "assistants", "labelKey": "assistants", "concept": "ASSISTANTS" },
+    { "id": "connectors", "labelKey": "connectors", "concept": "CONNECTORS" },
+    { "id": "automations", "labelKey": "automations", "concept": "AUTOMATIONS" },
+    { "id": "agents", "labelKey": "agents", "concept": "AGENTS" }
+  ],
+  "composer": { "attachFromFiles": true, "toolsMenu": ["attach"], "modelPicker": false },
+  "concepts": { "assistants": true, "connectors": true, "automations": true, "agents": true },
+  "tokens": { "density": "compact", "accentSlot": "b" }
+}

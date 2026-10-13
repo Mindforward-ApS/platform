@@ -10,6 +10,7 @@ import type { PrismaClient } from "@/generated/prisma/client";
 import { serverEnv } from "@/lib/env";
 import type { ServerEnv } from "@/lib/env.schema";
 import { writeAudit } from "@/server/audit/log";
+import { assertSeatAvailable, SeatLimitError } from "@/server/billing/seats";
 import { db } from "@/server/db";
 import { sendServiceEmail } from "@/server/email/send";
 import { consumeRateLimit, RATE_LIMITS, rateLimitKeys } from "@/server/security/rate-limit";
@@ -149,9 +150,16 @@ export function buildAuthOptions(deps: { db: PrismaClient; env: ServerEnv }) {
         },
         organizationHooks: {
           // PERSONAL (B2C) orgs have exactly one seat: nobody can be invited into them.
-          beforeCreateInvitation: async ({ organization: org }) => {
+          beforeCreateInvitation: async ({ organization: org, invitation }) => {
             const row = await prisma.organization.findUnique({ where: { id: org.id }, select: { type: true } });
             if (row?.type !== "BUSINESS") throw new APIError("FORBIDDEN", { message: "PERSONAL_ORG" });
+            // M6: seat cap — active memberships + open invitations ≤ the plan's seats (docs/00 § 10a).
+            try {
+              await assertSeatAvailable(prisma, org.id, { inviteEmail: invitation.email });
+            } catch (err) {
+              if (err instanceof SeatLimitError) throw new APIError("FORBIDDEN", { message: err.message, code: err.reason });
+              throw err;
+            }
           },
           beforeUpdateMemberRole: async ({ member, newRole }) => {
             if (member.role !== "OWNER" || newRole === "OWNER") return;
