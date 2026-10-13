@@ -18,7 +18,8 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
     "content:validate": "tsx scripts/content-validate.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "inngest:dev": "inngest-cli dev --no-discovery -u http://localhost:3000/api/inngest"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
@@ -42,6 +43,7 @@
     "dotenv": "^18.0.7",
     "eslint": "^10.12.0",
     "eslint-config-next": "16.4.0",
+    "inngest-cli": "^1.46.0",
     "prettier": "^3.9.10",
     "prisma": "7.10.0",
     "tailwindcss": "^4",

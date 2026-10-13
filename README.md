@@ -28,7 +28,7 @@ Kræver Node 24 og pnpm 10.
 pnpm install                 # kører også prisma generate
 cp .env.example .env.local   # udfyld mindst APP_URL og DATABASE_URL (Neon, Frankfurt)
 pnpm dev                     # http://localhost:3000
-npx inngest-cli@latest dev   # Inngest Dev Server (sæt INNGEST_DEV=1)
+pnpm inngest:dev             # Inngest Dev Server på :8288 (sæt INNGEST_DEV=1)
 ```
 
 Checks før PR: `pnpm typecheck && pnpm lint && pnpm check:tokens && pnpm test && pnpm build && pnpm e2e`.
