@@ -4,7 +4,8 @@ import { serverEnv } from "../src/lib/env";
 import { createPrismaClient } from "../src/server/db";
 import { sendNewsletter } from "../src/server/email/newsletter";
 
-// Usage: pnpm marketing:newsletter <draft.json> --approve [--now=<ISO, non-production only>]
+// Usage (renders React Email, so no react-server condition — see scripts/tsconfig.cli.json):
+// pnpm marketing:newsletter <draft.json> --approve [--now=<ISO, non-production only>]
 // The draft (subject, heading, intro, items, url, approvedBy, approvedAt) is the text Marco approved.
 // Every recipient passes the send-time consent gate, caps and quiet hours in sendMarketingEmail.
 async function main() {

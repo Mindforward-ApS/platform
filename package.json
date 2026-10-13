@@ -21,8 +21,8 @@
     "sandbox:schema": "tsx scripts/sandbox-schema.ts",
     "postinstall": "prisma generate",
     "inngest:dev": "inngest-cli dev --no-discovery -u http://localhost:3000/api/inngest",
-    "marketing:newsletter": "tsx --conditions=react-server scripts/send-newsletter.ts",
-    "admin:grant":"tsx --conditions=react-server scripts/grant-admin.ts",
+    "marketing:newsletter": "tsx --tsconfig scripts/tsconfig.cli.json scripts/send-newsletter.ts",
+    "admin:grant": "tsx --conditions=react-server scripts/grant-admin.ts",
     "check:client-secrets": "tsx scripts/check-client-secrets.ts"
   },
   "dependencies": {

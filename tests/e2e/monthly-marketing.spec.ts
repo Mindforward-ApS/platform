@@ -61,7 +61,7 @@ function sendNewsletter(baseURL: string) {
       approvedAt: SEND_AT,
     }),
   );
-  execFileSync("pnpm", ["exec", "tsx", "--conditions=react-server", "scripts/send-newsletter.ts", draft, "--approve", `--now=${SEND_AT}`], {
+  execFileSync("pnpm", ["exec", "tsx", "--tsconfig", "scripts/tsconfig.cli.json", "scripts/send-newsletter.ts", draft, "--approve", `--now=${SEND_AT}`], {
     stdio: "pipe",
     env: {
       ...process.env,
