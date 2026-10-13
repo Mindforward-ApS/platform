@@ -13,6 +13,12 @@ const DATE_TIME = /\d{1,2}\. [a-zæøå]+ \d{4} kl\. \d{2}[.:]\d{2}/;
 /** Signup = fill email, click "Send login-link", click the link in the mail: 2 clicks. */
 const SIGNUP_CLICKS = 2;
 
+// The public withdrawal form is rate-limited per IP (5/hour). Give each test its own client IP so repeated
+// local runs do not hit the limit (on Vercel this header is set by the platform).
+test.beforeEach(async ({ page }) => {
+  await page.setExtraHTTPHeaders({ "x-vercel-forwarded-for": `2001:db8::${randomUUID().slice(0, 4)}:${randomUUID().slice(0, 4)}` });
+});
+
 async function signUp(page: Page, email: string) {
   await page.goto("/opret");
   await page.getByLabel("Email").fill(email);
