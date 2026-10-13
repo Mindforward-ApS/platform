@@ -244,35 +244,35 @@
     },
     {
       "id": "optage-moedet",
-      "type": "QUIZ",
+      "type": "JUDGMENT",
       "title": "Optage kundemødet?",
       "points": 15,
-      "question": "I morgen har du og Jonas møde med Rasmus fra Fjordlys Møbler. Du vil optage mødet på telefonen og lade AI'en skrive et referat bagefter. Du overvejer ikke at sige det, så stemningen ikke bliver anspændt. Hvad er det rigtige at gøre?",
-      "multiSelect": false,
-      "shuffle": true,
+      "category": "RESPONSIBLE_USE",
+      "scenario": "I morgen har du og Jonas møde med Rasmus fra Fjordlys Møbler. Du vil optage mødet på telefonen og lade AI'en skrive et referat bagefter. Du overvejer ikke at sige det, så stemningen ikke bliver anspændt.",
+      "question": "Hvad er det rigtige at gøre?",
       "options": [
         {
           "id": "a",
           "text": "Optage i det skjulte. Det er jo kun til dine egne noter.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Optagelsen indeholder Rasmus' stemme og ord. Han har ret til at vide det, og det kan skade tilliden alvorligt, hvis han finder ud af det."
         },
         {
           "id": "b",
           "text": "Fortælle alle deltagere på forhånd, at du gerne vil optage, og kun gøre det, hvis de siger ja — og hvis Nordlys' regler tillader det.",
-          "correct": true,
+          "verdict": "CORRECT",
           "feedback": "Rigtigt. Åbenhed først. Siger nogen nej, tager du noter selv og bruger AI'en til at rydde op i dem."
         },
         {
           "id": "c",
           "text": "Optage, og slette lydfilen, når AI'en har lavet referatet.",
-          "correct": false,
+          "verdict": "PARTIAL",
           "feedback": "Det er godt ikke at gemme den. Men deltagerne ved stadig ikke, at de bliver optaget."
         },
         {
           "id": "d",
           "text": "Spørge Jonas, men ikke Rasmus.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Alle deltagere skal vide det — også kunden."
         }
       ],
