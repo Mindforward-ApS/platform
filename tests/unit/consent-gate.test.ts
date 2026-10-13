@@ -45,6 +45,10 @@ describe("decideMarketing (consent gate)", () => {
     expect(decideMarketing([row("c", "CONFIRMED", 5), row("w", "WITHDRAWN", 5)], false)).toEqual({ allowed: false, reason: "WITHDRAWN" });
     expect(decideMarketing([row("c", "CONFIRMED", 5), row("g", "GRANTED", 5)], false)).toEqual({ allowed: false, reason: "NOT_CONFIRMED" });
   });
+
+  it("a CONFIRMED in the same millisecond as the GRANTED it confirms supersedes it", () => {
+    expect(decideMarketing([row("g", "GRANTED", 5), { ...row("c", "CONFIRMED", 5), grantId: "g" }], false)).toEqual({ allowed: true, consentRecordId: "c" });
+  });
 });
 
 describe("consent helpers", () => {

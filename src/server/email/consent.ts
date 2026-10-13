@@ -48,11 +48,17 @@ export type GateDecision =
   | { allowed: false; reason: "NO_CONSENT" | "NOT_CONFIRMED" | "WITHDRAWN" | "SUPPRESSED" };
 
 /** Pure decision. On a timestamp tie the most restrictive action wins (WITHDRAWN > GRANTED > CONFIRMED). */
-export function decideMarketing(records: Pick<ConsentRecord, "id" | "action" | "createdAt">[], suppressed: boolean): GateDecision {
+export function decideMarketing(
+  records: (Pick<ConsentRecord, "id" | "action" | "createdAt"> & { grantId?: string | null })[],
+  suppressed: boolean,
+): GateDecision {
   if (suppressed) return { allowed: false, reason: "SUPPRESSED" };
   if (records.length === 0) return { allowed: false, reason: "NO_CONSENT" };
   const newest = Math.max(...records.map((r) => r.createdAt.getTime()));
-  const latest = records.filter((r) => r.createdAt.getTime() === newest);
+  const tied = records.filter((r) => r.createdAt.getTime() === newest);
+  // A GRANTED row that a tied CONFIRMED/WITHDRAWN row acts on is superseded by it, not a competing action.
+  const actedOn = new Set(tied.map((r) => r.grantId).filter(Boolean));
+  const latest = tied.filter((r) => !(r.action === "GRANTED" && actedOn.has(r.id)));
   const pick = (a: ConsentAction) => latest.find((r) => r.action === a);
   if (pick("WITHDRAWN")) return { allowed: false, reason: "WITHDRAWN" };
   if (pick("GRANTED")) return { allowed: false, reason: "NOT_CONFIRMED" };
@@ -65,7 +71,7 @@ async function latestRecords(db: Db, email: string) {
     where: { subjectEmail: normalizeEmail(email), purpose: PURPOSE, channel: CHANNEL },
     orderBy: { createdAt: "desc" },
     take: 5,
-    select: { id: true, action: true, createdAt: true },
+    select: { id: true, action: true, createdAt: true, grantId: true },
   });
 }
 
