@@ -48,6 +48,11 @@ export const serverEnvSchema = z
     EMAIL_FROM_SERVICE: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("Mindforward <hej@mail.mindforward.dk>")),
     EMAIL_REPLY_TO: optionalEmail,
     EMAIL_ALLOWLIST: optionalString,
+
+    // M4 — module player (dev/e2e switches; all forbidden in production)
+    ALLOW_UNPUBLISHED_MODULES: flag,
+    GRADER_MOCK: flag,
+    CLICK_TASK_MOCK: flag,
   })
   .superRefine((env, ctx) => {
     const pairs = [
@@ -72,6 +77,9 @@ export const serverEnvSchema = z
     }
     if (env.ENABLE_DEBUG_ROUTES) {
       ctx.addIssue({ code: "custom", path: ["ENABLE_DEBUG_ROUTES"], message: "må ikke være slået til i produktion" });
+    }
+    for (const key of ["ALLOW_UNPUBLISHED_MODULES", "GRADER_MOCK", "CLICK_TASK_MOCK"] as const) {
+      if (env[key]) ctx.addIssue({ code: "custom", path: [key], message: "må ikke være slået til i produktion" });
     }
   });
 
