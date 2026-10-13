@@ -15,6 +15,8 @@ const ALLOWLIST: Record<string, string[]> = {
   "src/app/api/inngest/route.ts": ["GET", "POST", "PUT"], // signed by INNGEST_SIGNING_KEY in serve()
   "src/app/api/debug/sentry/route.ts": ["GET"], // throws only; disabled unless ENABLE_DEBUG_ROUTES (forbidden in prod)
   "src/app/(auth)/log-ind/actions.ts": ["requestMagicLink", "signInWithProvider"], // pre-login, rate-limited
+  "src/app/api/webhooks/stripe/route.ts": ["POST"], // authenticated by the Stripe-Signature header (constructEvent on the raw body)
+  "src/app/(billing)/fortryd-aftale/actions.ts": ["submitWithdrawalForm"], // § 20 a: must work without login; rate-limited per IP
 };
 
 function walk(dir: string, out: string[] = []): string[] {
