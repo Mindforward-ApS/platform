@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { validateModule } from "../../scripts/content-validate";
 import { seedContentSources, seedTracks } from "@/server/content/seed";
 import { loadContentConfig, type ContentConfig } from "@/server/content-engine/config";
@@ -61,6 +61,8 @@ async function enableAll(on = true) {
   await setKillSwitch(testDb(), PIPELINE_FLAG, on, null);
   await setKillSwitch(testDb(), AUTOPUBLISH_FLAG, on, null);
 }
+
+afterAll(() => cleanup()); // leave no published modules behind for other suites
 
 beforeEach(async () => {
   await seedTracks(testDb());

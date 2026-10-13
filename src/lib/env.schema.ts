@@ -91,6 +91,17 @@ export const serverEnvSchema = z
     EMAIL_HASH_PEPPER: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16, "skal være mindst 16 tegn").optional()),
     // Marketing kill switch fallback (FeatureFlag wins once it exists). M5 sends no marketing mail.
     MARKETING_EMAIL_ENABLED: boolFlag,
+    // M9 — content engine (read by src/server/content-engine/config.ts; FeatureFlag rows win for the kill switches).
+    CONTENT_PIPELINE_ENABLED: boolFlag,
+    CONTENT_AUTOPUBLISH_ENABLED: boolFlag,
+    CONTENT_MONTHLY_BUDGET_DKK: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().min(0).default(300)),
+    CONTENT_RELEVANCE_THRESHOLD: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().min(0).max(1).default(0.6)),
+    CONTENT_USER_AGENT: optionalString,
+    CONTENT_CLASSIFY_MODEL: optionalString,
+    CONTENT_DRAFT_MODEL: optionalString,
+    CONTENT_VERIFY_MODEL: optionalString,
+    GITHUB_REPO: z.preprocess((v) => (v === "" ? undefined : v), z.string().regex(/^[\w.-]+\/[\w.-]+$/, "skal være owner/repo").optional()),
+    GITHUB_TOKEN: optionalString,
   })
   .superRefine((env, ctx) => {
     const pairs = [
@@ -104,6 +115,9 @@ export const serverEnvSchema = z
     }
     if (env.EMAIL_TRANSPORT === "resend" && !env.RESEND_API_KEY) {
       ctx.addIssue({ code: "custom", path: ["RESEND_API_KEY"], message: "påkrævet når EMAIL_TRANSPORT=resend" });
+    }
+    if (env.CONTENT_DRAFT_MODEL && env.CONTENT_VERIFY_MODEL && env.CONTENT_DRAFT_MODEL === env.CONTENT_VERIFY_MODEL) {
+      ctx.addIssue({ code: "custom", path: ["CONTENT_VERIFY_MODEL"], message: "skal være en anden model end CONTENT_DRAFT_MODEL (uafhængig verifikator)" });
     }
     if (env.VERCEL_ENV !== "production") return;
     if (!env.RESEND_API_KEY) ctx.addIssue({ code: "custom", path: ["RESEND_API_KEY"], message: "påkrævet i produktion" });
