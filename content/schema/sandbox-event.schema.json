@@ -1,5 +1,5 @@
 {
-  "$id": "https://mindforward.dk/schema/sandbox-event.schema.json",
+  "$id": "sandbox-event.schema.json",
   "title": "SandboxEvent (generated from src/server/sandbox/events.ts, do not edit)",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "oneOf": [
