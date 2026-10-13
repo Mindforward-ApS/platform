@@ -32,6 +32,8 @@ export const serverEnvSchema = z
     GOOGLE_CLIENT_ID: optionalString,
     GOOGLE_CLIENT_SECRET: optionalString,
     MAGIC_LINK_EXPIRES_MIN: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().int().min(5).max(60).default(15)),
+    // Stable production URL: OAuth redirect URIs point here; previews are proxied through it (oauth-proxy).
+    AUTH_PRODUCTION_URL: optionalUrl,
     OAUTH_PROXY_SECRET: optionalString,
     VERCEL_URL: optionalString,
     VERCEL_BRANCH_URL: optionalString,
