@@ -13,7 +13,8 @@ export interface ModelConfig {
   timeoutMs: number;
 }
 
-export type ModelEnv = Pick<ServerEnv, "AI_MODEL_DEFAULT" | "AI_MODEL_FALLBACK" | "AI_MODEL_GRADER" | "SUPPORT_MODEL" | "AI_TIMEOUT_MS">;
+export type ModelEnv = Pick<ServerEnv, "AI_MODEL_DEFAULT" | "AI_MODEL_FALLBACK" | "AI_MODEL_GRADER" | "SUPPORT_MODEL" | "AI_TIMEOUT_MS"> &
+  Partial<Pick<ServerEnv, "CONTENT_CLASSIFY_MODEL" | "CONTENT_DRAFT_MODEL" | "CONTENT_VERIFY_MODEL">>;
 
 /** Degraded mode (≥ 95 % of the global budget): shorter answers, shorter history (docs/02 § 6). */
 export const DEGRADED_MAX_TOKENS = 400;
@@ -36,12 +37,14 @@ export function modelConfig(feature: AiFeature, env: ModelEnv, opts: { degraded?
       return { model: env.AI_MODEL_GRADER ?? small, maxTokens: 600, temperature: 0, timeoutMs: 20_000 };
     case "SUPPORT_AGENT":
       return { model: env.SUPPORT_MODEL ?? small, fallbackModel: fallback, maxTokens: 800, temperature: 0.2, timeoutMs: env.AI_TIMEOUT_MS };
+    // Content engine (docs/06): small models for classify/draft; the verifier must be a DIFFERENT model (env schema
+    // enforces it). Unset → defaults to the small model, and the engine then refuses to publish (fails safe).
     case "CONTENT_CLASSIFY":
-      return { model: small, maxTokens: 1500, temperature: 0, timeoutMs: 90_000 };
+      return { model: env.CONTENT_CLASSIFY_MODEL ?? small, maxTokens: 1500, temperature: 0, timeoutMs: 90_000 };
     case "CONTENT_DRAFT":
-      return { model: small, maxTokens: 3000, temperature: 0, timeoutMs: 90_000 };
+      return { model: env.CONTENT_DRAFT_MODEL ?? small, maxTokens: 3000, temperature: 0, timeoutMs: 90_000 };
     case "CONTENT_VERIFY":
-      return { model: small, maxTokens: 3000, temperature: 0, timeoutMs: 120_000 };
+      return { model: env.CONTENT_VERIFY_MODEL ?? small, maxTokens: 3000, temperature: 0, timeoutMs: 120_000 };
   }
 }
 

@@ -42,3 +42,15 @@ describe("model config and pricing (docs/02 § 6)", () => {
     expect(() => getPrompt("sandbox-chat", "v9")).toThrow();
   });
 });
+
+describe("content engine models", () => {
+  const base = { AI_MODEL_DEFAULT: "small-model", AI_TIMEOUT_MS: 30_000 } as Parameters<typeof modelConfig>[1];
+  it("uses the configured CONTENT_* models, so verify can differ from draft", () => {
+    const env = { ...base, CONTENT_DRAFT_MODEL: "draft-model", CONTENT_VERIFY_MODEL: "verify-model" };
+    expect(modelConfig("CONTENT_DRAFT", env).model).toBe("draft-model");
+    expect(modelConfig("CONTENT_VERIFY", env).model).toBe("verify-model");
+  });
+  it("falls back to the small model when unset", () => {
+    expect(modelConfig("CONTENT_CLASSIFY", base).model).toBe("small-model");
+  });
+});
