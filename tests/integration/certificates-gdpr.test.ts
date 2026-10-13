@@ -5,6 +5,7 @@ import { certificateLines, certificatePdf } from "@/server/certificates/pdf";
 import { certificateDetails, checkAndIssueCertificates, findPublicCertificate, setPublicVerification } from "@/server/certificates/service";
 import { seedModules, seedTracks } from "@/server/content/seed";
 import { confirmAccountDeletion, eraseUser, exportUserData, GdprError, ownershipBlockers, requestAccountDeletion } from "@/server/gdpr/service";
+import { runCertificateCheck, runReportGenerate } from "@/server/jobs/org-admin";
 import { reportPdf } from "@/server/reports/pdf";
 import { buildReportDocument } from "@/server/reports/render";
 import { addMember, makeOrg, makeUser, testDb } from "./helpers";
@@ -91,6 +92,27 @@ describe("certificates (docs/05 § 8)", () => {
     await addMember(org.id, learner.id, "LEARNER");
     for (const slug of level1.requiredModules) await passModule(org.id, learner.id, slug);
     expect(await checkAndIssueCertificates(testDb(), { userId: learner.id, organizationId: org.id })).toEqual([]);
+  });
+});
+
+describe("M7 job bodies (Inngest / JOBS_INLINE)", () => {
+  it("report/generate mails CSV + PDF to the requesting admin (SERVICE) and audits it", async () => {
+    const { org, owner } = await enrolledLearner();
+    const now = new Date();
+    const result = await runReportGenerate(testDb(), { organizationId: org.id, requestedByUserId: owner.id, from: new Date(now.getTime() - 86400_000).toISOString(), to: now.toISOString(), notes: null });
+    expect(result.employees).toBe(2);
+    expect(await testDb().emailMessage.count({ where: { template: "report-ready", userId: owner.id, organizationId: org.id, category: "SERVICE" } })).toBe(1);
+    expect(await testDb().auditLog.count({ where: { action: "REPORT_GENERATED", organizationId: org.id } })).toBe(1);
+  });
+
+  it("certificate/check issues once and sends the certificate-issued SERVICE mail once", async () => {
+    const { org, learner } = await enrolledLearner();
+    for (const slug of level1.requiredModules) await passModule(org.id, learner.id, slug);
+    const first = await runCertificateCheck(testDb(), { userId: learner.id, organizationId: org.id });
+    const again = await runCertificateCheck(testDb(), { userId: learner.id, organizationId: org.id });
+    expect(first.issued).toHaveLength(1);
+    expect(again.issued).toHaveLength(0);
+    expect(await testDb().emailMessage.count({ where: { template: "certificate-issued", userId: learner.id } })).toBe(1);
   });
 });
 
