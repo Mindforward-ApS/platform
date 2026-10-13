@@ -9,7 +9,7 @@ import { featureRetire, freshnessAudit, upcomingRetirements } from "@/server/con
 import { ingestManualPaste, processChange, runSource, type PipelineDeps } from "@/server/content-engine/pipeline";
 import { publishVersion, rejectVersion, rollbackModule, AutoPublishForbiddenError, type VersionMeta } from "@/server/content-engine/publish";
 import { moduleSchema } from "@/lib/schemas/module";
-import { customGptsClassification, customGptsDraft, mockContentModel, supportedVerify, type MockOptions } from "../fixtures/release-notes/mock-model";
+import { customGptsClassification, customGptsDraft, mockContentModel, supportedVerify } from "../fixtures/release-notes/mock-model";
 import { makeUser, testDb } from "./helpers";
 
 const KEY = "openai-chatgpt-rn";

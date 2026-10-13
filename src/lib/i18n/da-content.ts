@@ -23,6 +23,7 @@ export const daContent = {
       turnOn: "Slå til",
       turnOff: "Slå fra",
       source: "Kilde",
+      saved: "Ændringen er gemt.",
     },
     sources: {
       title: "Kilder",
