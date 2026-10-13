@@ -38,12 +38,15 @@ describe("db:seed", () => {
     expect(await testDb().moduleVersion.count({ where: { status: "PUBLISHED" } })).toBe(0);
   });
 
-  it("publishes an approved module once its golden sets exist, and keeps it immutable", async () => {
+  it("publishes an approved module only when its golden sets exist", async () => {
     await seedAll(testDb());
-    const results = await seedModules(testDb(), new Set(["core-prompt-02"]));
-    const expected = results.find((r) => r.slug === "core-prompt-02");
-    // core-prompt-02 has a PROMPT_TASK without a golden set yet → still IN_REVIEW
-    expect(expected?.status ?? "IN_REVIEW").toBe("IN_REVIEW");
+    // core-prompt-01 has its golden set; core-prompt-02 does not yet.
+    const results = await seedModules(testDb(), new Set(["core-prompt-01", "core-prompt-02"]));
+    expect(results.find((r) => r.slug === "core-prompt-01")?.status).toBe("PUBLISHED");
+    expect(results.find((r) => r.slug === "core-prompt-02")?.status).toBe("IN_REVIEW");
+    const mod = await testDb().module.findUniqueOrThrow({ where: { slug: "core-prompt-01" } });
+    expect(mod.publishedVersionId).not.toBeNull();
+    // Back to the real approvals file (empty) for the following tests.
     await seedModules(testDb(), new Set());
   });
 
