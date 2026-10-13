@@ -36,6 +36,8 @@ export default defineConfig({
           // M6: fake Stripe + inline billing jobs (no keys, no Inngest Dev Server in e2e).
           STRIPE_MOCK: "1",
           JOBS_INLINE: "1",
+          // M3: all LLM calls are mocked.
+          AI_MOCK: "1",
         },
       },
 });

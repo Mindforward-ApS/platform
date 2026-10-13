@@ -22,6 +22,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  // The sandbox reads the versioned Nordlys world and skins from content/ at runtime (src/server/sandbox/world.ts).
+  outputFileTracingIncludes: {
+    "/api/sandbox/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**"],
+    "/sandkasse/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**"],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
