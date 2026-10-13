@@ -134,7 +134,7 @@ describe("GDPR (docs/10 § 1.5)", () => {
     const { org, learner } = await enrolledLearner();
     await passModule(org.id, learner.id, "core-llm-01", "tekst");
     await testDb().consentRecord.create({
-      data: { userId: learner.id, subjectEmail: learner.email, purpose: "MARKETING", action: "GRANTED", textVersion: "v1", textHash: "h", source: "ACCOUNT_SETTINGS" },
+      data: { userId: learner.id, subjectEmail: learner.email, purpose: "MARKETING_EMAIL", action: "GRANTED", textVersion: "v1", textHash: "h", source: "ACCOUNT_SETTINGS" },
     });
 
     const { token } = await requestAccountDeletion(testDb(), learner.id);
