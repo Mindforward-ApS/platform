@@ -80,6 +80,17 @@ describe("module schema parity (Zod ⇔ JSON Schema)", () => {
   }
 });
 
+describe("schema regressions", () => {
+  it("accepts a non-must-pass JUDGMENT (e.g. CONFIDENTIALITY) in both schemas", () => {
+    const m = clone();
+    const j = stepOf(m, "JUDGMENT");
+    j.category = "CONFIDENTIALITY";
+    delete j.mustPass;
+    expect(validateWithJsonSchema(m).errors).toEqual([]);
+    expect(moduleSchema.safeParse(m).success).toBe(true);
+  });
+});
+
 describe("Zod-only rules", () => {
   it("rejects a READ step over 120 words", () => {
     const m = clone();

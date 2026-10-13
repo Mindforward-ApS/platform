@@ -1229,6 +1229,31 @@
         },
         {
           "$ref": "#/$defs/gradedStep"
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "enum": [
+                  "DATA_SECURITY",
+                  "GDPR"
+                ]
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "then": {
+            "required": [
+              "mustPass"
+            ],
+            "properties": {
+              "mustPass": {
+                "const": true
+              }
+            }
+          }
         }
       ],
       "required": [
@@ -1311,29 +1336,6 @@
         "explanation": {
           "type": "string",
           "maxLength": 800
-        }
-      },
-      "if": {
-        "properties": {
-          "category": {
-            "enum": [
-              "DATA_SECURITY",
-              "GDPR"
-            ]
-          }
-        },
-        "required": [
-          "category"
-        ]
-      },
-      "then": {
-        "required": [
-          "mustPass"
-        ],
-        "properties": {
-          "mustPass": {
-            "const": true
-          }
         }
       },
       "unevaluatedProperties": false

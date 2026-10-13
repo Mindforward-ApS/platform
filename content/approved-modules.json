@@ -1,0 +1,4 @@
+{
+  "$comment": "Modules Marco has approved for publication (CLAUDE.md: never auto-publish CORE modules). Seed publishes a module only when it is listed here AND all its PROMPT_TASK golden sets exist. Add a slug only after Marco's explicit approval; core-aiact-01 also needs legal review (docs/10).",
+  "approved": []
+}

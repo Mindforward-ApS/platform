@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { z } from "zod";
 import type { LicenseTier, Prisma, PrismaClient, TrackKey } from "@/generated/prisma/client";
 import { paidPlans } from "@/lib/config/plans";
 import { loadModules } from "./load-modules";
@@ -8,6 +10,12 @@ export const TRACKS: { key: TrackKey; displayName: string; vendorName: string; s
   { key: "CLAUDE", displayName: "Claude", vendorName: "Anthropic", skinKey: "claude", isActive: true, sortOrder: 3, licenseTiers: [] },
   { key: "GEMINI", displayName: "Gemini", vendorName: "Google", skinKey: "gemini", isActive: false, sortOrder: 4, licenseTiers: [] },
 ];
+
+/** Marco's publication approvals (content/approved-modules.json). Never auto-publish CORE modules. */
+export function approvedModuleSlugs(path = "content/approved-modules.json"): Set<string> {
+  const file = z.object({ approved: z.array(z.string()) }).parse(JSON.parse(readFileSync(path, "utf8")));
+  return new Set(file.approved);
+}
 
 const TIER: Record<string, LicenseTier> = { COPILOT_CHAT: "COPILOT_CHAT", COPILOT_M365: "COPILOT_M365", unknown: "UNKNOWN" };
 
@@ -36,14 +44,14 @@ export async function seedPlans(db: PrismaClient) {
   await db.plan.updateMany({ where: { code: { notIn: paidPlans.map((p) => p.key) } }, data: { active: false } });
 }
 
-export async function seedModules(db: PrismaClient) {
+export async function seedModules(db: PrismaClient, approved: Set<string> = approvedModuleSlugs()) {
   const tracks = new Map((await db.track.findMany()).map((t) => [t.key, t.id]));
   const results: { slug: string; version: number; status: string }[] = [];
 
   for (const [index, m] of loadModules().entries()) {
     const c = m.content;
     const requiredLicense = c.requiresTier ? (TIER[c.requiresTier] ?? null) : null;
-    const status = m.goldenSetsComplete ? ("PUBLISHED" as const) : ("IN_REVIEW" as const);
+    const status = approved.has(c.id) && m.goldenSetsComplete ? ("PUBLISHED" as const) : ("IN_REVIEW" as const);
     const jobRole = c.type === "ROLE" ? (c.roles?.[0] ?? null) : null;
 
     await db.$transaction(async (tx) => {

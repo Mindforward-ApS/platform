@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { seedAll } from "@/server/content/seed";
+import { seedAll, seedModules } from "@/server/content/seed";
 import { testDb } from "./helpers";
 
 describe("db:seed", () => {
@@ -33,7 +33,21 @@ describe("db:seed", () => {
     expect(plans.B2B_ANNUAL).toMatchObject({ unitAmountOre: 49000, interval: "YEAR", minSeats: 5 });
   });
 
-  it("loads core-prompt-01 on all its tracks; held in review until its golden set exists", async () => {
+  it("never publishes a module Marco has not approved", async () => {
+    await seedAll(testDb());
+    expect(await testDb().moduleVersion.count({ where: { status: "PUBLISHED" } })).toBe(0);
+  });
+
+  it("publishes an approved module once its golden sets exist, and keeps it immutable", async () => {
+    await seedAll(testDb());
+    const results = await seedModules(testDb(), new Set(["core-prompt-02"]));
+    const expected = results.find((r) => r.slug === "core-prompt-02");
+    // core-prompt-02 has a PROMPT_TASK without a golden set yet → still IN_REVIEW
+    expect(expected?.status ?? "IN_REVIEW").toBe("IN_REVIEW");
+    await seedModules(testDb(), new Set());
+  });
+
+  it("loads core-prompt-01 on all its tracks; held in review until approved", async () => {
     await seedAll(testDb());
     const mod = await testDb().module.findUniqueOrThrow({ where: { slug: "core-prompt-01" }, include: { tracks: { include: { track: true } }, versions: true } });
     expect(mod.tracks.map((t) => t.track.key).sort()).toEqual(["CHATGPT", "CLAUDE", "COPILOT", "GEMINI"]);
