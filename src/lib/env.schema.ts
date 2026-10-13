@@ -10,6 +10,8 @@ const optionalString = z.preprocess((v) => (v === "" ? undefined : v), z.string(
 const requiredString = z.preprocess((v) => (v === "" ? undefined : v), z.string({ error: "mangler" }).min(1));
 const optionalUrl = z.preprocess((v) => (v === "" ? undefined : v), z.url().optional());
 const optionalEmail = z.preprocess((v) => (v === "" ? undefined : v), z.email().optional());
+// Accepts 0/1 and true/false (.env.example uses true/false for kill switches).
+const boolFlag = z.preprocess((v) => (v === "" || v === undefined ? "false" : v), z.enum(["0", "1", "true", "false"])).transform((v) => v === "1" || v === "true");
 const flag = z.preprocess((v) => (v === "" || v === undefined ? "0" : v), z.enum(["0", "1"])).transform((v) => v === "1");
 
 export const serverEnvSchema = z
@@ -48,6 +50,13 @@ export const serverEnvSchema = z
     EMAIL_FROM_SERVICE: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("Mindforward <hej@mail.mindforward.dk>")),
     EMAIL_REPLY_TO: optionalEmail,
     EMAIL_ALLOWLIST: optionalString,
+
+    // M5 — consent + unsubscribe. Optional at boot; code that needs them throws a clear EnvValidationError.
+    EMAIL_FROM_MARKETING: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("Mindforward <nyt@news.mindforward.dk>")),
+    UNSUBSCRIBE_TOKEN_SECRET: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(32, "skal være mindst 32 tegn (openssl rand -base64 32)").optional()),
+    EMAIL_HASH_PEPPER: z.preprocess((v) => (v === "" ? undefined : v), z.string().min(16, "skal være mindst 16 tegn").optional()),
+    // Marketing kill switch fallback (FeatureFlag wins once it exists). M5 sends no marketing mail.
+    MARKETING_EMAIL_ENABLED: boolFlag,
   })
   .superRefine((env, ctx) => {
     const pairs = [
