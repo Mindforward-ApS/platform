@@ -86,9 +86,9 @@ export async function makeModuleProgress(userId: string, organizationId: string)
   const id = randomUUID().slice(0, 8);
   const mod = await db.module.create({ data: { slug: `test-mod-${id}`, type: "CORE" } });
   const version = await db.moduleVersion.create({
-    data: { moduleId: mod.id, version: 1, status: "PUBLISHED", schemaVersion: "1", title: `Testmodul ${id}`, content: {}, maxPoints: 10, estimatedMinutes: 5, searchText: "", contentHash: id },
+    data: { moduleId: mod.id, version: 1, status: "IN_REVIEW", schemaVersion: "1", title: `Testmodul ${id}`, content: {}, maxPoints: 10, estimatedMinutes: 5, searchText: "", contentHash: id },
   });
-  await db.module.update({ where: { id: mod.id }, data: { publishedVersionId: version.id } });
+  // IN_REVIEW (not PUBLISHED): tests/integration/seed.test.ts asserts no unapproved module is ever published.
   const assignment = await db.assignment.create({ data: { organizationId, userId, moduleId: mod.id, source: "SELF", status: "PASSED", bestScorePct: 90, passedAt: new Date() } });
   const attempt = await db.attempt.create({ data: { organizationId, userId, moduleVersionId: version.id, assignmentId: assignment.id, status: "COMPLETED", maxPoints: 10, points: 9, scorePct: 90, passed: true, completedAt: new Date() } });
   await db.assignment.update({ where: { id: assignment.id }, data: { bestAttemptId: attempt.id } });
