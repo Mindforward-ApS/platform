@@ -17,10 +17,12 @@ export interface PlayerServerActions {
   finish: (attemptId: string) => Promise<PlayerActionResult>;
 }
 
-/** First step the learner still has to answer (or the last step when everything is done). */
+/** Where to resume: the READ/DEMO steps leading up to the first unanswered step (or the last step when all are done). */
 function firstOpenIndex(state: PlayerState): number {
-  const i = state.steps.findIndex((s) => s.status === "open");
-  return i === -1 ? state.steps.length - 1 : i;
+  let i = state.steps.findIndex((s) => s.status === "open");
+  if (i === -1) return state.steps.length - 1;
+  while (i > 0 && (state.steps[i - 1]?.type === "READ" || state.steps[i - 1]?.type === "DEMO")) i--;
+  return i;
 }
 
 const NOTICES = {
