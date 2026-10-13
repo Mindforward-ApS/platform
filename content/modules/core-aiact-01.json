@@ -100,35 +100,35 @@
     },
     {
       "id": "ansoegere",
-      "type": "QUIZ",
+      "type": "JUDGMENT",
       "title": "AI sorterer ansøgere",
       "points": 25,
-      "question": "Line (HR) har fået 40 ansøgninger til de nye pakkerjob i julesæsonen. Hun spørger dig, om hun kan lade AI'en rangere dem og automatisk sende afslag til de 30 nederste, så hun kun skal læse 10. Hvad er det rigtige råd?",
-      "multiSelect": false,
-      "shuffle": true,
+      "category": "RESPONSIBLE_USE",
+      "scenario": "Line (HR) har fået 40 ansøgninger til de nye pakkerjob i julesæsonen. Hun spørger dig, om hun kan lade AI'en rangere dem og automatisk sende afslag til de 30 nederste, så hun kun skal læse 10.",
+      "question": "Hvad er det rigtige råd?",
       "options": [
         {
           "id": "a",
           "text": "Ja. AI'en er neutral og bedre til at sortere end et menneske.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "AI'en kan have skjulte skævheder fra det, den er trænet på. Og den kan overse noget vigtigt i en ansøgning."
         },
         {
           "id": "b",
           "text": "AI'en må gerne hjælpe, fx med at opsummere ansøgningerne ud fra jobkravene. Men Line skal selv læse dem og træffe beslutningen om, hvem der får afslag.",
-          "correct": true,
+          "verdict": "CORRECT",
           "feedback": "Rigtigt. AI'en kan spare tid, men et menneske beslutter. Og ansøgninger er persondata, så kun det godkendte værktøj må bruges."
         },
         {
           "id": "c",
           "text": "Ja, hvis hun læser de 10 bedste grundigt.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "De 30 afslag er stadig besluttet af AI'en alene. Det er netop den beslutning, et menneske skal træffe."
         },
         {
           "id": "d",
           "text": "Ja, hvis hun først fjerner navnene.",
-          "correct": false,
+          "verdict": "PARTIAL",
           "feedback": "Det hjælper på data, men afslaget er stadig AI'ens beslutning."
         }
       ],
@@ -150,35 +150,35 @@
     },
     {
       "id": "forsikring",
-      "type": "QUIZ",
+      "type": "JUDGMENT",
       "title": "Svar om dækning uden kontrol",
       "points": 25,
-      "question": "Lise fra Klitrose Keramik spørger, om Nordlys dækker, hvis hendes keramik går i stykker hos jer. Peter har fået AI'en til at svare: \"Ja, I er fuldt dækket af vores forsikring.\" Han vil sende det uden at tjekke. Hvad bør han gøre?",
-      "multiSelect": false,
-      "shuffle": true,
+      "category": "RESPONSIBLE_USE",
+      "scenario": "Lise fra Klitrose Keramik spørger, om Nordlys dækker, hvis hendes keramik går i stykker hos jer. Peter har fået AI'en til at svare: \"Ja, I er fuldt dækket af vores forsikring.\" Han vil sende det uden at tjekke.",
+      "question": "Hvad bør han gøre?",
       "options": [
         {
           "id": "a",
           "text": "Sende det. Svaret er venligt, og kunden bliver glad.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Svaret kan være forkert, og Nordlys kan blive holdt op på det."
         },
         {
           "id": "b",
           "text": "Tjekke svaret mod standardkontrakten (§ 8), rette det, og spørge Jonas, hvis han er i tvivl.",
-          "correct": true,
+          "verdict": "CORRECT",
           "feedback": "Rigtigt. Kontrakten siger, at ansvaret er begrænset til kostprisen og højst 50.000 kr., og at kunden selv forsikrer mod brand og tyveri. \"Fuldt dækket\" er forkert."
         },
         {
           "id": "c",
           "text": "Sende det, men tilføje \"Skrevet af AI\" nederst.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Mærkning gør ikke et forkert svar rigtigt. Han har stadig ansvaret for indholdet."
         },
         {
           "id": "d",
           "text": "Bede AI'en om at gøre svaret mere sikkert i tonen.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "En sikker tone gør det kun værre. Fakta skal tjekkes i kontrakten."
         }
       ],
