@@ -1,4 +1,5 @@
 import { daBilling } from "./da-billing";
+import { daMonthly } from "./da-monthly";
 import { daPlacement } from "./da-placement";
 import { daPlayer } from "./da-player";
 import { daSandbox } from "./da-sandbox";
@@ -13,6 +14,7 @@ export const da = {
   player: daPlayer,
   placement: daPlacement,
   billing: daBilling,
+  monthly: daMonthly,
   meta: {
     title: "Mindforward",
     description: "Lær AI ved at gøre det.",

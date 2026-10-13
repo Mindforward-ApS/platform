@@ -1,0 +1,96 @@
+// M8 — monthly package, training reminders (SERVICE) and marketing mails (MARKETING).
+// SERVICE texts never contain offers, discounts, upsell or prices as a sales argument (docs/09 § 1).
+
+export const daMonthly = {
+  reminder: {
+    d1: {
+      subject: "Din månedspakke for {month} er klar (ca. {minutes} min)",
+      preview: "Månedens nye moduler og en genopfriskning",
+      heading: "Din månedspakke for {month} er klar",
+      intro: "Her er månedens korte pakke: nye moduler om det, der er ændret i dit værktøj, og en genopfriskning af noget, du har lært før. Det tager ca. {minutes} minutter.",
+    },
+    d14: {
+      subject: "Påmindelse: din månedspakke for {month} venter",
+      preview: "Du er ikke færdig med månedens pakke endnu",
+      heading: "Din månedspakke venter",
+      intro: "Du har endnu ikke gennemført månedspakken for {month}. Den tager ca. {minutes} minutter.",
+    },
+    d25: {
+      subject: "Sidste påmindelse om din månedspakke for {month}",
+      preview: "Månedens pakke er stadig åben",
+      heading: "Sidste påmindelse for {month}",
+      intro: "Månedspakken for {month} er stadig ikke gennemført. Den tager ca. {minutes} minutter, og du kan tage den, når det passer dig.",
+    },
+    contentsHeading: "Indhold",
+    moduleLine: "{title} (ca. {minutes} min)",
+    refresherLine: "Genopfriskning: {title} (ca. {minutes} min)",
+    button: "Åbn månedspakken",
+    fallback: "Virker knappen ikke, så kopiér dette link ind i din browser:",
+    settings: "Du får denne påmindelse, fordi træningspåmindelser er slået til på din konto. Du kan slå dem fra her:",
+  },
+  account: {
+    heading: "Træningspåmindelser",
+    on: "Du får en mail, når månedspakken er klar (den 1.), og en påmindelse den 14. og 25., hvis du ikke er færdig.",
+    off: "Påmindelser er slået fra. Du får ingen mails om månedspakken.",
+    turnOff: "Slå påmindelser fra",
+    turnOn: "Slå påmindelser til",
+  },
+  orgStatus: {
+    heading: "Månedspakke for {month}",
+    summary: "{done} af {total} medarbejdere har gennemført månedspakken.",
+    empty: "Ingen medarbejdere har en månedspakke i denne måned.",
+    columns: { name: "Medarbejder", status: "Status", modules: "Moduler", minutes: "Tid", completedAt: "Gennemført" },
+    minutes: "ca. {minutes} min",
+    status: { PENDING: "Ikke startet", IN_PROGRESS: "I gang", COMPLETED: "Gennemført", NONE: "Ingen pakke" },
+    note: "Du ser kun status. Medarbejdernes svar og tekster vises aldrig.",
+  },
+  marketing: {
+    label: "Markedsføring fra Mindforward",
+    sender: "Afsender: {name}, CVR {cvr}, {address}",
+    why: "Du får denne mail, fordi du har sagt ja tak til mails fra Mindforward og bekræftet det via et link.",
+    unsubscribe: "Afmeld med ét klik",
+    fallback: "Virker knappen ikke, så kopiér dette link ind i din browser:",
+    nurture1: {
+      subject: "Dit næste skridt efter AI-niveautesten",
+      preview: "Et gratis modul at starte med",
+      heading: "Tak fordi du tog AI-niveautesten",
+      personal: "Du fik niveau {level} i sporet {track}.",
+      body: "Den hurtigste måde at blive bedre på er at øve dig på rigtige opgaver. Start med et gratis modul i øvemiljøet.",
+      button: "Prøv et gratis modul",
+    },
+    nurture2: {
+      subject: "Sådan bruger andre AI i arbejdsdagen",
+      preview: "Et konkret eksempel fra en almindelig arbejdsuge",
+      heading: "Et eksempel fra hverdagen",
+      body: "I øvemiljøet arbejder du for den fiktive virksomhed Nordlys Logistik. Her skriver du fx svar på kundemails, opsummerer et møde og tjekker, om AI'ens svar holder — de samme opgaver, som mange gør hver uge.",
+      button: "Se modulerne",
+    },
+    nurture3: {
+      subject: "AI-træning for hele teamet",
+      preview: "Status pr. medarbejder og en rapport over, hvad I har trænet",
+      heading: "Når hele teamet skal i gang",
+      body: "Med Mindforward til virksomheder får I en kort niveautest, personlige forløb, status pr. medarbejder og en rapport, der dokumenterer, hvad jeres medarbejdere har trænet. Det er et dokumenteret, rollebaseret tiltag efter AI-forordningens art. 4.",
+      button: "Læs om Mindforward til virksomheder",
+    },
+    nurture4: {
+      subject: "Klar til at komme videre med AI?",
+      preview: "Fortsæt, hvor niveautesten slap",
+      heading: "Fortsæt, hvor du slap",
+      body: "Din personlige plan ligger klar. Den tager udgangspunkt i dit resultat fra niveautesten.",
+      button: "Se din plan",
+      offerHeading: "Introduktionstilbud",
+    },
+    newsletter: {
+      preview: "Nyt fra Mindforward",
+      readMore: "Læs mere",
+    },
+  },
+  campaign: {
+    percent: "{value} % rabat",
+    amount: "{value} kr. rabat",
+    endsAt: "Gælder til og med {date}.",
+    duration: "Gælder de første {months} måneder, derefter {regular}.",
+    priorPrice: "Normalpris: {price}.",
+    intro: "Introduktionstilbud",
+  },
+} as const;
