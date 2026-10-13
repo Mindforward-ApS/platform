@@ -100,35 +100,35 @@
     },
     {
       "id": "sendt-uden-at-laese",
-      "type": "QUIZ",
+      "type": "JUDGMENT",
       "title": "Sendt uden at læse",
       "points": 25,
-      "question": "Peter havde travlt. Han lod AI'en skrive et svar til Kragsø Vin om fakturaen og sendte det uden at læse det. Bagefter ser han, at svaret lover en kreditnota på 512 kr. Det har ingen besluttet, og tallet er forkert. Hvad er det rigtige at gøre nu?",
-      "multiSelect": false,
-      "shuffle": true,
+      "category": "AI_POLICY",
+      "scenario": "Peter havde travlt. Han lod AI'en skrive et svar til Kragsø Vin om fakturaen og sendte det uden at læse det. Bagefter ser han, at svaret lover en kreditnota på 512 kr. Det har ingen besluttet, og tallet er forkert.",
+      "question": "Hvad er det rigtige at gøre nu?",
       "options": [
         {
           "id": "a",
           "text": "Ingenting. Det var AI'en, der skrev det, så det er ikke Peters ansvar.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Forkert. Ifølge politikken har du altid ansvaret for det, du sender — også når AI'en har skrevet det."
         },
         {
           "id": "b",
           "text": "Vente og se, om kunden opdager det.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Det gør det værre. Kunden kan regne med et løfte, Nordlys ikke kan holde."
         },
         {
           "id": "c",
           "text": "Sige det til sin leder med det samme, så de sammen kan rette svaret over for kunden.",
-          "correct": true,
+          "verdict": "CORRECT",
           "feedback": "Rigtigt. Politikken siger: Sig det straks. Ingen skyld, bare hurtig handling. Næste gang læser han svaret igennem først."
         },
         {
           "id": "d",
           "text": "Sende en ny mail med det rigtige beløb uden at nævne det for nogen.",
-          "correct": false,
+          "verdict": "PARTIAL",
           "feedback": "Det er godt at rette fejlen, men kreditnotaen er ikke besluttet. Hans leder skal vide det og være med til at rette op."
         }
       ],
@@ -150,35 +150,35 @@
     },
     {
       "id": "ai-billede",
-      "type": "QUIZ",
+      "type": "JUDGMENT",
       "title": "Et AI-billede til LinkedIn",
       "points": 25,
-      "question": "Freja vil bruge et AI-genereret billede af glade pakkere på et lager i et LinkedIn-opslag om julesæsonen. Billedet ligner Nordlys' lager, men personerne findes ikke. Politikken nævner mærkning af tekst, men ikke billeder. Hvad er det rigtige at gøre?",
-      "multiSelect": false,
-      "shuffle": true,
+      "category": "AI_POLICY",
+      "scenario": "Freja vil bruge et AI-genereret billede af glade pakkere på et lager i et LinkedIn-opslag om julesæsonen. Billedet ligner Nordlys' lager, men personerne findes ikke. Politikken nævner mærkning af tekst, men ikke billeder.",
+      "question": "Hvad er det rigtige at gøre?",
       "options": [
         {
           "id": "a",
           "text": "Bruge det. Politikken nævner kun tekst, så billeder er frit.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Når politikken ikke dækker noget, betyder det ikke, at alt er tilladt. Så skal du spørge."
         },
         {
           "id": "b",
           "text": "Spørge Mette først. Bruges billedet, så mærk det som AI-genereret, så ingen tror, det er rigtige medarbejdere.",
-          "correct": true,
+          "verdict": "CORRECT",
           "feedback": "Rigtigt. Er du i tvivl, så spørg (punkt 6). Og ligesom med tekst skal modtageren ikke vildledes."
         },
         {
           "id": "c",
           "text": "Bruge det, men skrive i opslaget, at det er \"vores hold\".",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Det vildleder læserne. Personerne findes ikke."
         },
         {
           "id": "d",
           "text": "Bruge det uden mærkning. Ingen kan se forskel alligevel.",
-          "correct": false,
+          "verdict": "WRONG",
           "feedback": "Netop derfor skal det mærkes. Nordlys' troværdighed står på spil."
         }
       ],
