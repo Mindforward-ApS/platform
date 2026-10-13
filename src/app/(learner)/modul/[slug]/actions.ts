@@ -54,7 +54,7 @@ export async function startAttemptAction(moduleSlug: string): Promise<PlayerActi
 export async function submitAnswerAction(attemptId: string, stepId: string, answer: unknown): Promise<PlayerActionResult> {
   try {
     const actor = await currentActor();
-    const r = await submitAnswer(db(), playerDeps(), actor, id.parse(attemptId), id.parse(stepId), answer);
+    const r = await submitAnswer(db(), playerDeps(actor), actor, id.parse(attemptId), id.parse(stepId), answer);
     return await stateResult(actor, attemptId, r.notice);
   } catch (err) {
     return failure(err);
@@ -74,7 +74,7 @@ export async function takeHintAction(attemptId: string, stepId: string, level: n
 export async function checkClickTaskAction(attemptId: string, stepId: string): Promise<PlayerActionResult> {
   try {
     const actor = await currentActor();
-    const r = await checkClickTask(db(), playerDeps(), actor, id.parse(attemptId), id.parse(stepId));
+    const r = await checkClickTask(db(), playerDeps(actor), actor, id.parse(attemptId), id.parse(stepId));
     return await stateResult(actor, attemptId, r.notice);
   } catch (err) {
     return failure(err);

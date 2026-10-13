@@ -32,7 +32,7 @@ export interface StartArgs {
 }
 
 /** Post-login step: pick or create the user's organization context and say where to go next. */
-export async function runStart(db: PrismaClient, args: StartArgs): Promise<{ redirectTo: string }> {
+export async function runStart(db: PrismaClient, args: StartArgs): Promise<{ redirectTo: string; organizationId?: string }> {
   const [memberships, invitations] = await Promise.all([
     db.membership.findMany({
       where: { userId: args.user.id, deactivatedAt: null, organization: { deletedAt: null } },
@@ -54,16 +54,16 @@ export async function runStart(db: PrismaClient, args: StartArgs): Promise<{ red
 
   switch (decision.kind) {
     case "continue":
-      return { redirectTo: "/konto" };
+      return { redirectTo: "/konto", organizationId: args.activeOrganizationId ?? undefined };
     case "activate":
       await setActiveOrganization(db, args.sessionId, decision.organizationId);
-      return { redirectTo: "/konto" };
+      return { redirectTo: "/konto", organizationId: decision.organizationId };
     case "open-invitation":
       return { redirectTo: `/invitation/${decision.invitationId}` };
     case "create-personal-org": {
       const org = await createPersonalOrg(db, args.user);
       await setActiveOrganization(db, args.sessionId, org.id);
-      return { redirectTo: "/konto" };
+      return { redirectTo: "/konto", organizationId: org.id };
     }
   }
 }

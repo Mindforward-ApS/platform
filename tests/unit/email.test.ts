@@ -8,6 +8,22 @@ const FORBIDDEN_IN_SERVICE = [/rabat/i, /tilbud/i, /\bspar\b/i, /kampagne/i, /op
 const sampleVars = {
   "magic-link": { url: "https://greb.example/api/auth/magic-link/verify?token=abc", expiresMin: 15 },
   invitation: { url: "https://greb.example/invitation/inv_1", organizationName: "Nordisk Test A/S", inviterName: "Mette" },
+  "order-confirmation": {
+    url: "https://greb.example/konto/abonnement",
+    withdrawUrl: "https://greb.example/fortryd-aftale",
+    termsUrl: "https://greb.example/vilkaar/forbruger",
+    planName: "Mindforward Personlig (månedlig)",
+    price: "10,00 kr. pr. md. inkl. moms",
+    startDate: "13. oktober 2026",
+    withdrawalDeadline: "27. oktober 2026",
+    consents: [{ text: "Jeg ønsker adgang med det samme.", date: "13. oktober 2026", time: "14.05" }],
+    seller: { name: "Test ApS", cvr: "12345678", address: "Testvej 1" },
+  },
+  "withdrawal-receipt": { url: "https://greb.example/fortryd-aftale", date: "13. oktober 2026", time: "14.05", agreement: "Personlig", name: "Test", seller: { name: "Test ApS", cvr: "12345678", address: "Testvej 1" } },
+  "withdrawal-completed": { url: "https://greb.example/konto/abonnement", amount: "10,00 kr." },
+  "cancellation-confirmed": { url: "https://greb.example/konto/abonnement", date: "13. oktober 2026", time: "14.05", endDate: "12. november 2026" },
+  "support-escalation": { url: "https://greb.example/admin", reason: "WITHDRAWAL_UNMATCHED", summary: "Fortrydelse uden match" },
+  "marketing-confirm": { url: "https://greb.example/samtykke/bekraeft?t=abc", expiresDays: 7 },
 } as const;
 
 describe("email templates", () => {

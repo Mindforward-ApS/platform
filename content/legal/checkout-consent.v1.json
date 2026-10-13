@@ -1,0 +1,6 @@
+{
+  "version": "checkout-consent.v1",
+  "status": "DRAFT - final wording pending lawyer review (docs/OPEN-QUESTIONS.md: digitalt indhold vs. tjenesteydelse)",
+  "immediateAccess": "Jeg ønsker adgang til Mindforward med det samme, inden fortrydelsesfristen på 14 dage er udløbet.",
+  "withdrawalLossAck": "Jeg er indforstået med, at min fortrydelsesret bortfalder, når adgangen er begyndt."
+}

@@ -21,7 +21,7 @@ test("gennemfør core-prompt-01 og se bestået-skærmen med kriterier", async ({
   await signIn(page);
   await page.getByRole("link", { name: "Se moduler" }).click();
   await expect(page.getByTestId("module-list")).toContainText("Din første gode prompt");
-  await page.getByRole("link", { name: "Åbn modulet" }).first().click();
+  await page.locator('a[href="/modul/core-prompt-01"]').first().click();
   await expect(page).toHaveURL(/\/modul\/core-prompt-01$/);
   await page.getByRole("button", { name: "Start modulet" }).click();
 

@@ -1,0 +1,4480 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`applyEvent (docs/04 § 9) > AGENT_STEP_APPROVED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 1,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > AGENT_STEP_REJECTED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 1,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > AGENT_TASK_COMPLETED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 1,
+        "stepsRun": 2,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > AGENT_TASK_STARTED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > ASSISTANT_CREATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > ASSISTANT_KNOWLEDGE_ADDED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+        "f04",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > ASSISTANT_UPDATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [
+        "files",
+      ],
+      "id": "asst-faq1",
+      "instructionCharCount": 300,
+      "knowledgeFileIds": [
+        "f10",
+        "f11",
+      ],
+      "starterCount": 3,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > ASSISTANT_USED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > AUTOMATION_CREATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > AUTOMATION_DISABLED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > AUTOMATION_ENABLED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": true,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > AUTOMATION_RUN_SIMULATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 1,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 4,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > AUTOMATION_TEST_RUN: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 1,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > AUTOMATION_UPDATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "DRAFT_MAIL",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "type": "MANUAL",
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CALENDAR_EVENT_CREATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [
+      "cal-q1w2",
+    ],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CALENDAR_EVENT_OPENED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CHAT_CONVERSATION_STARTED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 2,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CHAT_FILE_ATTACHED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [
+        "f02",
+      ],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CHAT_MESSAGE_SENT: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [
+        "f13",
+      ],
+      "id": "conv-abcd1",
+      "messageCount": 1,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CHAT_RESPONSE_COPIED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CHAT_RESPONSE_RATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CHAT_RESPONSE_RECEIVED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 1,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CHAT_RESPONSE_REGENERATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CONNECTOR_CONNECT_STARTED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CONNECTOR_DISCONNECTED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": false,
+      "scopes": [],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CONNECTOR_PERMISSION_DENIED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CONNECTOR_PERMISSION_GRANTED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CRM_FILTER_APPLIED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CRM_RECORD_OPENED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > CRM_RECORD_UPDATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {
+      "k05": [
+        "status",
+      ],
+    },
+    "values": {
+      "k05": {
+        "status": "ACTIVE",
+      },
+    },
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > FILE_CREATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [
+      "file-n0te",
+    ],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > FILE_OPENED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > MAIL_DRAFT_SAVED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > MAIL_OPENED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > MAIL_SENT: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [],
+    "draftsCount": 0,
+    "externalSentCount": 1,
+    "sentCount": 1,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > PII_BLOCKED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > PII_WARNING_SHOWN: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > SESSION_RESET: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [],
+  },
+  "assistants": [],
+  "automations": [],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": null,
+      "messageCount": 0,
+    },
+    "conversations": 0,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": false,
+      "scopes": [],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [],
+    "draftsCount": 0,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > SESSION_STARTED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > SETTING_CHANGED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > SHEET_CELL_EDITED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [
+      "F9",
+    ],
+    "values": {
+      "F9": "=SUM(B9:E9)",
+    },
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > SHEET_OPENED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > TOOL_CALL_EXECUTED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > UI_CLICKED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
+
+exports[`applyEvent (docs/04 § 9) > UI_NAVIGATED: snapshot 1`] = `
+{
+  "agent": {
+    "tasks": [
+      {
+        "id": "agent-mtg1",
+        "stepsRejected": 0,
+        "stepsRun": 0,
+      },
+    ],
+  },
+  "assistants": [
+    {
+      "connectorIds": [],
+      "id": "asst-faq1",
+      "instructionCharCount": 240,
+      "knowledgeFileIds": [
+        "f10",
+      ],
+      "starterCount": 2,
+    },
+  ],
+  "automations": [
+    {
+      "actionTypes": [
+        "RUN_PROMPT",
+        "NOTIFY_ME",
+      ],
+      "enabled": false,
+      "id": "auto-fri1",
+      "simulatedRuns": 0,
+      "testRuns": 0,
+      "trigger": {
+        "freq": "WEEKLY",
+        "time": "08:00",
+        "type": "SCHEDULE",
+        "weekday": 5,
+      },
+    },
+  ],
+  "calendar": {
+    "createdEventIds": [],
+  },
+  "chat": {
+    "active": {
+      "attachments": [],
+      "id": "conv-abcd1",
+      "messageCount": 0,
+    },
+    "conversations": 1,
+  },
+  "clock": {
+    "dayOffset": 0,
+  },
+  "connectors": {
+    "calendar": {
+      "connected": false,
+      "scopes": [],
+    },
+    "crm": {
+      "connected": false,
+      "scopes": [],
+    },
+    "files": {
+      "connected": false,
+      "scopes": [],
+    },
+    "mail": {
+      "connected": true,
+      "scopes": [
+        "mail.read",
+      ],
+    },
+    "sheet": {
+      "connected": false,
+      "scopes": [],
+    },
+  },
+  "crm": {
+    "updated": {},
+    "values": {},
+  },
+  "files": {
+    "createdFileIds": [],
+  },
+  "mail": {
+    "draftIds": [
+      "draft-x1y2",
+    ],
+    "draftsCount": 1,
+    "externalSentCount": 0,
+    "sentCount": 0,
+  },
+  "sheet": {
+    "editedCells": [],
+    "values": {},
+  },
+}
+`;
