@@ -23,6 +23,6 @@ export default defineConfig({
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
         // Mail goes to files the tests read; only @example.test may receive it.
-        env: { APP_URL: baseURL, NEXT_PUBLIC_APP_URL: baseURL, EMAIL_TRANSPORT: "file", EMAIL_OUTBOX_DIR: ".e2e-outbox", EMAIL_ALLOWLIST: "@example.test" },
+        env: { APP_URL: baseURL, NEXT_PUBLIC_APP_URL: baseURL, EMAIL_TRANSPORT: "file", EMAIL_OUTBOX_DIR: process.env.EMAIL_OUTBOX_DIR ?? ".e2e-outbox", EMAIL_ALLOWLIST: "@example.test" },
       },
 });
