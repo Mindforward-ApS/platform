@@ -4,6 +4,7 @@ import type { PrismaClient } from "@/generated/prisma/client";
 import { serverEnv } from "@/lib/env";
 import { monthKey } from "@/server/modules/monthly-clock";
 import { logger } from "@/server/observability/logger";
+import { canSendMarketing } from "./consent";
 import { sendMarketingEmail, type MarketingRefusal, type MarketingSendOptions } from "./send";
 
 // Newsletter (docs/09 § 3, § 5): manual, max 1/month, only after Marco approved the draft. Recipients are every
@@ -27,19 +28,16 @@ export const newsletterDraftSchema = z
 
 export type NewsletterDraft = z.infer<typeof newsletterDraftSchema>;
 
-/** Addresses whose latest MARKETING_EMAIL row is CONFIRMED (the gate re-checks each one at send time). */
+/** Addresses that ever CONFIRMED marketing consent; the gate (canSendMarketing) decides per address below. */
 export async function confirmedMarketingAddresses(db: PrismaClient): Promise<string[]> {
-  const rows = await db.$queryRaw<{ subjectEmail: string; action: string }[]>`
-    SELECT DISTINCT ON ("subjectEmail") "subjectEmail", action
-    FROM consent_record
-    WHERE purpose = 'MARKETING_EMAIL' AND channel = 'EMAIL'
-    ORDER BY "subjectEmail", "createdAt" DESC, CASE action WHEN 'WITHDRAWN' THEN 0 WHEN 'GRANTED' THEN 1 ELSE 2 END`;
-  return rows.filter((r) => r.action === "CONFIRMED").map((r) => r.subjectEmail);
+  const rows = await db.consentRecord.findMany({ where: { purpose: "MARKETING_EMAIL", channel: "EMAIL", action: "CONFIRMED" }, distinct: ["subjectEmail"], select: { subjectEmail: true }, orderBy: { subjectEmail: "asc" } });
+  return rows.map((r) => r.subjectEmail);
 }
 
 export interface NewsletterRun {
   month: string;
   sent: number;
+  alreadySent: number;
   refused: Partial<Record<MarketingRefusal, number>>;
 }
 
@@ -47,11 +45,15 @@ export async function sendNewsletter(db: PrismaClient, input: unknown, opts: Mar
   const draft = newsletterDraftSchema.parse(input);
   const now = opts.now ?? new Date();
   const month = monthKey(now);
-  const run: NewsletterRun = { month, sent: 0, refused: {} };
+  const run: NewsletterRun = { month, sent: 0, alreadySent: 0, refused: {} };
   const appUrl = opts.appUrl ?? serverEnv().APP_URL;
   for (const email of await confirmedMarketingAddresses(db)) {
-    const consent = await db.consentRecord.findFirst({ where: { subjectEmail: email, purpose: "MARKETING_EMAIL", channel: "EMAIL", action: "CONFIRMED" }, orderBy: { createdAt: "desc" }, select: { id: true, userId: true } });
-    if (!consent) continue;
+    const gate = await canSendMarketing(db, email, { pepper: opts.pepper });
+    if (!gate.allowed) {
+      run.refused[gate.reason] = (run.refused[gate.reason] ?? 0) + 1;
+      continue;
+    }
+    const consent = await db.consentRecord.findUniqueOrThrow({ where: { id: gate.consentRecordId }, select: { id: true, userId: true } });
     const result = await sendMarketingEmail(
       db,
       {
@@ -64,9 +66,10 @@ export async function sendNewsletter(db: PrismaClient, input: unknown, opts: Mar
       },
       { ...opts, now, appUrl },
     );
-    if (result.sent) run.sent++;
+    if (result.sent && result.duplicate) run.alreadySent++;
+    else if (result.sent) run.sent++;
     else run.refused[result.reason] = (run.refused[result.reason] ?? 0) + 1;
   }
-  logger.info("marketing.newsletter_run", { month, sent: run.sent, refused: run.refused, approvedBy: draft.approvedBy });
+  logger.info("marketing.newsletter_run", { month, sent: run.sent, alreadySent: run.alreadySent, refused: run.refused, approvedBy: draft.approvedBy });
   return run;
 }

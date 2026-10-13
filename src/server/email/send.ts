@@ -126,7 +126,7 @@ export type MarketingRefusal =
   | "QUIET_HOURS"
   | "NOT_ALLOWLISTED";
 
-export type MarketingResult = { sent: true; message: EmailMessage } | { sent: false; reason: MarketingRefusal; retryAt?: Date };
+export type MarketingResult = { sent: true; message: EmailMessage; duplicate?: true } | { sent: false; reason: MarketingRefusal; retryAt?: Date };
 
 /** Template variables a caller provides: the unsubscribe link and the sender are always injected here. */
 export type MarketingCallerVars<K extends TemplateKey> = Omit<TemplateVars<K>, "unsubscribeUrl" | "sender">;
@@ -184,7 +184,7 @@ export async function sendMarketingEmail<K extends TemplateKey>(db: PrismaClient
 
   // Idempotent: a mail already handed to the transport is neither sent nor counted again.
   const existing = await db.emailMessage.findUnique({ where: { idempotencyKey: args.idempotencyKey } });
-  if (existing && DONE.includes(existing.status)) return { sent: true, message: existing };
+  if (existing && DONE.includes(existing.status)) return { sent: true, message: existing, duplicate: true };
 
   const previous = await db.emailMessage.findMany({
     where: {
@@ -240,7 +240,7 @@ export async function sendMarketingEmail<K extends TemplateKey>(db: PrismaClient
   } catch (err) {
     if (!(err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002")) throw err;
     const raced = await db.emailMessage.findUniqueOrThrow({ where: { idempotencyKey: args.idempotencyKey } });
-    if (DONE.includes(raced.status)) return { sent: true, message: raced };
+    if (DONE.includes(raced.status)) return { sent: true, message: raced, duplicate: true };
     message = raced;
   }
 
