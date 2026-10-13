@@ -9,7 +9,9 @@ test("learner opens the sandbox from /konto, sends a chat message and sees an Ø
   const external: string[] = [];
   page.on("request", (r) => {
     const url = new URL(r.url());
-    if (url.protocol.startsWith("http") && url.origin !== ownOrigin) external.push(url.origin);
+    // Sentry (EU ingest) is the app's own error monitoring, not sandbox traffic; it is only active when a DSN is set.
+    const monitoring = url.hostname.endsWith(".ingest.de.sentry.io");
+    if (url.protocol.startsWith("http") && url.origin !== ownOrigin && !monitoring) external.push(url.origin);
   });
 
   await page.goto("/opret");

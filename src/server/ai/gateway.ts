@@ -341,10 +341,13 @@ export function createGateway(deps: GatewayDeps) {
     },
 
     /** Step 9: structured output via forced tool use, Zod safeParse, one retry with the error, then a controlled error. */
-    async callStructured<T>(raw: StreamInput & { schema: z.ZodType<T>; toolName?: string }): Promise<{ data: T; model: string; promptVersion: string }> {
+    async callStructured<T>(
+      raw: StreamInput & { schema: z.ZodType<T>; toolName?: string; /** JSON Schema shown to the model when it differs from `schema` (caller validates further). */ toolInputSchema?: Record<string, unknown> },
+    ): Promise<{ data: T; model: string; promptVersion: string }> {
       const { input, prompt, config, meta } = await preflight(raw);
       const name = raw.toolName ?? "structured_output";
-      const { $schema: _s, ...schema } = z.toJSONSchema(raw.schema) as Record<string, unknown>;
+      const { $schema: _s, ...derived } = z.toJSONSchema(raw.schema) as Record<string, unknown>;
+      const schema = raw.toolInputSchema ?? derived;
       const tool: Anthropic.Tool = { name, description: "Returnér svaret i det krævede format.", input_schema: schema as Anthropic.Tool.InputSchema, cache_control: { type: "ephemeral" } };
       const messages: Anthropic.MessageParam[] = [...input.messages];
       for (let attempt = 0; attempt < 2; attempt++) {

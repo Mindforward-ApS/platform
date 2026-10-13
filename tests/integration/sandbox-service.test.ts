@@ -21,7 +21,8 @@ async function owner() {
   return { userId: user.id, organizationId: org.id };
 }
 
-const events = (sessionId: string) => testDb().sandboxEvent.findMany({ where: { sessionId }, orderBy: { seq: "asc" } });
+// contentText is globally omitted (prompt-text privacy, docs/02 § 7); these assertions read it on purpose.
+const events = (sessionId: string) => testDb().sandboxEvent.findMany({ where: { sessionId }, orderBy: { seq: "asc" }, omit: { contentText: false } });
 
 beforeAll(async () => {
   await seedTracks(testDb());
@@ -129,7 +130,7 @@ describe("user intents (POST /actions)", () => {
       event: { type: "MAIL_DRAFT_SAVED", payload: { draftId: "draft-abc123", replyToId: "m02", recipientIds: ["k01"], externalRecipientCount: 1, hasAttachment: false, charCount: 1 } },
       contentText: text,
     });
-    const row = await testDb().sandboxEvent.findFirstOrThrow({ where: { sessionId: s.id, type: "MAIL_DRAFT_SAVED" } });
+    const row = await testDb().sandboxEvent.findFirstOrThrow({ where: { sessionId: s.id, type: "MAIL_DRAFT_SAVED" }, omit: { contentText: false } });
     expect(row.contentText).toBe(text);
     expect(row.payload).toMatchObject({ charCount: text.length });
     expect(JSON.stringify(row.payload)).not.toContain("Hanne");
@@ -208,7 +209,7 @@ describe("sandbox chat with AI_MOCK", () => {
     await chat.run({ onText: () => {} });
     const warn = await testDb().sandboxEvent.findFirstOrThrow({ where: { sessionId: s.id, type: "PII_WARNING_SHOWN" } });
     expect(warn.payload).toEqual({ surface: "chat", kinds: ["EXTERNAL_EMAIL"], overridden: true });
-    const sent = await testDb().sandboxEvent.findFirstOrThrow({ where: { sessionId: s.id, type: "CHAT_MESSAGE_SENT" } });
+    const sent = await testDb().sandboxEvent.findFirstOrThrow({ where: { sessionId: s.id, type: "CHAT_MESSAGE_SENT" }, omit: { contentText: false } });
     expect(sent.payload).toMatchObject({ piiWarningOverridden: true });
   });
 });
