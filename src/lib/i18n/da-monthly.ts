@@ -36,6 +36,7 @@ export const daMonthly = {
     turnOn: "Slå påmindelser til",
   },
   orgStatus: {
+    pageTitle: "Månedspakke",
     heading: "Månedspakke for {month}",
     summary: "{done} af {total} medarbejdere har gennemført månedspakken.",
     empty: "Ingen medarbejdere har en månedspakke i denne måned.",

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { assignCycleBatch, composeCycles, syncMonthlyProgress } from "@/server/modules/monthly-cycle";
 import { copenhagenInstant, monthRange, parseMonthKey, previousMonthKey } from "@/server/modules/monthly-clock";
+import { orgMonthlyStatus } from "@/server/modules/monthly-queries";
 import { sendMonthlyReminders } from "@/server/modules/monthly-reminders";
 import type { EmailTransport, OutgoingEmail } from "@/server/email/transports";
 import { addMember, makeOrg, makeUser, testDb } from "./helpers";
@@ -158,5 +159,25 @@ describe("monthly.reminders", () => {
     const { sent, transport } = captureTransport();
     await sendMonthlyReminders(testDb(), { now: dayIn(month, 14), send: sendOpts(transport), batchSize: 1000 });
     expect(sent.filter((m) => m.to === user.email)).toHaveLength(0);
+  });
+});
+
+describe("orgMonthlyStatus (admin view)", () => {
+  it("shows status per employee of THIS org only, with no free text fields", async () => {
+    const { track, month } = await setup({ minutes: [4] });
+    const org = await makeEntitledOrg();
+    const a = await makeLearner(org.id, track.id);
+    const b = await makeLearner(org.id, track.id);
+    const other = await makeEntitledOrg();
+    const outsider = await makeLearner(other.id, track.id);
+    const [cycle] = (await composeCycles(testDb(), { month })).filter((c) => c.trackId === track.id);
+    await assignCycleBatch(testDb(), { cycleId: cycle?.cycleId ?? "", batchSize: 1000 });
+    await testDb().monthlyAssignment.updateMany({ where: { userId: a.id }, data: { status: "COMPLETED", completedAt: new Date() } });
+
+    const status = await orgMonthlyStatus(testDb(), org.id, { month });
+    expect(status.rows.map((r) => r.userId).sort()).toEqual([a.id, b.id].sort());
+    expect(status.rows.some((r) => r.userId === outsider.id)).toBe(false);
+    expect(status).toMatchObject({ total: 2, done: 1 });
+    for (const row of status.rows) expect(Object.keys(row).sort()).toEqual(["completedAt", "estimatedMinutes", "moduleCount", "name", "status", "userId"]);
   });
 });

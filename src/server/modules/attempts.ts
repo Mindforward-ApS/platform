@@ -22,6 +22,7 @@ import {
   type StepResultRow,
 } from "./attempt-rules";
 import type { ClickTaskStep, EvaluateClickTask } from "./click-task";
+import { syncMonthlyProgress } from "./monthly-cycle";
 import type { PlayerState } from "./player-types";
 import { sanitizeAttempt, type SanitizeRow } from "./sanitize";
 
@@ -365,6 +366,8 @@ export async function finishAttempt(db: PrismaClient, actor: Actor, attemptId: s
     }
     if (attempt.assignmentId) await refreshAssignment(tx, attempt.assignmentId, now);
   });
+  // M8: keep the monthly package status current (never blocks finishing the attempt).
+  await syncMonthlyProgress(db, actor, now).catch((err: unknown) => logger.warn("monthly.sync_failed", { err }));
   return { scorePct, passed: score.passed, mustPassFailed: score.mustPassFailed };
 }
 

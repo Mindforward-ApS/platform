@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { TrainingReminders } from "@/components/monthly/training-reminders";
 import { Notice, Page } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { format, getMessages } from "@/lib/i18n";
@@ -66,6 +67,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
           ))}
         </section>
       )}
+      <TrainingReminders userId={ctx.user.id} />
       <a className="underline" href="/virksomhed/opret">
         {t.createBusiness}
       </a>
