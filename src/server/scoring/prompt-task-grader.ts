@@ -63,7 +63,14 @@ export type GradeOutcome =
       promptVersion: string;
       rubricVersion: string;
     }
-  | { status: "ERROR"; checks: ChecksResult; reason: "INVALID_OUTPUT" | "MODEL_ERROR" };
+  | { status: "ERROR"; checks: ChecksResult; reason: "INVALID_OUTPUT" | "MODEL_ERROR" }
+  /** M10: AI paused (global monthly budget used up or kill switch) — deterministic checks ran, rubric waits. */
+  | { status: "PENDING"; checks: ChecksResult; reason: "AI_PAUSED" };
+
+/** The gateway signals "AI paused" with code AI_DISABLED (src/server/ai/gateway.ts); duck-typed to stay pure. */
+export function isAiPaused(err: unknown): boolean {
+  return typeof err === "object" && err !== null && (err as { code?: unknown }).code === "AI_DISABLED";
+}
 
 /** docs/05 § 4.2 + "criterion ids = the rubric's ids (no missing/extra/duplicates)". */
 export function rubricResponseSchema(criterionIds: readonly string[]) {
@@ -119,7 +126,9 @@ export async function gradePromptTask(input: { step: PromptTaskStep; submission:
     let response: { modelId: string; output: unknown };
     try {
       response = await deps.gradeWithModel(request);
-    } catch {
+    } catch (err) {
+      // Budget/kill switch: no retry, the rubric part is graded later (docs/02 § 6, 100 % level).
+      if (isAiPaused(err)) return { status: "PENDING", checks, reason: "AI_PAUSED" };
       reason = "MODEL_ERROR";
       continue;
     }

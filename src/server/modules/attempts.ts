@@ -43,7 +43,7 @@ export interface PlayableOptions {
   allowUnpublished: boolean;
 }
 
-export type SubmitNotice = "PII_REJECTED" | "GRADING_ERROR" | "NOT_IMPROVED" | "CLICK_NOT_YET" | "CLICK_UNAVAILABLE";
+export type SubmitNotice = "PII_REJECTED" | "GRADING_ERROR" | "GRADING_PENDING" | "NOT_IMPROVED" | "CLICK_NOT_YET" | "CLICK_UNAVAILABLE";
 
 // ── Module versions ────────────────────────────────────────────────────────
 const contentCache = new Map<string, ModuleContent>();
@@ -238,6 +238,19 @@ async function submitPrompt(
   if (outcome.status === "PII_REJECTED") return { notice: "PII_REJECTED" };
 
   const hadGraded = row?.gradingStatus === "GRADED";
+  if (outcome.status === "PENDING") {
+    // M10 (docs/02 § 6): AI paused at 100 % of the global budget. Deterministic checks ran; the submission is kept
+    // (owner-only promptText, purged after 30 days) with gradingStatus PENDING so the rubric can be graded later.
+    if (!hadGraded) {
+      const pending = { gradingStatus: "PENDING" as const, tryCount: 0, passed: false, promptText: text, checksReport: outcome.checks.report as unknown as Prisma.InputJsonValue };
+      await db.stepResult.upsert({
+        where: { attemptId_stepId: { attemptId, stepId: step.id } },
+        create: { attemptId, stepId: step.id, stepType: step.type, maxPoints: step.points, ...pending },
+        update: pending,
+      });
+    }
+    return { notice: "GRADING_PENDING" };
+  }
   if (outcome.status === "ERROR") {
     logger.warn("grading.failed", { attemptId, stepId: step.id, reason: outcome.reason });
     // Never 0 points: the submission does not count and the step stays open (or keeps its best graded result).

@@ -59,6 +59,9 @@ export const daSupport = {
       OTHER_USER_DATA: "oplysninger om en anden person",
     },
   },
+  grading: {
+    pending: "Øvemodellen holder pause, så din skriveopgave venter på bedømmelse. Dine svar er gemt — prøv igen senere. Øvelser uden chat virker stadig.",
+  },
   sla: {
     HIGH: "inden for 1 hverdag",
     NORMAL: "inden for 2 hverdage",
