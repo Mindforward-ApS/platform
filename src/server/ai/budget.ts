@@ -2,7 +2,8 @@ import type { Prisma, PrismaClient } from "@/generated/prisma/client";
 import type { TokenUsage } from "./pricing";
 
 // Budgets (docs/02 § 6, docs/04 § 11): daily token cap per user (Europe/Copenhagen day, cache reads weighted 0.1)
-// and spend recording on BudgetMonth(GLOBAL_AI). The global 80 % alarm / degradation is M10.
+// and spend recording on BudgetMonth(GLOBAL_AI). Global levels (alert/degraded/blocked) at the end of this file;
+// the alert mails live in ai.budget-watch (src/server/ai/budget-watch.ts).
 
 export const CAP_MESSAGE = "Du har brugt dagens øvekvote. Den nulstilles kl. 00.";
 const TZ = "Europe/Copenhagen";
@@ -72,4 +73,35 @@ export async function recordUsage(tx: Tx, opts: { userId: string | null; usage: 
     create: { scope: "GLOBAL_AI", month, limitDkk: opts.monthlyLimitDkk, spentDkk: costDkk },
     update: { spentDkk: { increment: costDkk } },
   });
+}
+
+// ── Global monthly budget levels (docs/02 § 6; M10) ─────────────────────────
+// ≥ alert (80 %): one alert per month (ai.budget-watch, CAS on alert80SentAt) · ≥ 95 %: degraded mode
+// (shorter answers/history, content draft/verify paused) · ≥ 100 %: new AI calls blocked nicely.
+
+export const DEGRADED_PCT = 0.95;
+export type BudgetLevel = "NORMAL" | "ALERT" | "DEGRADED" | "BLOCKED";
+
+export function budgetLevel(pct: number, alertPct = 0.8): BudgetLevel {
+  if (pct >= 1) return "BLOCKED";
+  if (pct >= DEGRADED_PCT) return "DEGRADED";
+  if (pct >= alertPct) return "ALERT";
+  return "NORMAL";
+}
+
+export interface GlobalBudgetState {
+  month: string;
+  spentDkk: number;
+  limitDkk: number;
+  pct: number;
+  level: BudgetLevel;
+}
+
+/** The configured limit (env/config) is authoritative; BudgetMonth.limitDkk is only the snapshot at month start. */
+export async function globalBudgetState(db: Pick<PrismaClient, "budgetMonth">, limitDkk: number, now = new Date(), alertPct = 0.8): Promise<GlobalBudgetState> {
+  const month = budgetMonth(now);
+  const row = await db.budgetMonth.findUnique({ where: { scope_month: { scope: "GLOBAL_AI", month } }, select: { spentDkk: true } });
+  const spentDkk = row ? Number(row.spentDkk) : 0;
+  const pct = limitDkk > 0 ? spentDkk / limitDkk : spentDkk > 0 ? 1 : 0;
+  return { month, spentDkk, limitDkk, pct, level: budgetLevel(pct, alertPct) };
 }

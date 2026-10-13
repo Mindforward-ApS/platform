@@ -2,6 +2,7 @@ import type { PromptDefinition } from "./prompts/types";
 import { gradePromptTaskV1 } from "./prompts/grade-prompt-task.v1";
 import { sandboxChatV1 } from "./prompts/sandbox-chat.v1";
 import { contentClassifyPromptV1, contentDraftPromptV1, contentVerifyPromptV1 } from "@/server/content-engine/prompts/registry";
+import { supportAgentV1 } from "./prompts/support-agent.v1";
 
 // Prompt registry (docs/02 § 6): all versions per key + the active one. ACTIVE is config, so a prompt can be rolled
 // back by changing one line (later: a FeatureFlag value) without touching call sites.
@@ -12,6 +13,7 @@ const PROMPTS: Record<string, Record<string, PromptDefinition>> = {
   "content-classify": { v1: contentClassifyPromptV1 },
   "content-draft": { v1: contentDraftPromptV1 },
   "content-verify": { v1: contentVerifyPromptV1 },
+  "support-agent": { v1: supportAgentV1 },
 };
 
 const ACTIVE: Record<string, string> = {
@@ -20,6 +22,7 @@ const ACTIVE: Record<string, string> = {
   "content-classify": "v1",
   "content-draft": "v1",
   "content-verify": "v1",
+  "support-agent": "v1",
 };
 
 export class UnknownPromptError extends Error {}

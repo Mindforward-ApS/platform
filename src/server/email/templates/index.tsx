@@ -8,6 +8,7 @@ import * as orgAdmin from "./org-admin";
 import { MarketingConfirmEmail, marketingConfirmSubject, type MarketingConfirmVars } from "./marketing-confirm";
 import * as marketing from "./marketing";
 import * as monthly from "./monthly";
+import * as support from "./support";
 
 // Category is a property of the template, not of the call (docs/09 § 1).
 interface TemplateDef<V> {
@@ -41,6 +42,11 @@ export const TEMPLATES = {
   "nurture-3": { category: "MARKETING", version: "1", subject: marketing.nurture3Subject, component: marketing.Nurture3Email } satisfies TemplateDef<marketing.Nurture3Vars>,
   "nurture-4": { category: "MARKETING", version: "1", subject: marketing.nurture4Subject, component: marketing.Nurture4Email } satisfies TemplateDef<marketing.Nurture4Vars>,
   newsletter: { category: "MARKETING", version: "1", subject: marketing.newsletterSubject, component: marketing.NewsletterEmail } satisfies TemplateDef<marketing.NewsletterVars>,
+  // M10 — support + owner operations
+  "support-escalation-receipt": { category: "SERVICE", version: "1", subject: support.escalationReceiptSubject, component: support.EscalationReceiptEmail } satisfies TemplateDef<support.EscalationReceiptVars>,
+  "support-invoice-link": { category: "SERVICE", version: "1", subject: support.invoiceLinkSubject, component: support.InvoiceLinkEmail } satisfies TemplateDef<support.InvoiceLinkVars>,
+  "ai-budget-alert": { category: "SERVICE", version: "1", subject: support.budgetAlertSubject, component: support.BudgetAlertEmail } satisfies TemplateDef<support.BudgetAlertVars>,
+  "owner-digest": { category: "SERVICE", version: "1", subject: support.ownerDigestSubject, component: support.OwnerDigestEmail } satisfies TemplateDef<support.OwnerDigestVars>,
 } as const;
 
 export type TemplateKey = keyof typeof TEMPLATES;

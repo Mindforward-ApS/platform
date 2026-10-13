@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { PostHogAnalytics } from "@/components/analytics/posthog-analytics";
 import { CookieBanner } from "@/components/legal/cookie-banner";
+import { clientEnv } from "@/lib/env.client";
 import { defaultLocale, getMessages } from "@/lib/i18n";
 import "./globals.css";
 
@@ -15,6 +17,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang={defaultLocale} className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-bg font-sans text-fg">
         <CookieBanner t={t.placement.cookieBanner} />
+        {clientEnv.NEXT_PUBLIC_POSTHOG_KEY && <PostHogAnalytics apiKey={clientEnv.NEXT_PUBLIC_POSTHOG_KEY} apiHost={clientEnv.NEXT_PUBLIC_POSTHOG_HOST} />}
         {children}
       </body>
     </html>

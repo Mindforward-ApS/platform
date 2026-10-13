@@ -50,6 +50,11 @@ export const AUDIT_ACTIONS = [
   "CERTIFICATE_ISSUED",
   "CERTIFICATE_PUBLIC_TOGGLED",
   "AI_POLICY_URL_CHANGED",
+  // M10 — support agent + AI budget watch
+  "SUPPORT_MODULE_RESET",
+  "SUPPORT_INVOICE_LINK_SENT",
+  "SUPPORT_ESCALATED",
+  "AI_BUDGET_MODE_CHANGED",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

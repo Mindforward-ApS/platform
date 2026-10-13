@@ -28,6 +28,7 @@ function firstOpenIndex(state: PlayerState): number {
 const NOTICES = {
   PII_REJECTED: t.prompt.piiRejected,
   GRADING_ERROR: t.prompt.gradingError,
+  GRADING_PENDING: getMessages().support.grading.pending,
   NOT_IMPROVED: t.prompt.notImproved,
   CLICK_NOT_YET: t.click.notYet,
   CLICK_UNAVAILABLE: t.click.unavailable,

@@ -28,6 +28,10 @@ const nextConfig: NextConfig = {
     "/sandkasse/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**"],
     // M7: the DPA text is shown and hashed at acceptance (src/server/orgs/dpa.ts).
     "/virksomhed/**": ["./content/legal/dpa.v1.md"],
+    // M10: help-center articles are read from content/help at runtime (src/server/support/help.ts).
+    "/api/support/**": ["./content/help/**"],
+    "/hjaelp/**": ["./content/help/**"],
+    "/hjaelp": ["./content/help/**"],
   },
   // M7: pdfkit reads its built-in font metrics (AFM files) from its package directory at runtime.
   serverExternalPackages: ["pdfkit"],

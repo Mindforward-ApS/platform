@@ -49,6 +49,21 @@ const sampleVars = {
   // M8
   ...monthlySamples,
   ...marketingSamples,
+  // M10
+  "support-escalation-receipt": { url: "https://greb.example/konto/support", escalationId: "esc_1", expected: "inden for 2 hverdage" },
+  "support-invoice-link": { url: "https://invoice.stripe.example/i/abc", invoiceNumber: "GREB-0001", amount: "245,00 kr.", status: "betalt" },
+  "ai-budget-alert": { url: "https://greb.example/admin/forbrug", month: "2026-10", pct: 81, spent: "4.050,00 kr.", limit: "5.000,00 kr.", level: "BLOCKED" },
+  "owner-digest": {
+    url: "https://greb.example/admin",
+    date: "13. oktober 2026",
+    action: { openCount: 1, lines: [{ text: "HIGH · Sikkerhed · 3 t · Brugeren mistænker hacket konto", overdue: true }] },
+    support: { line: "4 samtaler, 75 pct. løst uden menneske, 1 eskalationer", byReason: "Sikkerhed: 1", guardHits: 1 },
+    billing: "1 nye abonnementer, 0 opsigelser, 0 fortrydelser, 0 fejlede betalinger",
+    pipeline: null,
+    errors: "0 AI-fejl/timeouts, 0 mails fejlede, 0 webhooks fejlede",
+    ai: { line: "I går: 12,00 kr. Måned til dato: 4.050,00 kr. af 5.000,00 kr. (81 pct.).", alert: true },
+    killSwitches: ["AI_DEGRADED_MODE: til"],
+  },
 } as const;
 
 describe("email templates", () => {

@@ -104,6 +104,11 @@ export const serverEnvSchema = z
     GITHUB_TOKEN: optionalString,
     // M8 — Resend webhooks (Svix signature). Optional at boot; the webhook route answers 503 without it.
     RESEND_WEBHOOK_SECRET: z.preprocess((v) => (v === "" || v === "whsec_" ? undefined : v), z.string().startsWith("whsec_", "skal starte med whsec_").optional()),
+    // M10 — owner digest, budget alert threshold, server-side PostHog (EU). All optional at boot.
+    OWNER_DIGEST_EMAIL: optionalEmail,
+    AI_BUDGET_ALERT_PCT: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().gt(0).lt(1).default(0.8)),
+    POSTHOG_API_KEY: z.preprocess((v) => (v === "" || v === "phc_" ? undefined : v), z.string().optional()),
+    POSTHOG_HOST: z.preprocess((v) => (v === "" ? undefined : v), z.url().default("https://eu.i.posthog.com")),
   })
   .superRefine((env, ctx) => {
     const pairs = [
