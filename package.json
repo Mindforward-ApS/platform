@@ -19,7 +19,9 @@
     "db:seed": "prisma db seed",
     "content:validate": "tsx scripts/content-validate.ts",
     "postinstall": "prisma generate",
-    "inngest:dev": "inngest-cli dev --no-discovery -u http://localhost:3000/api/inngest"
+    "inngest:dev": "inngest-cli dev --no-discovery -u http://localhost:3000/api/inngest",
+    "admin:grant": "tsx --conditions=react-server scripts/grant-admin.ts",
+    "check:client-secrets": "tsx scripts/check-client-secrets.ts"
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "1.7.7",

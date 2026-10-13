@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { parseWith } from "./env.shared";
+
+export { EnvValidationError } from "./env.shared";
 
 // Variables become required in the milestone that first uses them (docs/00-beslutninger.md § 10a).
 // Empty strings from .env files are treated as "not set".
@@ -74,35 +77,7 @@ export const serverEnvSchema = z
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
 
-export const clientEnvSchema = z.object({
-  NEXT_PUBLIC_APP_URL: z.preprocess((v) => (v === "" ? undefined : v), z.url().optional()),
-  NEXT_PUBLIC_SENTRY_DSN: optionalUrl,
-});
-
-export type ClientEnv = z.infer<typeof clientEnvSchema>;
-
-export class EnvValidationError extends Error {
-  constructor(
-    public readonly variables: string[],
-    details: string,
-  ) {
-    super(`Ugyldige eller manglende miljøvariabler: ${variables.join(", ")}\n${details}`);
-    this.name = "EnvValidationError";
-  }
-}
-
-function parseWith<T extends z.ZodType>(schema: T, source: Record<string, string | undefined>): z.infer<T> {
-  const result = schema.safeParse(source);
-  if (result.success) return result.data;
-  const variables = [...new Set(result.error.issues.map((i) => String(i.path[0] ?? "?")))];
-  const details = result.error.issues.map((i) => `  - ${String(i.path[0] ?? "?")}: ${i.message}`).join("\n");
-  throw new EnvValidationError(variables, details);
-}
-
 export function parseServerEnv(source: Record<string, string | undefined>): ServerEnv {
   return parseWith(serverEnvSchema, source);
 }
 
-export function parseClientEnv(source: Record<string, string | undefined>): ClientEnv {
-  return parseWith(clientEnvSchema, source);
-}

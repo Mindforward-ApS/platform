@@ -61,7 +61,7 @@ export const da = {
     inviteEmail: "Email",
     inviteRole: "Rolle",
     invite: "Send invitation",
-    invited: "Invitation sendt til {email}.",
+    invited: "Invitationen er sendt.",
     pending: "Ventende invitationer",
     changeRole: "Skift rolle",
     save: "Gem",
