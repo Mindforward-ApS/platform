@@ -1,0 +1,97 @@
+{
+  "$comment": "ContentSource seed (docs/06 § 1, docs/research-fund.md 'Opdateringskilder'). Upserted by src/server/content/seed.ts. `parser` is read at runtime by key (ContentSource has no column for it); bump parser.version when parsing changes. `enabled` is only applied on create — the admin kill switch owns it afterwards.",
+  "version": 1,
+  "sources": [
+    {
+      "key": "openai-chatgpt-rn",
+      "track": "CHATGPT",
+      "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes",
+      "parserType": "HTML",
+      "parser": { "version": 1, "contentSelector": "article", "entryHeadings": ["h2", "h3"] },
+      "fetchMode": "BROWSER_FALLBACK",
+      "enabled": true,
+      "autoPublishAllowed": true,
+      "attribution": null,
+      "title": "ChatGPT release notes",
+      "note": "Intercom behind Cloudflare"
+    },
+    {
+      "key": "openai-chatgpt-business-rn",
+      "track": "CHATGPT",
+      "url": "https://help.openai.com/en/articles/11391654-chatgpt-business-release-notes",
+      "parserType": "HTML",
+      "parser": { "version": 1, "contentSelector": "article", "entryHeadings": ["h2", "h3"] },
+      "fetchMode": "BROWSER_FALLBACK",
+      "enabled": true,
+      "autoPublishAllowed": true,
+      "attribution": null,
+      "title": "ChatGPT Business release notes",
+      "note": "Intercom behind Cloudflare"
+    },
+    {
+      "key": "claude-rn",
+      "track": "CLAUDE",
+      "url": "https://support.claude.com/en/articles/12138966-release-notes",
+      "parserType": "HTML",
+      "parser": { "version": 1, "contentSelector": "article", "entryHeadings": ["h2", "h3"] },
+      "fetchMode": "BROWSER_FALLBACK",
+      "enabled": true,
+      "autoPublishAllowed": true,
+      "attribution": null,
+      "title": "Claude release notes",
+      "note": "Intercom behind Cloudflare"
+    },
+    {
+      "key": "ms-learn-copilot-rn",
+      "track": "COPILOT",
+      "url": "https://learn.microsoft.com/en-us/copilot/microsoft-365/release-notes?accept=text/markdown",
+      "parserType": "MARKDOWN",
+      "parser": { "version": 1, "entryHeadings": [2, 3] },
+      "fetchMode": "DIRECT",
+      "enabled": true,
+      "autoPublishAllowed": true,
+      "attribution": "'Microsoft 365 Copilot release notes', Microsoft Learn, licenseret under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
+      "title": "Microsoft 365 Copilot release notes",
+      "note": "CC BY 4.0 — attribution is set by code from ContentSource.attribution"
+    },
+    {
+      "key": "ms-m365-roadmap",
+      "track": "COPILOT",
+      "url": "https://www.microsoft.com/releasecommunications/api/v1/m365",
+      "parserType": "JSON",
+      "parser": { "version": 1, "jsonFilter": { "field": "tagsContainer.products[].tagName", "includes": ["Copilot"] } },
+      "fetchMode": "DIRECT",
+      "enabled": true,
+      "autoPublishAllowed": true,
+      "attribution": null,
+      "title": "Microsoft 365 Roadmap (release communications)",
+      "note": "Filter product 'Copilot'"
+    },
+    {
+      "key": "gemini-rn",
+      "track": "GEMINI",
+      "url": "https://gemini.google/release-notes/",
+      "parserType": "HTML",
+      "parser": { "version": 1, "contentSelector": "main", "entryHeadings": ["h2", "h3"] },
+      "fetchMode": "DIRECT",
+      "enabled": false,
+      "autoPublishAllowed": false,
+      "attribution": null,
+      "title": "Gemini release notes",
+      "note": "Phase 2 track — seeded but disabled"
+    },
+    {
+      "key": "workspace-gemini-feed",
+      "track": "GEMINI",
+      "url": "https://workspaceupdates.googleblog.com/feeds/posts/default/-/Gemini",
+      "parserType": "ATOM",
+      "parser": { "version": 1 },
+      "fetchMode": "DIRECT",
+      "enabled": false,
+      "autoPublishAllowed": false,
+      "attribution": null,
+      "title": "Google Workspace Updates — Gemini",
+      "note": "Phase 2 track — seeded but disabled"
+    }
+  ]
+}

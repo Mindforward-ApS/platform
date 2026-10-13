@@ -1,0 +1,35 @@
+{
+  "$comment": "Feature registry (docs/06 § 12). Data, not code: tool feature names change fast; the curriculum is concept-based. Updated via PR only — the content engine never writes this file.",
+  "version": 1,
+  "features": [
+    {
+      "id": "chatgpt.custom-gpts",
+      "track": "CHATGPT",
+      "concept": "ASSISTANTS",
+      "aliases": ["custom GPTs", "GPTs", "GPT Builder", "egne GPT'er"],
+      "status": "DEPRECATED",
+      "retireDate": "2026-12-11",
+      "replacementIds": ["chatgpt.skills", "chatgpt.plugins"]
+    },
+    { "id": "chatgpt.skills", "track": "CHATGPT", "concept": "ASSISTANTS", "aliases": ["Skills"], "status": "ACTIVE" },
+    { "id": "chatgpt.plugins", "track": "CHATGPT", "concept": "CONNECTORS", "aliases": ["Plugins", "Plugin Directory"], "status": "ACTIVE" },
+    { "id": "chatgpt.work", "track": "CHATGPT", "concept": "AGENTS", "aliases": ["ChatGPT Work"], "status": "ACTIVE" },
+    { "id": "chatgpt.scheduled-tasks", "track": "CHATGPT", "concept": "SCHEDULED_TASKS", "aliases": ["scheduled tasks"], "status": "ACTIVE" },
+    { "id": "copilot.chat", "track": "COPILOT", "concept": "PROMPTING", "aliases": ["Copilot Chat", "Microsoft 365 Copilot Chat"], "status": "ACTIVE" },
+    { "id": "copilot.agent-builder", "track": "COPILOT", "concept": "AGENTS", "aliases": ["Agent Builder"], "status": "ACTIVE" },
+    { "id": "copilot.studio", "track": "COPILOT", "concept": "AGENTS", "aliases": ["Copilot Studio"], "status": "ACTIVE" },
+    { "id": "copilot.notebooks", "track": "COPILOT", "concept": "FILES_AND_DATA", "aliases": ["Copilot Notebooks", "Notebooks"], "status": "ACTIVE" },
+    { "id": "copilot.agent-mode", "track": "COPILOT", "concept": "AGENTS", "aliases": ["Agent Mode"], "status": "ACTIVE" },
+    { "id": "copilot.cowork", "track": "COPILOT", "concept": "AGENTS", "aliases": ["Copilot Cowork"], "status": "ACTIVE" },
+    { "id": "claude.projects", "track": "CLAUDE", "concept": "ASSISTANTS", "aliases": ["Projects"], "status": "ACTIVE" },
+    { "id": "claude.skills", "track": "CLAUDE", "concept": "ASSISTANTS", "aliases": ["Skills"], "status": "ACTIVE" },
+    { "id": "claude.plugins", "track": "CLAUDE", "concept": "CONNECTORS", "aliases": ["Plugins"], "status": "ACTIVE" },
+    { "id": "claude.connectors", "track": "CLAUDE", "concept": "CONNECTORS", "aliases": ["Connectors"], "status": "ACTIVE" },
+    { "id": "claude.cowork", "track": "CLAUDE", "concept": "AGENTS", "aliases": ["Cowork"], "status": "ACTIVE" },
+    { "id": "claude.scheduled-tasks", "track": "CLAUDE", "concept": "SCHEDULED_TASKS", "aliases": ["scheduled tasks"], "status": "ACTIVE" },
+    { "id": "claude.memory", "track": "CLAUDE", "concept": "SECURITY_PRIVACY", "aliases": ["Memory"], "status": "ACTIVE" },
+    { "id": "gemini.gems", "track": "GEMINI", "concept": "ASSISTANTS", "aliases": ["Gems"], "status": "DEPRECATED", "replacementIds": ["gemini.skills"] },
+    { "id": "gemini.skills", "track": "GEMINI", "concept": "ASSISTANTS", "aliases": ["Skills"], "status": "ACTIVE" },
+    { "id": "gemini.deep-research", "track": "GEMINI", "concept": "AGENTS", "aliases": ["Deep Research"], "status": "ACTIVE" }
+  ]
+}

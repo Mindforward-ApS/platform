@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { z } from "zod";
 import type { LicenseTier, Prisma, PrismaClient, TrackKey } from "@/generated/prisma/client";
 import { paidPlans } from "@/lib/config/plans";
+import { sourceConfigs, type SourceConfig } from "@/server/content-engine/sources";
 import { loadModules } from "./load-modules";
 
 export const TRACKS: { key: TrackKey; displayName: string; vendorName: string; skinKey: string; isActive: boolean; sortOrder: number; licenseTiers: LicenseTier[] }[] = [
@@ -95,9 +96,30 @@ export async function seedModules(db: PrismaClient, approved: Set<string> = appr
   return results;
 }
 
+/** ContentSource rows from content/sources.json (M9). `enabled` is set on create only — the admin kill switch owns it. */
+export async function seedContentSources(db: PrismaClient, sources: SourceConfig[] = sourceConfigs()) {
+  const tracks = new Map((await db.track.findMany()).map((t) => [t.key, t.id]));
+  for (const s of sources) {
+    const trackId = tracks.get(s.track);
+    if (!trackId) throw new Error(`content source ${s.key}: track ${s.track} not seeded`);
+    const data = {
+      trackId,
+      url: s.url,
+      parserType: s.parserType,
+      parserVersion: String(s.parser.version),
+      fetchMode: s.fetchMode,
+      autoPublishAllowed: s.autoPublishAllowed,
+      attribution: s.attribution,
+    };
+    await db.contentSource.upsert({ where: { key: s.key }, create: { key: s.key, enabled: s.enabled, ...data }, update: data });
+  }
+  return sources.length;
+}
+
 export async function seedAll(db: PrismaClient) {
   await seedTracks(db);
   await seedPlans(db);
   const modules = await seedModules(db);
-  return { tracks: TRACKS.length, plans: await db.plan.count({ where: { active: true } }), modules };
+  const contentSources = await seedContentSources(db);
+  return { tracks: TRACKS.length, plans: await db.plan.count({ where: { active: true } }), modules, contentSources };
 }

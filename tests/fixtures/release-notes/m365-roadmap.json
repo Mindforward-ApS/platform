@@ -1,0 +1,37 @@
+[
+  {
+    "id": 498123,
+    "title": "Microsoft 365 Copilot: Agent Mode in Excel for Mac",
+    "description": "<p>Agent Mode in Excel lets Copilot plan and carry out multi-step work in a workbook. Now coming to Excel for Mac.</p>",
+    "moreInfoLink": null,
+    "publicDisclosureAvailabilityDate": "November CY2026",
+    "publicPreviewDate": "",
+    "created": "2026-09-30T08:00:00Z",
+    "modified": "2026-10-06T09:12:00Z",
+    "status": "In development",
+    "tagsContainer": {
+      "products": [{ "tagName": "Microsoft Copilot (Microsoft 365)" }, { "tagName": "Excel" }],
+      "cloudInstances": [{ "tagName": "Worldwide (Standard Multi-Tenant)" }],
+      "releasePhase": [{ "tagName": "General Availability" }],
+      "platforms": [{ "tagName": "Mac" }]
+    }
+  },
+  {
+    "id": 498200,
+    "title": "Microsoft Teams: New meeting layouts",
+    "description": "New gallery layouts in Teams meetings.",
+    "created": "2026-10-01T08:00:00Z",
+    "modified": "2026-10-01T08:00:00Z",
+    "status": "Rolling out",
+    "tagsContainer": { "products": [{ "tagName": "Microsoft Teams" }], "cloudInstances": [], "releasePhase": [], "platforms": [] }
+  },
+  {
+    "id": "498310",
+    "title": "Microsoft 365 Copilot Chat: Pages in Word",
+    "description": "Copilot Chat users can open a Copilot Page directly in Word.",
+    "created": "2026-10-02T08:00:00Z",
+    "modified": "2026-10-02T08:00:00Z",
+    "status": "Launched",
+    "tagsContainer": { "products": [{ "tagName": "Microsoft Copilot (Microsoft 365)" }, { "tagName": "Word" }] }
+  }
+]
