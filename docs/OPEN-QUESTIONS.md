@@ -11,9 +11,9 @@
 - [ ] **Dansk tilsynsmyndighed for AI-forordningens art. 4** er uafklaret (L 111 bortfaldt). Påvirker kun markedsføringstekster.
 
 ## Tekniske (fra spec-arbejdet 12. okt 2026)
-- [ ] **`prisma validate` er ikke kørt** — npm var ikke tilgængeligt i miljøet hvor spec blev skrevet. Kør `npx prisma validate` + `npx prisma format` i M1 og ret fejl. Skemaet følger Prisma 7 (datasource-url i `prisma.config.ts`, driver adapter, seed køres ikke automatisk ved migrate).
+- [x] **`prisma validate` er ikke kørt** (M0: kørt 13. okt 2026 — skemaet er gyldigt med Prisma 7.10) — npm var ikke tilgængeligt i miljøet hvor spec blev skrevet. Kør `npx prisma validate` + `npx prisma format` i M1 og ret fejl. Skemaet følger Prisma 7 (datasource-url i `prisma.config.ts`, driver adapter, seed køres ikke automatisk ved migrate).
 - [ ] **Better Auth + Prisma 7:** pakkenavn for adapteren (`@better-auth/prisma-adapter` vs. import fra `better-auth/adapters/prisma`). Diff Better Auth-tabeller mod `npx auth@latest generate` i M1.
-- [ ] **Vercel-region:** standard er `iad1` → sæt `"regions": ["fra1"]` i `vercel.json` (M0).
+- [x] **Vercel-region:** standard er `iad1` → sæt `"regions": ["fra1"]` i `vercel.json` (M0).
 - [ ] **Feltnavne på `StepResult`:** `docs/05-moduler-og-scoring.md` nævner `graderModelId`, `graderPromptVersion`, `criteriaScores`. Prisma bruger `modelId`, `promptVersion`, `rubricScores`. **Prisma vinder** — ret 05 i M4.
 - [ ] **Fortrydelser:** `docs/07-betaling.md` foreslår `AuditLog`; Prisma har en dedikeret `WithdrawalRequest`. **Brug `WithdrawalRequest`** (AuditLog logger desuden handlingen).
 - [ ] **Seed-data:** `content/sandbox-world/` skal indeholde mailen med id `nordlys-mail-hansen-byg-4471` ("Forsinket levering – ordre 4471"), som `content/modules/core-prompt-01.json` refererer til (M2).
@@ -25,11 +25,11 @@
 ## Fra kickoff-gennemgang (13. okt 2026)
 
 ### M0 — versioner og opsætning
-- [ ] **Prisma-version:** `npm prisma@latest` er 8.0.0-rc; `@better-auth/prisma-adapter` kræver Prisma ≤ 7. · Forslag: lås `prisma`/`@prisma/client`/adapter på 7.10.x. · Blokerer: M0.
-- [ ] **TypeScript-version:** `typescript@latest` er 7.0; `typescript-eslint` kræver `<6.1`. · Forslag: lås TS 6.0.x. · Blokerer: M0 (lint).
-- [ ] **Next.js 16:** `middleware.ts` hedder nu `proxy.ts`; `next lint` er fjernet. · Forslag: 02 § 2/§ 7 læses som `proxy.ts`; `pnpm lint` = `eslint .`. · Blokerer: intet.
-- [ ] **Env-validering i M0:** hvis `env.ts` kræver alle variabler fra `.env.example` (Stripe, Anthropic …), kan M0-preview ikke starte. · Forslag: Zod-skema med grupper; kun M0-variabler (DB, Sentry, Inngest, APP_URL) er påkrævede nu, resten tilføjes som påkrævede i den milestone der bruger dem. · Blokerer: M0.
-- [ ] **Prisma-skema i M0:** M0 har ingen domænemodeller, men `prisma/schema.prisma` er hele spec-skemaet (ikke valideret). · Forslag: M0 kører `prisma validate` på spec-skemaet og retter syntaksfejl, men laver ingen migration; health-route bruger `SELECT 1`. Første migration i M1. · Blokerer: M0.
+- [x] **Prisma-version:** `npm prisma@latest` er 8.0.0-rc; `@better-auth/prisma-adapter` kræver Prisma ≤ 7. · Forslag: lås `prisma`/`@prisma/client`/adapter på 7.10.x. · Blokerer: M0.
+- [x] **TypeScript-version:** `typescript@latest` er 7.0; `typescript-eslint` kræver `<6.1`. · Forslag: lås TS 6.0.x. · Blokerer: M0 (lint).
+- [x] **Next.js 16:** `middleware.ts` hedder nu `proxy.ts`; `next lint` er fjernet. · Forslag: 02 § 2/§ 7 læses som `proxy.ts`; `pnpm lint` = `eslint .`. · Blokerer: intet.
+- [x] **Env-validering i M0:** hvis `env.ts` kræver alle variabler fra `.env.example` (Stripe, Anthropic …), kan M0-preview ikke starte. · Forslag: Zod-skema med grupper; kun M0-variabler (DB, Sentry, Inngest, APP_URL) er påkrævede nu, resten tilføjes som påkrævede i den milestone der bruger dem. · Blokerer: M0.
+- [x] **Prisma-skema i M0:** M0 har ingen domænemodeller, men `prisma/schema.prisma` er hele spec-skemaet (ikke valideret). · Forslag: M0 kører `prisma validate` på spec-skemaet og retter syntaksfejl, men laver ingen migration; health-route bruger `SELECT 1`. Første migration i M1. · Blokerer: M0.
 
 ### BLOCKER (før M2/M4)
 - [ ] **CORE-moduler på flere spor:** `Module` har ét `trackId` + unik `slug`, men `core-prompt-01.json` har `tracks: [CHATGPT, COPILOT, CLAUDE, GEMINI]`. · Forslag: join-tabel `ModuleTrack`. · Blokerer: M2-seed.
