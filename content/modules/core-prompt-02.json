@@ -1,0 +1,319 @@
+{
+  "$schema": "../schema/module.schema.json",
+  "schemaVersion": 1,
+  "id": "core-prompt-02",
+  "version": 1,
+  "locale": "da-DK",
+  "title": "Fra første svar til godt svar",
+  "summary": "Lær at gøre et AI-udkast bedre med korte, præcise opfølgninger i stedet for at starte forfra — og at vide, hvornår en ny samtale er bedre.",
+  "level": 1,
+  "type": "CORE",
+  "format": "STANDARD",
+  "tracks": [
+    "CHATGPT",
+    "COPILOT",
+    "CLAUDE",
+    "GEMINI"
+  ],
+  "requiresTier": "COPILOT_CHAT",
+  "roles": [],
+  "concepts": [
+    "PROMPTING"
+  ],
+  "featureRefs": [],
+  "minutes": 8,
+  "objectives": [
+    "Forbedr et AI-svar med opfølgende instrukser i stedet for at starte forfra.",
+    "Bed om alternativer, en kortere eller længere version og en anden tone.",
+    "Vurdér, hvornår en ny samtale er bedre end at fortsætte en lang."
+  ],
+  "prerequisites": [
+    "core-prompt-01"
+  ],
+  "passThreshold": 0.8,
+  "requiresVerification": false,
+  "sources": [],
+  "steps": [
+    {
+      "id": "intro",
+      "type": "READ",
+      "title": "Det første svar er et udkast",
+      "points": 0,
+      "body": "Ida fra **Havtorn Hudpleje** har skrevet til dig. Hun vil gerne have et overslag på lager og pakning. Du har bedt AI'en om et udkast til et svar.\n\nUdkastet er ikke dårligt, men det er heller ikke godt nok. Det er for langt, tonen er stiv, og en af priserne er forkert.\n\nMange starter forfra med en helt ny prompt. Det er sjældent nødvendigt. AI'en husker resten af samtalen. Du kan bare skrive, hvad der skal ændres — ligesom når du giver en kollega feedback på en tekst.\n\nDet sparer tid, og du beholder det, der allerede virker."
+    },
+    {
+      "id": "gode-opfoelgninger",
+      "type": "READ",
+      "title": "Sådan skriver du en god opfølgning",
+      "points": 0,
+      "body": "En god opfølgning siger **præcist**, hvad der skal ændres. \"Gør den bedre\" giver et tilfældigt nyt svar. Skriv hellere:\n\n- **Kortere eller længere:** \"Maks 80 ord.\" \"Uddyb afsnittet om opstart.\"\n- **Anden tone:** \"Skriv du i stedet for De.\" \"Mindre sælgende.\"\n- **Alternativer:** \"Giv mig tre bud på en emnelinje.\"\n- **Ret fakta:** \"Prisen er 32 kr. pr. palle pr. uge, ikke 28 kr.\"\n- **Fjern noget:** \"Slet sætningen om, at vi er Danmarks førende.\"\n- **Behold noget:** \"Behold resten, som det er.\"\n\nÉn eller to ændringer ad gangen er nok. Så kan du se, om det virker."
+    },
+    {
+      "id": "for-langt",
+      "type": "QUIZ",
+      "title": "Svaret er for langt",
+      "points": 15,
+      "question": "AI'ens udkast til Ida er på 180 ord. Du vil have det ned på højst 80 ord, men indholdet om pris og opstart er godt. Hvad gør du?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Start en ny samtale, og skriv hele prompten igen med ordet \"kort\" til sidst.",
+          "correct": false,
+          "feedback": "Du mister det, der allerede virker, og skal forklare det hele igen. En opfølgning er hurtigere."
+        },
+        {
+          "id": "b",
+          "text": "Skriv i samme samtale: \"Gør den kortere, maks 80 ord. Behold afsnittene om pris og opstart.\"",
+          "correct": true,
+          "feedback": "Rigtigt. Du siger præcist, hvad der skal ændres, og hvad der skal blive."
+        },
+        {
+          "id": "c",
+          "text": "Skriv i samme samtale: \"Den er ikke god. Prøv igen.\"",
+          "correct": false,
+          "feedback": "AI'en ved ikke, hvad der er galt. Du får et nyt, tilfældigt bud."
+        },
+        {
+          "id": "d",
+          "text": "Slet udkastet, og skriv mailen helt selv.",
+          "correct": false,
+          "feedback": "Det kan du godt, men du spilder det gode arbejde, der allerede er gjort."
+        }
+      ],
+      "explanation": "En præcis opfølgning i samme samtale er den hurtigste vej til et godt svar: Sig, hvad der skal ændres, og hvad der skal blive.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvilken mulighed beholder det gode og siger tydeligt, hvad der skal ændres?"
+        },
+        {
+          "level": 2,
+          "text": "Se efter en opfølgning med et tal og en besked om, hvad der skal blive."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: \"Gør den kortere, maks 80 ord. Behold afsnittene om pris og opstart.\" Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "to-opfoelgninger",
+      "type": "PROMPT_TASK",
+      "title": "Forbedr udkastet med to opfølgninger",
+      "points": 45,
+      "instruction": "Skriv to korte opfølgninger, som du ville sende i samme samtale for at gøre AI'ens udkast til Ida brugbart. Skriv \"Opfølgning 1:\" og \"Opfølgning 2:\" foran. Du skriver opfølgningerne — ikke selve mailen.",
+      "scenario": "Ida, CEO hos Havtorn Hudpleje ApS i Vejle, vil have et overslag på lager og pakning. De har ca. 300 ordrer om dagen og små glas og tuber. Du har et opkald med hende i dag kl. 13. Prislisten og Nordlys' tone of voice er vedhæftet i samtalen. AI'ens første udkast lyder sådan:\n\n\"Kære Ida. Mange tak for Deres henvendelse. Nordlys Logistik ApS er Danmarks førende 3PL-partner med over 20 års erfaring. Vi kan tilbyde lagerplads til 28 kr. pr. palle pr. uge samt pluk og pak efter behov. Vi håber, at De vil overveje os som Deres fremtidige partner, og vi ser frem til at høre fra Dem.\"\n\nProblemer: Nordlys skriver \"du\", ikke \"De\". \"Danmarks førende\" og \"20 års erfaring\" kan ingen dokumentere. Lagerplads koster 32 kr. pr. palle pr. uge, og til små varer er hyldeplads (12 kr. pr. hyldemeter pr. uge) mere relevant. Der er intet næste skridt.",
+      "attachments": [
+        "f02",
+        "f11"
+      ],
+      "maxChars": 2000,
+      "maxSubmissions": 3,
+      "runModelAfter": true,
+      "checks": [
+        {
+          "kind": "NO_PII",
+          "severity": "BLOCK",
+          "message": "Din tekst ser ud til at indeholde et CPR-, kort- eller kontonummer. Fjern det, og prøv igen — sådanne oplysninger hører aldrig hjemme i en prompt."
+        },
+        {
+          "kind": "MIN_WORDS",
+          "value": 10,
+          "severity": "BLOCK",
+          "message": "Dine opfølgninger er meget korte. Skriv præcist, hvad AI'en skal ændre i udkastet."
+        },
+        {
+          "kind": "MAX_WORDS",
+          "value": 250,
+          "severity": "WARN",
+          "message": "Det er mange ord til to opfølgninger. Det er ikke forkert, men korte og præcise opfølgninger virker ofte bedst."
+        },
+        {
+          "kind": "INCLUDES_ANY",
+          "terms": [
+            "32",
+            "pris",
+            "førende",
+            "erfaring",
+            "opfind",
+            "hyldeplads"
+          ],
+          "severity": "WARN",
+          "message": "Har du bedt AI'en rette prisen og fjerne de påstande, Nordlys ikke kan dokumentere?"
+        }
+      ],
+      "rubric": {
+        "version": "core-prompt-02-to-opfoelgninger.v1",
+        "passScore": 0.7,
+        "criteria": [
+          {
+            "id": "konkret-aendring",
+            "label": "Konkret ændring",
+            "description": "Opfølgningerne siger præcist, hvad der skal ændres i udkastet (fx 'skriv du i stedet for De', 'fjern Danmarks førende', 'ret prisen til 32 kr.', 'maks 80 ord', 'tilføj opkaldet kl. 13'). 2 = begge opfølgninger indeholder mindst én præcis, handlingsrettet ændring. 1 = kun én opfølgning er præcis, eller ønskerne er vage ('gør den bedre', 'mere personlig', 'mere professionel'). 0 = ingen konkret ændring.",
+            "weight": 3,
+            "required": true
+          },
+          {
+            "id": "fakta-rettelse",
+            "label": "Retter fakta",
+            "description": "Opfølgningerne retter de forkerte eller opfundne oplysninger: prisen (28 kr. → 32 kr. pr. palle, eller brug hyldeplads 12 kr. / prislisten) og påstandene 'Danmarks førende' og '20 års erfaring' (fjernes eller må ikke bruges). 2 = både prisen og de opfundne påstande håndteres. 1 = kun én af delene, eller kun en generel besked som 'tjek fakta'. 0 = ingen rettelse af fakta.",
+            "weight": 2,
+            "required": false
+          },
+          {
+            "id": "bygger-videre",
+            "label": "Bygger videre på udkastet",
+            "description": "Opfølgningerne arbejder med det eksisterende udkast i samme samtale (fx 'ret udkastet', 'behold resten', 'i samme mail') i stedet for at skrive en helt ny, fuld prompt forfra. 2 = tydeligt rettet mod udkastet. 1 = uklart, om udkastet genbruges. 0 = starter forfra med en ny opgave uden henvisning til udkastet, eller beder om en ny samtale.",
+            "weight": 1,
+            "required": false
+          },
+          {
+            "id": "tone-format",
+            "label": "Tone og længde",
+            "description": "Opfølgningerne justerer tone og/eller længde: du-form eller Nordlys' tone of voice, mindre sælgende, og/eller en konkret længde (maks antal ord/linjer). 2 = både tone og en konkret længde. 1 = kun én af delene, eller en vag længde ('kortere'). 0 = hverken tone eller længde.",
+            "weight": 1,
+            "required": false
+          },
+          {
+            "id": "naeste-skridt",
+            "label": "Næste skridt",
+            "description": "Opfølgningerne beder om et konkret næste skridt eller om svar på Idas behov: fx henvisning til opkaldet i dag kl. 13, at et overslag sendes bagefter, eller prøveperiode/opstart. 2 = konkret næste skridt med tid eller handling. 1 = vagt ('afslut med et næste skridt'). 0 = intet om næste skridt.",
+            "weight": 1,
+            "required": false
+          }
+        ]
+      },
+      "goldenSet": "content/golden/core-prompt-02/to-opfoelgninger.jsonl",
+      "exampleSolution": "Opfølgning 1: Ret udkastet, og behold opbygningen. Skriv \"du\" i stedet for \"De\", som i vores tone of voice. Fjern \"Danmarks førende\" og \"over 20 års erfaring\" — det kan vi ikke dokumentere. Prisen er forkert: Lagerplads koster 32 kr. pr. palle pr. uge. Til små glas og tuber er hyldeplads til 12 kr. pr. hyldemeter pr. uge mere relevant. Brug kun priser fra den vedhæftede prisliste.\n\nOpfølgning 2: Gør mailen kortere, maks 100 ord. Slut med et konkret næste skridt: at vi tager detaljerne på vores opkald i dag kl. 13, og at jeg sender et overslag bagefter.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Læs listen over problemer i scenariet. Hvilke to opfølgninger ville løse de fleste af dem?"
+        },
+        {
+          "level": 2,
+          "text": "Lad den første opfølgning rette tone og fakta (du-form, prisen, de opfundne påstande). Lad den anden handle om længde og næste skridt (opkaldet kl. 13)."
+        },
+        {
+          "level": 3,
+          "text": "Se et eksempel på to opfølgninger, der består. Du får 0 point for trinnet, men kan stadig bestå modulet på de andre trin."
+        }
+      ]
+    },
+    {
+      "id": "ny-samtale-read",
+      "type": "READ",
+      "title": "Hvornår skal du starte en ny samtale?",
+      "points": 0,
+      "body": "AI'en læser hele samtalen, hver gang du skriver. Det er en styrke, så længe du arbejder på den samme opgave.\n\nMen en lang samtale kan også drille:\n\n- Gamle detaljer fra en anden opgave kan snige sig ind i det nye svar.\n- Instrukser fra starten kan blive glemt eller blandet sammen.\n- Det bliver svært for dig at se, hvad AI'en bygger på.\n\n**Tommelfingerregel:** Fortsæt samtalen, når du forbedrer det samme udkast. Start en ny samtale, når du skifter til en ny opgave, en ny kunde — eller når svarene bliver rodede."
+    },
+    {
+      "id": "ny-samtale",
+      "type": "QUIZ",
+      "title": "Fortsæt eller start forfra?",
+      "points": 20,
+      "question": "Du har arbejdet med tilbuddet til Havtorn Hudpleje i en lang samtale. Nu skal du have hjælp til et svar til Kragsø Vin om en faktura. Hvad er bedst?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Fortsæt i samme samtale. AI'en kender jo allerede Nordlys.",
+          "correct": false,
+          "feedback": "Risikoen er, at detaljer fra Havtorn-tilbuddet blander sig ind i svaret til Kragsø Vin."
+        },
+        {
+          "id": "b",
+          "text": "Start en ny samtale, og giv kun de oplysninger, der hører til Kragsø Vin.",
+          "correct": true,
+          "feedback": "Rigtigt. Ny opgave og ny kunde: En ny samtale holder svaret rent."
+        },
+        {
+          "id": "c",
+          "text": "Fortsæt, men skriv \"glem alt om Havtorn\" først.",
+          "correct": false,
+          "feedback": "Det virker ikke altid. Det gamle står stadig i samtalen, og AI'en kan bruge det."
+        },
+        {
+          "id": "d",
+          "text": "Det er lige meget. AI'en adskiller selv opgaverne.",
+          "correct": false,
+          "feedback": "Det kan du ikke regne med. AI'en bruger det, der står i samtalen."
+        }
+      ],
+      "explanation": "Forbedrer du det samme udkast, så fortsæt. Skifter du opgave eller kunde, så start en ny samtale. Det giver renere svar og mindre risiko for, at oplysninger om én kunde havner hos en anden.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Er det den samme opgave, eller en helt ny?"
+        },
+        {
+          "level": 2,
+          "text": "Tænk på, hvad der kan ske, hvis detaljer om Havtorn Hudpleje dukker op i svaret til Kragsø Vin."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Start en ny samtale med kun Kragsø Vins oplysninger. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "konkrete-opfoelgninger",
+      "type": "QUIZ",
+      "title": "Hvilke opfølgninger er præcise?",
+      "points": 20,
+      "question": "Hvilke af disse opfølgninger fortæller AI'en præcist, hvad den skal gøre? Vælg alle, der passer.",
+      "multiSelect": true,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Skriv det i du-form, og fjern udråbstegnene.",
+          "correct": true,
+          "feedback": "Ja. To klare ændringer."
+        },
+        {
+          "id": "b",
+          "text": "Giv mig tre forskellige bud på en emnelinje.",
+          "correct": true,
+          "feedback": "Ja. En klar bestilling på alternativer."
+        },
+        {
+          "id": "c",
+          "text": "Gør den lidt bedre.",
+          "correct": false,
+          "feedback": "Nej. AI'en ved ikke, hvad \"bedre\" betyder for dig."
+        },
+        {
+          "id": "d",
+          "text": "Skær den ned til fem linjer, og behold prisen.",
+          "correct": true,
+          "feedback": "Ja. En konkret længde og en klar besked om, hvad der skal blive."
+        },
+        {
+          "id": "e",
+          "text": "Mere wow, tak.",
+          "correct": false,
+          "feedback": "Nej. Det er et vagt ønske, som kan tolkes på mange måder."
+        }
+      ],
+      "explanation": "Præcise opfølgninger har et tal, et ord der skal ind eller ud, eller en tydelig ny form. Vage ønsker giver tilfældige svar.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Kunne en kollega gøre præcis det, der står, uden at spørge igen?"
+        },
+        {
+          "level": 2,
+          "text": "Tre af opfølgningerne er præcise. To er vage ønsker."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: du-form uden udråbstegn, tre bud på en emnelinje, og fem linjer med prisen bevaret. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    }
+  ]
+}

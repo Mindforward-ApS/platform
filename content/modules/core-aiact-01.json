@@ -1,0 +1,308 @@
+{
+  "$schema": "../schema/module.schema.json",
+  "schemaVersion": 1,
+  "id": "core-aiact-01",
+  "version": 1,
+  "locale": "da-DK",
+  "title": "Ansvarlig brug og AI-forordningen",
+  "summary": "Forstå kort, hvad AI-forordningens artikel 4 handler om, hvornår et menneske altid skal træffe beslutningen, og hvornår AI-indhold skal mærkes.",
+  "level": 1,
+  "type": "CORE",
+  "format": "STANDARD",
+  "tracks": [
+    "CHATGPT",
+    "COPILOT",
+    "CLAUDE",
+    "GEMINI"
+  ],
+  "requiresTier": "COPILOT_CHAT",
+  "roles": [],
+  "concepts": [
+    "SECURITY_PRIVACY"
+  ],
+  "featureRefs": [],
+  "minutes": 7,
+  "objectives": [
+    "Forklar kort, at artikel 4 handler om, at virksomheder understøtter AI-kompetencer hos medarbejderne.",
+    "Genkend opgaver, hvor et menneske altid skal træffe beslutningen.",
+    "Vurdér, hvornår AI-indhold skal mærkes."
+  ],
+  "prerequisites": [
+    "core-policy-01"
+  ],
+  "passThreshold": 0.8,
+  "requiresVerification": false,
+  "sources": [],
+  "steps": [
+    {
+      "id": "artikel-4",
+      "type": "READ",
+      "title": "Hvad handler artikel 4 om?",
+      "points": 0,
+      "body": "AI-forordningen er EU's fælles regler for kunstig intelligens. **Artikel 4** handler om AI-kompetencer.\n\nKort sagt: Virksomheder, der bruger AI, skal tage tiltag, der hjælper medarbejderne med at få den viden, de har brug for. Fx viden om, hvad AI kan, hvor den tager fejl, og hvordan man bruger den sikkert.\n\nReglen sætter ikke et bestemt niveau eller en bestemt prøve. Et godt tiltag er:\n\n- **rollebaseret** — tilpasset det, den enkelte bruger AI til i sit job\n- **dokumenteret** — så virksomheden kan vise, hvad den har gjort\n\nDet træningsforløb, du er i gang med nu, er et eksempel på sådan et tiltag hos Nordlys."
+    },
+    {
+      "id": "hvad-kraever-art4",
+      "type": "QUIZ",
+      "title": "Hvad betyder artikel 4?",
+      "points": 20,
+      "question": "En kollega siger: \"Artikel 4 betyder, at vi alle skal bestå en officiel AI-prøve.\" Hvad er det mest præcise svar?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Ja, alle medarbejdere skal bestå en officiel prøve.",
+          "correct": false,
+          "feedback": "Nej. Artikel 4 fastsætter ingen officiel prøve og intet bestemt niveau."
+        },
+        {
+          "id": "b",
+          "text": "Nej. Artikel 4 handler om, at virksomheden tager tiltag, der styrker medarbejdernes AI-kompetencer. Gerne rollebaseret og dokumenteret.",
+          "correct": true,
+          "feedback": "Rigtigt. Det er virksomhedens opgave at understøtte kompetencerne — tilpasset rollerne."
+        },
+        {
+          "id": "c",
+          "text": "Nej. Artikel 4 gælder kun for firmaer, der selv udvikler AI.",
+          "correct": false,
+          "feedback": "Nej. Den gælder også virksomheder, hvis medarbejdere bruger AI-værktøjer i arbejdet."
+        },
+        {
+          "id": "d",
+          "text": "Artikel 4 forbyder brug af AI til kundemails.",
+          "correct": false,
+          "feedback": "Nej. Artikel 4 forbyder ikke noget. Den handler om kompetencer."
+        }
+      ],
+      "explanation": "Artikel 4 lægger ansvaret hos virksomheden: Den skal tage tiltag, der understøtter medarbejdernes AI-kompetencer. Et godt tiltag passer til den enkeltes rolle og er dokumenteret.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Handler artikel 4 om prøver — eller om, hvad virksomheden gør?"
+        },
+        {
+          "level": 2,
+          "text": "Svaret nævner virksomhedens tiltag, roller og dokumentation."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Artikel 4 handler om, at virksomheden tager tiltag, der styrker medarbejdernes AI-kompetencer. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "menneske-beslutter",
+      "type": "READ",
+      "title": "Et menneske træffer beslutningen",
+      "points": 0,
+      "body": "AI er god til at hjælpe dig med at tænke, skrive og sortere. Men nogle beslutninger skal altid træffes af et menneske. Det gælder især, når beslutningen har stor betydning for en person eller en kunde:\n\n- hvem der bliver ansat eller afvist\n- løn og forhold for medarbejdere\n- priser, rabatter og kompensation til kunder\n- svar om ansvar, forsikring og aftaler\n\nNordlys' AI-politik siger det samme: AI må ikke træffe beslutninger om kunder, priser eller medarbejdere.\n\nOg når en tekst til kunder eller offentligheden mest er skrevet af AI, skal det fremgå. Fx: \"Udarbejdet med hjælp fra AI og gennemlæst af Kim Lund\"."
+    },
+    {
+      "id": "ansoegere",
+      "type": "QUIZ",
+      "title": "AI sorterer ansøgere",
+      "points": 25,
+      "question": "Line (HR) har fået 40 ansøgninger til de nye pakkerjob i julesæsonen. Hun spørger dig, om hun kan lade AI'en rangere dem og automatisk sende afslag til de 30 nederste, så hun kun skal læse 10. Hvad er det rigtige råd?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Ja. AI'en er neutral og bedre til at sortere end et menneske.",
+          "correct": false,
+          "feedback": "AI'en kan have skjulte skævheder fra det, den er trænet på. Og den kan overse noget vigtigt i en ansøgning."
+        },
+        {
+          "id": "b",
+          "text": "AI'en må gerne hjælpe, fx med at opsummere ansøgningerne ud fra jobkravene. Men Line skal selv læse dem og træffe beslutningen om, hvem der får afslag.",
+          "correct": true,
+          "feedback": "Rigtigt. AI'en kan spare tid, men et menneske beslutter. Og ansøgninger er persondata, så kun det godkendte værktøj må bruges."
+        },
+        {
+          "id": "c",
+          "text": "Ja, hvis hun læser de 10 bedste grundigt.",
+          "correct": false,
+          "feedback": "De 30 afslag er stadig besluttet af AI'en alene. Det er netop den beslutning, et menneske skal træffe."
+        },
+        {
+          "id": "d",
+          "text": "Ja, hvis hun først fjerner navnene.",
+          "correct": false,
+          "feedback": "Det hjælper på data, men afslaget er stadig AI'ens beslutning."
+        }
+      ],
+      "explanation": "Beslutninger om mennesker — ansættelse, afslag, løn — skal træffes af et menneske. AI'en kan forberede, men ikke bestemme. Det siger Nordlys' AI-politik også.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvem træffer beslutningen om afslagene i hvert forslag?"
+        },
+        {
+          "level": 2,
+          "text": "Find det svar, hvor AI'en hjælper, men Line beslutter."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: AI'en må hjælpe med at opsummere, men Line læser selv og beslutter afslagene. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "forsikring",
+      "type": "QUIZ",
+      "title": "Svar om dækning uden kontrol",
+      "points": 25,
+      "question": "Lise fra Klitrose Keramik spørger, om Nordlys dækker, hvis hendes keramik går i stykker hos jer. Peter har fået AI'en til at svare: \"Ja, I er fuldt dækket af vores forsikring.\" Han vil sende det uden at tjekke. Hvad bør han gøre?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Sende det. Svaret er venligt, og kunden bliver glad.",
+          "correct": false,
+          "feedback": "Svaret kan være forkert, og Nordlys kan blive holdt op på det."
+        },
+        {
+          "id": "b",
+          "text": "Tjekke svaret mod standardkontrakten (§ 8), rette det, og spørge Jonas, hvis han er i tvivl.",
+          "correct": true,
+          "feedback": "Rigtigt. Kontrakten siger, at ansvaret er begrænset til kostprisen og højst 50.000 kr., og at kunden selv forsikrer mod brand og tyveri. \"Fuldt dækket\" er forkert."
+        },
+        {
+          "id": "c",
+          "text": "Sende det, men tilføje \"Skrevet af AI\" nederst.",
+          "correct": false,
+          "feedback": "Mærkning gør ikke et forkert svar rigtigt. Han har stadig ansvaret for indholdet."
+        },
+        {
+          "id": "d",
+          "text": "Bede AI'en om at gøre svaret mere sikkert i tonen.",
+          "correct": false,
+          "feedback": "En sikker tone gør det kun værre. Fakta skal tjekkes i kontrakten."
+        }
+      ],
+      "explanation": "Svar om ansvar, forsikring og aftaler skal tjekkes af et menneske mod kilden. AI'en kan lyde sikker og stadig tage fejl — og et forkert løfte kan blive dyrt.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvor står det, hvad Nordlys dækker?"
+        },
+        {
+          "level": 2,
+          "text": "Standardkontrakten § 8 handler om ansvar og forsikring."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Tjek svaret mod standardkontrakten § 8, ret det, og spørg Jonas ved tvivl. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "hvem-beslutter",
+      "type": "QUIZ",
+      "title": "Hvor skal et menneske beslutte?",
+      "points": 15,
+      "question": "I hvilke af disse opgaver skal et menneske altid træffe den endelige beslutning? Vælg alle, der passer.",
+      "multiSelect": true,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "At give en kunde rabat eller kompensation",
+          "correct": true,
+          "feedback": "Ja. Priser og kompensation besluttes af et menneske — hos Nordlys af Jonas."
+        },
+        {
+          "id": "b",
+          "text": "At sende afslag til en jobansøger",
+          "correct": true,
+          "feedback": "Ja. Beslutninger om mennesker træffes af mennesker."
+        },
+        {
+          "id": "c",
+          "text": "At fastsætte lønnen for en medarbejder",
+          "correct": true,
+          "feedback": "Ja. Løn er en beslutning om en person."
+        },
+        {
+          "id": "d",
+          "text": "At foreslå tre emnelinjer til nyhedsbrevet",
+          "correct": false,
+          "feedback": "Nej. Her kan AI'en sagtens komme med forslag. Du vælger bare det bedste."
+        },
+        {
+          "id": "e",
+          "text": "At rette stavefejl i en intern mail",
+          "correct": false,
+          "feedback": "Nej. Det er en lille hjælp, ikke en beslutning med betydning for nogen."
+        }
+      ],
+      "explanation": "Jo større betydning en beslutning har for en person eller en kunde, jo vigtigere er det, at et menneske træffer den. AI'en må gerne forberede og foreslå.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvilke opgaver har stor betydning for en person eller en kunde?"
+        },
+        {
+          "level": 2,
+          "text": "Tre er rigtige. To er små skriveopgaver."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: rabat eller kompensation, afslag til ansøgere og løn. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "maerkning",
+      "type": "QUIZ",
+      "title": "Hvornår skal du mærke AI-tekst?",
+      "points": 15,
+      "question": "Ifølge Nordlys' AI-politik: Hvilken tekst skal mærkes som skrevet med hjælp fra AI?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Et nyhedsbrev til kunderne, som AI'en har skrevet det meste af, og som du har læst igennem.",
+          "correct": true,
+          "feedback": "Rigtigt. Tekst til kunder, der mest er skrevet af AI, skal mærkes — fx \"Udarbejdet med hjælp fra AI og gennemlæst af Kim Lund\"."
+        },
+        {
+          "id": "b",
+          "text": "En intern huskeliste til dig selv.",
+          "correct": false,
+          "feedback": "Kravet gælder ekstern kommunikation til kunder, partnere og offentligheden."
+        },
+        {
+          "id": "c",
+          "text": "En mail, du selv har skrevet, hvor AI'en kun har rettet to stavefejl.",
+          "correct": false,
+          "feedback": "Her er teksten din. Mærkning er til tekst, der helt eller mest er skrevet af AI."
+        },
+        {
+          "id": "d",
+          "text": "Ingen tekst, så længe du har læst den igennem.",
+          "correct": false,
+          "feedback": "Gennemlæsning er krævet, men det erstatter ikke mærkningen i ekstern kommunikation."
+        }
+      ],
+      "explanation": "Hos Nordlys mærkes tekst til kunder, partnere eller offentligheden, når den helt eller mest er skrevet af AI. Mærkningen viser, at et menneske har læst den og står inde for den.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvem skal læse teksten, og hvem har skrevet det meste af den?"
+        },
+        {
+          "level": 2,
+          "text": "Mærkning gælder ekstern tekst, der helt eller mest er skrevet af AI."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: nyhedsbrevet til kunderne, som AI'en har skrevet det meste af. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    }
+  ]
+}

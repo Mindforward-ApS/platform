@@ -1,0 +1,414 @@
+{
+  "$schema": "../schema/module.schema.json",
+  "schemaVersion": 1,
+  "id": "core-mail-01",
+  "version": 1,
+  "locale": "da-DK",
+  "title": "Mails og korte tekster",
+  "summary": "Få et mailudkast i den rigtige tone på første forsøg, gør din egen rodede tekst kort og klar, og fang fejl i navne, datoer og løfter, før du sender.",
+  "level": 1,
+  "type": "CORE",
+  "format": "STANDARD",
+  "tracks": [
+    "CHATGPT",
+    "COPILOT",
+    "CLAUDE",
+    "GEMINI"
+  ],
+  "requiresTier": "COPILOT_CHAT",
+  "roles": [],
+  "concepts": [
+    "PROMPTING"
+  ],
+  "featureRefs": [],
+  "minutes": 8,
+  "objectives": [
+    "Skriv en prompt, der giver et mailudkast i den rigtige tone på første forsøg.",
+    "Brug AI til at gøre din egen tekst kortere og klarere.",
+    "Tjek altid navne, datoer og løfter, før du sender."
+  ],
+  "prerequisites": [
+    "core-prompt-01"
+  ],
+  "passThreshold": 0.8,
+  "requiresVerification": false,
+  "sources": [],
+  "steps": [
+    {
+      "id": "intro",
+      "type": "READ",
+      "title": "Mails med AI — hurtigt og rigtigt",
+      "points": 0,
+      "body": "Mails er en af de opgaver, hvor AI sparer dig mest tid. Men det er også her, fejl koster mest. En forkert dato eller et løfte, ingen har givet, kan nå ud til en kunde på få sekunder.\n\nTre vaner gør forskellen:\n\n1. **Giv AI'en mailen.** Vedhæft eller indsæt den mail, du svarer på. Så skal den ikke gætte.\n2. **Sig tonen og længden.** Fx \"rolig og venlig, du-form, maks 100 ord\".\n3. **Tjek navne, datoer og løfter**, før du trykker send.\n\nI dag skal du svare Rasmus fra Fjordlys Møbler. Han er utilfreds med et returgebyr, og I har møde i morgen."
+    },
+    {
+      "id": "giv-mailen",
+      "type": "QUIZ",
+      "title": "Hvad skal AI'en have med?",
+      "points": 10,
+      "question": "Du vil have AI'en til at skrive et udkast til svar til Rasmus. Mailtråden om returgebyret ligger i din indbakke. Hvad giver AI'en det bedste grundlag?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Vedhæft mailtråden, og skriv selv, hvad svaret skal indeholde, og hvad du ikke må love.",
+          "correct": true,
+          "feedback": "Rigtigt. AI'en får fakta fra tråden og dine rammer for svaret."
+        },
+        {
+          "id": "b",
+          "text": "Genfortæl tråden fra hukommelsen i et par sætninger.",
+          "correct": false,
+          "feedback": "Så risikerer du at glemme tal eller blande ting sammen. Mailen selv er mere præcis."
+        },
+        {
+          "id": "c",
+          "text": "Skriv bare \"svar Rasmus om returgebyret\".",
+          "correct": false,
+          "feedback": "AI'en ved hverken, hvad der er sket, eller hvad du må love. Den gætter."
+        },
+        {
+          "id": "d",
+          "text": "Vedhæft alle mails fra indbakken, så AI'en har det hele.",
+          "correct": false,
+          "feedback": "For meget. Andre kunders mails hører ikke til her, og svaret bliver rodet."
+        }
+      ],
+      "explanation": "Giv AI'en præcis den mail, du svarer på — ikke mere og ikke mindre. Og fortæl selv, hvad svaret skal indeholde, og hvad det ikke må love.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvad skal AI'en bruge for ikke at gætte?"
+        },
+        {
+          "level": 2,
+          "text": "Den rigtige mail plus dine egne rammer. Ikke alt i indbakken, og ikke en genfortælling."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Vedhæft mailtråden, og skriv selv, hvad svaret skal indeholde og ikke må love. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "svar-rasmus",
+      "type": "PROMPT_TASK",
+      "title": "Prompt til svar på reklamationen",
+      "points": 30,
+      "instruction": "Skriv en prompt, der får AI'en til at skrive et kort udkast til et svar til Rasmus i dag. Angiv tonen og en maksimal længde. Mailtråden er vedhæftet i samtalen. Du skriver prompten — ikke selve mailen.",
+      "scenario": "Rasmus, logistikansvarlig hos Fjordlys Møbler A/S i Horsens, er utilfreds. Nordlys har faktureret returgebyr på 34 returer i september efter kontraktens § 7. Rasmus mener, at mindst halvdelen skyldes transportskader. Af returerne er 12 markeret som skadet: 8 er skadet i transporten (fragtpartnerens ansvar), og 4 var dårligt pakket fra Fjordlys' side. Salgschef Jonas Bak beslutter, om gebyret for de 8 frafaldes. Rasmus føler sig snydt og overvejer at flytte returneringerne næste år. I har kundemøde i morgen kl. 14–15 med Rasmus, Jonas og dig. Du vil sende et kort svar i dag, der viser, at du har forstået ham, og som peger frem mod mødet.",
+      "attachments": [
+        "f04",
+        "f11"
+      ],
+      "maxChars": 2000,
+      "maxSubmissions": 3,
+      "runModelAfter": true,
+      "checks": [
+        {
+          "kind": "NO_PII",
+          "severity": "BLOCK",
+          "message": "Din prompt ser ud til at indeholde et CPR-, kort- eller kontonummer. Fjern det, og prøv igen — sådanne oplysninger hører aldrig hjemme i en prompt."
+        },
+        {
+          "kind": "MIN_WORDS",
+          "value": 12,
+          "severity": "BLOCK",
+          "message": "Din prompt er meget kort. Fortæl AI'en, hvad svaret skal indeholde, og hvordan det skal lyde."
+        },
+        {
+          "kind": "MAX_WORDS",
+          "value": 300,
+          "severity": "WARN",
+          "message": "Din prompt er lang. Det er ikke forkert, men tjek om alt er nødvendigt."
+        },
+        {
+          "kind": "INCLUDES_ANY",
+          "terms": [
+            "tone",
+            "venlig",
+            "rolig",
+            "professionel",
+            "du-form",
+            "imødekommende",
+            "ærlig",
+            "saglig",
+            "forstående"
+          ],
+          "severity": "WARN",
+          "message": "Har du fortalt AI'en, hvordan svaret skal lyde? Rasmus er utilfreds, så tonen betyder meget."
+        }
+      ],
+      "rubric": {
+        "version": "core-mail-01-svar-rasmus.v1",
+        "passScore": 0.7,
+        "criteria": [
+          {
+            "id": "opgave",
+            "label": "Tydelig opgave",
+            "description": "Prompten siger klart, at AI'en skal skrive et udkast til et svar/en mail til Rasmus (kunden) om returgebyret. 2 = eksplicit opgave om svar/mail til kunden. 1 = opgaven kan udledes, men er uklar ('hjælp med Fjordlys'). 0 = ingen opgave, eller en anden opgave.",
+            "weight": 2,
+            "required": true
+          },
+          {
+            "id": "tone",
+            "label": "Tone og modtager",
+            "description": "Prompten angiver den ønskede tone (fx rolig, venlig, ærlig, professionel, du-form, Nordlys' tone of voice) og tager højde for, at modtageren er en utilfreds kunde (fx 'anerkend hans frustration'). 2 = konkret tone OG modtager/situation. 1 = kun én af delene, eller en vag tone ('god tone'). 0 = intet om tone.",
+            "weight": 2,
+            "required": true
+          },
+          {
+            "id": "kontekst",
+            "label": "Relevante fakta",
+            "description": "Prompten giver eller peger på de vigtigste fakta: 12 skadede returer, heraf 8 transportskader og 4 dårligt pakket; Jonas beslutter om gebyret for de 8; mødet i morgen kl. 14. 2 = mindst to af disse fakta. 1 = kun én, eller kun en henvisning til den vedhæftede tråd. 0 = ingen fakta.",
+            "weight": 2,
+            "required": false
+          },
+          {
+            "id": "laengde",
+            "label": "Maksimal længde",
+            "description": "Prompten angiver en konkret maksimal længde (antal ord, linjer eller sætninger). 2 = konkret tal. 1 = vagt ('kort'). 0 = intet.",
+            "weight": 1,
+            "required": false
+          },
+          {
+            "id": "ingen-loefter",
+            "label": "Ingen løfter",
+            "description": "Prompten forbyder AI'en at love, at gebyret frafaldes, eller at give anden kompensation, fordi Jonas beslutter det. 2 = eksplicit forbud. 1 = generel forsigtighed ('pas på hvad du lover'). 0 = intet.",
+            "weight": 1,
+            "required": false
+          }
+        ]
+      },
+      "goldenSet": "content/golden/core-mail-01/svar-rasmus.jsonl",
+      "exampleSolution": "Skriv et kort udkast til et svar til Rasmus, logistikansvarlig hos Fjordlys Møbler, ud fra den vedhæftede mailtråd. Han er utilfreds med returgebyret og føler sig snydt. Tonen skal være rolig, venlig og ærlig, i du-form som i vores tone of voice. Anerkend hans frustration. Fakta: Af de 12 skadede returer er 8 skadet i transporten og 4 dårligt pakket fra deres side. Skriv, at vi tager det videre på mødet i morgen kl. 14 med Jonas. Lov ikke, at gebyret frafaldes — det beslutter Jonas. Maks 90 ord.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Har du sagt, hvad AI'en skal skrive, hvordan det skal lyde, og hvor langt det må være?"
+        },
+        {
+          "level": 2,
+          "text": "Nævn tonen (fx rolig, venlig, du-form), at Rasmus er utilfreds, fakta om de 8 og 4 returer, mødet i morgen kl. 14, og at du ikke må love at frafalde gebyret. Sæt et tal på længden."
+        },
+        {
+          "level": 3,
+          "text": "Se et eksempel på en prompt, der består. Du får 0 point for trinnet, men kan stadig bestå modulet på de andre trin."
+        }
+      ]
+    },
+    {
+      "id": "kortere-read",
+      "type": "READ",
+      "title": "Gør din egen tekst kort og klar",
+      "points": 0,
+      "body": "AI er også god til at rydde op i din egen tekst. Især når du har skrevet hurtigt, og alt står i én lang sætning.\n\nSig præcist, hvad du vil have:\n\n- **Form:** \"Maks 5 linjer.\" \"Punktform med ét punkt pr. emne.\"\n- **Behold:** \"Behold alle datoer, navne og spørgsmål.\"\n- **Ikke noget nyt:** \"Tilføj ikke noget, der ikke står i min tekst.\"\n- **Modtager:** \"Det er en intern mail til to kolleger.\"\n\nUden de rammer kan AI'en skrive teksten om, så den lyder pænere — men mister en vigtig frist eller tilføjer noget, du aldrig har skrevet."
+    },
+    {
+      "id": "fem-linjer",
+      "type": "PROMPT_TASK",
+      "title": "Fra rodet mail til fem linjer",
+      "points": 25,
+      "instruction": "Din egen kladde står allerede i samtalen. Skriv en prompt, der får AI'en til at omskrive den til en kort intern mail på højst 5 linjer. Du skriver prompten — ikke selve mailen.",
+      "scenario": "Din kladde til Peter Skov og Ali Yilmaz:\n\n\"Hej Peter og Ali, jeg tænkte lige, at vi nok burde se på det med julen, for som vi snakkede om på driftsmødet, så bliver cut-off jo flyttet til kl. 13 i uge 47–51, og det skal kunderne have at vide, og det er mig, der skal sende det ud senest 2. november, men Peter, du skulle jo også opdatere FAQ'en med julefristerne, ikke? Og så mangler vi stadig prognoser fra Træstub Legetøj og Vindrose Elektronik, dem rykker jeg for, men hvis I hører fra dem, så sig til. Ali, er det stadig fra uge 46, at Moseløb kører ekstra i zone 1? Mvh Kim\"\n\nMailen skal være kort, men alle fakta og de to spørgsmål til Peter og Ali skal med. Referatet fra driftsmødet er vedhæftet.",
+      "attachments": [
+        "f06"
+      ],
+      "maxChars": 1500,
+      "maxSubmissions": 3,
+      "runModelAfter": true,
+      "checks": [
+        {
+          "kind": "NO_PII",
+          "severity": "BLOCK",
+          "message": "Din prompt ser ud til at indeholde et CPR-, kort- eller kontonummer. Fjern det, og prøv igen — sådanne oplysninger hører aldrig hjemme i en prompt."
+        },
+        {
+          "kind": "MIN_WORDS",
+          "value": 8,
+          "severity": "BLOCK",
+          "message": "Din prompt er meget kort. Sig, hvordan teksten skal se ud, og hvad der skal med."
+        },
+        {
+          "kind": "INCLUDES_ANY",
+          "terms": [
+            "linje",
+            "punkt",
+            "sætning",
+            "ord"
+          ],
+          "severity": "WARN",
+          "message": "Har du sagt præcist, hvor kort teksten skal være — fx maks 5 linjer?"
+        }
+      ],
+      "rubric": {
+        "version": "core-mail-01-fem-linjer.v1",
+        "passScore": 0.7,
+        "criteria": [
+          {
+            "id": "format",
+            "label": "Konkret format",
+            "description": "Prompten angiver præcist, hvor kort og hvordan teksten skal være: maks 5 linjer (eller 5 punkter/sætninger), evt. punktform. 2 = konkret grænse på 5 linjer/punkter/sætninger (eller færre). 1 = vagt ('kortere', 'kort og klart') eller et andet tal uden for opgaven. 0 = intet om format eller længde.",
+            "weight": 2,
+            "required": true
+          },
+          {
+            "id": "opgave",
+            "label": "Omskriv din egen tekst",
+            "description": "Prompten beder AI'en omskrive/forkorte Kims egen kladde (den der står i samtalen) til en mail — ikke skrive en helt ny tekst om noget andet. 2 = eksplicit 'omskriv/forkort min mail/kladde'. 1 = uklart, hvad der skal omskrives. 0 = beder om noget andet.",
+            "weight": 2,
+            "required": false
+          },
+          {
+            "id": "bevar-fakta",
+            "label": "Bevar fakta",
+            "description": "Prompten sikrer, at fakta bevares og intet nyt tilføjes: datoer, navne og de to spørgsmål (FAQ til Peter, Moseløb til Ali) skal blive. 2 = eksplicit 'behold alle fakta/datoer/spørgsmål' ELLER 'tilføj ikke noget nyt'. 1 = generel ('det vigtigste skal med'). 0 = intet.",
+            "weight": 2,
+            "required": false
+          },
+          {
+            "id": "modtager",
+            "label": "Modtager og tone",
+            "description": "Prompten angiver, at det er en intern mail til kolleger (Peter og Ali), og/eller en passende tone (uformel, venlig, direkte). 2 = både modtager og tone. 1 = kun én af delene. 0 = ingen af delene.",
+            "weight": 1,
+            "required": false
+          }
+        ]
+      },
+      "goldenSet": "content/golden/core-mail-01/fem-linjer.jsonl",
+      "exampleSolution": "Omskriv min kladde ovenfor til en kort intern mail til Peter og Ali. Maks 5 linjer, gerne som punkter. Behold alle datoer og navne: cut-off kl. 13 i uge 47–51, at jeg varsler kunderne senest 2. november, og at jeg rykker Træstub Legetøj og Vindrose Elektronik for prognoser. Gør de to spørgsmål tydelige: Peter om FAQ'en, Ali om Moseløb fra uge 46. Tilføj ikke noget, der ikke står i min tekst. Venlig og direkte tone.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Har du sagt, hvor kort teksten må være, og hvad der skal blive?"
+        },
+        {
+          "level": 2,
+          "text": "Skriv \"maks 5 linjer\", og bed AI'en beholde datoer, navne og de to spørgsmål — og ikke tilføje noget nyt."
+        },
+        {
+          "level": 3,
+          "text": "Se et eksempel på en prompt, der består. Du får 0 point for trinnet, men kan stadig bestå modulet på de andre trin."
+        }
+      ]
+    },
+    {
+      "id": "find-fejlene",
+      "type": "SPOT_ERROR",
+      "title": "Find fejlene i svaret til Rasmus",
+      "points": 20,
+      "instruction": "AI'en har skrevet et udkast til svar til Rasmus. Sammenlign med fakta, og markér alle sætninger med forkerte navne, datoer eller løfter.",
+      "userPrompt": "Skriv et kort svar til Rasmus om returgebyret. Lov ikke noget om gebyret — det beslutter Jonas.",
+      "referenceFacts": "**Fakta (mailtråd, kalender, medarbejdere)**\n- 34 returer i september er faktureret med returgebyr\n- 12 er markeret som skadet: 8 skadet i transporten, 4 dårligt pakket fra Fjordlys' side\n- Om gebyret for de 8 frafaldes, beslutter salgschef Jonas Bak — intet er besluttet endnu\n- Kundemøde: i morgen kl. 14–15 med Rasmus, Jonas og Kim\n- Kim Lund er kunde- og salgskoordinator",
+      "segments": [
+        {
+          "id": "s1",
+          "text": "Hej Rasmus. Tak for din mail — jeg forstår godt, at du er utilfreds.",
+          "isError": false
+        },
+        {
+          "id": "s2",
+          "text": "Vi har kigget på de 34 returer fra september.",
+          "isError": false
+        },
+        {
+          "id": "s3",
+          "text": "Af de 12 returer, der er markeret som skadet, er 8 skadet under transporten.",
+          "isError": false
+        },
+        {
+          "id": "s4",
+          "text": "Derfor frafalder vi gebyret for alle 34 returer.",
+          "isError": true,
+          "errorType": "POLICY",
+          "explanation": "Et løfte, ingen har givet — og det står i strid med prompten. Jonas beslutter, og det handler kun om de 8 transportskader."
+        },
+        {
+          "id": "s5",
+          "text": "Lad os tage resten på mødet i næste uge kl. 10.",
+          "isError": true,
+          "errorType": "FACT",
+          "explanation": "Mødet er i morgen kl. 14–15. En forkert mødetid kan få kunden til at møde op på det forkerte tidspunkt."
+        },
+        {
+          "id": "s6",
+          "text": "Venlig hilsen Kim Lund, salgschef, Nordlys Logistik",
+          "isError": true,
+          "errorType": "FACT",
+          "explanation": "Kim er kunde- og salgskoordinator. Jonas Bak er salgschef. AI'en blander ofte navne og titler sammen."
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tjek navne og titler, datoer og tidspunkter, og løfter."
+        },
+        {
+          "level": 2,
+          "text": "Der er tre fejl: et løfte, en mødetid og en titel."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: gebyret for alle 34 frafaldes (ikke besluttet), mødet i næste uge kl. 10 (i morgen kl. 14) og titlen salgschef (Kim er koordinator). Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "tjek-foer-send",
+      "type": "QUIZ",
+      "title": "Tjek før du sender",
+      "points": 15,
+      "question": "Hvad skal du altid tjekke i en AI-skrevet mail, før du sender den? Vælg alle, der passer.",
+      "multiSelect": true,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Navne og titler",
+          "correct": true,
+          "feedback": "Ja. AI'en blander ofte personer og roller sammen."
+        },
+        {
+          "id": "b",
+          "text": "Datoer og tidspunkter",
+          "correct": true,
+          "feedback": "Ja. En forkert dag eller tid er let at overse."
+        },
+        {
+          "id": "c",
+          "text": "Løfter, beløb og priser",
+          "correct": true,
+          "feedback": "Ja. Et løfte i en mail kan kunden holde dig op på."
+        },
+        {
+          "id": "d",
+          "text": "Om AI'en har brugt de samme ord som dig",
+          "correct": false,
+          "feedback": "Nej. Det er indholdet, der skal være rigtigt, ikke ordvalget."
+        },
+        {
+          "id": "e",
+          "text": "Ingenting, hvis du har skrevet en god prompt",
+          "correct": false,
+          "feedback": "Nej. Selv en god prompt kan give fejl. Du har ansvaret for det, du sender."
+        }
+      ],
+      "explanation": "Navne, datoer og løfter er de tre steder, hvor fejl oftest sniger sig ind — og hvor de gør mest skade. Læs altid udkastet igennem, før du sender.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tænk på de fejl, du lige har fundet i svaret til Rasmus."
+        },
+        {
+          "level": 2,
+          "text": "Tre er rigtige. En god prompt fritager dig ikke for at læse svaret."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: navne og titler, datoer og tidspunkter, løfter og beløb. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    }
+  ]
+}

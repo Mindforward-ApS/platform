@@ -1,0 +1,321 @@
+{
+  "$schema": "../schema/module.schema.json",
+  "schemaVersion": 1,
+  "id": "core-fact-01",
+  "version": 1,
+  "locale": "da-DK",
+  "title": "Hallucinationer og faktatjek",
+  "summary": "Find opfundne tal, kilder og løfter i AI-svar, brug tre faste tjek-vaner, og bed AI'en vise sine kilder og markere, hvad den er usikker på.",
+  "level": 1,
+  "type": "CORE",
+  "format": "STANDARD",
+  "tracks": [
+    "CHATGPT",
+    "COPILOT",
+    "CLAUDE",
+    "GEMINI"
+  ],
+  "requiresTier": "COPILOT_CHAT",
+  "roles": [],
+  "concepts": [
+    "PROMPTING"
+  ],
+  "featureRefs": [],
+  "minutes": 10,
+  "objectives": [
+    "Find opfundne tal, kilder og løfter i et AI-svar.",
+    "Brug tre tjek-vaner: Hvor står det? Passer tallet? Hvad ved du ikke?",
+    "Skriv en prompt, der beder AI'en vise sine kilder og markere usikkerhed."
+  ],
+  "prerequisites": [
+    "core-llm-01"
+  ],
+  "passThreshold": 0.8,
+  "requiresVerification": false,
+  "sources": [],
+  "steps": [
+    {
+      "id": "intro",
+      "type": "READ",
+      "title": "Når AI'en finder på",
+      "points": 0,
+      "body": "Når en sprogmodel mangler viden, fylder den ofte hullet med noget, der lyder rigtigt. Det kaldes en **hallucination**.\n\nDet sker især med:\n\n- **tal** — summer, procenter og priser\n- **kilder** — paragraffer, love og rapporter, der ikke findes\n- **løfter** — rabatter, frister og aftaler, ingen har givet\n\nHallucinationer er svære at se, fordi de står midt i et ellers fornuftigt svar. Og de lyder lige så sikre som resten.\n\nDu er ansvarlig for det, du sender. Hos Nordlys står det også i AI-politikken: Læs altid AI-output igennem, og tjek fakta, før du bruger det. I dette modul øver du at fange fejlene."
+    },
+    {
+      "id": "fragt-og-paragraf",
+      "type": "SPOT_ERROR",
+      "title": "Fragt og en paragraf, der ikke findes",
+      "points": 25,
+      "instruction": "Du bad AI'en om fragtprisen for Bølgegrøn Kaffes næste levering til deres forhandlere på Sjælland. Sammenlign svaret med fakta, og markér alle sætninger, der er forkerte eller opfundne.",
+      "userPrompt": "Hvad koster fragten for Bølgegrøn Kaffes næste levering på 14 kolli til zone 4? Og har de ret til afslag for forsinkelserne?",
+      "referenceFacts": "**Fakta (Prisliste 2026, Standardkontrakt 3PL, Fragtpartnere oversigt)**\n- Fragt zone 4 (Sjælland og øer): 89 kr. pr. kolli ex. moms\n- Næste levering: 14 kolli til zone 4\n- Årsag til forsinkelser: Vestvind Transport er én dag forsinket på Sjælland\n- Standardkontrakt § 6: Forsinkelser hos en fragtpartner giver ikke ret til afslag, medmindre forsinkelsen skyldes Nordlys\n- Kompensation: ikke aftalt — afgøres af salgschef Jonas Bak",
+      "segments": [
+        {
+          "id": "s1",
+          "text": "Fragt til zone 4 (Sjælland og øer) koster 89 kr. pr. kolli.",
+          "isError": false
+        },
+        {
+          "id": "s2",
+          "text": "De 14 kolli koster derfor i alt 1.146 kr. ex. moms.",
+          "isError": true,
+          "errorType": "MATH",
+          "explanation": "14 × 89 kr. = 1.246 kr. Prisen pr. kolli var rigtig, men summen er forkert. Regn altid efter, eller bed AI'en vise udregningen."
+        },
+        {
+          "id": "s3",
+          "text": "Forsinkelserne skyldes, at fragtpartneren Vestvind Transport er én dag forsinket på Sjælland.",
+          "isError": false
+        },
+        {
+          "id": "s4",
+          "text": "Ifølge transportlovens § 14 har kunden ret til 25 % afslag på fragten, når en levering er forsinket.",
+          "isError": true,
+          "errorType": "INVENTED",
+          "explanation": "Henvisningen står ikke i nogen af kilderne, og Nordlys' standardkontrakt § 6 siger det modsatte. AI'en har opfundet en paragraf, der lyder troværdig. Slå altid lovhenvisninger op, før du bruger dem."
+        },
+        {
+          "id": "s5",
+          "text": "Om der gives kompensation, afgør salgschef Jonas Bak.",
+          "isError": false
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "text": "Regn summen efter, og tjek om henvisningen findes i kilderne."
+        },
+        {
+          "level": 2,
+          "text": "Der er to fejl: én regnefejl og én henvisning, der ikke står i fakta — og som strider mod kontrakten."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: 1.146 kr. (skal være 1.246 kr.) og \"transportlovens § 14\" om 25 % afslag (opfundet). Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "tjek-vaner",
+      "type": "READ",
+      "title": "Tre tjek-vaner",
+      "points": 0,
+      "body": "Brug de tre vaner, hver gang et svar skal videre:\n\n1. **Hvor står det?** Find kilden til fakta, priser og paragraffer. Kan du ikke finde den, så brug det ikke.\n2. **Passer tallet?** Regn summer og procenter efter. Bed AI'en vise udregningen trin for trin.\n3. **Hvad ved du ikke?** Bed AI'en skrive, hvad den er usikker på, og hvad den mangler.\n\nDu kan bygge vanerne ind i prompten:\n\n> Brug kun den vedhæftede prisliste. Skriv ved hvert tal, hvor det står. Vis udregningen. Markér med [USIKKER], hvis noget ikke står i filen — og gæt ikke.\n\nSå bliver fejlene meget lettere at se."
+    },
+    {
+      "id": "prompt-kilde-usikkerhed",
+      "type": "PROMPT_TASK",
+      "title": "Bed om kilder og usikkerhed",
+      "points": 35,
+      "instruction": "Skriv en prompt, der får AI'en til at regne ud, om Kragsø Vin skal have penge tilbage, og lave et udkast til et svar til Thomas. Bed AI'en vise sine kilder og markere, hvad den er usikker på. Du skriver prompten — ikke selve svaret.",
+      "scenario": "Thomas, ejer af Kragsø Vin ApS i Randers, mener, at september-fakturaen er for høj. Nordlys har faktureret 14 paller i 4 uger. Thomas siger, at de kun havde 10 paller stående de sidste to uger, fordi de hentede 4 paller til et event. Sara Damgaard (økonomi) har bedt dig tjekke det mod prislisten og lave et udkast til et svar, som hun kan sende sammen med en kreditnota. Prisliste 2026 er vedhæftet. Lagerudtrækket har du ikke fået endnu, så du ved ikke sikkert, om Thomas har ret.",
+      "attachments": [
+        "f02"
+      ],
+      "maxChars": 2000,
+      "maxSubmissions": 3,
+      "runModelAfter": true,
+      "checks": [
+        {
+          "kind": "NO_PII",
+          "severity": "BLOCK",
+          "message": "Din prompt ser ud til at indeholde et CPR-, kort- eller kontonummer. Fjern det, og prøv igen — sådanne oplysninger hører aldrig hjemme i en prompt."
+        },
+        {
+          "kind": "MIN_WORDS",
+          "value": 15,
+          "severity": "BLOCK",
+          "message": "Din prompt er meget kort. Fortæl AI'en, hvad der er sket, og hvordan den skal vise sine kilder."
+        },
+        {
+          "kind": "MAX_WORDS",
+          "value": 300,
+          "severity": "WARN",
+          "message": "Din prompt er lang. Det er ikke forkert, men tjek om alt er nødvendigt."
+        },
+        {
+          "kind": "INCLUDES_ANY",
+          "terms": [
+            "usikker",
+            "ved ikke",
+            "gæt",
+            "markér",
+            "marker",
+            "bekræft",
+            "mangler"
+          ],
+          "severity": "WARN",
+          "message": "Har du bedt AI'en om at markere, hvad den er usikker på, eller hvad der ikke er bekræftet endnu?"
+        }
+      ],
+      "rubric": {
+        "version": "core-fact-01-prompt-kilde-usikkerhed.v1",
+        "passScore": 0.7,
+        "criteria": [
+          {
+            "id": "opgave-fakta",
+            "label": "Opgave og fakta",
+            "description": "Prompten siger, at AI'en skal regne en eventuel kreditering ud og/eller skrive et udkast til svar, og giver fakta: 14 paller faktureret i 4 uger, 10 paller de sidste 2 uger, 32 kr. pr. palle pr. uge (eller henvisning til prislisten for prisen). 2 = tydelig opgave og mindst tre af de fire fakta. 1 = opgave med færre fakta, eller fakta uden tydelig opgave. 0 = hverken opgave eller fakta.",
+            "weight": 2,
+            "required": false
+          },
+          {
+            "id": "kildeangivelse",
+            "label": "Kildeangivelse",
+            "description": "Prompten beder AI'en om at bygge på en bestemt kilde og vise, hvor tallene kommer fra (fx 'brug kun den vedhæftede prisliste', 'skriv ved hvert tal hvor det står', 'henvis til prislisten'). 2 = eksplicit krav om at angive kilden til tallene. 1 = kun 'brug prislisten' uden krav om at vise kilden. 0 = intet om kilder.",
+            "weight": 2,
+            "required": false
+          },
+          {
+            "id": "usikkerhed",
+            "label": "Markering af usikkerhed",
+            "description": "Prompten beder AI'en markere, hvad den er usikker på eller hvad der ikke er bekræftet, og/eller forbyder den at gætte (fx 'markér med [USIKKER]', 'skriv hvad du ikke ved', 'gæt ikke', 'skriv at de 10 paller ikke er bekræftet af lagerudtrækket'). 2 = eksplicit instruks om at markere usikkerhed eller manglende oplysninger. 1 = generel opfordring ('vær præcis', 'tjek dig selv'). 0 = intet om usikkerhed.",
+            "weight": 2,
+            "required": true
+          },
+          {
+            "id": "vis-udregning",
+            "label": "Vis udregningen",
+            "description": "Prompten beder AI'en vise udregningen trin for trin (fx '4 paller × 2 uger × 32 kr.'), så den kan tjekkes. 2 = eksplicit krav om at vise udregningen. 1 = vagt ('regn det ud ordentligt'). 0 = intet.",
+            "weight": 1,
+            "required": false
+          },
+          {
+            "id": "ingen-loefter",
+            "label": "Ingen forhastede løfter",
+            "description": "Prompten sikrer, at udkastet ikke lover en kreditering, før tallene er bekræftet, eller at Sara godkender det (fx 'lov ikke kreditnota før lagerudtrækket er tjekket', 'skriv det som et udkast til Sara'). 2 = eksplicit begrænsning. 1 = generel forsigtighed. 0 = ingen.",
+            "weight": 1,
+            "required": false
+          }
+        ]
+      },
+      "goldenSet": "content/golden/core-fact-01/prompt-kilde-usikkerhed.jsonl",
+      "exampleSolution": "Thomas fra Kragsø Vin mener, at september-fakturaen er for høj. Vi har faktureret 14 paller i 4 uger. Han siger, at de kun havde 10 paller de sidste 2 uger. Brug kun den vedhæftede Prisliste 2026. 1) Regn ud, hvor meget han skal have tilbage, hvis han har ret. Vis udregningen trin for trin, og skriv ved hvert tal, hvor i prislisten det står. 2) Skriv et kort udkast til et svar til Thomas, som Sara kan sende. Markér med [USIKKER] alt, der ikke står i filen — fx at de 10 paller endnu ikke er bekræftet af lagerudtrækket. Gæt ikke, og lov ikke en kreditnota, før tallene er bekræftet.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tænk på de tre tjek-vaner. Hvordan kan du bygge dem ind i prompten?"
+        },
+        {
+          "level": 2,
+          "text": "Bed AI'en bruge prislisten, skrive hvor hvert tal står, vise udregningen, og markere at de 10 paller ikke er bekræftet endnu."
+        },
+        {
+          "level": 3,
+          "text": "Se et eksempel på en prompt, der består. Du får 0 point for trinnet, men kan stadig bestå modulet på de andre trin."
+        }
+      ]
+    },
+    {
+      "id": "kontrakt-opsummering",
+      "type": "SPOT_ERROR",
+      "title": "Find fejlene i kontrakt-opsummeringen",
+      "points": 25,
+      "instruction": "Før mødet med Fjordlys Møbler bad Jonas AI'en opsummere standardkontrakten. Sammenlign med uddraget af kontrakten, og markér alle sætninger, der er forkerte eller opfundne.",
+      "userPrompt": "Opsummér de vigtigste vilkår om returer, ansvar og opsigelse i vores standardkontrakt.",
+      "referenceFacts": "**Uddrag af Standardkontrakt 3PL (version 2026.1)**\n- § 7.2: Returgebyret er 18,00 kr. pr. retur.\n- § 7.3: Retur, der skyldes fejl hos Nordlys, er gratis for kunden.\n- § 7.5: Returneringer registreres senest 2 hverdage efter modtagelse.\n- § 7.6: Indsigelser mod et returgebyr skal ske skriftligt senest 30 dage efter fakturadato.\n- § 8: Nordlys' ansvar er begrænset til varernes dokumenterede kostpris og højst 50.000 kr. pr. skadesbegivenhed.\n- § 11: Aftalen kan opsiges af begge parter med 3 måneders varsel til udgangen af en måned.",
+      "segments": [
+        {
+          "id": "s1",
+          "text": "Returgebyret er 18 kr. pr. retur.",
+          "isError": false
+        },
+        {
+          "id": "s2",
+          "text": "Returer, der skyldes fejl hos Nordlys, er gratis for kunden.",
+          "isError": false
+        },
+        {
+          "id": "s3",
+          "text": "Indsigelser mod et returgebyr skal ske skriftligt senest 14 dage efter fakturadato.",
+          "isError": true,
+          "errorType": "FACT",
+          "explanation": "Fristen er 30 dage (§ 7.6). En forkert frist kan få Nordlys til at afvise en indsigelse, kunden havde ret til at gøre."
+        },
+        {
+          "id": "s4",
+          "text": "Nordlys' ansvar for beskadigede varer er højst 100.000 kr. pr. skadesbegivenhed.",
+          "isError": true,
+          "errorType": "FACT",
+          "explanation": "Grænsen er 50.000 kr. (§ 8). Tal i kontrakter skal altid tjekkes mod selve teksten."
+        },
+        {
+          "id": "s5",
+          "text": "Registrerer Nordlys en retur for sent, får kunden automatisk 10 % rabat på returgebyret.",
+          "isError": true,
+          "errorType": "INVENTED",
+          "explanation": "Den regel findes ikke i kontrakten. Der står kun, at returer registreres senest 2 hverdage efter modtagelse. AI'en har opfundet en rabat."
+        },
+        {
+          "id": "s6",
+          "text": "Begge parter kan opsige aftalen med 3 måneders varsel til udgangen af en måned.",
+          "isError": false
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "text": "Sammenlign hver frist, hvert beløb og hvert løfte med kontraktens paragraffer."
+        },
+        {
+          "level": 2,
+          "text": "Der er tre fejl: en forkert frist, et forkert beløb og en regel, der slet ikke står i kontrakten."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: 14 dage (skal være 30), 100.000 kr. (skal være 50.000 kr.) og den automatiske rabat på 10 % (opfundet). Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "bedste-opfoelgning",
+      "type": "QUIZ",
+      "title": "Hvilken opfølgning fanger flest fejl?",
+      "points": 15,
+      "question": "AI'en har opsummeret en kontrakt med mange tal og frister. Hvilken opfølgning hjælper dig bedst med at tjekke svaret?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Er du helt sikker?",
+          "correct": false,
+          "feedback": "AI'en svarer ofte bare ja — eller ændrer et rigtigt svar til et forkert. Det er ikke et tjek."
+        },
+        {
+          "id": "b",
+          "text": "Skriv ved hvert tal og hver frist, hvilken paragraf det står i. Markér det, du ikke kunne finde i kontrakten.",
+          "correct": true,
+          "feedback": "Rigtigt. Nu kan du slå hver påstand op, og AI'en viser selv, hvor den er usikker."
+        },
+        {
+          "id": "c",
+          "text": "Tjek dig selv grundigt, og ret eventuelle fejl.",
+          "correct": false,
+          "feedback": "Det lyder fornuftigt, men du får ingen måde at tjekke svaret på. Du skal stadig læse det hele igennem."
+        },
+        {
+          "id": "d",
+          "text": "Skriv det mere professionelt.",
+          "correct": false,
+          "feedback": "Det ændrer tonen, ikke fakta. Fejlene bliver bare sværere at se."
+        }
+      ],
+      "explanation": "Bed om kilden til hver påstand, og bed AI'en markere det, den ikke kan finde. Så kan du tjekke svaret hurtigt — og du ved, hvor du skal kigge.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvilken opfølgning gør det let for dig at slå svaret op?"
+        },
+        {
+          "level": 2,
+          "text": "Tænk på de tre tjek-vaner: Hvor står det? Passer tallet? Hvad ved du ikke?"
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Bed om paragraffen ved hvert tal og en markering af det, AI'en ikke kunne finde. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    }
+  ]
+}
