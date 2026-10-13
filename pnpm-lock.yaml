@@ -62,6 +62,9 @@ importers:
       stripe:
         specifier: ^23.0.0
         version: 23.0.0(@types/node@24.19.2)
+      svix:
+        specifier: 2.8.0
+        version: 2.8.0
       zod:
         specifier: 4.6.7
         version: 4.6.7
@@ -4707,6 +4710,10 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  svix@2.8.0:
+    resolution: {integrity: sha512-3bvu4FoVP9szUn5WBXUXUs97lLVC+Jyr0+jm+Q+DVcPMLXmeoZepbmbCzJVqGDNf9i00P7WLAH6m0q9HrzH1+g==}
+    engines: {node: '>=22'}
 
   systeminformation@5.33.15:
     resolution: {integrity: sha512-s5RloL0F7xhN0ZjfHtLGnbf7EW74EI0N8NFL+1xR7Oxz9QA33obNZsl7lyfnJOhN04E/kGFPoJPlvY7TZ5fzmw==}
@@ -9734,6 +9741,10 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  svix@2.8.0:
+    dependencies:
+      standardwebhooks: 1.1.1
 
   systeminformation@5.33.15: {}
 
