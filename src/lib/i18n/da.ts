@@ -1,3 +1,4 @@
+import { orgAdminMessages } from "./da-admin";
 import { daBilling } from "./da-billing";
 import { daContent } from "./da-content";
 import { daPlacement } from "./da-placement";
@@ -15,6 +16,7 @@ export const da = {
   placement: daPlacement,
   billing: daBilling,
   contentEngine: daContent,
+  orgAdmin: orgAdminMessages,
   meta: {
     title: "Mindforward",
     description: "Lær AI ved at gøre det.",

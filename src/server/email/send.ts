@@ -20,6 +20,8 @@ export interface SendArgs<K extends TemplateKey> {
   idempotencyKey: string;
   userId?: string | null;
   organizationId?: string | null;
+  /** Optional files (M7: company report CSV/PDF). Content is base64. */
+  attachments?: { filename: string; contentBase64: string }[];
 }
 
 export interface SendOptions {
@@ -84,6 +86,7 @@ export async function sendServiceEmail<K extends TemplateKey>(db: PrismaClient, 
       text: rendered.text,
       template: args.template,
       idempotencyKey: args.idempotencyKey,
+      ...(args.attachments ? { attachments: args.attachments } : {}),
     });
     return db.emailMessage.update({ where: { id: message.id }, data: { status: "SENT", sentAt: new Date(), resendId: providerId, error: null } });
   } catch (err) {

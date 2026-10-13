@@ -24,6 +24,9 @@ const sampleVars = {
   "cancellation-confirmed": { url: "https://greb.example/konto/abonnement", date: "13. oktober 2026", time: "14.05", endDate: "12. november 2026" },
   "support-escalation": { url: "https://greb.example/admin", reason: "WITHDRAWAL_UNMATCHED", summary: "Fortrydelse uden match" },
   "marketing-confirm": { url: "https://greb.example/samtykke/bekraeft?t=abc", expiresDays: 7 },
+  "certificate-issued": { url: "https://greb.example/certifikater", trackName: "ChatGPT", levelLabel: "Niveau 1 · Grundlag" },
+  "account-deletion-confirm": { url: "https://greb.example/konto/data/slet?token=abc", expiresMin: 60 },
+  "report-ready": { url: "https://greb.example/virksomhed/rapport", organizationName: "Nordisk Test A/S", from: "01.09.2026", to: "30.09.2026" },
 } as const;
 
 describe("email templates", () => {

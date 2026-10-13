@@ -13,9 +13,11 @@ export async function makeUser(email = `u-${randomUUID()}@example.test`) {
   return testDb().user.create({ data: { id: randomUUID(), name: "Test Bruger", email, emailVerified: true } });
 }
 
-export async function makeOrg(type: OrganizationType = "BUSINESS") {
+export async function makeOrg(type: OrganizationType = "BUSINESS", opts: { dpaAccepted?: boolean } = {}) {
   const id = randomUUID();
-  return testDb().organization.create({ data: { id, name: `Org ${id.slice(0, 6)}`, slug: `org-${id}`, type, seatLimit: type === "PERSONAL" ? 1 : 5 } });
+  // M7: BUSINESS orgs need an accepted DPA before invitations; tests get one unless they opt out.
+  const dpa = type === "BUSINESS" && (opts.dpaAccepted ?? true) ? { dpaAcceptedAt: new Date(), dpaVersion: "dpa.v1" } : {};
+  return testDb().organization.create({ data: { id, name: `Org ${id.slice(0, 6)}`, slug: `org-${id}`, type, seatLimit: type === "PERSONAL" ? 1 : 5, ...dpa } });
 }
 
 export async function addMember(organizationId: string, userId: string, role: MembershipRole) {

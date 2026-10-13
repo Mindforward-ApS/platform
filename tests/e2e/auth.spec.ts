@@ -26,9 +26,19 @@ test("OWNER creates a business, invites an employee, who accepts and lands as LE
   await page.getByRole("button", { name: "Opret" }).click();
   await expect(page).toHaveURL(/\/virksomhed\/medarbejdere/);
 
+  // M7: the OWNER accepts the data processing agreement before the first invitation.
+  await page.goto("/virksomhed/databehandleraftale");
+  await page.getByLabel("Dit fulde navn").fill("Olivia Ejer");
+  await page.getByLabel("Din titel").fill("Direktør");
+  await page.getByLabel("CVR-nummer").fill("12345678");
+  await page.getByLabel("Jeg accepterer databehandleraftalen på vegne af virksomheden").check();
+  await page.getByRole("button", { name: "Accepter aftalen" }).click();
+  await expect(page.getByTestId("dpa-accepted")).toBeVisible();
+  await page.goto("/virksomhed/medarbejdere");
+
   const learnerEmail = newEmail("learner");
-  await page.getByRole("textbox", { name: "Email" }).fill(learnerEmail);
-  await page.getByRole("button", { name: "Send invitation" }).click();
+  await page.getByLabel(/^Emails/).fill(learnerEmail);
+  await page.getByRole("button", { name: "Send invitationer" }).click();
   await expect(page.getByTestId("pending-invitations")).toContainText(learnerEmail);
 
   const invitationUrl = await waitForLink(learnerEmail, "invitation");
@@ -43,6 +53,9 @@ test("OWNER creates a business, invites an employee, who accepts and lands as LE
 
   await expect(learner).toHaveURL(/\/invitation\//);
   await learner.getByRole("button", { name: "Accepter invitation" }).click();
+  // M7: first login in a business shows what the admin can and cannot see (docs/10 § 1.6).
+  await expect(learner).toHaveURL(/\/konto\/data-info$/);
+  await learner.getByRole("button", { name: "Forstået — fortsæt" }).click();
   await expect(learner).toHaveURL(/\/konto$/);
   await expect(learner.getByTestId("active-org")).toContainText("E2E Firma ApS");
   await expect(learner.getByTestId("active-role")).toHaveText("Medarbejder");

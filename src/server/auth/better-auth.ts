@@ -11,6 +11,8 @@ import { serverEnv } from "@/lib/env";
 import type { ServerEnv } from "@/lib/env.schema";
 import { writeAudit } from "@/server/audit/log";
 import { assertSeatAvailable, SeatLimitError } from "@/server/billing/seats";
+import { assertDpaAccepted, DpaError } from "@/server/orgs/dpa";
+import { applyInvitationExtras } from "@/server/orgs/invitations";
 import { db } from "@/server/db";
 import { sendServiceEmail } from "@/server/email/send";
 import { consumeRateLimit, RATE_LIMITS, rateLimitKeys } from "@/server/security/rate-limit";
@@ -153,6 +155,13 @@ export function buildAuthOptions(deps: { db: PrismaClient; env: ServerEnv }) {
           beforeCreateInvitation: async ({ organization: org, invitation }) => {
             const row = await prisma.organization.findUnique({ where: { id: org.id }, select: { type: true } });
             if (row?.type !== "BUSINESS") throw new APIError("FORBIDDEN", { message: "PERSONAL_ORG" });
+            // M7: the OWNER must accept the data processing agreement before the first invitation (docs/10 § 1.2).
+            try {
+              await assertDpaAccepted(prisma, org.id);
+            } catch (err) {
+              if (err instanceof DpaError) throw new APIError("FORBIDDEN", { message: "DPA_REQUIRED", code: "DPA_REQUIRED" });
+              throw err;
+            }
             // M6: seat cap — active memberships + open invitations ≤ the plan's seats (docs/00 § 10a).
             try {
               await assertSeatAvailable(prisma, org.id, { inviteEmail: invitation.email });
@@ -176,7 +185,9 @@ export function buildAuthOptions(deps: { db: PrismaClient; env: ServerEnv }) {
               metadata: { role: invitation.role },
             });
           },
-          afterAcceptInvitation: async ({ member, user, organization: org }) => {
+          afterAcceptInvitation: async ({ invitation, member, user, organization: org }) => {
+            // M7: the invitation's job role and track (or the org's default track) apply to the new member.
+            await applyInvitationExtras(prisma, invitation.id, { id: member.id, organizationId: org.id, userId: user.id });
             await writeAudit(prisma, {
               action: "MEMBER_JOINED",
               actorUserId: user.id,
