@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Notice, Page } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { getMessages } from "@/lib/i18n";
+import { format, getMessages } from "@/lib/i18n";
 import { requireUser } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
 import { db } from "@/server/db";
@@ -17,6 +17,8 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
     select: { role: true, organization: { select: { id: true, name: true, type: true } } },
   });
   const active = memberships.find((m) => m.organization.id === ctx.session.activeOrganizationId);
+  const tracks = await db().track.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" }, select: { key: true, displayName: true } });
+  const ts = getMessages().sandbox;
 
   return (
     <>
@@ -47,6 +49,17 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
             </SubmitButton>
           </form>
         ))}
+      {active && (
+        <section className="flex flex-col gap-1" data-testid="sandbox-links">
+          <h2 className="font-semibold">{ts.accountHeading}</h2>
+          {tracks.length === 0 && <p className="text-muted">{ts.noTracks}</p>}
+          {tracks.map((tr) => (
+            <a key={tr.key} className="underline" href={`/sandkasse/${tr.key.toLowerCase()}`}>
+              {ts.accountLink}: {format(ts.practiceFor, { product: tr.displayName })}
+            </a>
+          ))}
+        </section>
+      )}
       <a className="underline" href="/virksomhed/opret">
         {t.createBusiness}
       </a>
