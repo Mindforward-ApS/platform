@@ -1,9 +1,18 @@
+import { daBilling } from "./da-billing";
+import { daPlacement } from "./da-placement";
+import { daPlayer } from "./da-player";
+import { daSandbox } from "./da-sandbox";
+
 // Danish UI strings. Components never hardcode UI text (CLAUDE.md) — add keys here.
 // Product name (decided by Marco 13 Oct 2026). Internal code name stays `greb`.
 export const BRAND = "Mindforward";
 
 export const da = {
   brand: BRAND,
+  sandbox: daSandbox,
+  player: daPlayer,
+  placement: daPlacement,
+  billing: daBilling,
   meta: {
     title: "Mindforward",
     description: "Lær AI ved at gøre det.",
