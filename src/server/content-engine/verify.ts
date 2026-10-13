@@ -207,6 +207,24 @@ export async function verifyModule(call: CallContentModel, content: unknown, ctx
   };
 }
 
+/** Freshness audit (docs/06 § 14): re-check claims against the newest entry text with the same verifier prompt. */
+export async function verifyClaimsAgainst(call: CallContentModel, sourceText: string, claims: { id: string; text: string; quote: string | null }[]) {
+  const p = contentVerifyV1;
+  const { $schema: _s, ...outputSchema } = z.toJSONSchema(p.outputSchema) as Record<string, unknown>;
+  const res = await call("CONTENT_VERIFY", {
+    promptKey: p.key,
+    promptVersion: p.version,
+    system: p.system,
+    user: p.buildUser({ sourceText, claims, moduleText: claims.map((c) => c.text).join("\n") }),
+    toolName: p.toolName,
+    outputSchema,
+    maxTokens: p.maxTokens,
+    temperature: p.temperature,
+  });
+  const parsed = verifyOutputSchema.safeParse(res.output);
+  return { verdicts: parsed.success ? parsed.data.claims : null, modelId: res.modelId, usage: res.usage };
+}
+
 /** Feedback for the single automatic re-draft. */
 export function feedbackFrom(report: VerifyReport): string {
   return [...report.schemaErrors, ...report.errors.map((e) => `${e.code}: ${e.message}`), ...(report.language?.fixes ?? [])].slice(0, 30).join("\n");

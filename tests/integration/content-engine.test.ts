@@ -5,6 +5,7 @@ import { seedContentSources, seedTracks } from "@/server/content/seed";
 import { loadContentConfig, type ContentConfig } from "@/server/content-engine/config";
 import { AUTOPUBLISH_FLAG, PIPELINE_FLAG, setKillSwitch } from "@/server/content-engine/flags";
 import type { CreateIssue } from "@/server/content-engine/model";
+import { featureRetire, freshnessAudit, upcomingRetirements } from "@/server/content-engine/maintenance";
 import { ingestManualPaste, processChange, runSource, type PipelineDeps } from "@/server/content-engine/pipeline";
 import { publishVersion, rejectVersion, rollbackModule, AutoPublishForbiddenError, type VersionMeta } from "@/server/content-engine/publish";
 import { moduleSchema } from "@/lib/schemas/module";
@@ -364,5 +365,40 @@ describe("manual paste", () => {
     expect(r.outcome).toBe("DONE");
     expect((await testDb().sourceSnapshot.findFirstOrThrow({ where: { sourceId: source.id } })).origin).toBe("MANUAL_PASTE");
     expect(await testDb().auditLog.count({ where: { action: "CONTENT_MANUAL_PASTE", actorUserId: admin.id } })).toBe(1);
+  });
+});
+
+describe("freshness audit and retire date", () => {
+  it("flags a published module whose quote vanished and the verifier says CONTRADICTED; is idempotent per ISO week", async () => {
+    await enableAll();
+    const site = fakeSite();
+    const { d } = deps(site, mockContentModel());
+    const start = Date.now();
+    const { day2 } = await baselineThenNewEntry(d, site, start);
+    const published = await processChange(d, day2.changeEventIds[0]!);
+    // The source rewrites the entry: the quotes are gone.
+    site.state.body = fixture("chatgpt-rn-v2.html").replace("Starting December 11, 2026, custom GPTs will no longer be available in ChatGPT.", "Custom GPTs remain available.");
+    await setKillSwitch(testDb(), PIPELINE_FLAG, false, null); // only snapshot the new state
+    await runSource({ ...d, now: () => new Date(start + 2 * DAY) }, source.id);
+
+    const verifier = mockContentModel({ verify: (ids) => ({ claims: ids.map((id) => ({ id, verdict: "CONTRADICTED", reason: "Kilden siger noget andet nu." })), language: { status: "PASS", fixes: [] } }) });
+    const audit = await freshnessAudit({ ...d, callContentModel: verifier.call });
+    expect(audit.skipped).toBe(false);
+    const v = await testDb().moduleVersion.findUniqueOrThrow({ where: { id: published.moduleVersionId! }, include: { module: true } });
+    expect(v.module.isStale).toBe(true);
+    expect(await freshnessAudit({ ...d, callContentModel: verifier.call })).toMatchObject({ skipped: true });
+  });
+
+  it("retire date marks modules that still reference the feature", async () => {
+    const db = testDb();
+    const mod = await db.module.create({ data: { slug: "core-it-retire", type: "CORE" } });
+    const v = await db.moduleVersion.create({ data: { moduleId: mod.id, version: 1, status: "PUBLISHED", schemaVersion: "1", title: "x", content: {}, maxPoints: 1, estimatedMinutes: 8, featureRefs: ["chatgpt.custom-gpts"], searchText: "", contentHash: "x" } });
+    await db.module.update({ where: { id: mod.id }, data: { publishedVersionId: v.id } });
+    const { d } = deps(fakeSite(), mockContentModel());
+    const r = await featureRetire(d, "chatgpt.custom-gpts", "2026-12-11");
+    expect(r.modules).toContain("core-it-retire");
+    expect((await db.module.findUniqueOrThrow({ where: { id: mod.id } })).isStale).toBe(true);
+    expect(await featureRetire(d, "chatgpt.custom-gpts", "2026-12-11")).toMatchObject({ skipped: true });
+    expect(upcomingRetirements(new Date("2026-12-10T12:00:00Z")).map((x) => x.featureId)).toEqual(["chatgpt.custom-gpts"]);
   });
 });
