@@ -60,6 +60,13 @@ describe("sandbox session service (docs/04 § 2, § 12)", () => {
     }
   });
 
+  it("parallel first visits create exactly one session", async () => {
+    const o = await owner();
+    const sessions = await Promise.all(Array.from({ length: 4 }, () => getOrCreateFreePlaySession(testDb(), o, "CLAUDE")));
+    expect(new Set(sessions.map((s) => s.id)).size).toBe(1);
+    expect(await testDb().sandboxSession.count({ where: { userId: o.userId } })).toBe(1);
+  });
+
   it("rejects inactive tracks", async () => {
     await expect(getOrCreateFreePlaySession(testDb(), await owner(), "GEMINI")).rejects.toMatchObject({ code: "TRACK_NOT_FOUND" });
   });

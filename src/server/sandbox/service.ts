@@ -60,13 +60,16 @@ export async function getOrCreateFreePlaySession(db: PrismaClient, owner: Owner,
   const version = worldVersion();
 
   await expireIdleSessions(db, now, owner.userId);
-  const existing = await db.sandboxSession.findFirst({
-    where: { userId: owner.userId, organizationId: owner.organizationId, trackId: track.id, attemptId: null, status: "ACTIVE" },
-    orderBy: { createdAt: "desc" },
-  });
-  if (existing && existing.worldVersion === version && existing.skinKey === track.skinKey) return existing;
+  const where = { userId: owner.userId, organizationId: owner.organizationId, trackId: track.id, attemptId: null, status: "ACTIVE" as const };
+  const reusable = (s: SandboxSession | null) => (s && s.worldVersion === version && s.skinKey === track.skinKey ? s : null);
+  const hit = reusable(await db.sandboxSession.findFirst({ where, orderBy: { createdAt: "desc" } }));
+  if (hit) return hit;
 
   return db.$transaction(async (tx) => {
+    // Serialize creation per user+org+track so parallel requests (e.g. two renders) cannot create two sessions.
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`sandbox:${owner.userId}:${owner.organizationId}:${track.id}`}))`;
+    const existing = await tx.sandboxSession.findFirst({ where, orderBy: { createdAt: "desc" } });
+    if (reusable(existing)) return existing as SandboxSession;
     // A new world version or a changed Track.skinKey starts a fresh session (docs/04 § 12).
     if (existing) await tx.sandboxSession.update({ where: { id: existing.id }, data: { status: "CLOSED" } });
     const started = parseSandboxEvent({ type: "SESSION_STARTED", actor: "SYSTEM", payload: { trackKey, skinKey: track.skinKey, worldVersion: version } });
