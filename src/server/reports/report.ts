@@ -1,6 +1,7 @@
 import "server-only";
 import type { PrismaClient } from "@/generated/prisma/client";
 import { assertAdminSafe } from "@/server/admin/allowed-fields";
+import { getEntitlements } from "@/server/billing/entitlements";
 import type { EmployeeFilter } from "@/server/admin/queries";
 import type { ReportData } from "./render";
 import { findBannedTerms } from "./wording";
@@ -47,9 +48,9 @@ function employeeWhere(organizationId: string, filter: EmployeeFilter) {
 export async function loadReportData(db: PrismaClient, params: ReportParams, now = new Date()): Promise<ReportData> {
   validateReportNotes(params.notes);
   const { organizationId, from, to } = params;
-  const [org, activeSubscription, members] = await Promise.all([
+  const [org, entitlements, members] = await Promise.all([
     db.organization.findUniqueOrThrow({ where: { id: organizationId }, select: { name: true, aiPolicyUrl: true } }),
-    db.subscription.findFirst({ where: { organizationId, status: "ACTIVE" }, select: { id: true } }),
+    getEntitlements(db, organizationId, now),
     db.membership.findMany({
       where: employeeWhere(organizationId, params.filter ?? {}),
       orderBy: { createdAt: "asc" },
@@ -81,7 +82,8 @@ export async function loadReportData(db: PrismaClient, params: ReportParams, now
     organization: { name: org.name, aiPolicyUrl: org.aiPolicyUrl },
     period: { from, to },
     generatedAt: now,
-    trial: !activeSubscription,
+    // "Prøveperiode" watermark (docs/01 § 4.2.7) unless the org has a paid, running subscription (M6 entitlements).
+    trial: entitlements.reportWatermark === "TRIAL" || !(entitlements.status === "ACTIVE" || entitlements.status === "PAST_DUE"),
     notes: params.notes ?? null,
     employees: members.map((m) => ({
       name: m.user.name,
