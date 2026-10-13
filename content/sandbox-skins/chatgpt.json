@@ -1,0 +1,21 @@
+{
+  "key": "chatgpt",
+  "version": "1",
+  "shell": "SIDEBAR_CHAT",
+  "regions": ["nav", "history", "chat", "composer", "notifications"],
+  "nav": [
+    { "id": "new-chat", "labelKey": "newChat", "concept": "CHAT" },
+    { "id": "assistants", "labelKey": "assistants", "concept": "ASSISTANTS" },
+    { "id": "connectors", "labelKey": "connectors", "concept": "CONNECTORS" },
+    { "id": "automations", "labelKey": "automations", "concept": "AUTOMATIONS" },
+    { "id": "agents", "labelKey": "agents", "concept": "AGENTS" },
+    { "id": "mail", "labelKey": "mail", "concept": "MAIL" },
+    { "id": "calendar", "labelKey": "calendar", "concept": "CALENDAR" },
+    { "id": "files", "labelKey": "files", "concept": "FILES" },
+    { "id": "crm", "labelKey": "crm", "concept": "CRM" },
+    { "id": "sheet", "labelKey": "sheet", "concept": "SHEET" }
+  ],
+  "composer": { "attachFromFiles": true, "toolsMenu": ["attach", "tools"], "modelPicker": false },
+  "concepts": { "assistants": true, "connectors": true, "automations": true, "agents": true },
+  "tokens": { "density": "comfortable", "accentSlot": "a" }
+}
