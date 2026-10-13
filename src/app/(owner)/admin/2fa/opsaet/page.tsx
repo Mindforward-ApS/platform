@@ -34,7 +34,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
       <p className="font-mono break-all" data-testid="totp-secret">
         {t.secretLabel}: {secret}
       </p>
-      <p className="font-mono text-sm break-all">{generateURI({ issuer: "Greb", label: ctx.user.email, secret })}</p>
+      <p className="font-mono text-sm break-all">{generateURI({ issuer: getMessages().brand, label: ctx.user.email, secret })}</p>
       {sp.fejl && <Notice tone="error">{t.invalidCode}</Notice>}
       <form action={confirmTwoFactorSetup} className="flex flex-col gap-3">
         <Field label={t.codeLabel} name="code" inputMode="numeric" autoComplete="one-time-code" pattern="\d{6}" required />

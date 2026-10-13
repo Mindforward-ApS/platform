@@ -7,7 +7,8 @@
 - [ ] **Er Greb "digitalt indhold" eller en "tjenesteydelse"** efter forbrugeraftaleloven? Afgør om afkald på fortrydelsesret ved straks-adgang virker. Blokerer: endelig tekst i B2C-checkout (M6).
 - [ ] **Advokatgennemgang:** handelsbetingelser, databehandleraftale, privatlivspolitik, sandkassens UI (trade dress), art. 4-tekster. Blokerer: launch gate (M10).
 - [ ] **Ansættelseskontrakt hos Færch & Co.:** klausuler om bibeskæftigelse og immaterielle rettigheder. Blokerer: pilot.
-- [ ] **Navn og domæne "Greb"** er ikke tjekket (domæne, varemærke). Blokerer: M0 (domæne).
+- [x] **Navn og domæne:** produktet hedder Mindforward, domænet mindforward.dk er købt (00 § 10b).
+- [ ] **Varemærke "Mindforward":** mindforward.com og .eu bruges af andre (formål ukendt). Tjek DKPTO/EUIPO. Blokerer: launch gate.
 - [ ] **Dansk tilsynsmyndighed for AI-forordningens art. 4** er uafklaret (L 111 bortfaldt). Påvirker kun markedsføringstekster.
 
 ## Tekniske (fra spec-arbejdet 12. okt 2026)

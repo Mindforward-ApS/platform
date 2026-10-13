@@ -59,7 +59,7 @@ async function Content({ params, searchParams }: { params: Promise<{ id: string 
 
 export default function InvitationPage(props: PageProps<"/invitation/[id]">) {
   return (
-    <Page title="Greb">
+    <Page title={getMessages().brand}>
       <Suspense>
         <Content params={props.params} searchParams={props.searchParams as Promise<{ fejl?: string }>} />
       </Suspense>

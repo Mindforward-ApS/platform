@@ -45,7 +45,7 @@ export const serverEnvSchema = z
     RESEND_API_KEY: optionalString,
     EMAIL_TRANSPORT: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["resend", "log", "file"]).optional()),
     EMAIL_OUTBOX_DIR: optionalString,
-    EMAIL_FROM_SERVICE: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("Greb <hej@mail.example.com>")),
+    EMAIL_FROM_SERVICE: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("Mindforward <hej@mail.mindforward.dk>")),
     EMAIL_REPLY_TO: optionalEmail,
     EMAIL_ALLOWLIST: optionalString,
   })

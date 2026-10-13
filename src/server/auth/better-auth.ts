@@ -1,4 +1,5 @@
 import "server-only";
+import { BRAND } from "@/lib/i18n/da";
 import { createHash } from "node:crypto";
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
@@ -60,7 +61,7 @@ export function buildAuthOptions(deps: { db: PrismaClient; env: ServerEnv }) {
   const prisma = deps.db;
 
   return {
-    appName: "Greb",
+    appName: BRAND,
     secret: env.BETTER_AUTH_SECRET,
     baseURL: {
       allowedHosts: allowedHosts(env.APP_URL, env.AUTH_PRODUCTION_URL),

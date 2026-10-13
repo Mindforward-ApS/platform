@@ -105,5 +105,10 @@ Gælder forud for resten af pakken, inkl. § 10. Detaljer i `docs/OPEN-QUESTIONS
 - **Stack-versioner:** Prisma 7.10.x (ikke 8-rc), TypeScript 6.0.x, Next.js 16 (`proxy.ts` i stedet for `middleware.ts`). Env-variabler bliver påkrævede i den milestone, der bruger dem.
 - **Claude er med overalt hvor ChatGPT/Copilot nævnes** (skins, supportprompt, designsessioner).
 
+## 10b. Produktnavn (besluttet af Marco 13. okt 2026)
+- Produktet hedder **Mindforward**. Domæne: `mindforward.dk` (købt af Marco). Afsender: `hej@mail.mindforward.dk` (SERVICE), `nyt@news.mindforward.dk` (MARKETING).
+- Kodenavnet `greb` bevares internt (repo, Vercel/Neon/Sentry-projekter, filnavne). "Greb" i spec-dokumenterne betyder produktet Mindforward.
+- Varemærke ikke tjekket: `mindforward.com` og `mindforward.eu` er i brug af andre → DKPTO/EUIPO-tjek før launch (launch gate).
+
 ## 11. Ejer-tid (mål)
 Marco ≤ 2 timer/uge efter launch: 1-klik-godkendelse af indhold, læse daglig digest, håndtere eskalationer.

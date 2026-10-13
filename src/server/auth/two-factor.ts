@@ -1,4 +1,5 @@
 import "server-only";
+import { BRAND } from "@/lib/i18n/da";
 import { randomUUID } from "node:crypto";
 import { generateSecret, generateURI, verify } from "otplib";
 import type { PrismaClient } from "@/generated/prisma/client";
@@ -11,7 +12,7 @@ import { decryptSecret, encryptSecret } from "./secret-box";
 // twoFactor plugin (password-gated) is not used; the `two_factor` table and `session.twoFactorVerifiedAt` are.
 
 const ATTEMPTS = { window: 15 * 60, max: 5 };
-const ISSUER = "Greb";
+const ISSUER = BRAND;
 
 async function codeMatches(sealedSecret: string, code: string): Promise<boolean> {
   if (!/^\d{6}$/.test(code)) return false;

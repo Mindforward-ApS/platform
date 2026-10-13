@@ -1,18 +1,22 @@
 // Danish UI strings. Components never hardcode UI text (CLAUDE.md) — add keys here.
+// Product name (decided by Marco 13 Oct 2026). Internal code name stays `greb`.
+export const BRAND = "Mindforward";
+
 export const da = {
+  brand: BRAND,
   meta: {
-    title: "Greb",
-    description: "Få greb om AI — lær ved at gøre.",
+    title: "Mindforward",
+    description: "Lær AI ved at gøre det.",
   },
   home: {
-    heading: "Greb",
-    tagline: "Få greb om AI. Kommer snart.",
+    heading: "Mindforward",
+    tagline: "Lær AI ved at gøre det. Kommer snart.",
     login: "Log ind",
     signup: "Opret bruger",
   },
   auth: {
-    loginTitle: "Log ind på Greb",
-    signupTitle: "Opret bruger på Greb",
+    loginTitle: "Log ind på Mindforward",
+    signupTitle: "Opret bruger på Mindforward",
     emailLabel: "Email",
     sendLink: "Send login-link",
     or: "eller",
@@ -35,7 +39,7 @@ export const da = {
   },
   invitation: {
     title: "Invitation til {organization}",
-    invitedBy: "{inviter} har inviteret dig til at lære AI på Greb.",
+    invitedBy: "{inviter} har inviteret dig til at lære AI på Mindforward.",
     loginToAccept: "Log ind for at acceptere",
     accept: "Accepter invitation",
     reject: "Afvis",
@@ -72,7 +76,7 @@ export const da = {
     },
   },
   admin: {
-    title: "Greb drift",
+    title: "Mindforward drift",
     setupTitle: "Slå to-trinsbekræftelse til",
     setupBody: "Scan koden i din authenticator-app, eller indtast nøglen manuelt. Skriv derefter den 6-cifrede kode.",
     secretLabel: "Nøgle",
@@ -82,21 +86,21 @@ export const da = {
     invalidCode: "Koden er forkert. Prøv igen.",
   },
   email: {
-    footer: "Greb · Esther Gruppen ApS",
+    footer: "Mindforward · Esther Gruppen ApS",
     ignoreNote: "Har du ikke bedt om denne mail, kan du se bort fra den.",
     magicLink: {
-      subject: "Dit login-link til Greb",
-      preview: "Log ind på Greb",
-      heading: "Log ind på Greb",
+      subject: "Dit login-link til Mindforward",
+      preview: "Log ind på Mindforward",
+      heading: "Log ind på Mindforward",
       body: "Klik på knappen for at logge ind. Linket virker i {minutes} minutter og kan kun bruges én gang.",
       button: "Log ind",
       fallback: "Virker knappen ikke, så kopiér dette link ind i din browser:",
     },
     invitation: {
-      subject: "{inviter} har inviteret dig til {organization} på Greb",
-      preview: "Invitation til Greb",
-      heading: "Du er inviteret til Greb",
-      body: "{inviter} har inviteret dig til {organization} på Greb, hvor I lærer AI-værktøjer ved at prøve dem i et øvemiljø.",
+      subject: "{inviter} har inviteret dig til {organization} på Mindforward",
+      preview: "Invitation til Mindforward",
+      heading: "Du er inviteret til Mindforward",
+      body: "{inviter} har inviteret dig til {organization} på Mindforward, hvor I lærer AI-værktøjer ved at prøve dem i et øvemiljø.",
       button: "Se invitationen",
       fallback: "Virker knappen ikke, så kopiér dette link ind i din browser:",
     },
