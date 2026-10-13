@@ -123,6 +123,24 @@ function approxTokens(req: ProviderRequest): number {
   return Math.ceil(JSON.stringify([req.system, req.tools, req.messages]).length / 4);
 }
 
+export const MOCK_SUPPORT_PREFIX = "Dette er et testsvar fra supportassistenten.";
+
+/** Answer for the mocked support agent from the last search_help_articles tool result. */
+function mockSupportReply(req: ProviderRequest): string {
+  const last = req.messages[req.messages.length - 1];
+  const block = last && typeof last.content !== "string" ? last.content.find((b) => b.type === "tool_result") : undefined;
+  let hits: unknown = [];
+  try {
+    const raw = block && block.type === "tool_result" ? block.content : undefined;
+    hits = JSON.parse(typeof raw === "string" ? raw : "[]");
+  } catch {
+    hits = [];
+  }
+  const first = Array.isArray(hits) ? (hits[0] as { title?: unknown; url?: unknown } | undefined) : undefined;
+  if (first && typeof first.title === "string" && typeof first.url === "string") return `${MOCK_SUPPORT_PREFIX} Se artiklen "${first.title}": ${first.url}`;
+  return `${MOCK_SUPPORT_PREFIX} Det er jeg ikke sikker på. Skriv "menneske", hvis du vil have fat i en medarbejder.`;
+}
+
 export function mockProvider(opts: { structured?: unknown } = {}): ModelProvider {
   return {
     name: "mock",
@@ -135,6 +153,15 @@ export function mockProvider(opts: { structured?: unknown } = {}): ModelProvider
       }
       const { text, hasToolResult } = lastUserText(req);
       const toolNames = new Set((req.tools ?? []).map((t) => ("name" in t ? t.name : "")));
+      // M10 support agent: look the question up in the help center, then answer with the best article link.
+      if (toolNames.has("search_help_articles")) {
+        const reply = hasToolResult ? mockSupportReply(req) : null;
+        if (!reply) {
+          return { content: [{ type: "tool_use", id: "toolu_mock_search_help_articles", name: "search_help_articles", input: { query: text.slice(0, 200) || "hjælp" } }], stopReason: "tool_use", usage: usage("search") };
+        }
+        for (const chunk of reply.match(/[^]{1,16}/g) ?? []) onText?.(chunk);
+        return { content: [{ type: "text", text: reply }], stopReason: "end_turn", usage: usage(reply), requestId: "msg_mock" };
+      }
       const trigger = !hasToolResult ? MOCK_TOOL_TRIGGERS.find((t) => t.word.test(text) && toolNames.has(t.tool)) : undefined;
       if (trigger) {
         return { content: [{ type: "tool_use", id: `toolu_mock_${trigger.tool}`, name: trigger.tool, input: trigger.input }], stopReason: "tool_use", usage: usage(trigger.tool) };

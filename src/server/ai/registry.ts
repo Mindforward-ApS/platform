@@ -1,6 +1,7 @@
 import type { PromptDefinition } from "./prompts/types";
 import { gradePromptTaskV1 } from "./prompts/grade-prompt-task.v1";
 import { sandboxChatV1 } from "./prompts/sandbox-chat.v1";
+import { supportAgentV1 } from "./prompts/support-agent.v1";
 
 // Prompt registry (docs/02 § 6): all versions per key + the active one. ACTIVE is config, so a prompt can be rolled
 // back by changing one line (later: a FeatureFlag value) without touching call sites.
@@ -8,11 +9,13 @@ import { sandboxChatV1 } from "./prompts/sandbox-chat.v1";
 const PROMPTS: Record<string, Record<string, PromptDefinition>> = {
   "sandbox-chat": { v1: sandboxChatV1 },
   "grade-prompt-task": { v1: gradePromptTaskV1 },
+  "support-agent": { v1: supportAgentV1 },
 };
 
 const ACTIVE: Record<string, string> = {
   "sandbox-chat": "v1",
   "grade-prompt-task": "v1",
+  "support-agent": "v1",
 };
 
 export class UnknownPromptError extends Error {}

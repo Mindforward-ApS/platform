@@ -27,12 +27,17 @@ const ACCESS_RE = /(betalt|købt|paid)[^.!?]{0,60}(kan ikke|kommer ikke|ingen ad
 const COMPLAINT_RE = /\b(klage|klager|advokat|forbrugerombudsmand(en)?|forbrugerklagenævnet|lawyer|complaint)\b/i;
 const HUMAN_RE = /\b(menneske|et rigtigt menneske|human|real person)\b|(tale|snakke|skrive) med (en|et) (medarbejder|person|menneske)|fat i (en|et) (medarbejder|menneske|person)|ring(e)? (til mig|mig op)|kan (i|du) ringe/i;
 
-const REFUND_RE = /(penge|pengene|beløbet|mine penge)( \w+)? (tilbage|retur)|refund|refusion|refunder|tilbagebetal|krediter|kreditér|kreditnota|money back/i;
-const DISCOUNT_RE = /rabat|discount|kupon|coupon|promo ?kode|gratis (måned|periode|adgang)|free month|100 ?%/i;
+const REFUND_RE = /(penge|pengene|beløbet|mine penge)( \w+)? (tilbage|retur)|refund|refusion|refunder|tilbagebetal|krediter|kreditér|kreditnota|money back|fortryd|withdraw/i;
+const DISCOUNT_RE = /rabat|discount|kupon|coupon|promo ?kode|gratis (måned|måneder|periode)|free month/i;
 const PRICE_CHANGE_RE = /(sænk|ændr|nedsæt|sæt)\w* (prisen|min pris|vores pris|abonnementsprisen)|billigere pris|forlæng\w* (min |vores |jeres )?(prøveperiode|trial)|extend (my )?trial|lower (the |my )?price/i;
-const OTHER_USER_RE =
-  /(hvad|hvilke|vis|se|show)\b[^?.!]{0,50}\b(skrev|skrevet|svarede|svar|prompts?|opgaver|wrote)\b[^?.!]{0,30}\b(hun|han|de|hans|hendes|deres|medarbejder\w*|kolleg\w*)?|\b(for|til|om|af) (bruger|user|medarbejder) ?(nr\.? ?)?[\w-]*\d[\w-]*|andre brugeres|en anden brugers|anden brugers|other users?'?s?/i;
-const NAMED_PERSON_WROTE_RE = /\b(hvad|vis|se)\b[^?.!]{0,30}\b[A-ZÆØÅ][a-zæøå]+\b[^?.!]{0,20}\b(skrev|skrevet|svarede|har lavet|prompts?)\b/;
+const THIRD_PERSON = String.raw`(hans|hendes|deres|medarbejder(e|en|ens|nes|s)?|kolleg(a|aen|aer|aens|ers)|teamets?|de andres?)`;
+const THEIR_TEXT = String.raw`(skrev|skrevet|svarede|prompts?|tekster|besvarelser?|opgavetekster)`;
+const OTHER_USER_RE = new RegExp(
+  String.raw`\b${THIRD_PERSON}\b[^?.!]{0,60}\b${THEIR_TEXT}\b|\b${THEIR_TEXT}\b[^?.!]{0,60}\b${THIRD_PERSON}\b|\b(for|til|om|af) (bruger|user) ?(nr\.? ?)?[\w-]*\d[\w-]*|andre brugeres|en anden brugers|anden brugers|other users?'?s?`,
+  "i",
+);
+// "vis hvad Mette skrev" — a capitalised name between the question word and the verb (product names excluded).
+const NAMED_PERSON_WROTE_RE = /\b(hvad|vis|se)\b[^?.!]{0,30}\b(?!Øvemodel|ChatGPT|Copilot|Claude|Gemini|Mindforward|Nordlys)[A-ZÆØÅ][a-zæøå]+\b[^?.!]{0,20}\b(skrev|skrevet|svarede|har lavet|prompts?)\b/;
 
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/g;
 const BASE64_RE = /\b[A-Za-z0-9+/]{12,}={0,2}(?![A-Za-z0-9+/=])/g;

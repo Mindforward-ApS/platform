@@ -7,7 +7,7 @@ import type { PiiKind } from "@/lib/pii";
 import { logger as defaultLogger, type Logger } from "@/server/observability/logger";
 import { piiGate } from "@/server/sandbox/pii";
 import { consumeRateLimit, type RateLimitRule } from "@/server/security/rate-limit";
-import { checkUserDailyCap, recordUsage } from "./budget";
+import { checkUserDailyCap, globalBudgetState, recordUsage } from "./budget";
 import { anthropicProvider, mockProvider, ProviderError, type ModelProvider, type ProviderBlock, type ProviderRequest, type ProviderResponse } from "./client";
 import { historyTurns, modelConfig, type ModelConfig } from "./models";
 import { costDkk, type TokenUsage } from "./pricing";
@@ -50,7 +50,8 @@ export class GatewayError extends Error {
   readonly status: number;
   constructor(
     public readonly code: GatewayErrorCode,
-    public readonly details: { kinds?: PiiKind[]; retryAfterSec?: number } = {},
+    /** reason GLOBAL_CAP: AI_DISABLED because the global monthly budget is used up (docs/02 § 6, M10). */
+    public readonly details: { kinds?: PiiKind[]; retryAfterSec?: number; reason?: "GLOBAL_CAP" | "DEGRADED_PAUSE" } = {},
   ) {
     super(code);
     this.name = "GatewayError";
@@ -109,6 +110,8 @@ const baseInput = z.object({
   cachedContext: z.array(z.string().max(40_000)).max(3).default([]),
   /** Variable system context after the cache breakpoint (module step context, assistant instructions). */
   dynamicContext: z.string().max(8_000).optional(),
+  /** Heading for dynamicContext (default MODULKONTEKST; support uses BRUGER). */
+  dynamicContextLabel: z.string().regex(/^[A-ZÆØÅ ]{3,24}$/).optional(),
   messages: z.array(z.custom<Anthropic.MessageParam>((m) => typeof m === "object" && m !== null && "role" in m)).min(1).max(60),
 });
 
@@ -183,7 +186,18 @@ export function createGateway(deps: GatewayDeps) {
     const meta = { userId: input.userId, organizationId: input.organizationId, feature: input.feature, promptKey: prompt.key, promptVersion: prompt.version };
 
     if (!env.AI_ENABLED || (await flag("AI_ENABLED")) === false) throw new GatewayError("AI_DISABLED");
-    const degraded = (await flag("AI_DEGRADED_MODE")) === true;
+    // M10 global monthly cap: 100 % blocks new calls nicely (sandbox shows "Øvemodellen holder pause …", grading
+    // goes PENDING, support falls back to the help center); ≥ 95 % = degraded mode + content draft/verify paused.
+    const budget = await globalBudgetState(db, env.AI_GLOBAL_MONTHLY_BUDGET_DKK, now());
+    if (budget.level === "BLOCKED") {
+      await logCall({ ...meta, model: modelConfig(input.feature, env).model, status: "BLOCKED_GLOBAL_CAP" });
+      throw new GatewayError("AI_DISABLED", { reason: "GLOBAL_CAP" });
+    }
+    const degraded = (await flag("AI_DEGRADED_MODE")) === true || budget.level === "DEGRADED";
+    if (degraded && (input.feature === "CONTENT_DRAFT" || input.feature === "CONTENT_VERIFY")) {
+      await logCall({ ...meta, model: modelConfig(input.feature, env).model, status: "BLOCKED_GLOBAL_CAP", errorCode: "DEGRADED_PAUSE" });
+      throw new GatewayError("AI_DISABLED", { reason: "DEGRADED_PAUSE" });
+    }
     const config = modelConfig(input.feature, env, { degraded });
 
     if (input.userId) {
@@ -215,13 +229,13 @@ export function createGateway(deps: GatewayDeps) {
     return { input, prompt, config, degraded, meta };
   }
 
-  function buildSystem(promptSystem: string, skinKey: string | undefined, cachedContext: string[], dynamicContext?: string): Anthropic.TextBlockParam[] {
+  function buildSystem(promptSystem: string, skinKey: string | undefined, cachedContext: string[], dynamicContext?: string, dynamicLabel = "MODULKONTEKST"): Anthropic.TextBlockParam[] {
     const head = skinKey && SKIN_ADDENDUM[skinKey] ? `${promptSystem}\n\nARBEJDSGANG\n- ${SKIN_ADDENDUM[skinKey]}` : promptSystem;
     const blocks: Anthropic.TextBlockParam[] = [{ type: "text", text: head }, ...cachedContext.map((text) => ({ type: "text" as const, text }))];
     // One breakpoint at the end of the static prefix caches tools + system prompt + skin addendum + world summary.
     const last = blocks[blocks.length - 1];
     if (last) last.cache_control = { type: "ephemeral" };
-    if (dynamicContext) blocks.push({ type: "text", text: `MODULKONTEKST\n${dynamicContext}` });
+    if (dynamicContext) blocks.push({ type: "text", text: `${dynamicLabel}\n${dynamicContext}` });
     return blocks;
   }
 
@@ -286,7 +300,7 @@ export function createGateway(deps: GatewayDeps) {
       const tools: Anthropic.Tool[] = (raw.tools ?? []).map((t) => ({ name: t.name, description: t.description, input_schema: t.input_schema as Anthropic.Tool.InputSchema }));
       const lastTool = tools[tools.length - 1];
       if (lastTool) lastTool.cache_control = { type: "ephemeral" };
-      const system = buildSystem(prompt.system, input.skinKey, input.cachedContext, input.dynamicContext);
+      const system = buildSystem(prompt.system, input.skinKey, input.cachedContext, input.dynamicContext, input.dynamicContextLabel);
       const maxMessages = historyTurns(degraded) * 2 + 1;
       const messages: Anthropic.MessageParam[] = input.messages.slice(-maxMessages);
 
@@ -354,7 +368,7 @@ export function createGateway(deps: GatewayDeps) {
         const { resp, model } = await send(meta, config, {
           max_tokens: config.maxTokens,
           temperature: config.temperature,
-          system: buildSystem(prompt.system, input.skinKey, input.cachedContext, input.dynamicContext),
+          system: buildSystem(prompt.system, input.skinKey, input.cachedContext, input.dynamicContext, input.dynamicContextLabel),
           messages,
           tools: [tool],
           tool_choice: { type: "tool", name },

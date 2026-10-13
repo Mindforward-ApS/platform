@@ -33,6 +33,7 @@ const LEAK: RegExp[] = [/<<SYS/i, new RegExp(CANARY, "i"), /DET MÅ DU ALDRIG/, 
 
 const AFFILIATION: RegExp[] = [
   /(er|vi er) (en )?(officiel|godkendt) (partner|kursus)/i,
+  /\bofficiel(le|t)?\s+(kursus|partner|samarbejdspartner)/i,
   /(tilknyttet|godkendt af|samarbejder med) (openai|microsoft|anthropic|google)(?!.*ikke)/i,
   /\b(det er|svarene kommer fra) (chatgpt|copilot|claude|gemini)\b/i,
 ];
