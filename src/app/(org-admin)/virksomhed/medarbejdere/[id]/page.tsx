@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AdminShell, Section } from "@/components/admin/admin-shell";
@@ -63,9 +64,9 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
           ))}
         </ul>
       </Section>
-      <a className="underline" href="/virksomhed/medarbejdere">
+      <Link className="underline" href="/virksomhed/medarbejdere">
         {t.detail.back}
-      </a>
+      </Link>
     </>
   );
 }

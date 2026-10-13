@@ -15,6 +15,7 @@ import {
   type Actor,
   type SubmitNotice,
 } from "@/server/modules/attempts";
+import { requestCertificateCheck } from "@/server/jobs/org-admin";
 import { playableOptions, playerDeps } from "@/server/modules/deps";
 import type { PlayerActionResult } from "@/server/modules/player-types";
 
@@ -94,7 +95,9 @@ export async function skipClickTaskAction(attemptId: string, stepId: string): Pr
 export async function finishAttemptAction(attemptId: string): Promise<PlayerActionResult> {
   try {
     const actor = await currentActor();
-    await finishAttempt(db(), actor, id.parse(attemptId));
+    const result = await finishAttempt(db(), actor, id.parse(attemptId));
+    // M7: a passed module may complete a certificate level (idempotent Inngest job; never blocks the learner).
+    if (result.passed) await requestCertificateCheck({ ...actor, attemptId });
     return await stateResult(actor, attemptId);
   } catch (err) {
     return failure(err);

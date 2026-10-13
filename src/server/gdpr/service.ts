@@ -2,6 +2,7 @@ import "server-only";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import type { PrismaClient } from "@/generated/prisma/client";
 import { writeAudit } from "@/server/audit/log";
+import { sendServiceEmail } from "@/server/email/send";
 import { consumeRateLimit } from "@/server/security/rate-limit";
 
 // GDPR data-subject rights (docs/10 § 1.5): export of the user's OWN data, account deletion with e-mail
@@ -134,4 +135,16 @@ export async function eraseUser(db: PrismaClient, userId: string): Promise<{ era
     await tx.user.delete({ where: { id: userId } });
   });
   return { erased: true };
+}
+
+/** POST /api/me/delete and the /konto/data form: create the token and send the SERVICE confirmation mail. */
+export async function startAccountDeletion(db: PrismaClient, user: { id: string; email: string }, appUrl: string): Promise<void> {
+  const { token } = await requestAccountDeletion(db, user.id);
+  await sendServiceEmail(db, {
+    template: "account-deletion-confirm",
+    to: user.email,
+    vars: { url: `${appUrl}/konto/data/slet?token=${encodeURIComponent(token)}`, expiresMin: DELETION_TOKEN_MINUTES },
+    idempotencyKey: `account-delete:${createHash("sha256").update(token).digest("hex").slice(0, 32)}`,
+    userId: user.id,
+  });
 }
