@@ -81,3 +81,12 @@
 - [x] **`core-prompt-01` rettet til Nordlys-verdenen:** case = Bølgegrøn Kaffes klage (m02), vedhæftning = f11 "Tone of voice", ugedage i stedet for datoer, kontakt = Kim Lund.
 - [ ] **Golden set for `core-prompt-01`** mangler stadig (≥ 20 mærkede svar) → modulet seedes som `IN_REVIEW` og publiceres først, når golden set findes (M4).
 - [ ] **`prerequisites: core-llm-01`** peger på et modul, der ikke er skrevet endnu (kun anbefaling, blokerer ikke).
+
+## M4 — Modulafspiller, scoring, hints (13. okt 2026)
+- [ ] **Heltals-point i Prisma:** `Attempt.points` og `StepResult.points` er `Int`, men scoring regner med decimaler (fx 20,6). · Valgt: modulscore genberegnes med fuld præcision ud fra gemte svar/rubric-scores ved afslutning; `points` gemmes afrundet, `scorePct` med 2 decimaler. · Forslag: `Decimal(6,2)` hvis der skal rapporteres præcise point.
+- [ ] **PROMPT_TASK lukkes ved bestået:** efter bestået vises eksempelløsningen (05 § 2), så yderligere indsendelser ville kunne kopiere den. · Valgt: trinnet lukker ved bestået eller når `maxSubmissions` er brugt.
+- [ ] **Hint efter indsendelse:** hint-niveau er pr. trin; tages hint 2/3 på en PROMPT_TASK, der stadig kan genindsendes, gælder multiplikatoren også den bedste indsendelse. Lukkede trin tager ingen nye hints.
+- [ ] **Grader permanent nede:** `GradingStatus.ERROR` holder trinnet åbent (ingen 0 point), men brugeren kan ikke afslutte modulet før en bedømmelse lykkes. `grading.retry`-jobbet (02 § 5) er ikke bygget. · Forslag: byg sammen med AI-gatewayen (M3-integration).
+- [ ] **CLICK_TASK-events pr. trin:** evaluatoren læser `SandboxEvent` med `stepId = trinnets id` for sessioner bundet til forsøget (i stedet for "seq > trinnets start-seq", som ikke er gemt). Sandkassen (M3) skal sætte `stepId` på events.
+- [ ] **Grader-prompt-placering:** `grade-prompt-task.v1.ts` ligger i `src/server/scoring/` (ikke `src/server/ai/prompts/`), fordi M3 bygger `src/server/ai/` parallelt. Kan flyttes uden versionsbump.
+- [ ] **Svartid-flag (05 § 7):** `StepResult.flags.fastAnswer` sættes ikke endnu (kræver visningstidspunkt pr. trin).

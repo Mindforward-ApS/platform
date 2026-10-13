@@ -47,6 +47,9 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
             </SubmitButton>
           </form>
         ))}
+      <a className="underline" href="/moduler">
+        {getMessages().player.list.toModules}
+      </a>
       <a className="underline" href="/virksomhed/opret">
         {t.createBusiness}
       </a>
