@@ -54,3 +54,6 @@ next-env.d.ts
 # local test postgres
 /.pgdata/
 /.e2e-outbox/
+
+# agent worktrees
+/.claude/
