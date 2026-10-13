@@ -26,6 +26,10 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/sandbox/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**"],
     "/sandkasse/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**"],
+    // M10: help-center articles are read from content/help at runtime (src/server/support/help.ts).
+    "/api/support/**": ["./content/help/**"],
+    "/hjaelp/**": ["./content/help/**"],
+    "/hjaelp": ["./content/help/**"],
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

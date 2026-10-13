@@ -55,6 +55,9 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
       <a className="underline" href="/konto/abonnement">
         {getMessages().billing.account.accountLink}
       </a>
+      <a className="underline" href="/konto/support">
+        {getMessages().support.widget.title}
+      </a>
       {active && (
         <section className="flex flex-col gap-1" data-testid="sandbox-links">
           <h2 className="font-semibold">{ts.accountHeading}</h2>
