@@ -20,6 +20,9 @@ import { getPrompt } from "./registry";
 // on 429/5xx/overloaded with backoff/retry-after · 8 fallback model once · 9 structured output via forced tool use ·
 // 10 AiCall log WITHOUT prompt/answer text + AiUsageDaily/BudgetMonth increments.
 
+/** Message shape for callers outside src/server/ai (they may not import the SDK). */
+export type ChatMessage = Anthropic.MessageParam;
+
 export type GatewayErrorCode =
   | "INVALID_INPUT"
   | "AI_DISABLED"
