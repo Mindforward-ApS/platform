@@ -1,6 +1,7 @@
 import { render } from "@react-email/render";
 import type { ReactElement } from "react";
 import type { EmailCategory } from "@/generated/prisma/enums";
+import * as billing from "./billing";
 import { InvitationEmail, invitationSubject, type InvitationVars } from "./invitation";
 import { MagicLinkEmail, magicLinkSubject, type MagicLinkVars } from "./magic-link";
 
@@ -15,6 +16,12 @@ interface TemplateDef<V> {
 export const TEMPLATES = {
   "magic-link": { category: "SERVICE", version: "1", subject: magicLinkSubject, component: MagicLinkEmail } satisfies TemplateDef<MagicLinkVars>,
   invitation: { category: "SERVICE", version: "1", subject: invitationSubject, component: InvitationEmail } satisfies TemplateDef<InvitationVars>,
+  // M6 — billing
+  "order-confirmation": { category: "SERVICE", version: "1", subject: billing.orderConfirmationSubject, component: billing.OrderConfirmationEmail } satisfies TemplateDef<billing.OrderConfirmationVars>,
+  "withdrawal-receipt": { category: "SERVICE", version: "1", subject: billing.withdrawalReceiptSubject, component: billing.WithdrawalReceiptEmail } satisfies TemplateDef<billing.WithdrawalReceiptVars>,
+  "withdrawal-completed": { category: "SERVICE", version: "1", subject: billing.withdrawalCompletedSubject, component: billing.WithdrawalCompletedEmail } satisfies TemplateDef<billing.WithdrawalCompletedVars>,
+  "cancellation-confirmed": { category: "SERVICE", version: "1", subject: billing.cancellationConfirmedSubject, component: billing.CancellationConfirmedEmail } satisfies TemplateDef<billing.CancellationConfirmedVars>,
+  "support-escalation": { category: "SERVICE", version: "1", subject: billing.supportEscalationSubject, component: billing.SupportEscalationEmail } satisfies TemplateDef<billing.SupportEscalationVars>,
 } as const;
 
 export type TemplateKey = keyof typeof TEMPLATES;

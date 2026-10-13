@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Field, Notice, Page } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { getMessages } from "@/lib/i18n";
+import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { ADMIN_ROLES } from "@/server/auth/authz-core";
 import { guardPage } from "@/server/auth/page-guard";
@@ -18,7 +18,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
   const roleNames = getMessages().account.roles;
   const sp = await searchParams;
   const orgId = ctx.membership.organizationId;
-  const org = await db().organization.findUniqueOrThrow({ where: { id: orgId }, select: { type: true } });
+  const org = await db().organization.findUniqueOrThrow({ where: { id: orgId }, select: { type: true, seatLimit: true } });
   if (org.type !== "BUSINESS") redirect("/konto?fejl=adgang");
   const [members, pending] = await Promise.all([
     db().membership.findMany({ where: { organizationId: orgId, deactivatedAt: null }, orderBy: { createdAt: "asc" }, select: { id: true, role: true, user: { select: { name: true, email: true } } } }),
@@ -30,6 +30,8 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
   return (
     <>
       {errorKey && <Notice tone="error">{t.errors[errorKey]}</Notice>}
+      {sp.fejl === "pladser" && <Notice tone="error">{format(getMessages().billing.seats.limitReached, { limit: org.seatLimit })}</Notice>}
+      {sp.fejl === "laest" && <Notice tone="error">{getMessages().billing.seats.readOnly}</Notice>}
       {sp.ok && <Notice>{t.invited}</Notice>}
       <ul className="flex flex-col gap-2" data-testid="members">
         {members.map((m) => (

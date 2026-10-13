@@ -50,6 +50,9 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
       <a className="underline" href="/moduler">
         {getMessages().player.list.toModules}
       </a>
+      <a className="underline" href="/konto/abonnement">
+        {getMessages().billing.account.accountLink}
+      </a>
       <a className="underline" href="/virksomhed/opret">
         {t.createBusiness}
       </a>

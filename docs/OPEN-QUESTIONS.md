@@ -90,3 +90,22 @@
 - [ ] **CLICK_TASK-events pr. trin:** evaluatoren læser `SandboxEvent` med `stepId = trinnets id` for sessioner bundet til forsøget (i stedet for "seq > trinnets start-seq", som ikke er gemt). Sandkassen (M3) skal sætte `stepId` på events.
 - [ ] **Grader-prompt-placering:** `grade-prompt-task.v1.ts` ligger i `src/server/scoring/` (ikke `src/server/ai/prompts/`), fordi M3 bygger `src/server/ai/` parallelt. Kan flyttes uden versionsbump.
 - [ ] **Svartid-flag (05 § 7):** `StepResult.flags.fastAnswer` sættes ikke endnu (kræver visningstidspunkt pr. trin).
+
+## M6 — Stripe-betaling + forbrugerflows (13. okt 2026)
+### Til advokat [JURA]
+- [ ] **Digitalt indhold vs. tjenesteydelse** (uændret, blokerer endelig ordlyd): checkbokse-teksterne står som udkast i `content/legal/checkout-consent.v1.json`. "Fortryd aftale" og fuld refusion er bygget uanset svaret.
+- [ ] **Refusionsregel ved fortrydelse:** MVP refunderer det fulde beløb for den betalte måned straks via Stripe (ingen forholdsmæssig betaling for leveret ydelse). Gentagen fortrydelse fra samme email → abonnement stoppes, refusion afventer manuel vurdering (eskalation). Er det i orden, og hvad er lovens refusionsfrist?
+- [ ] **Hostet Stripe Checkout efter "Køb":** vores side har knappen "Køb" + fed pris inkl. moms + de to checkbokse; derefter sendes kunden til Stripes hostede betalingsside, hvis egen knap Stripe styrer ("Abonner"/"Betal"). Er § 12-kravet opfyldt, når bindingen sker ved "Køb" hos os? Ellers: skift til `ui_mode: "elements"` (Payment Element på vores side, vores "Køb" kalder `checkout.confirm()`) — kræver publishable key og @stripe/stripe-js.
+- [ ] **Fristberegning:** "Fortryd aftale" vises fra købet til udgangen af dag 14 efter købsdagen (Europe/Copenhagen), fx køb 1. okt → synlig til og med 15. okt 23:59. Korrekt?
+- [ ] **Ordrebekræftelse som varigt medium:** mailen indeholder sælger, plan, pris inkl. moms, frekvens, automatisk fornyelse, startdato, samtykketekster med tidspunkt, fortrydelsesfrist + link og opsigelsesvejledning, men **ingen PDF med handelsbetingelser** (betingelserne findes ikke endnu, M5) — kun link til `/vilkaar/forbruger`. Standardfortrydelsesformular mangler også i mailen.
+- [ ] **Sælgeroplysninger:** `COMPANY_CVR` og `COMPANY_ADDRESS` skal udfyldes i Vercel før launch (vises i ordrebekræftelse og kvittering).
+
+### Tekniske / til Marco
+- [ ] **Ordrebekræftelse sendes på `checkout.session.completed`** (ikke `invoice.paid` som 07 § 8.3), fordi samtykkerne er bundet til checkout-sessionens id. Idempotensnøgle `stripe:{sessionId}:order-confirmation`.
+- [ ] **Seat-ned midt i perioden** sker straks med `proration_behavior: "none"` (ingen kreditering), ikke planlagt til periodens udløb (07 § 4.3). Altid ≥ 5 og ≥ pladser i brug.
+- [ ] **Seat-loft tæller ejeren med** (00 § 10a): i prøveperioden er ejer + 4 invitationer = 5 pladser; den næste (6. plads) afvises. 07 § 15 siger "6. invitation".
+- [ ] **Udløbet B2B-prøve (paused) → køb:** den pausede prøve opsiges og der oprettes et nyt abonnement via Checkout (i stedet for `subscriptions.resume`). Løbende prøve → kort via Checkout `mode: "setup"` og samme abonnement konverteres (`trial_end: "now"`).
+- [ ] **Customer Portal-konfiguration** (`scripts/stripe-setup.ts`, 07 § 4.4) og oprettelse af Products/Prices/Tax Rates er ikke lavet — der var ingen Stripe-nøgler. Kræves før rigtig betaling. Stripe-nøgler valideres først ved brug (ikke ved boot), så andre milestones' previews starter uden dem.
+- [ ] **Dunning-mails, trial-mails (dag 11/13), `charge.dispute.created`-alarm og `customer.updated`-sync** er ikke bygget i M6 (kun status-sync + banner). Foreslås til M8 (mails) / M10 (alarmer).
+- [ ] **Race på seat-loft:** to samtidige invitationer kan i sjældne tilfælde begge passere (hook kører uden lås). Acceptabelt i MVP.
+- [ ] **Eskalationer:** `Escalation`-række + SERVICE-mail til `SUPPORT_INBOX` (allowlist gælder uden for produktion).

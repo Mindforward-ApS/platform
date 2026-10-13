@@ -1,5 +1,6 @@
+import { stripeEventJob, withdrawalJob } from "./billing";
 import { helloJob } from "./hello";
 import { retentionPurgePromptTextJob } from "./retention-purge-prompt-text";
 
 export { inngest } from "./client";
-export const functions = [helloJob, retentionPurgePromptTextJob];
+export const functions = [helloJob, retentionPurgePromptTextJob, stripeEventJob, withdrawalJob];

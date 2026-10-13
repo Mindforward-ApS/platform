@@ -53,6 +53,23 @@ export const serverEnvSchema = z
     ALLOW_UNPUBLISHED_MODULES: flag,
     GRADER_MOCK: flag,
     CLICK_TASK_MOCK: flag,
+    // M6 — billing (Stripe). Keys are checked when billing is first used (src/server/billing/stripe.ts),
+    // so previews of other milestones start without them. STRIPE_MOCK=1 = in-process fake Stripe (tests/e2e).
+    STRIPE_SECRET_KEY: optionalString,
+    STRIPE_WEBHOOK_SECRET: optionalString,
+    STRIPE_PRICE_B2C_MONTHLY: optionalString,
+    STRIPE_PRICE_B2B_MONTHLY: optionalString,
+    STRIPE_PRICE_B2B_ANNUAL: optionalString,
+    TAX_RATE_DK_25_INCLUSIVE: optionalString,
+    TAX_RATE_DK_25_EXCLUSIVE: optionalString,
+    STRIPE_PORTAL_CONFIGURATION_ID: optionalString,
+    STRIPE_MOCK: flag,
+    // 1 = run Inngest-triggered billing jobs inline in the request (tests/e2e without the Inngest Dev Server).
+    JOBS_INLINE: flag,
+    SUPPORT_INBOX: optionalEmail,
+    COMPANY_LEGAL_NAME: z.preprocess((v) => (v === "" ? undefined : v), z.string().default("Mindforward (Esther Gruppen ApS)")),
+    COMPANY_CVR: optionalString,
+    COMPANY_ADDRESS: optionalString,
   })
   .superRefine((env, ctx) => {
     const pairs = [
@@ -78,7 +95,7 @@ export const serverEnvSchema = z
     if (env.ENABLE_DEBUG_ROUTES) {
       ctx.addIssue({ code: "custom", path: ["ENABLE_DEBUG_ROUTES"], message: "må ikke være slået til i produktion" });
     }
-    for (const key of ["ALLOW_UNPUBLISHED_MODULES", "GRADER_MOCK", "CLICK_TASK_MOCK"] as const) {
+    for (const key of ["ALLOW_UNPUBLISHED_MODULES", "GRADER_MOCK", "CLICK_TASK_MOCK", "STRIPE_MOCK", "JOBS_INLINE"] as const) {
       if (env[key]) ctx.addIssue({ code: "custom", path: [key], message: "må ikke være slået til i produktion" });
     }
   });
