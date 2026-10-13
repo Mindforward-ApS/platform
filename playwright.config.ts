@@ -2,6 +2,9 @@ import { defineConfig, devices } from "@playwright/test";
 
 process.env.DATABASE_URL ??= "postgresql://greb@127.0.0.1:5435/greb_e2e";
 process.env.BETTER_AUTH_SECRET ??= "e2e-secret-e2e-secret-e2e-secret-e2e-xx";
+// M8: unsubscribe tokens + suppression hashes (shared with tests/e2e/monthly-marketing.spec.ts).
+process.env.UNSUBSCRIBE_TOKEN_SECRET ??= "e2e-unsubscribe-secret-e2e-unsubscribe";
+process.env.EMAIL_HASH_PEPPER ??= "e2e-pepper-e2e-pepper";
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 const baseURL = process.env.E2E_BASE_URL ?? `http://localhost:${PORT}`;
@@ -38,6 +41,9 @@ export default defineConfig({
           JOBS_INLINE: "1",
           // M3: all LLM calls are mocked.
           AI_MOCK: "1",
+          // M8: /afmeld + one-click unsubscribe, suppression list.
+          UNSUBSCRIBE_TOKEN_SECRET: process.env.UNSUBSCRIBE_TOKEN_SECRET ?? "",
+          EMAIL_HASH_PEPPER: process.env.EMAIL_HASH_PEPPER ?? "",
         },
       },
 });

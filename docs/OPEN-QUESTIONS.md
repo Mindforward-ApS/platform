@@ -158,3 +158,19 @@
 - [ ] **Første-login-kvittering bruger en almindelig POST-formular** (`/api/me/data-info` → 303), fordi en server action-redirect til `/konto` genbrugte routerens cachede redirect til `/konto/data-info` (Next 16 + partial prefetching).
 - [ ] **Medarbejderlisten viser "Gennemsnit af bedste forsøg"** pr. medarbejder (01 § 4.2.6 "gennemsnitsscore"). Ingen sortering efter score og ingen tid pr. trin. Rapporten viser ingen scores — kun tilbudt/bestået/certifikater.
 - [ ] **Design:** alle M7-skærme er neutrale pladsholdere (`AdminShell`), designsession før M7-UI står stadig åben (roadmap).
+
+## M8 — Månedlig cyklus, påmindelser, samtykke/marketing (13. okt 2026)
+- [ ] **Hvilke NEWS hører til månedens pakke?** Cyklussen sammensættes kl. 00:30 den 1. (02 § 5), så "nye NEWS-moduler for måneden" er tolket som NEWS publiceret i den *forrige* kalendermåned (København). Bekræft.
+- [ ] **Genopfriskning:** det beståede modul (på sporet, i samme org, ≤ 15 min, tilladt for licensniveauet), der er øvet længst siden (seneste gennemførte forsøg, ellers `passedAt`). Gentagelse kan aldrig sænke et bestået resultat (bedste forsøg tæller). Pakken er gennemført, når alle NEWS er bestået og genopfriskningen er gennemført igen (uanset score). Bekræft.
+- [ ] **≤ 15 min:** genopfriskningen vælges først; NEWS tages i prioritet (sortOrder, nyeste først, id) så længe de kan være der. Et enkelt NEWS-modul > 15 min kommer aldrig med. Brugere uden NEWS og uden bestået modul får ingen pakke (og ingen påmindelser).
+- [ ] **Copilot-niveau:** samme regel som plan-generatoren: `COPILOT_M365` og `UNKNOWN`-moduler kun til brugere med `licenseTier = COPILOT_M365`.
+- [ ] **Påmindelser kun på selve dagen (1/14/25):** fejler cron en hel dag, sendes den påmindelse ikke senere. Bekræft.
+- [ ] **Hard bounce stopper også SERVICE** (09 § 2) undtagen `magic-link`; tjekket springes over uden `EMAIL_HASH_PEPPER` (SERVICE må ikke fejle lukket). Bounce uden `bounce.type` behandles som hard.
+- [ ] **[JURA] Helligdage/stilletid:** officielle helligdage (uden store bededag fra 2024). Juleaften, nytårsaften og grundlovsdag er ikke med — skal de?
+- [ ] **[JURA] Kampagneregler** (`src/lib/marketing/campaign.ts`): førpris gældende ≥ 30 dage før start (præcis periode afklares), maks 10 dage uden annonceret slutdato, aldrig over halvdelen af normalprisperioden. Ingen kampagne/promo-kode er oprettet; `scripts/create-promo.ts` (Stripe) og `AuditLog(PROMO_CREATED)` er ikke bygget.
+- [ ] **[JURA] Marketing-footer:** "Markedsføring fra Mindforward", afsender (navn, CVR, adresse fra `COMPANY_*`), hvorfor man får mailen og afmeldingslink. Marketing fejler lukket uden `COMPANY_CVR`/`COMPANY_ADDRESS`. Ordlyd skal godkendes.
+- [ ] **Ét flow ad gangen:** nyhedsbrevet springes over, hvis modtageren har fået en nurture-mail inden for 14 dage. Abandoned checkout og win-back er ikke bygget i M8 (ikke i opgaven).
+- [ ] **Nurture-start:** Inngest-eventet sendes fra bekræftelses-handlingen; uden `INNGEST_EVENT_KEY`/`INNGEST_DEV` startes flowet ikke (logges). Nurture-indhold er pladsholdertekst til godkendelse; nurture-4 har intet tilbud, før en valideret kampagne findes.
+- [ ] **Nyhedsbrev sendes via `pnpm marketing:newsletter <draft.json> --approve`** (godkendt kladde med `approvedBy`/`approvedAt`); intet admin-UI endnu. Scriptet bruger `scripts/tsconfig.cli.json`, fordi React Email ikke kan rendere under `--conditions=react-server`.
+- [ ] **Skema-huller (ingen migration lavet):** `MonthlyAssignment` har ingen reference til `Assignment`; NEWS-moduler oprettes derfor også som `Assignment(source=MONTHLY)`. `EmailMessage` mangler et felt til flow/kampagne-id (frekvens udledes af `category`/`template`). Ingen tabel til nyhedsbrevskladder/godkendelse.
+- [ ] **Admin-visning:** `src/components/monthly/org-monthly-status.tsx` (autoriserer selv) er monteret på `/virksomhed/maanedspakke`; M7 kan montere den på `/virksomhed`.

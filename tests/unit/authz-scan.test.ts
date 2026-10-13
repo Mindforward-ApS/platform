@@ -23,6 +23,8 @@ const ALLOWLIST: Record<string, string[]> = {
   "src/app/(marketing)/samtykke/bekraeft/actions.ts": ["confirmConsent"], // authenticated by the opt-in token
   "src/app/(marketing)/afmeld/actions.ts": ["unsubscribe"], // authenticated by the HMAC unsubscribe token
   "src/app/api/afmeld/route.ts": ["POST"], // RFC 8058 one-click, HMAC token
+  // M8: Resend → us; authenticated by the Svix signature (RESEND_WEBHOOK_SECRET) verified on the raw body first
+  "src/app/api/webhooks/resend/route.ts": ["POST"],
 };
 
 function walk(dir: string, out: string[] = []): string[] {

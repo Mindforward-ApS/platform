@@ -1,6 +1,7 @@
 import { orgAdminMessages } from "./da-admin";
 import { daBilling } from "./da-billing";
 import { daContent } from "./da-content";
+import { daMonthly } from "./da-monthly";
 import { daPlacement } from "./da-placement";
 import { daPlayer } from "./da-player";
 import { daSandbox } from "./da-sandbox";
@@ -17,6 +18,7 @@ export const da = {
   billing: daBilling,
   contentEngine: daContent,
   orgAdmin: orgAdminMessages,
+  monthly: daMonthly,
   meta: {
     title: "Mindforward",
     description: "Lær AI ved at gøre det.",

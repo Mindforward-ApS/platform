@@ -1,9 +1,28 @@
 import { describe, expect, it } from "vitest";
 import { isAllowedRecipient } from "@/server/email/allowlist";
 import { renderTemplate, TEMPLATES } from "@/server/email/templates";
+import { assertTemplateVars, offerFieldPaths, ServiceTemplateOfferError } from "@/server/email/template-schema";
 
 // docs/09 § 1: SERVICE mails never contain offers. Scan every SERVICE template's rendered output.
 const FORBIDDEN_IN_SERVICE = [/rabat/i, /tilbud/i, /\bspar\b/i, /kampagne/i, /opgrader/i, /kun i dag/i, /\d+\s?%/, /\?promo=/i];
+
+const monthlyVars = {
+  url: "https://greb.example/moduler",
+  settingsUrl: "https://greb.example/konto",
+  month: "november 2026",
+  estimatedMinutes: 13,
+  modules: [{ title: "Nyt: deling af samtaler", minutes: 4 }],
+  refresher: { title: "Gode prompts", minutes: 9 },
+};
+const monthlySamples = { "monthly-training-d1": monthlyVars, "monthly-training-d14": monthlyVars, "monthly-training-d25": monthlyVars } as const;
+const marketingBase = { url: "https://greb.example/moduler", unsubscribeUrl: "https://greb.example/afmeld?t=abc", sender: { name: "Test ApS", cvr: "12345678", address: "Testvej 1" } };
+const marketingSamples = {
+  "nurture-1": { ...marketingBase, result: { track: "ChatGPT", level: 2 } },
+  "nurture-2": marketingBase,
+  "nurture-3": marketingBase,
+  "nurture-4": { ...marketingBase, offer: null },
+  newsletter: { ...marketingBase, subject: "Nyt fra Mindforward i november", heading: "Nyt i november", intro: "Her er månedens nyheder.", items: [{ title: "Nyt modul", summary: "Kort om det nye.", url: "https://greb.example/modul/x" }] },
+} as const;
 
 const sampleVars = {
   "magic-link": { url: "https://greb.example/api/auth/magic-link/verify?token=abc", expiresMin: 15 },
@@ -27,6 +46,9 @@ const sampleVars = {
   "certificate-issued": { url: "https://greb.example/certifikater", trackName: "ChatGPT", levelLabel: "Niveau 1 · Grundlag" },
   "account-deletion-confirm": { url: "https://greb.example/konto/data/slet?token=abc", expiresMin: 60 },
   "report-ready": { url: "https://greb.example/virksomhed/rapport", organizationName: "Nordisk Test A/S", from: "01.09.2026", to: "30.09.2026" },
+  // M8
+  ...monthlySamples,
+  ...marketingSamples,
 } as const;
 
 describe("email templates", () => {
@@ -46,6 +68,37 @@ describe("email templates", () => {
   it("escapes HTML in variables", async () => {
     const out = await renderTemplate("invitation", { ...sampleVars.invitation, organizationName: "<script>x</script>" });
     expect(out.html).not.toContain("<script>x</script>");
+  });
+});
+
+// M8: SERVICE templates are rejected if their variables carry offer/discount fields (template schema).
+describe("template schema: no offer fields in SERVICE", () => {
+  it("every SERVICE template's variables are free of offer/discount fields", () => {
+    for (const key of Object.keys(TEMPLATES) as (keyof typeof TEMPLATES)[]) {
+      expect(() => assertTemplateVars(key, TEMPLATES[key].category, sampleVars[key])).not.toThrow();
+    }
+  });
+
+  it("rejects a SERVICE template that carries an offer, discount or promo code (also nested)", () => {
+    expect(offerFieldPaths({ url: "x", discountPct: 20 })).toEqual(["discountPct"]);
+    expect(() => assertTemplateVars("monthly-training-d14", "SERVICE", { ...monthlyVars, offer: { code: "X" } })).toThrow(ServiceTemplateOfferError);
+    expect(() => assertTemplateVars("monthly-training-d1", "SERVICE", { ...monthlyVars, modules: [{ title: "t", minutes: 1, promoCode: "A" }] })).toThrow(/modules\[0\]\.promoCode/);
+    expect(() => assertTemplateVars("nurture-4", "MARKETING", marketingSamples["nurture-4"])).not.toThrow();
+  });
+
+  it("monthly reminders are SERVICE and every M8 marketing template is MARKETING", () => {
+    for (const k of ["monthly-training-d1", "monthly-training-d14", "monthly-training-d25"] as const) expect(TEMPLATES[k].category).toBe("SERVICE");
+    for (const k of ["nurture-1", "nurture-2", "nurture-3", "nurture-4", "newsletter"] as const) expect(TEMPLATES[k].category).toBe("MARKETING");
+  });
+
+  it("marketing mails are labelled as marketing, name the sender and carry the unsubscribe link", async () => {
+    for (const k of ["nurture-1", "nurture-2", "nurture-3", "nurture-4", "newsletter"] as const) {
+      const out = await renderTemplate(k, marketingSamples[k]);
+      expect(out.text).toContain("Markedsføring fra Mindforward");
+      expect(out.text).toContain("CVR 12345678");
+      expect(out.text).toContain(marketingBase.unsubscribeUrl);
+      expect(out.html).toContain(marketingBase.unsubscribeUrl);
+    }
   });
 });
 

@@ -15,6 +15,8 @@ export interface OutgoingEmail {
   template: string;
   idempotencyKey: string;
   attachments?: { filename: string; contentBase64: string }[];
+  /** Extra headers, e.g. List-Unsubscribe + List-Unsubscribe-Post on MARKETING mails (M8). */
+  headers?: Record<string, string>;
 }
 
 export interface EmailTransport {
@@ -36,6 +38,7 @@ export function resendTransport(apiKey: string): EmailTransport {
         timeoutMs: 10_000,
         headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
         body: JSON.stringify({ from: m.from, to: [m.to], reply_to: m.replyTo, subject: m.subject, html: m.html, text: m.text,
+          ...(m.headers ? { headers: m.headers } : {}),
           ...(m.attachments ? { attachments: m.attachments.map((a) => ({ filename: a.filename, content: a.contentBase64 })) } : {}) }),
       });
       if (!res.ok) throw new Error(`Resend responded ${res.status}`);
@@ -51,7 +54,7 @@ export function fileTransport(dir: string): EmailTransport {
     async send(m) {
       await mkdir(dir, { recursive: true });
       const file = join(dir, `${Date.now()}-${m.idempotencyKey.replace(/[^a-z0-9-]/gi, "_")}.json`);
-      await writeFile(file, JSON.stringify({ to: m.to, subject: m.subject, text: m.text, html: m.html, template: m.template, attachments: m.attachments?.map((a) => a.filename) }));
+      await writeFile(file, JSON.stringify({ to: m.to, from: m.from, subject: m.subject, text: m.text, html: m.html, template: m.template, headers: m.headers ?? {}, attachments: m.attachments?.map((a) => a.filename) }));
       return { providerId: null };
     },
   };

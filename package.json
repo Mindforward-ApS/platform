@@ -21,6 +21,7 @@
     "sandbox:schema": "tsx scripts/sandbox-schema.ts",
     "postinstall": "prisma generate",
     "inngest:dev": "inngest-cli dev --no-discovery -u http://localhost:3000/api/inngest",
+    "marketing:newsletter": "tsx --tsconfig scripts/tsconfig.cli.json scripts/send-newsletter.ts",
     "admin:grant": "tsx --conditions=react-server scripts/grant-admin.ts",
     "check:client-secrets": "tsx scripts/check-client-secrets.ts"
   },
@@ -45,6 +46,7 @@
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
     "stripe": "^23.0.0",
+    "svix": "2.8.0",
     "zod": "4.6.7"
   },
   "devDependencies": {

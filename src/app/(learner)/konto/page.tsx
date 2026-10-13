@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { AccountDataLinks } from "@/components/admin/account-data-links";
 import { needsFirstLoginInfo } from "@/server/admin/first-login";
+import { TrainingReminders } from "@/components/monthly/training-reminders";
 import { Notice, Page } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { format, getMessages } from "@/lib/i18n";
@@ -73,6 +74,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
         </section>
       )}
       <AccountDataLinks user={ctx.user} isBusinessAdmin={Boolean(active && active.role !== "LEARNER" && active.organization.type === "BUSINESS")} />
+      <TrainingReminders userId={ctx.user.id} />
       <a className="underline" href="/virksomhed/opret">
         {t.createBusiness}
       </a>
