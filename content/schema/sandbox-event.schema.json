@@ -1,0 +1,3328 @@
+{
+  "$id": "https://mindforward.dk/schema/sandbox-event.schema.json",
+  "title": "SandboxEvent (generated from src/server/sandbox/events.ts, do not edit)",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "SESSION_STARTED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "trackKey": {
+              "type": "string",
+              "enum": [
+                "CHATGPT",
+                "COPILOT",
+                "CLAUDE",
+                "GEMINI"
+              ]
+            },
+            "skinKey": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "worldVersion": {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            "moduleSlug": {
+              "type": "string",
+              "maxLength": 80,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "sceneId": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "trackKey",
+            "skinKey",
+            "worldVersion"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "SESSION_RESET"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "reason": {
+              "type": "string",
+              "enum": [
+                "USER",
+                "MODULE_START",
+                "STEP_RETRY"
+              ]
+            }
+          },
+          "required": [
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "UI_CLICKED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "region": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "control": {
+              "type": "string",
+              "maxLength": 60,
+              "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){0,2}$"
+            }
+          },
+          "required": [
+            "region",
+            "control"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "UI_NAVIGATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "concept": {
+              "type": "string",
+              "enum": [
+                "CHAT",
+                "ASSISTANTS",
+                "CONNECTORS",
+                "AUTOMATIONS",
+                "AGENTS",
+                "MAIL",
+                "CALENDAR",
+                "FILES",
+                "CRM",
+                "SHEET"
+              ]
+            },
+            "view": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "concept",
+            "view"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "SETTING_CHANGED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 40,
+                  "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "key",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CHAT_CONVERSATION_STARTED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^conv-[a-z0-9]{4,24}$"
+            },
+            "assistantId": {
+              "type": "string",
+              "pattern": "^asst-[a-z0-9]{4,24}$"
+            }
+          },
+          "required": [
+            "conversationId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CHAT_MESSAGE_SENT"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^conv-[a-z0-9]{4,24}$"
+            },
+            "charCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "attachmentFileIds": {
+              "maxItems": 10,
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^f\\d{2}$"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^file-[a-z0-9]{4,24}$"
+                  }
+                ]
+              }
+            },
+            "assistantId": {
+              "type": "string",
+              "pattern": "^asst-[a-z0-9]{4,24}$"
+            },
+            "piiWarningOverridden": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "conversationId",
+            "charCount",
+            "attachmentFileIds",
+            "piiWarningOverridden"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CHAT_RESPONSE_RECEIVED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^conv-[a-z0-9]{4,24}$"
+            },
+            "charCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "toolCallCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "stopReason": {
+              "type": "string",
+              "enum": [
+                "end_turn",
+                "max_tokens",
+                "stop_sequence",
+                "tool_use",
+                "pause_turn",
+                "refusal",
+                "tool_rounds_exceeded",
+                "error"
+              ]
+            }
+          },
+          "required": [
+            "conversationId",
+            "charCount",
+            "toolCallCount",
+            "stopReason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CHAT_RESPONSE_REGENERATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^conv-[a-z0-9]{4,24}$"
+            },
+            "messageSeq": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "conversationId",
+            "messageSeq"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CHAT_RESPONSE_COPIED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^conv-[a-z0-9]{4,24}$"
+            },
+            "messageSeq": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "conversationId",
+            "messageSeq"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CHAT_RESPONSE_RATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^conv-[a-z0-9]{4,24}$"
+            },
+            "messageSeq": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "rating": {
+              "type": "string",
+              "enum": [
+                "UP",
+                "DOWN"
+              ]
+            }
+          },
+          "required": [
+            "conversationId",
+            "messageSeq",
+            "rating"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CHAT_FILE_ATTACHED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "type": "string",
+              "pattern": "^conv-[a-z0-9]{4,24}$"
+            },
+            "fileId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^f\\d{2}$"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^file-[a-z0-9]{4,24}$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "conversationId",
+            "fileId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "PII_WARNING_SHOWN"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "surface": {
+              "type": "string",
+              "enum": [
+                "chat",
+                "prompt_task",
+                "assistant_instructions",
+                "automation_prompt",
+                "mail_draft"
+              ]
+            },
+            "kinds": {
+              "minItems": 1,
+              "maxItems": 6,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CPR",
+                  "CARD",
+                  "DK_ACCOUNT",
+                  "IBAN",
+                  "EXTERNAL_EMAIL",
+                  "PHONE"
+                ]
+              }
+            },
+            "overridden": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "surface",
+            "kinds",
+            "overridden"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "PII_BLOCKED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "surface": {
+              "type": "string",
+              "enum": [
+                "chat",
+                "prompt_task",
+                "assistant_instructions",
+                "automation_prompt",
+                "mail_draft"
+              ]
+            },
+            "kinds": {
+              "minItems": 1,
+              "maxItems": 6,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CPR",
+                  "CARD",
+                  "DK_ACCOUNT",
+                  "IBAN",
+                  "EXTERNAL_EMAIL",
+                  "PHONE"
+                ]
+              }
+            }
+          },
+          "required": [
+            "surface",
+            "kinds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "MAIL_OPENED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "mailId": {
+              "type": "string",
+              "pattern": "^m\\d{2}$"
+            }
+          },
+          "required": [
+            "mailId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "MAIL_DRAFT_SAVED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "draftId": {
+              "type": "string",
+              "pattern": "^draft-[a-z0-9]{4,24}$"
+            },
+            "replyToId": {
+              "type": "string",
+              "pattern": "^m\\d{2}$"
+            },
+            "recipientIds": {
+              "maxItems": 20,
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^e\\d{2}$"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^k\\d{2}$"
+                  }
+                ]
+              }
+            },
+            "externalRecipientCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "hasAttachment": {
+              "type": "boolean"
+            },
+            "charCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          },
+          "required": [
+            "draftId",
+            "recipientIds",
+            "externalRecipientCount",
+            "hasAttachment",
+            "charCount"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "MAIL_SENT"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "draftId": {
+              "type": "string",
+              "pattern": "^draft-[a-z0-9]{4,24}$"
+            },
+            "recipientIds": {
+              "maxItems": 20,
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^e\\d{2}$"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^k\\d{2}$"
+                  }
+                ]
+              }
+            },
+            "externalRecipientCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "attachmentFileIds": {
+              "maxItems": 10,
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^f\\d{2}$"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^file-[a-z0-9]{4,24}$"
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "draftId",
+            "recipientIds",
+            "externalRecipientCount",
+            "attachmentFileIds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CALENDAR_EVENT_OPENED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "eventId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^c\\d{2}$"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^cal-[a-z0-9]{4,24}$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "eventId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CALENDAR_EVENT_CREATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "pattern": "^cal-[a-z0-9]{4,24}$"
+            },
+            "dayOffset": {
+              "type": "integer",
+              "minimum": -365,
+              "maximum": 365
+            },
+            "time": {
+              "type": "string",
+              "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+            },
+            "attendeeIds": {
+              "maxItems": 20,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^e\\d{2}$"
+              }
+            },
+            "durationMin": {
+              "type": "integer",
+              "minimum": 5,
+              "maximum": 1440
+            }
+          },
+          "required": [
+            "eventId",
+            "dayOffset",
+            "time",
+            "attendeeIds",
+            "durationMin"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "FILE_OPENED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "fileId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^f\\d{2}$"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^file-[a-z0-9]{4,24}$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "fileId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "FILE_CREATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "fileId": {
+              "type": "string",
+              "pattern": "^file-[a-z0-9]{4,24}$"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "doc",
+                "table"
+              ]
+            },
+            "sourceFileIds": {
+              "maxItems": 15,
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^f\\d{2}$"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^file-[a-z0-9]{4,24}$"
+                  }
+                ]
+              }
+            }
+          },
+          "required": [
+            "fileId",
+            "type",
+            "sourceFileIds"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CRM_RECORD_OPENED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "customerId": {
+              "type": "string",
+              "pattern": "^k\\d{2}$"
+            }
+          },
+          "required": [
+            "customerId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CRM_RECORD_UPDATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "customerId": {
+              "type": "string",
+              "pattern": "^k\\d{2}$"
+            },
+            "field": {
+              "type": "string",
+              "enum": [
+                "segment",
+                "status",
+                "annualRevenueDkk",
+                "nps",
+                "lastContactDayOffset",
+                "notes"
+              ]
+            },
+            "previous": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "A",
+                    "B",
+                    "C",
+                    "NONE",
+                    "ACTIVE",
+                    "LEAD",
+                    "TRIAL",
+                    "CANCELED"
+                  ]
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "next": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "A",
+                    "B",
+                    "C",
+                    "NONE",
+                    "ACTIVE",
+                    "LEAD",
+                    "TRIAL",
+                    "CANCELED"
+                  ]
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "customerId",
+            "field",
+            "next"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CRM_FILTER_APPLIED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "type": "object",
+              "properties": {
+                "segment": {
+                  "type": "string",
+                  "enum": [
+                    "A",
+                    "B",
+                    "C"
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "ACTIVE",
+                    "LEAD",
+                    "TRIAL",
+                    "CANCELED"
+                  ]
+                },
+                "city": {
+                  "type": "string",
+                  "maxLength": 40,
+                  "pattern": "^\\p{L}[\\p{L} &.-]*$"
+                },
+                "industry": {
+                  "type": "string",
+                  "maxLength": 40,
+                  "pattern": "^\\p{L}[\\p{L} &.-]*$"
+                },
+                "minRevenue": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "additionalProperties": false
+            },
+            "sort": {
+              "type": "string",
+              "enum": [
+                "name",
+                "annualRevenueDkk",
+                "lastContactDayOffset",
+                "nps"
+              ]
+            },
+            "resultCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 30
+            }
+          },
+          "required": [
+            "filter",
+            "resultCount"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "SHEET_OPENED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "sheetId": {
+              "type": "string",
+              "const": "f15"
+            }
+          },
+          "required": [
+            "sheetId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "SHEET_CELL_EDITED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "sheetId": {
+              "type": "string",
+              "const": "f15"
+            },
+            "cell": {
+              "type": "string",
+              "pattern": "^[A-H]([1-9]|1\\d|20)$"
+            },
+            "previous": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^=?[A-Z0-9:(),.+\\-*/ ]{0,40}$"
+                }
+              ]
+            },
+            "next": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^=?[A-Z0-9:(),.+\\-*/ ]{0,40}$"
+                }
+              ]
+            },
+            "isFormula": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "sheetId",
+            "cell",
+            "next",
+            "isFormula"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "ASSISTANT_CREATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "assistantId": {
+              "type": "string",
+              "pattern": "^asst-[a-z0-9]{4,24}$"
+            },
+            "instructionCharCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "knowledgeFileIds": {
+              "maxItems": 15,
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^f\\d{2}$"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^file-[a-z0-9]{4,24}$"
+                  }
+                ]
+              }
+            },
+            "connectorIds": {
+              "maxItems": 5,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "mail",
+                  "calendar",
+                  "files",
+                  "crm",
+                  "sheet"
+                ]
+              }
+            },
+            "starterCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10
+            }
+          },
+          "required": [
+            "assistantId",
+            "instructionCharCount",
+            "knowledgeFileIds",
+            "connectorIds",
+            "starterCount"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "ASSISTANT_UPDATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "assistantId": {
+              "type": "string",
+              "pattern": "^asst-[a-z0-9]{4,24}$"
+            },
+            "instructionCharCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            },
+            "knowledgeFileIds": {
+              "maxItems": 15,
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^f\\d{2}$"
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^file-[a-z0-9]{4,24}$"
+                  }
+                ]
+              }
+            },
+            "connectorIds": {
+              "maxItems": 5,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "mail",
+                  "calendar",
+                  "files",
+                  "crm",
+                  "sheet"
+                ]
+              }
+            },
+            "starterCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10
+            }
+          },
+          "required": [
+            "assistantId",
+            "instructionCharCount",
+            "knowledgeFileIds",
+            "connectorIds",
+            "starterCount"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "ASSISTANT_KNOWLEDGE_ADDED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "assistantId": {
+              "type": "string",
+              "pattern": "^asst-[a-z0-9]{4,24}$"
+            },
+            "fileId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^f\\d{2}$"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^file-[a-z0-9]{4,24}$"
+                }
+              ]
+            }
+          },
+          "required": [
+            "assistantId",
+            "fileId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "ASSISTANT_USED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "assistantId": {
+              "type": "string",
+              "pattern": "^asst-[a-z0-9]{4,24}$"
+            },
+            "conversationId": {
+              "type": "string",
+              "pattern": "^conv-[a-z0-9]{4,24}$"
+            }
+          },
+          "required": [
+            "assistantId",
+            "conversationId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CONNECTOR_CONNECT_STARTED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "connectorId": {
+              "type": "string",
+              "enum": [
+                "mail",
+                "calendar",
+                "files",
+                "crm",
+                "sheet"
+              ]
+            }
+          },
+          "required": [
+            "connectorId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CONNECTOR_PERMISSION_GRANTED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "connectorId": {
+              "type": "string",
+              "enum": [
+                "mail",
+                "calendar",
+                "files",
+                "crm",
+                "sheet"
+              ]
+            },
+            "scopes": {
+              "minItems": 1,
+              "maxItems": 3,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "mail.read",
+                  "mail.draft",
+                  "mail.send",
+                  "calendar.read",
+                  "calendar.write",
+                  "files.read",
+                  "files.write",
+                  "crm.read",
+                  "crm.write",
+                  "sheet.read",
+                  "sheet.write"
+                ]
+              }
+            }
+          },
+          "required": [
+            "connectorId",
+            "scopes"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CONNECTOR_PERMISSION_DENIED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "connectorId": {
+              "type": "string",
+              "enum": [
+                "mail",
+                "calendar",
+                "files",
+                "crm",
+                "sheet"
+              ]
+            },
+            "deniedScopes": {
+              "maxItems": 3,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "mail.read",
+                  "mail.draft",
+                  "mail.send",
+                  "calendar.read",
+                  "calendar.write",
+                  "files.read",
+                  "files.write",
+                  "crm.read",
+                  "crm.write",
+                  "sheet.read",
+                  "sheet.write"
+                ]
+              }
+            }
+          },
+          "required": [
+            "connectorId",
+            "deniedScopes"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CONNECTOR_DISCONNECTED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "connectorId": {
+              "type": "string",
+              "enum": [
+                "mail",
+                "calendar",
+                "files",
+                "crm",
+                "sheet"
+              ]
+            }
+          },
+          "required": [
+            "connectorId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "TOOL_CALL_EXECUTED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "type": "string",
+              "enum": [
+                "mail_search",
+                "mail_read",
+                "mail_draft",
+                "mail_send",
+                "calendar_list",
+                "calendar_create",
+                "files_search",
+                "files_read",
+                "files_create",
+                "crm_query",
+                "crm_get",
+                "crm_update",
+                "sheet_read",
+                "sheet_write"
+              ]
+            },
+            "connectorId": {
+              "type": "string",
+              "enum": [
+                "mail",
+                "calendar",
+                "files",
+                "crm",
+                "sheet"
+              ]
+            },
+            "filtersUsed": {
+              "maxItems": 10,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 30,
+                "pattern": "^[a-zA-Z]+$"
+              }
+            },
+            "resultCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "requiredConfirmation": {
+              "type": "boolean"
+            },
+            "confirmed": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "viaAssistantId": {
+              "type": "string",
+              "pattern": "^asst-[a-z0-9]{4,24}$"
+            },
+            "viaAutomationId": {
+              "type": "string",
+              "pattern": "^auto-[a-z0-9]{4,24}$"
+            }
+          },
+          "required": [
+            "tool",
+            "connectorId",
+            "filtersUsed",
+            "resultCount",
+            "requiredConfirmation",
+            "confirmed"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AUTOMATION_CREATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "automationId": {
+              "type": "string",
+              "pattern": "^auto-[a-z0-9]{4,24}$"
+            },
+            "trigger": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "SCHEDULE"
+                    },
+                    "freq": {
+                      "type": "string",
+                      "enum": [
+                        "DAILY",
+                        "WEEKLY",
+                        "MONTHLY"
+                      ]
+                    },
+                    "weekday": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 7
+                    },
+                    "dayOfMonth": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 31
+                    },
+                    "time": {
+                      "type": "string",
+                      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "freq",
+                    "time"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "NEW_MAIL"
+                    },
+                    "fromDomain": {
+                      "type": "string",
+                      "maxLength": 60,
+                      "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$"
+                    },
+                    "fromCustomerId": {
+                      "type": "string",
+                      "pattern": "^k\\d{2}$"
+                    },
+                    "hasSubjectFilter": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "hasSubjectFilter"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "NEW_CRM_CUSTOMER"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "LEAD",
+                        "TRIAL",
+                        "CANCELED"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "CALENDAR_BEFORE_EVENT"
+                    },
+                    "minutesBefore": {
+                      "type": "integer",
+                      "minimum": 15,
+                      "maximum": 1440
+                    },
+                    "hasTitleFilter": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "minutesBefore",
+                    "hasTitleFilter"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "MANUAL"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "actions": {
+              "minItems": 1,
+              "maxItems": 5,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "RUN_PROMPT",
+                      "NOTIFY_ME",
+                      "DRAFT_MAIL",
+                      "CREATE_FILE",
+                      "UPDATE_CRM_FIELD"
+                    ]
+                  },
+                  "connectorIds": {
+                    "maxItems": 5,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "mail",
+                        "calendar",
+                        "files",
+                        "crm",
+                        "sheet"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "connectorIds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "promptCharCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          },
+          "required": [
+            "automationId",
+            "trigger",
+            "actions",
+            "promptCharCount"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AUTOMATION_UPDATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "automationId": {
+              "type": "string",
+              "pattern": "^auto-[a-z0-9]{4,24}$"
+            },
+            "trigger": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "SCHEDULE"
+                    },
+                    "freq": {
+                      "type": "string",
+                      "enum": [
+                        "DAILY",
+                        "WEEKLY",
+                        "MONTHLY"
+                      ]
+                    },
+                    "weekday": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 7
+                    },
+                    "dayOfMonth": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 31
+                    },
+                    "time": {
+                      "type": "string",
+                      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "freq",
+                    "time"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "NEW_MAIL"
+                    },
+                    "fromDomain": {
+                      "type": "string",
+                      "maxLength": 60,
+                      "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$"
+                    },
+                    "fromCustomerId": {
+                      "type": "string",
+                      "pattern": "^k\\d{2}$"
+                    },
+                    "hasSubjectFilter": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "hasSubjectFilter"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "NEW_CRM_CUSTOMER"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "LEAD",
+                        "TRIAL",
+                        "CANCELED"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "CALENDAR_BEFORE_EVENT"
+                    },
+                    "minutesBefore": {
+                      "type": "integer",
+                      "minimum": 15,
+                      "maximum": 1440
+                    },
+                    "hasTitleFilter": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "minutesBefore",
+                    "hasTitleFilter"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "MANUAL"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "actions": {
+              "minItems": 1,
+              "maxItems": 5,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "RUN_PROMPT",
+                      "NOTIFY_ME",
+                      "DRAFT_MAIL",
+                      "CREATE_FILE",
+                      "UPDATE_CRM_FIELD"
+                    ]
+                  },
+                  "connectorIds": {
+                    "maxItems": 5,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "mail",
+                        "calendar",
+                        "files",
+                        "crm",
+                        "sheet"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "connectorIds"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "promptCharCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000
+            }
+          },
+          "required": [
+            "automationId",
+            "trigger",
+            "actions",
+            "promptCharCount"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AUTOMATION_ENABLED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "automationId": {
+              "type": "string",
+              "pattern": "^auto-[a-z0-9]{4,24}$"
+            }
+          },
+          "required": [
+            "automationId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AUTOMATION_DISABLED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "automationId": {
+              "type": "string",
+              "pattern": "^auto-[a-z0-9]{4,24}$"
+            }
+          },
+          "required": [
+            "automationId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AUTOMATION_TEST_RUN"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "automationId": {
+              "type": "string",
+              "pattern": "^auto-[a-z0-9]{4,24}$"
+            },
+            "success": {
+              "type": "boolean"
+            },
+            "actionsRun": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            }
+          },
+          "required": [
+            "automationId",
+            "success",
+            "actionsRun"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AUTOMATION_RUN_SIMULATED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "automationId": {
+              "type": "string",
+              "pattern": "^auto-[a-z0-9]{4,24}$"
+            },
+            "triggerType": {
+              "type": "string",
+              "enum": [
+                "SCHEDULE",
+                "NEW_MAIL",
+                "NEW_CRM_CUSTOMER",
+                "CALENDAR_BEFORE_EVENT",
+                "MANUAL"
+              ]
+            },
+            "actionsRun": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "simulatedDayOffset": {
+              "type": "integer",
+              "minimum": -365,
+              "maximum": 365
+            }
+          },
+          "required": [
+            "automationId",
+            "triggerType",
+            "actionsRun",
+            "simulatedDayOffset"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AGENT_TASK_STARTED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "agentTaskId": {
+              "type": "string",
+              "pattern": "^agent-[a-z0-9]{4,24}$"
+            },
+            "planStepCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            }
+          },
+          "required": [
+            "agentTaskId",
+            "planStepCount"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AGENT_STEP_APPROVED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "agentTaskId": {
+              "type": "string",
+              "pattern": "^agent-[a-z0-9]{4,24}$"
+            },
+            "stepIndex": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "tool": {
+              "type": "string",
+              "enum": [
+                "mail_search",
+                "mail_read",
+                "mail_draft",
+                "mail_send",
+                "calendar_list",
+                "calendar_create",
+                "files_search",
+                "files_read",
+                "files_create",
+                "crm_query",
+                "crm_get",
+                "crm_update",
+                "sheet_read",
+                "sheet_write"
+              ]
+            },
+            "targetIds": {
+              "maxItems": 10,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]{2,40}$"
+              }
+            },
+            "externalTarget": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "agentTaskId",
+            "stepIndex",
+            "tool",
+            "targetIds",
+            "externalTarget"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AGENT_STEP_REJECTED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "agentTaskId": {
+              "type": "string",
+              "pattern": "^agent-[a-z0-9]{4,24}$"
+            },
+            "stepIndex": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "tool": {
+              "type": "string",
+              "enum": [
+                "mail_search",
+                "mail_read",
+                "mail_draft",
+                "mail_send",
+                "calendar_list",
+                "calendar_create",
+                "files_search",
+                "files_read",
+                "files_create",
+                "crm_query",
+                "crm_get",
+                "crm_update",
+                "sheet_read",
+                "sheet_write"
+              ]
+            },
+            "targetIds": {
+              "maxItems": 10,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]{2,40}$"
+              }
+            },
+            "externalTarget": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "agentTaskId",
+            "stepIndex",
+            "tool",
+            "targetIds",
+            "externalTarget"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "AGENT_TASK_COMPLETED"
+        },
+        "actor": {
+          "type": "string",
+          "enum": [
+            "USER",
+            "MODEL",
+            "AUTOMATION",
+            "SYSTEM"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 80,
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+){1,4}$"
+        },
+        "stepId": {
+          "type": "string",
+          "maxLength": 48,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "agentTaskId": {
+              "type": "string",
+              "pattern": "^agent-[a-z0-9]{4,24}$"
+            },
+            "stepsRun": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6
+            },
+            "stepsRejected": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6
+            }
+          },
+          "required": [
+            "agentTaskId",
+            "stepsRun",
+            "stepsRejected"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "type",
+        "actor",
+        "payload"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}
