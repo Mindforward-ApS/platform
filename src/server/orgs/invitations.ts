@@ -5,7 +5,7 @@ import type { JobRole, LicenseTier, Prisma, PrismaClient } from "@/generated/pri
 import { writeAudit } from "@/server/audit/log";
 import { assertDpaAccepted, DpaError } from "./dpa";
 import { OrgAdminError } from "./errors";
-import { checkSeats, type SeatUsage } from "./seats";
+import { decideSeats, seatLimitOf, seatsInUse } from "./seats";
 
 // Invitations by email (several at once / CSV paste), by link and by verified domain (docs/01 § 4.2.3).
 // Every path checks: BUSINESS org, accepted DPA (§ 10a) and the seat rule (src/server/orgs/seats.ts).
@@ -20,15 +20,6 @@ const EMAIL_RE = /[a-z0-9._%+'-]+@[a-z0-9.-]+\.[a-z]{2,}/gi;
 export function parseEmailList(raw: string): string[] {
   const found = raw.match(EMAIL_RE) ?? [];
   return [...new Set(found.map((e) => e.toLowerCase().replace(/^[.'-]+|[.'-]+$/g, "")))].filter((e) => e.length <= 254);
-}
-
-export async function seatUsage(db: Db, organizationId: string, now = new Date()): Promise<SeatUsage> {
-  const [org, activeMembers, openInvitations] = await Promise.all([
-    db.organization.findUniqueOrThrow({ where: { id: organizationId }, select: { seatLimit: true } }),
-    db.membership.count({ where: { organizationId, deactivatedAt: null } }),
-    db.invitation.count({ where: { organizationId, status: "pending", expiresAt: { gt: now } } }),
-  ]);
-  return { seatLimit: org.seatLimit, activeMembers, openInvitations };
 }
 
 async function assertBusinessWithDpa(db: PrismaClient, organizationId: string): Promise<void> {
@@ -80,7 +71,8 @@ export async function inviteByEmail(
   // A re-invite replaces the open invitation (cancelPendingInvitationsOnReInvite), so it takes no extra seat.
   const newSeats = toSend.filter((e) => !pendingEmails.has(e)).length;
 
-  const decision = checkSeats(await seatUsage(db, args.organizationId, now), newSeats);
+  const plan = await seatLimitOf(db, args.organizationId, now);
+  const decision = decideSeats({ ...plan, used: await seatsInUse(db, args.organizationId, now), requested: newSeats });
   if (!decision.ok) throw new OrgAdminError("SEAT_LIMIT_REACHED", decision.message);
 
   const sent: string[] = [];
@@ -155,11 +147,12 @@ export type JoinVia = "LINK" | "DOMAIN";
 /** Adds the user as LEARNER (or reactivates a removed membership) if the seat rule and DPA allow it. */
 export async function joinOrganization(db: PrismaClient, args: { organizationId: string; userId: string; via: JoinVia }): Promise<{ membershipId: string }> {
   await assertBusinessWithDpa(db, args.organizationId);
+  const plan = await seatLimitOf(db, args.organizationId);
   const result = await db.$transaction(async (tx) => {
     await lockOrg(tx, args.organizationId);
     const existing = await tx.membership.findUnique({ where: { organizationId_userId: { organizationId: args.organizationId, userId: args.userId } } });
     if (existing && !existing.deactivatedAt) throw new OrgAdminError("ALREADY_MEMBER");
-    const decision = checkSeats(await seatUsage(tx, args.organizationId), 1);
+    const decision = decideSeats({ ...plan, used: await seatsInUse(tx, args.organizationId), requested: 1 });
     if (!decision.ok) throw new OrgAdminError("SEAT_LIMIT_REACHED", decision.message);
     const membership = existing
       ? await tx.membership.update({ where: { id: existing.id }, data: { deactivatedAt: null } })

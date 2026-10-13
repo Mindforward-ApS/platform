@@ -2,8 +2,8 @@ import "server-only";
 import type { JobRole, LicenseTier, PrismaClient } from "@/generated/prisma/client";
 import { writeAudit } from "@/server/audit/log";
 import { OrgAdminError } from "./errors";
-import { enrollInTrack, seatUsage } from "./invitations";
-import { checkSeats } from "./seats";
+import { enrollInTrack } from "./invitations";
+import { decideSeats, seatLimitOf, seatsInUse } from "./seats";
 
 // Member management for company admins (docs/01 V3). Every function is org-scoped: the member must belong to
 // `organizationId`, which the caller got from requireOrgAdmin/requireActiveMembership.
@@ -74,9 +74,10 @@ export async function deactivateMember(db: PrismaClient, scope: Scope, memberId:
 export async function reactivateMember(db: PrismaClient, scope: Scope, memberId: string): Promise<void> {
   const member = await findMember(db, scope, memberId);
   if (!member.deactivatedAt) return;
+  const plan = await seatLimitOf(db, scope.organizationId);
   await db.$transaction(async (tx) => {
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`org-seats:${scope.organizationId}`}))`;
-    const decision = checkSeats(await seatUsage(tx, scope.organizationId), 1);
+    const decision = decideSeats({ ...plan, used: await seatsInUse(tx, scope.organizationId), requested: 1 });
     if (!decision.ok) throw new OrgAdminError("SEAT_LIMIT_REACHED", decision.message);
     await tx.membership.update({ where: { id: member.id }, data: { deactivatedAt: null } });
     await writeAudit(tx, { action: "MEMBER_REACTIVATED", actorUserId: scope.actorUserId, organizationId: scope.organizationId, targetType: "membership", targetId: member.id });

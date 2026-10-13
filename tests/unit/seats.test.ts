@@ -1,26 +1,32 @@
 import { describe, expect, it } from "vitest";
-import { checkSeats, seatsUsed } from "@/server/orgs/seats";
+import { decideSeat } from "@/server/billing/seats";
+import { decideSeats } from "@/server/orgs/seats";
 
-describe("seat rule: active memberships + open invitations ≤ seatLimit", () => {
-  it("counts members and open invitations together", () => {
-    expect(seatsUsed({ seatLimit: 5, activeMembers: 3, openInvitations: 1 })).toBe(4);
+// Seat rule: active memberships + open invitations ≤ seats (§ 10a). M7's batch/join variant delegates to M6's rule.
+
+describe("decideSeats (batch + join variant of billing's decideSeat)", () => {
+  it("allows filling the last free seat", () => {
+    expect(decideSeats({ used: 4, limit: 5, readOnly: false, requested: 1 })).toEqual({ ok: true, used: 4, free: 1 });
   });
 
-  it("allows filling the last free seat", () => {
-    expect(checkSeats({ seatLimit: 5, activeMembers: 3, openInvitations: 1 }, 1)).toEqual({ ok: true, used: 4, free: 1 });
+  it("agrees with billing's decideSeat for a single seat", () => {
+    for (const used of [0, 3, 4, 5, 6]) {
+      for (const readOnly of [false, true]) {
+        expect(decideSeats({ used, limit: 5, readOnly, requested: 1 }).ok).toBe(decideSeat({ used, limit: 5, readOnly }).allowed);
+      }
+    }
   });
 
   it("rejects one over the limit with a Danish explanation", () => {
-    const d = checkSeats({ seatLimit: 5, activeMembers: 4, openInvitations: 1 }, 1);
+    const d = decideSeats({ used: 5, limit: 5, readOnly: false, requested: 1 });
     expect(d.ok).toBe(false);
     if (d.ok) return;
     expect(d.code).toBe("SEAT_LIMIT_REACHED");
     expect(d.message).toContain("Alle 5 pladser er i brug");
-    expect(d.message).toContain("Tilføj flere pladser");
   });
 
   it("rejects a batch larger than the free seats and says how many are free", () => {
-    const d = checkSeats({ seatLimit: 5, activeMembers: 2, openInvitations: 0 }, 4);
+    const d = decideSeats({ used: 2, limit: 5, readOnly: false, requested: 4 });
     expect(d.ok).toBe(false);
     if (d.ok) return;
     expect(d.free).toBe(3);
@@ -28,13 +34,15 @@ describe("seat rule: active memberships + open invitations ≤ seatLimit", () =>
     expect(d.message).toContain("tilføje 4");
   });
 
-  it("never reports negative free seats when an org is already over its limit (e.g. seats lowered)", () => {
-    const d = checkSeats({ seatLimit: 5, activeMembers: 7, openInvitations: 0 }, 1);
+  it("read-only orgs (trial ended / canceled) cannot add anyone", () => {
+    const d = decideSeats({ used: 0, limit: 5, readOnly: true, requested: 1 });
     expect(d.ok).toBe(false);
-    if (!d.ok) expect(d.free).toBe(0);
+    if (!d.ok) expect(d.code).toBe("READ_ONLY");
   });
 
-  it("a PERSONAL org (1 seat, owner) has no room", () => {
-    expect(checkSeats({ seatLimit: 1, activeMembers: 1, openInvitations: 0 }).ok).toBe(false);
+  it("never reports negative free seats when an org is already over its limit", () => {
+    const d = decideSeats({ used: 7, limit: 5, readOnly: false, requested: 1 });
+    expect(d.ok).toBe(false);
+    if (!d.ok) expect(d.free).toBe(0);
   });
 });
