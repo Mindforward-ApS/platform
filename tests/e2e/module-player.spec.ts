@@ -32,7 +32,7 @@ test("gennemfør core-prompt-01 og se bestået-skærmen med kriterier", async ({
   // CLICK_TASK (mocked evaluator): take hint 1 (free), then check.
   await expect(page.getByRole("heading", { name: "Start en ny samtale med Nordlys' skrivestil" })).toBeVisible();
   await page.getByRole("button", { name: "Vis hint 1" }).click();
-  await expect(page.getByText("Hint 1:")).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "Hint 1" })).toBeVisible();
   await page.getByRole("button", { name: "Tjek" }).click();
   await expect(page.getByTestId("step-result-ny-samtale")).toContainText("Bestået");
   await next(page);

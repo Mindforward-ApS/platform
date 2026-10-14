@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import { Button, Notice } from "@/components/ui/primitives";
+import { Icon } from "@/components/ui/icons";
+import { Badge, Button, Kbd, Notice, StepSegments } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import type { PlayerActionResult, PlayerState } from "@/server/modules/player-types";
+import { num, PlayerHeader } from "./kit";
+import { ModuleResult } from "./module-result";
 import { HintPanel, StepBody, type StepActions } from "./steps";
 
 const t = getMessages().player;
@@ -38,6 +41,12 @@ function errorText(code: string): string {
   return (t.errors as Record<string, string>)[code] ?? t.errors.generic;
 }
 
+/** True when the keyboard event comes from a control that uses arrow keys itself. */
+function isTyping(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  return target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
+}
+
 export function ModulePlayer({ initial, actions }: { initial: PlayerState; actions: PlayerServerActions }) {
   const [state, setState] = useState(initial);
   const [index, setIndex] = useState(() => firstOpenIndex(initial));
@@ -47,12 +56,13 @@ export function ModulePlayer({ initial, actions }: { initial: PlayerState; actio
   const firstRender = useRef(true);
 
   useEffect(() => {
-    // Move focus to the step heading on navigation (not on first load).
+    // Move focus to the step heading on navigation (not on first load), and start the new step at the top.
     if (firstRender.current) {
       firstRender.current = false;
       return;
     }
-    heading.current?.focus();
+    window.scrollTo({ top: 0 });
+    heading.current?.focus({ preventScroll: true });
   }, [index, state.status]);
 
   const run = (action: () => Promise<PlayerActionResult>) =>
@@ -69,134 +79,146 @@ export function ModulePlayer({ initial, actions }: { initial: PlayerState; actio
       });
     });
 
+  const total = state.steps.length;
+  const step = state.steps[index];
+  const completed = state.status === "COMPLETED" && Boolean(state.result);
+  const canGoNext = step ? step.status !== "open" : false;
+  const isLast = index === total - 1;
+
+  const goTo = (i: number) => {
+    setMessage(null);
+    setIndex(Math.max(0, Math.min(total - 1, i)));
+  };
+
+  // ← / → move between steps when focus is not in a field (radio groups and text keep their own arrow keys).
+  useEffect(() => {
+    if (completed) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || isTyping(e.target)) return;
+      if (e.key === "ArrowLeft" && index > 0) {
+        setMessage(null);
+        setIndex(index - 1);
+      }
+      if (e.key === "ArrowRight" && !isLast && canGoNext) {
+        setMessage(null);
+        setIndex(index + 1);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [completed, index, isLast, canGoNext]);
+
+  if (completed && state.result) {
+    return (
+      <ModuleResult
+        state={state}
+        result={state.result}
+        heading={heading}
+        message={message}
+        pending={pending}
+        onRetry={() =>
+          run(async () => {
+            const res = await actions.start(state.module.slug);
+            if (res.ok) setIndex(firstOpenIndex(res.state));
+            return res;
+          })
+        }
+      />
+    );
+  }
+
+  if (!step) return null;
   const id = state.attemptId;
   const stepActions: StepActions = {
     answer: (stepId, answer) => () => actions.answer(id, stepId, answer),
     checkClick: (stepId) => () => actions.checkClick(id, stepId),
     skipClick: (stepId) => () => actions.skipClick(id, stepId),
   };
-
-  if (state.status === "COMPLETED" && state.result) {
-    const r = state.result;
-    return (
-      <section aria-labelledby="result-title" className="flex flex-col gap-4" data-testid="module-result">
-        <h2 id="result-title" ref={heading} tabIndex={-1} className="text-xl font-semibold">
-          {t.result.title}: {r.passed ? t.result.passed : t.result.notPassed}
-        </h2>
-        <p aria-live="polite">{format(t.result.scoreLine, { pct: r.scorePct, threshold: r.passThresholdPct })}</p>
-        {r.mustPassFailed.length > 0 && (
-          <Notice tone="error">
-            {t.result.mustPassFailed} {r.mustPassFailed.map((m) => m.title).join(", ")}
-          </Notice>
-        )}
-        <h3 className="font-semibold">{t.result.perStep}</h3>
-        <ul className="flex flex-col gap-2">
-          {r.steps.map((s) => (
-            <li key={s.stepId} className="rounded-md border border-border p-2">
-              <span className="font-semibold">{s.title}</span> — {s.passed ? t.status.passed : t.status.notPassed} · {format(t.result.stepPoints, { points: s.points, max: s.maxPoints })}
-            </li>
-          ))}
-        </ul>
-        {state.steps
-          .filter((s) => s.type === "PROMPT_TASK" && s.criteria)
-          .map((s) =>
-            s.type === "PROMPT_TASK" ? (
-              <section key={s.id} className="flex flex-col gap-2">
-                <h3 className="font-semibold">
-                  {s.title}: {t.prompt.criteria}
-                </h3>
-                <ul className="flex flex-col gap-1" data-testid="result-criteria">
-                  {s.criteria?.map((c) => (
-                    <li key={c.id}>
-                      {c.label}
-                      {c.score !== undefined && <> — {t.prompt.score[c.score]}</>}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : null,
-          )}
-        <p className="text-sm text-muted">{t.result.bestCounts}</p>
-        {message && <Notice tone={message.tone}>{message.text}</Notice>}
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            disabled={pending}
-            onClick={() =>
-              run(async () => {
-                const res = await actions.start(state.module.slug);
-                if (res.ok) setIndex(firstOpenIndex(res.state));
-                return res;
-              })
-            }
-          >
-            {t.result.retry}
-          </Button>
-          <a className="rounded-md border border-border px-4 py-2" href="/moduler">
-            {t.result.toModules}
-          </a>
-        </div>
-      </section>
-    );
-  }
-
-  const step = state.steps[index];
-  if (!step) return null;
   const readOnly = state.status !== "IN_PROGRESS";
-  const isLast = index === state.steps.length - 1;
-  // Learners may not skip past a graded step they have not answered yet (server enforces order too).
-  const canGoNext = step.status !== "open";
+  const minutesLeft = Math.max(1, Math.ceil((state.module.minutes * (total - index)) / Math.max(1, total)));
+  // The prompt result card carries its own "Næste trin"; the bar then steps down so there is one primary action.
+  const resultCarriesNext = step.type === "PROMPT_TASK" && step.result?.gradingStatus === "GRADED" && !isLast;
+  const notice = message ? <Notice tone={message.tone}>{message.text}</Notice> : undefined;
 
   return (
-    <div className="flex flex-col gap-4">
-      <nav aria-label={t.nav.stepList}>
-        <p className="text-sm text-muted">{format(t.nav.progress, { current: index + 1, total: state.steps.length })}</p>
-      </nav>
-      <section aria-labelledby="step-title" className="flex flex-col gap-3" data-testid={`step-${step.id}`}>
-        <h2 id="step-title" ref={heading} tabIndex={-1} className="text-xl font-semibold">
-          {step.title}
-        </h2>
-        {step.points > 0 && (
-          <p className="text-sm text-muted">
-            {format(t.nav.points, { points: step.points })}
-            {step.mustPass && ` · ${t.nav.mustPass}`}
+    <div className="flex flex-1 flex-col">
+      <div className="mx-auto flex w-full max-w-read flex-1 flex-col gap-10 px-4 pt-8 pb-16 sm:px-6 sm:pt-12">
+        <header className="flex flex-col gap-6">
+          <PlayerHeader title={state.module.title} />
+          <nav aria-label={t.nav.stepList} className="flex flex-col gap-2.5">
+            <div className="flex items-baseline justify-between gap-4">
+              <p className="text-overline uppercase">
+                <span className="text-accent">{format(t.nav.progress, { current: index + 1, total })}</span>
+                <span className="text-ink-muted"> · {t.nav.stepType[step.type]}</span>
+              </p>
+              <p className="font-mono text-mono text-ink-muted tabular-nums">{isLast ? t.nav.lastStep : format(t.nav.minutesLeft, { minutes: num(minutesLeft) })}</p>
+            </div>
+            <StepSegments current={index + 1} total={total} label={format(t.nav.progress, { current: index + 1, total })} />
+          </nav>
+        </header>
+
+        <section aria-labelledby="step-title" className="flex flex-col gap-8" data-testid={`step-${step.id}`}>
+          <div className="flex flex-col gap-3">
+            <h2 id="step-title" ref={heading} tabIndex={-1} className="text-title-1 text-ink focus-visible:outline-none">
+              {step.title}
+            </h2>
+            {step.points > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge tone="neutral">
+                  <span className="font-mono tabular-nums">{format(t.nav.points, { points: num(step.points) })}</span>
+                </Badge>
+                {step.mustPass && (
+                  <Badge tone="accent" icon="shield">
+                    {t.nav.mustPass}
+                  </Badge>
+                )}
+                {step.status !== "open" && step.type !== "READ" && step.type !== "DEMO" && (
+                  <Badge tone="neutral" icon="check">
+                    {t.nav.done}
+                  </Badge>
+                )}
+              </div>
+            )}
+          </div>
+          <StepBody
+            key={step.id}
+            step={step}
+            run={run}
+            pending={pending}
+            actions={stepActions}
+            readOnly={readOnly}
+            notice={notice}
+            onNext={!isLast && canGoNext ? () => goTo(index + 1) : undefined}
+          />
+          <HintPanel step={step} run={run} pending={pending} take={(level) => () => actions.hint(id, step.id, level)} readOnly={readOnly} />
+        </section>
+        {isLast && !state.canFinish && (
+          <p className="flex items-center gap-2 text-body-sm text-ink-muted">
+            <Icon name="info" />
+            {t.nav.finishHint}
           </p>
         )}
-        <StepBody key={step.id} step={step} run={run} pending={pending} actions={stepActions} readOnly={readOnly} />
-        <div aria-live="polite">{message && <Notice tone={message.tone}>{message.text}</Notice>}</div>
-        <HintPanel step={step} run={run} pending={pending} take={(level) => () => actions.hint(id, step.id, level)} readOnly={readOnly} />
-      </section>
-      <div className="flex flex-wrap justify-between gap-2">
-        <Button
-          type="button"
-          variant="secondary"
-          disabled={index === 0}
-          onClick={() => {
-            setMessage(null);
-            setIndex((i) => Math.max(0, i - 1));
-          }}
-        >
-          {t.nav.previous}
-        </Button>
-        {!isLast && (
-          <Button
-            type="button"
-            disabled={!canGoNext}
-            onClick={() => {
-              setMessage(null);
-              setIndex((i) => i + 1);
-            }}
-          >
-            {step.type === "READ" || step.type === "DEMO" ? t.read.continue : t.nav.next}
-          </Button>
-        )}
-        {isLast && (
-          <Button type="button" disabled={!state.canFinish || pending} onClick={() => run(() => actions.finish(id))}>
-            {t.nav.finish}
-          </Button>
-        )}
       </div>
-      {isLast && !state.canFinish && <p className="text-sm text-muted">{t.nav.finishHint}</p>}
+
+      <div className="sticky bottom-0 z-30 border-t border-line bg-surface">
+        <div className="mx-auto flex h-16 w-full max-w-read items-center justify-between gap-3 px-4 sm:px-6">
+          <Button type="button" variant="ghost" icon="arrowLeft" disabled={index === 0} className={index === 0 ? "invisible" : ""} onClick={() => goTo(index - 1)}>
+            {t.nav.previous}
+          </Button>
+          <p className="hidden items-center gap-1.5 text-caption text-ink-subtle md:flex" aria-hidden="true">
+            {t.nav.keyboard} <Kbd>←</Kbd> <Kbd>→</Kbd>
+          </p>
+          {!isLast ? (
+            <Button type="button" variant={resultCarriesNext ? "secondary" : "primary"} trailingIcon="arrowRight" disabled={!canGoNext} onClick={() => goTo(index + 1)}>
+              {step.type === "READ" || step.type === "DEMO" ? t.read.continue : t.nav.next}
+            </Button>
+          ) : (
+            <Button type="button" trailingIcon="arrowRight" disabled={!state.canFinish || pending} onClick={() => run(() => actions.finish(id))}>
+              {t.nav.finish}
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
