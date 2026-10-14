@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { ActionForm } from "@/components/admin/action-form";
 import { AdminShell, Section } from "@/components/admin/admin-shell";
-import { Field } from "@/components/ui/primitives";
-import { SubmitButton } from "@/components/ui/submit-button";
+import { AdminSubmit } from "@/components/admin/danger-submit";
+import { Button, Field, Notice, Select } from "@/components/ui/primitives";
 import { getMessages } from "@/lib/i18n";
 import { assertBusinessOrg } from "@/server/admin/context";
 import { requireActiveMembership } from "@/server/auth/authz";
@@ -28,31 +28,32 @@ async function Content() {
   });
   return (
     <>
-      <p>{t.intro}</p>
-      <p className="text-sm">{t.retention}</p>
-      <Section title={t.exportTitle}>
+      <Notice tone="info" icon="clock">
+        {t.retention}
+      </Notice>
+      <Section title={t.exportTitle} description={t.exportBody}>
         <form method="post" action="/api/virksomhed/rapport">
           <input type="hidden" name="format" value="csv" />
-          <button type="submit" className="rounded-md bg-accent px-4 py-2 text-accent-fg">
+          <Button type="submit" icon="download">
             {t.exportButton}
-          </button>
+          </Button>
         </form>
       </Section>
-      <Section title={t.deleteTitle}>
-        <p className="text-sm">{t.deleteBody}</p>
-        <ActionForm action={eraseEmployeeData} testId="erase-form">
-          <label className="flex flex-col gap-1 text-sm">
-            {t.deleteLabel}
-            <select name="memberId" required className="rounded-md border border-border bg-bg px-2 py-1">
+      <Section title={t.deleteTitle} description={t.deleteBody}>
+        <ActionForm action={eraseEmployeeData} testId="erase-form" className="flex flex-col gap-5">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Select label={t.deleteLabel} name="memberId" required>
               {members.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.user.name} · {m.user.email}
                 </option>
               ))}
-            </select>
-          </label>
-          <Field label={t.deleteConfirm} name="confirm" required autoComplete="off" />
-          <SubmitButton variant="secondary">{t.deleteButton}</SubmitButton>
+            </Select>
+            <Field label={t.deleteConfirm} name="confirm" required autoComplete="off" className="font-mono" />
+          </div>
+          <div className="flex justify-end border-t border-line pt-5">
+            <AdminSubmit icon="trash">{t.deleteButton}</AdminSubmit>
+          </div>
         </ActionForm>
       </Section>
     </>
@@ -60,8 +61,9 @@ async function Content() {
 }
 
 export default function OrgDataPage() {
+  const t = getMessages().orgAdmin.orgData;
   return (
-    <AdminShell title={getMessages().orgAdmin.orgData.title}>
+    <AdminShell title={t.title} lead={t.intro}>
       <Suspense>
         <Content />
       </Suspense>

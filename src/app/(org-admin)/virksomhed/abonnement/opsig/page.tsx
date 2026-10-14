@@ -1,5 +1,7 @@
 import { Suspense } from "react";
-import { Notice, Page } from "@/components/ui/primitives";
+import { AdminShell } from "@/components/admin/admin-shell";
+import { Icon } from "@/components/ui/icons";
+import { Card, Notice, TextLink } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
@@ -13,27 +15,33 @@ async function Content() {
   const t = getMessages().billing.cancel;
   const ctx = await guardPage(() => requireActiveMembership(["OWNER"]), "/virksomhed/abonnement/opsig");
   const v = await subscriptionView(db(), ctx.membership.organizationId);
-  if (!v.canCancel || !v.endDate) return <Notice>{t.nothing}</Notice>;
+  const back = (
+    <TextLink href="/virksomhed/abonnement" className="inline-flex items-center gap-1.5 text-body-sm">
+      <Icon name="arrowLeft" />
+      {t.back}
+    </TextLink>
+  );
+  if (!v.canCancel || !v.endDate)
+    return (
+      <>
+        <Notice>{t.nothing}</Notice>
+        <div>{back}</div>
+      </>
+    );
   return (
-    <>
-      <p>{format(t.body, { date: v.endDate })}</p>
-      <form action={confirmCancellation}>
-        <input type="hidden" name="from" value="virksomhed" />
-        <SubmitButton>{t.confirm}</SubmitButton>
-      </form>
-      <a className="underline" href="/virksomhed/abonnement">
-        {t.back}
-      </a>
-    </>
+    <Card className="max-w-read" footer={<form action={confirmCancellation} className="contents"><input type="hidden" name="from" value="virksomhed" /><SubmitButton>{t.confirm}</SubmitButton></form>}>
+      <p className="text-body-lg text-ink">{format(t.body, { date: v.endDate })}</p>
+      <div>{back}</div>
+    </Card>
   );
 }
 
 export default function BusinessCancelPage() {
   return (
-    <Page title={getMessages().billing.cancel.title}>
+    <AdminShell title={getMessages().billing.cancel.title}>
       <Suspense>
         <Content />
       </Suspense>
-    </Page>
+    </AdminShell>
   );
 }

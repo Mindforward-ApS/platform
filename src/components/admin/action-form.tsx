@@ -16,7 +16,7 @@ export interface FormState {
 export function ActionForm({
   action,
   children,
-  className = "flex flex-col gap-3",
+  className = "flex flex-col gap-4",
   testId,
 }: {
   action: (state: FormState | null, formData: FormData) => Promise<FormState | null>;
@@ -27,16 +27,20 @@ export function ActionForm({
   const [state, formAction] = useActionState(action, null);
   return (
     <form action={formAction} className={className} data-testid={testId}>
-      {state?.error && <Notice tone="error">{state.error}</Notice>}
-      {state?.ok && (
-        <Notice>
-          {state.ok}
-          {state.detail && (
-            <code className="mt-1 block break-all" data-testid="action-detail">
-              {state.detail}
-            </code>
+      {(state?.error || state?.ok) && (
+        <div className="col-span-full w-full basis-full">
+          {state.error && <Notice tone="error">{state.error}</Notice>}
+          {state.ok && (
+            <Notice tone="success">
+              {state.ok}
+              {state.detail && (
+                <code className="mt-2 block rounded-sm border border-line bg-surface px-3 py-2 font-mono text-mono break-all text-ink" data-testid="action-detail">
+                  {state.detail}
+                </code>
+              )}
+            </Notice>
           )}
-        </Notice>
+        </div>
       )}
       {children}
     </form>

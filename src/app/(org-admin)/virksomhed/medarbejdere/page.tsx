@@ -1,7 +1,11 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { ActionForm } from "@/components/admin/action-form";
 import { AdminShell, Section } from "@/components/admin/admin-shell";
-import { Field, Notice } from "@/components/ui/primitives";
+import { Cell, CodeBox, StatusBadge } from "@/components/admin/admin-ui";
+import { AdminSubmit } from "@/components/admin/danger-submit";
+import { Icon } from "@/components/ui/icons";
+import { Badge, Button, ButtonLink, EmptyState, Field, Notice, ProgressBar, Select, TextArea, TextLink, type Tone } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import type { JobRole } from "@/generated/prisma/enums";
 import { formatDateDa } from "@/lib/format-date";
@@ -33,7 +37,13 @@ import {
 // email/CSV, link and verified domain, track/job-role assignment, remove (frees the seat), seats used/limit.
 
 const JOB_ROLES = ["SALES", "HR", "FINANCE", "CUSTOMER_SERVICE", "LEADERSHIP", "OPERATIONS", "OTHER"] as const;
-const select = "rounded-md border border-border bg-bg px-2 py-1";
+const STATUS_LOOK: Record<EmployeeRow["status"], { tone: Tone; icon: "dash" | "clock" | "award" }> = {
+  NOT_STARTED: { tone: "neutral", icon: "dash" },
+  IN_PROGRESS: { tone: "accent", icon: "clock" },
+  CERTIFIED: { tone: "success", icon: "award" },
+};
+// Desktop column template shared by the header and every row, so the list reads as one table.
+const COLS = "md:grid md:grid-cols-[minmax(0,1.5fr)_7.5rem_minmax(0,1fr)_4.5rem_7rem_6rem_1.5rem] md:items-center md:gap-3";
 
 type Search = { cursor?: string; spor?: string; jobrolle?: string; fejl?: string };
 
@@ -42,40 +52,138 @@ function TrackAndRoleFields({ tracks, row }: { tracks: { id: string; displayName
   const current = row?.tracks[0];
   return (
     <>
-      <label className="flex flex-col gap-1 text-sm">
-        {t.members.assign.track}
-        <select name="trackId" defaultValue={current?.id ?? ""} className={select}>
-          <option value="">{t.members.assign.noTrack}</option>
-          {tracks.map((tr) => (
-            <option key={tr.id} value={tr.id}>
-              {tr.displayName}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="flex flex-col gap-1 text-sm">
-        {t.members.assign.tier}
-        <select name="licenseTier" defaultValue={current?.licenseTier ?? ""} className={select}>
-          <option value="">—</option>
-          {(["COPILOT_CHAT", "COPILOT_M365", "UNKNOWN"] as const).map((tier) => (
-            <option key={tier} value={tier}>
-              {t.tiers[tier]}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="flex flex-col gap-1 text-sm">
-        {t.members.assign.jobRole}
-        <select name="jobRole" defaultValue={row?.jobRole ?? ""} className={select}>
-          <option value="">{t.members.assign.noJobRole}</option>
-          {JOB_ROLES.map((r) => (
-            <option key={r} value={r}>
-              {t.jobRoles[r]}
-            </option>
-          ))}
-        </select>
-      </label>
+      <Select label={t.members.assign.track} name="trackId" defaultValue={current?.id ?? ""}>
+        <option value="">{t.members.assign.noTrack}</option>
+        {tracks.map((tr) => (
+          <option key={tr.id} value={tr.id}>
+            {tr.displayName}
+          </option>
+        ))}
+      </Select>
+      <Select label={t.members.assign.tier} name="licenseTier" defaultValue={current?.licenseTier ?? ""}>
+        <option value="">—</option>
+        {(["COPILOT_CHAT", "COPILOT_M365", "UNKNOWN"] as const).map((tier) => (
+          <option key={tier} value={tier}>
+            {t.tiers[tier]}
+          </option>
+        ))}
+      </Select>
+      <Select label={t.members.assign.jobRole} name="jobRole" defaultValue={row?.jobRole ?? ""}>
+        <option value="">{t.members.assign.noJobRole}</option>
+        {JOB_ROLES.map((r) => (
+          <option key={r} value={r}>
+            {t.jobRoles[r]}
+          </option>
+        ))}
+      </Select>
     </>
+  );
+}
+
+function MemberRow({ r, tracks, canChangeRole }: { r: EmployeeRow; tracks: { id: string; displayName: string; licenseTiers: string[] }[]; canChangeRole: boolean }) {
+  const t = getMessages().orgAdmin;
+  const c = t.members.columns;
+  const look = STATUS_LOOK[r.status];
+  return (
+    <li className="flex flex-col" data-testid="member-row">
+      <div className={`grid grid-cols-2 gap-x-4 gap-y-3 px-6 py-4 ${COLS}`}>
+        <div className="col-span-2 flex min-w-0 flex-col gap-0.5 md:col-span-1">
+          <Link href={`/virksomhed/medarbejdere/${r.memberId}`} className="truncate text-body font-medium text-ink hover:text-accent">
+            {r.name || r.email}
+          </Link>
+          <span className="truncate text-body-sm text-ink-muted">{r.email}</span>
+          <span className="text-caption text-ink-subtle">
+            {t.roles[r.role]}
+            {r.jobRole ? ` · ${t.jobRoles[r.jobRole]}` : ""}
+            <span className="sr-only">
+              {" "}
+              ({c.role}, {c.jobRole}: {r.jobRole ? t.jobRoles[r.jobRole] : t.members.none})
+            </span>
+          </span>
+        </div>
+        <Cell label={c.status}>
+          <StatusBadge tone={look.tone} icon={look.icon} testId="member-status">
+            {t.members.status[r.status]}
+          </StatusBadge>
+        </Cell>
+        <Cell label={c.track}>
+          <span className="block">{r.tracks.map((x) => x.name).join(", ") || t.members.none}</span>
+          {r.certificates.length > 0 && (
+            <span className="mt-1 flex flex-col gap-0.5">
+              <span className="sr-only">{c.certificates}:</span>
+              {r.certificates.map((cert) => (
+                <span key={`${cert.trackName}-${cert.levelLabel}`} className="flex items-center gap-1 text-caption text-success">
+                  <Icon name="award" size={12} />
+                  <span>{`${cert.trackName} · ${cert.levelLabel}`}</span>
+                </span>
+              ))}
+            </span>
+          )}
+        </Cell>
+        <Cell label={t.members.scoreShort} align="end" className="md:pr-4">
+          <span className="tabular-nums">{r.avgBestScorePct === null ? t.members.none : `${r.avgBestScorePct} %`}</span>
+        </Cell>
+        <Cell label={c.passed}>
+          <span className="tabular-nums">{r.passedCount}</span>
+          {r.lastPassedAt && (
+            <span className="block text-caption whitespace-nowrap text-ink-muted">
+              <span className="sr-only">{c.passedAt}: </span>
+              {format(t.members.passedLatest, { date: formatDateDa(r.lastPassedAt) })}
+            </span>
+          )}
+        </Cell>
+        <Cell label={c.lastActivity}>
+          <span className="whitespace-nowrap">{formatDateDa(r.lastActivityAt) || t.members.none}</span>
+        </Cell>
+        <div className="col-span-2 flex md:col-span-1 md:justify-end">
+          <TextLink href={`/virksomhed/medarbejdere/${r.memberId}`} className="inline-flex items-center gap-1 text-body-sm md:grid md:size-6 md:place-items-center md:rounded-sm md:no-underline md:hover:bg-sunken">
+            <span className="md:sr-only">{t.members.details}</span>
+            <Icon name="chevronRight" />
+          </TextLink>
+        </div>
+      </div>
+      <details className="group/manage border-t border-dashed border-line">
+        <summary className="flex cursor-pointer list-none items-center gap-1.5 px-6 py-2.5 text-label text-ink-muted transition-colors duration-[120ms] hover:bg-sunken hover:text-ink [&::-webkit-details-marker]:hidden">
+          <Icon name="settings" />
+          {t.members.manage}
+          <Icon name="chevronDown" className="transition-transform duration-[120ms] group-open/manage:rotate-180" />
+        </summary>
+        <div className="flex flex-col gap-5 border-t border-line bg-sunken px-6 py-5">
+          <ActionForm action={assignMember} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
+            <input type="hidden" name="memberId" value={r.memberId} />
+            <TrackAndRoleFields tracks={tracks} row={r} />
+            <SubmitButton variant="secondary">{t.members.assign.save}</SubmitButton>
+          </ActionForm>
+          {(canChangeRole || r.role !== "OWNER") && (
+            <div className="flex flex-col gap-4 border-t border-line pt-5 sm:flex-row sm:items-end sm:justify-between">
+              {canChangeRole ? (
+                <form action={changeMemberRole} className="flex flex-wrap items-end gap-3">
+                  <input type="hidden" name="memberId" value={r.memberId} />
+                  <div className="w-56">
+                    <Select label={t.members.changeRole} name="role" defaultValue={r.role}>
+                      {(["LEARNER", "ADMIN", "OWNER"] as const).map((role) => (
+                        <option key={role} value={role}>
+                          {t.roles[role]}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+                  <SubmitButton variant="secondary">{t.members.save}</SubmitButton>
+                </form>
+              ) : (
+                <span />
+              )}
+              {r.role !== "OWNER" && (
+                <ActionForm action={removeMember} className="flex flex-col gap-3">
+                  <input type="hidden" name="memberId" value={r.memberId} />
+                  <AdminSubmit icon="x">{t.members.deactivate}</AdminSubmit>
+                </ActionForm>
+              )}
+            </div>
+          )}
+        </div>
+      </details>
+    </li>
   );
 }
 
@@ -103,6 +211,7 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
   ]);
   const isOwner = ctx.membership.role === "OWNER";
   const qs = (extra: Record<string, string>) => `?${new URLSearchParams({ ...(sp.spor ? { spor: sp.spor } : {}), ...(sp.jobrolle ? { jobrolle: sp.jobrolle } : {}), ...extra })}`;
+  const c = t.members.columns;
 
   return (
     <>
@@ -110,207 +219,209 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
       {!org.dpaAcceptedAt && (
         <Notice tone="error">
           {t.invite.dpaRequired}{" "}
-          <a className="underline" href="/virksomhed/databehandleraftale">
+          <TextLink href="/virksomhed/databehandleraftale" className="text-danger decoration-danger/40 hover:text-danger">
             {t.nav.dpa}
-          </a>
+          </TextLink>
         </Notice>
       )}
-      <p data-testid="seat-usage">
-        {format(t.seats.usage, { used, limit: ent.seatLimit })} ·{" "}
-        <a className="underline" href="/virksomhed/abonnement">
+
+      <div className="flex flex-col gap-3 rounded-lg border border-line bg-surface px-6 py-4 sm:flex-row sm:items-center sm:gap-6">
+        <p className="flex shrink-0 items-center gap-2 text-body-sm text-ink" data-testid="seat-usage">
+          <Icon name="users" className="text-ink-muted" />
+          {format(t.seats.usage, { used, limit: ent.seatLimit })}
+        </p>
+        <div className="flex-1">
+          <ProgressBar value={used} max={ent.seatLimit} label={t.overview.seatsTitle} tone="accent" />
+        </div>
+        <TextLink href="/virksomhed/abonnement" className="shrink-0 text-body-sm">
           {t.seats.addSeats}
-        </a>
-      </p>
-
-      <form method="get" className="flex flex-wrap items-end gap-2" aria-label={t.members.filters.title}>
-        <label className="flex flex-col gap-1 text-sm">
-          {t.members.filters.track}
-          <select name="spor" defaultValue={sp.spor ?? ""} className={select}>
-            <option value="">{t.members.filters.all}</option>
-            {tracks.map((tr) => (
-              <option key={tr.id} value={tr.id}>
-                {tr.displayName}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-sm">
-          {t.members.filters.jobRole}
-          <select name="jobrolle" defaultValue={sp.jobrolle ?? ""} className={select}>
-            <option value="">{t.members.filters.all}</option>
-            {JOB_ROLES.map((r) => (
-              <option key={r} value={r}>
-                {t.jobRoles[r]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="submit" className="rounded-md border border-border bg-surface px-3 py-1">
-          {t.members.filters.apply}
-        </button>
-      </form>
-
-      {page.rows.length === 0 && <p>{t.members.empty}</p>}
-      <ul className="flex flex-col gap-3" data-testid="members">
-        {page.rows.map((r) => (
-          <li key={r.memberId} className="flex flex-col gap-2 rounded-md border border-border p-3" data-testid="member-row">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <strong>{r.name || r.email}</strong>
-              <span className="text-sm">{r.email}</span>
-            </div>
-            <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4">
-              <dt>{t.members.columns.role}</dt>
-              <dd>{t.roles[r.role]}</dd>
-              <dt>{t.members.columns.status}</dt>
-              <dd data-testid="member-status">{t.members.status[r.status]}</dd>
-              <dt>{t.members.columns.track}</dt>
-              <dd>{r.tracks.map((x) => x.name).join(", ") || t.members.none}</dd>
-              <dt>{t.members.columns.jobRole}</dt>
-              <dd>{r.jobRole ? t.jobRoles[r.jobRole] : t.members.none}</dd>
-              <dt>{t.members.columns.score}</dt>
-              <dd>{r.avgBestScorePct === null ? t.members.none : `${r.avgBestScorePct} %`}</dd>
-              <dt>{t.members.columns.passed}</dt>
-              <dd>{r.passedCount}</dd>
-              <dt>{t.members.columns.passedAt}</dt>
-              <dd>{formatDateDa(r.lastPassedAt) || t.members.none}</dd>
-              <dt>{t.members.columns.certificates}</dt>
-              <dd>{r.certificates.map((c) => `${c.trackName} · ${c.levelLabel}`).join(", ") || t.members.none}</dd>
-              <dt>{t.members.columns.lastActivity}</dt>
-              <dd>{formatDateDa(r.lastActivityAt) || t.members.none}</dd>
-            </dl>
-            <a className="text-sm underline" href={`/virksomhed/medarbejdere/${r.memberId}`}>
-              {t.members.details}
-            </a>
-            <details>
-              <summary className="cursor-pointer text-sm">{t.members.assign.title}</summary>
-              <ActionForm action={assignMember} className="mt-2 flex flex-wrap items-end gap-2">
-                <input type="hidden" name="memberId" value={r.memberId} />
-                <TrackAndRoleFields tracks={tracks} row={r} />
-                <SubmitButton variant="secondary">{t.members.assign.save}</SubmitButton>
-              </ActionForm>
-              {isOwner && r.email !== ctx.user.email && (
-                <form action={changeMemberRole} className="mt-2 flex items-end gap-2">
-                  <input type="hidden" name="memberId" value={r.memberId} />
-                  <label className="flex flex-col gap-1 text-sm">
-                    {t.members.changeRole}
-                    <select name="role" defaultValue={r.role} className={select}>
-                      {(["LEARNER", "ADMIN", "OWNER"] as const).map((role) => (
-                        <option key={role} value={role}>
-                          {t.roles[role]}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <SubmitButton variant="secondary">{t.members.save}</SubmitButton>
-                </form>
-              )}
-              {r.role !== "OWNER" && (
-                <ActionForm action={removeMember} className="mt-2">
-                  <input type="hidden" name="memberId" value={r.memberId} />
-                  <SubmitButton variant="secondary">{t.members.deactivate}</SubmitButton>
-                </ActionForm>
-              )}
-            </details>
-          </li>
-        ))}
-      </ul>
-      <div className="flex gap-3 text-sm">
-        {sp.cursor && (
-          <a className="underline" href={qs({})}>
-            {t.members.first}
-          </a>
-        )}
-        {page.nextCursor && (
-          <a className="underline" href={qs({ cursor: page.nextCursor })}>
-            {t.members.next}
-          </a>
-        )}
+        </TextLink>
       </div>
 
-      <Section title={t.invite.title}>
-        <ActionForm action={inviteMembers} testId="invite-form">
-          <label className="flex flex-col gap-1">
-            <span className="text-sm">{t.invite.emails}</span>
-            <textarea name="emails" rows={4} required className="rounded-md border border-border bg-bg px-3 py-2" />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            {t.invite.role}
-            <select name="role" defaultValue="LEARNER" className={select}>
-              <option value="LEARNER">{t.roles.LEARNER}</option>
-              <option value="ADMIN">{t.roles.ADMIN}</option>
-            </select>
-          </label>
-          <div className="flex flex-wrap gap-2">
-            <TrackAndRoleFields tracks={tracks} />
+      <section className="overflow-hidden rounded-lg border border-line bg-surface">
+        <div className="flex flex-col gap-4 border-b border-line px-6 py-4 lg:flex-row lg:items-end lg:justify-between">
+          <h2 className="text-title-3 text-ink lg:pb-2">{t.members.listTitle}</h2>
+          <form method="get" className="grid grid-cols-2 items-end gap-3 sm:flex sm:flex-wrap" aria-label={t.members.filters.title}>
+            <div className="sm:w-48">
+              <Select label={t.members.filters.track} name="spor" defaultValue={sp.spor ?? ""}>
+                <option value="">{t.members.filters.all}</option>
+                {tracks.map((tr) => (
+                  <option key={tr.id} value={tr.id}>
+                    {tr.displayName}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div className="sm:w-44">
+              <Select label={t.members.filters.jobRole} name="jobrolle" defaultValue={sp.jobrolle ?? ""}>
+                <option value="">{t.members.filters.all}</option>
+                {JOB_ROLES.map((r) => (
+                  <option key={r} value={r}>
+                    {t.jobRoles[r]}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <Button type="submit" variant="secondary" icon="search" className="col-span-2">
+              {t.members.filters.apply}
+            </Button>
+          </form>
+        </div>
+        <div className={`hidden border-b border-line bg-sunken px-6 py-2.5 text-caption font-semibold tracking-[0.02em] text-ink-muted ${COLS}`} aria-hidden="true">
+          <span>{t.members.employee}</span>
+          <span>{c.status}</span>
+          <span>{c.track}</span>
+          <span className="text-right md:pr-4">{t.members.scoreShort}</span>
+          <span>{c.passed}</span>
+          <span>{c.lastActivity}</span>
+          <span />
+        </div>
+        {page.rows.length === 0 ? (
+          <div className="p-6">
+            <EmptyState icon="users" title={t.members.empty} />
           </div>
-          <SubmitButton>{t.invite.submit}</SubmitButton>
-        </ActionForm>
-        {pending.length > 0 && (
-          <>
-            <h3 className="font-semibold">{t.members.pending}</h3>
-            <ul data-testid="pending-invitations" className="flex flex-col gap-1">
-              {pending.map((p) => (
-                <li key={p.id} className="flex items-center justify-between gap-2">
-                  <span>
-                    {p.email} · {p.role ? t.roles[p.role] : ""} {p.track ? `· ${p.track.displayName}` : ""}
-                  </span>
-                  <form action={cancelInvitation}>
-                    <input type="hidden" name="invitationId" value={p.id} />
-                    <SubmitButton variant="secondary">{t.members.cancelInvitation}</SubmitButton>
-                  </form>
-                </li>
-              ))}
-            </ul>
-          </>
+        ) : (
+          <ul className="flex flex-col divide-y divide-line" data-testid="members">
+            {page.rows.map((r) => (
+              <MemberRow key={r.memberId} r={r} tracks={tracks} canChangeRole={isOwner && r.email !== ctx.user.email} />
+            ))}
+          </ul>
         )}
-      </Section>
+        {(sp.cursor || page.nextCursor) && (
+          <nav aria-label={t.members.pagination} className="flex justify-end gap-3 border-t border-line bg-sunken px-6 py-3">
+            {sp.cursor && (
+              <ButtonLink href={qs({})} variant="secondary" size="sm" icon="arrowLeft">
+                {t.members.first}
+              </ButtonLink>
+            )}
+            {page.nextCursor && (
+              <ButtonLink href={qs({ cursor: page.nextCursor })} variant="secondary" size="sm" trailingIcon="arrowRight">
+                {t.members.next}
+              </ButtonLink>
+            )}
+          </nav>
+        )}
+      </section>
 
-      <Section title={t.link.title} testId="join-link">
-        <p className="text-sm">{t.link.body}</p>
-        <p className="text-sm">{org.joinLinkEnabled ? t.link.active : t.link.inactive}</p>
-        <ActionForm action={createOrResetJoinLink}>
-          <SubmitButton variant="secondary">{org.joinLinkEnabled ? t.link.reset : t.link.enable}</SubmitButton>
-        </ActionForm>
-        {org.joinLinkEnabled && (
-          <ActionForm action={turnOffJoinLink}>
-            <SubmitButton variant="secondary">{t.link.disable}</SubmitButton>
+      <div id="inviter" className="scroll-mt-24">
+        <Section title={t.invite.title} description={t.invite.description}>
+          <ActionForm action={inviteMembers} testId="invite-form" className="flex flex-col gap-5">
+            <TextArea label={t.invite.emails} name="emails" rows={4} required className="font-mono text-mono" />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Select label={t.invite.role} name="role" defaultValue="LEARNER">
+                <option value="LEARNER">{t.roles.LEARNER}</option>
+                <option value="ADMIN">{t.roles.ADMIN}</option>
+              </Select>
+              <TrackAndRoleFields tracks={tracks} />
+            </div>
+            <div>
+              <AdminSubmit variant="primary" icon="send">{t.invite.submit}</AdminSubmit>
+            </div>
           </ActionForm>
-        )}
-      </Section>
+          {pending.length > 0 && (
+            <div className="-mx-6 -mb-6 mt-2 border-t border-line">
+              <h3 className="bg-sunken px-6 py-2.5 text-caption font-semibold tracking-[0.02em] text-ink-muted">
+                {t.members.pending} <span className="tabular-nums">({pending.length})</span>
+              </h3>
+              <ul data-testid="pending-invitations" className="flex flex-col divide-y divide-line border-t border-line">
+                {pending.map((p) => (
+                  <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+                    <span className="flex min-w-0 flex-col gap-0.5">
+                      <span className="flex items-center gap-2 truncate text-body-sm text-ink">
+                        <Icon name="mail" className="text-ink-muted" />
+                        {p.email}
+                      </span>
+                      <span className="pl-6 text-caption text-ink-muted">
+                        {p.role ? t.roles[p.role] : ""} {p.track ? `· ${p.track.displayName}` : ""}
+                      </span>
+                    </span>
+                    <form action={cancelInvitation}>
+                      <input type="hidden" name="invitationId" value={p.id} />
+                      <AdminSubmit variant="ghost" size="sm" icon="x">
+                        {t.members.cancelInvitation}
+                      </AdminSubmit>
+                    </form>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </Section>
+      </div>
 
-      <Section title={t.domain.title} testId="domain">
-        <p className="text-sm">{t.domain.body}</p>
-        {org.verifiedDomain && org.domainVerifiedAt && <p>{format(t.domain.verified, { domain: org.verifiedDomain })}</p>}
-        {org.verifiedDomain && !org.domainVerifiedAt && org.domainVerificationToken && (
-          <>
-            <p>{format(t.domain.pending, { domain: org.verifiedDomain })}</p>
-            <p className="text-sm">{format(t.domain.instructions, { domain: org.verifiedDomain })}</p>
-            <code className="break-all">{expectedTxtRecord(org.domainVerificationToken)}</code>
-            <ActionForm action={checkDomain}>
-              <SubmitButton variant="secondary">{t.domain.verify}</SubmitButton>
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Section
+          title={t.link.title}
+          description={t.link.body}
+          testId="join-link"
+          actions={
+            <Badge tone={org.joinLinkEnabled ? "success" : "neutral"} icon={org.joinLinkEnabled ? "check" : "dash"}>
+              {org.joinLinkEnabled ? t.link.active : t.link.inactive}
+            </Badge>
+          }
+        >
+          <ActionForm action={createOrResetJoinLink}>
+            <div className="flex flex-wrap gap-3">
+              <SubmitButton variant="secondary">{org.joinLinkEnabled ? t.link.reset : t.link.enable}</SubmitButton>
+            </div>
+          </ActionForm>
+          {org.joinLinkEnabled && (
+            <ActionForm action={turnOffJoinLink}>
+              <div>
+                <AdminSubmit variant="ghost">{t.link.disable}</AdminSubmit>
+              </div>
             </ActionForm>
-          </>
-        )}
-        <ActionForm action={saveDomain}>
-          <Field label={t.domain.label} name="domain" required maxLength={255} />
-          <SubmitButton variant="secondary">{t.domain.save}</SubmitButton>
-        </ActionForm>
-        {org.verifiedDomain && (
-          <ActionForm action={deleteDomain}>
-            <SubmitButton variant="secondary">{t.domain.remove}</SubmitButton>
+          )}
+        </Section>
+
+        <Section title={t.domain.title} description={t.domain.body} testId="domain">
+          {org.verifiedDomain && org.domainVerifiedAt && (
+            <Notice tone="success">{format(t.domain.verified, { domain: org.verifiedDomain })}</Notice>
+          )}
+          {org.verifiedDomain && !org.domainVerifiedAt && org.domainVerificationToken && (
+            <div className="flex flex-col gap-3 rounded-md border border-line p-4">
+              <Badge tone="hint" icon="clock" className="self-start">
+                {format(t.domain.pending, { domain: org.verifiedDomain })}
+              </Badge>
+              <p className="text-body-sm text-ink-muted">{format(t.domain.instructions, { domain: org.verifiedDomain })}</p>
+              <CodeBox>{expectedTxtRecord(org.domainVerificationToken)}</CodeBox>
+              <ActionForm action={checkDomain}>
+                <div>
+                  <SubmitButton variant="secondary">{t.domain.verify}</SubmitButton>
+                </div>
+              </ActionForm>
+            </div>
+          )}
+          <ActionForm action={saveDomain} className="flex flex-col gap-3 sm:flex-row sm:items-end">
+            <div className="flex-1">
+              <Field label={t.domain.label} name="domain" required maxLength={255} />
+            </div>
+            <SubmitButton variant="secondary">{t.domain.save}</SubmitButton>
           </ActionForm>
-        )}
-      </Section>
+          {org.verifiedDomain && (
+            <ActionForm action={deleteDomain}>
+              <div>
+                <AdminSubmit variant="ghost" icon="trash">
+                  {t.domain.remove}
+                </AdminSubmit>
+              </div>
+            </ActionForm>
+          )}
+        </Section>
+      </div>
 
       {removed.length > 0 && (
         <Section title={t.members.inactiveTitle}>
-          <ul className="flex flex-col gap-1">
+          <ul className="-mx-6 -my-6 flex flex-col divide-y divide-line">
             {removed.map((m) => (
-              <li key={m.id} className="flex items-center justify-between gap-2">
-                <span>
-                  {m.user.name} · {m.user.email} · {formatDateDa(m.deactivatedAt)}
+              <li key={m.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+                <span className="flex min-w-0 flex-col gap-0.5">
+                  <span className="text-body-sm text-ink">{m.user.name}</span>
+                  <span className="text-caption text-ink-muted">
+                    {m.user.email} · <span>{formatDateDa(m.deactivatedAt)}</span>
+                  </span>
                 </span>
-                <ActionForm action={restoreMember}>
+                <ActionForm action={restoreMember} className="flex flex-col items-end gap-2">
                   <input type="hidden" name="memberId" value={m.id} />
                   <SubmitButton variant="secondary">{t.members.reactivate}</SubmitButton>
                 </ActionForm>
@@ -324,8 +435,9 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
 }
 
 export default function MembersPage(props: PageProps<"/virksomhed/medarbejdere">) {
+  const t = getMessages().orgAdmin.members;
   return (
-    <AdminShell title={getMessages().orgAdmin.members.title}>
+    <AdminShell title={t.title} lead={t.lead}>
       <Suspense>
         <Content searchParams={props.searchParams as Promise<Search>} />
       </Suspense>

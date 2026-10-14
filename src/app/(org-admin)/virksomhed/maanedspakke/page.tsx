@@ -1,6 +1,6 @@
 import { Suspense } from "react";
+import { AdminShell } from "@/components/admin/admin-shell";
 import { OrgMonthlyStatus } from "@/components/monthly/org-monthly-status";
-import { Page } from "@/components/ui/primitives";
 import { getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { ADMIN_ROLES } from "@/server/auth/authz-core";
@@ -10,15 +10,19 @@ import { guardPage } from "@/server/auth/page-guard";
 // on its /virksomhed dashboard; this page keeps it reachable until then.
 async function Content() {
   const ctx = await guardPage(() => requireActiveMembership(ADMIN_ROLES), "/virksomhed/maanedspakke");
-  return <OrgMonthlyStatus organizationId={ctx.membership.organizationId} />;
+  return (
+    <div className="rounded-lg border border-line bg-surface p-6">
+      <OrgMonthlyStatus organizationId={ctx.membership.organizationId} />
+    </div>
+  );
 }
 
 export default function MonthlyStatusPage() {
   return (
-    <Page title={getMessages().monthly.orgStatus.pageTitle}>
+    <AdminShell title={getMessages().monthly.orgStatus.pageTitle}>
       <Suspense>
         <Content />
       </Suspense>
-    </Page>
+    </AdminShell>
   );
 }

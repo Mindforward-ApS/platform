@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { AdminShell, Section } from "@/components/admin/admin-shell";
+import { AdminSubmit } from "@/components/admin/danger-submit";
 import { SubscriptionSummary } from "@/components/billing/subscription-summary";
-import { Field, Notice, Page } from "@/components/ui/primitives";
+import { ButtonLink, Field, Notice, Select } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
@@ -28,6 +30,7 @@ const ERRORS = {
 async function Content({ searchParams }: { searchParams: Promise<Search> }) {
   const t = getMessages().billing;
   const b = t.business;
+  const s = getMessages().orgAdmin.subscription;
   const ctx = await guardPage(() => requireActiveMembership(ADMIN_ROLES), "/virksomhed/abonnement");
   const orgId = ctx.membership.organizationId;
   const sp = await searchParams;
@@ -41,109 +44,118 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
   const trialing = v.live && status === "TRIALING";
   const active = v.live && status !== "TRIALING";
   const minSeats = Math.max(billingRules.b2bMinSeats, monthly.minSeats);
+  const trialOffered = isOwner && !v.sub;
 
-  const buyForm = (
-    <form action={buyB2B} className="flex flex-col gap-3">
-      <label className="flex flex-col gap-1">
-        <span className="text-sm">{b.planLabel}</span>
-        <select name="planKey" defaultValue="B2B_MONTHLY" className="rounded-md border border-border bg-bg px-3 py-2">
+  // The trial is the main action when it is on offer; buying is then the secondary choice.
+  const buyForm = (primary: boolean) => (
+    <form action={buyB2B} className="flex flex-col gap-5">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Select label={b.planLabel} name="planKey" defaultValue="B2B_MONTHLY">
           <option value="B2B_MONTHLY">{`${t.planNames.B2B_MONTHLY}: ${describePrice(monthly).headline}`}</option>
           <option value="B2B_ANNUAL">{`${t.planNames.B2B_ANNUAL}: ${describePrice(annual).headline}`}</option>
-        </select>
-      </label>
-      <Field label={format(b.seatsLabel, { min: minSeats })} name="seats" type="number" min={Math.max(minSeats, used)} max={500} defaultValue={Math.max(minSeats, used)} required />
-      <p className="text-sm">{b.renewLine}</p>
-      <p>
-        <strong>{describePrice(monthly).headline}</strong>
-      </p>
-      <SubmitButton>{b.buy}</SubmitButton>
+        </Select>
+        <Field label={format(b.seatsLabel, { min: minSeats })} name="seats" type="number" min={Math.max(minSeats, used)} max={500} defaultValue={Math.max(minSeats, used)} required className="tabular-nums" />
+      </div>
+      <div className="flex flex-col gap-1 rounded-md border border-line bg-sunken px-4 py-3">
+        <p className="text-title-3 text-ink">{describePrice(monthly).headline}</p>
+        <p className="text-body-sm text-ink-muted">{b.renewLine}</p>
+      </div>
+      <div>{primary ? <SubmitButton>{b.buy}</SubmitButton> : <SubmitButton variant="secondary">{b.buy}</SubmitButton>}</div>
     </form>
   );
+
+  const hasManage = isOwner && (v.canCancel || v.canResume || active);
 
   return (
     <>
       {errorKey && <Notice tone="error">{format(b.errors[errorKey], { min: minSeats, used })}</Notice>}
       {sp.fejl && !errorKey && <Notice tone="error">{b.errors.generic}</Notice>}
-      {sp.proeve && <Notice>{b.trialStarted}</Notice>}
-      {sp.pladser && <Notice>{b.seatsChanged}</Notice>}
-      {sp.genoptaget && <Notice>{t.account.resumed}</Notice>}
+      {sp.proeve && <Notice tone="success">{b.trialStarted}</Notice>}
+      {sp.pladser && <Notice tone="success">{b.seatsChanged}</Notice>}
+      {sp.genoptaget && <Notice tone="success">{t.account.resumed}</Notice>}
       {v.entitlements.readOnly && <Notice tone="error">{b.readOnly}</Notice>}
-      {!isOwner && <Notice>{b.ownerOnly}</Notice>}
+      {!isOwner && (
+        <Notice tone="info" icon="lock">
+          {b.ownerOnly}
+        </Notice>
+      )}
 
-      <SubscriptionSummary
-        rows={[
-          { label: t.account.plan, value: v.sub ? v.planName : b.noSubscription },
-          { label: t.account.status, value: v.statusName, testId: "subscription-status" },
-          { label: t.account.seats, value: format(t.account.seatsUsed, { used, limit: v.entitlements.seatLimit }), testId: "seats" },
-          ...(v.live && v.endDate ? [{ label: trialing ? t.account.trialEnds : v.sub?.cancelAtPeriodEnd ? t.account.endsOn : t.account.renewsOn, value: v.endDate }] : []),
-        ]}
-      />
+      <Section title={s.summaryTitle}>
+        <div className="text-body [&_dd]:text-ink [&_dl]:grid-cols-[minmax(0,10rem)_minmax(0,1fr)] [&_dl]:gap-x-6 [&_dl]:gap-y-3 [&_dt]:text-ink-muted">
+          <SubscriptionSummary
+          rows={[
+            { label: t.account.plan, value: v.sub ? v.planName : b.noSubscription },
+            { label: t.account.status, value: v.statusName, testId: "subscription-status" },
+            { label: t.account.seats, value: format(t.account.seatsUsed, { used, limit: v.entitlements.seatLimit }), testId: "seats" },
+            ...(v.live && v.endDate ? [{ label: trialing ? t.account.trialEnds : v.sub?.cancelAtPeriodEnd ? t.account.endsOn : t.account.renewsOn, value: v.endDate }] : []),
+          ]}
+          />
+        </div>
+      </Section>
 
-      {isOwner && !v.sub && (
-        <section className="flex flex-col gap-3">
-          <h2 className="font-semibold">{format(b.trialTitle, { days: billingRules.b2bTrialDays })}</h2>
-          <p>
-            {format(b.trialBody, {
-              users: billingRules.b2bTrialMaxUsers,
-              price: describePrice(monthly).headline,
-              interval: t.intervalPaid.MONTH,
-            })}
-          </p>
-          <form action={startTrial} className="flex flex-col gap-3">
-            <Field label={b.cvr} name="cvr" inputMode="numeric" pattern="\d{8}" required />
+      {trialOffered && (
+        <Section
+          title={format(b.trialTitle, { days: billingRules.b2bTrialDays })}
+          description={format(b.trialBody, {
+            users: billingRules.b2bTrialMaxUsers,
+            price: describePrice(monthly).headline,
+            interval: t.intervalPaid.MONTH,
+          })}
+        >
+          <form action={startTrial} className="flex flex-col gap-4 sm:flex-row sm:items-end">
+            <div className="sm:w-64">
+              <Field label={b.cvr} name="cvr" inputMode="numeric" pattern="\d{8}" required className="tabular-nums" />
+            </div>
             <SubmitButton>{b.startTrial}</SubmitButton>
           </form>
-        </section>
+        </Section>
       )}
 
       {isOwner && trialing && v.sub?.trialEnd && (
-        <section className="flex flex-col gap-3">
-          <p>{format(b.trialActive, { date: formatDate(v.sub.trialEnd), price: describePrice(monthly).headline, interval: t.intervalPaid.MONTH })}</p>
-          <h2 className="font-semibold">{b.convertTitle}</h2>
-          {buyForm}
-        </section>
+        <Section title={b.convertTitle} description={format(b.trialActive, { date: formatDate(v.sub.trialEnd), price: describePrice(monthly).headline, interval: t.intervalPaid.MONTH })}>
+          {buyForm(true)}
+        </Section>
       )}
 
-      {isOwner && !v.live && v.sub && (
-        <section className="flex flex-col gap-3">
-          <h2 className="font-semibold">{b.buyTitle}</h2>
-          {buyForm}
-        </section>
-      )}
-      {isOwner && !v.sub && (
-        <section className="flex flex-col gap-3">
-          <h2 className="font-semibold">{b.buyTitle}</h2>
-          {buyForm}
-        </section>
-      )}
+      {isOwner && !v.live && v.sub && <Section title={b.buyTitle}>{buyForm(true)}</Section>}
+      {trialOffered && <Section title={b.buyTitle}>{buyForm(false)}</Section>}
 
       {isOwner && active && (
-        <form action={updateSeats} className="flex flex-col gap-3">
-          <h2 className="font-semibold">{b.seatsTitle}</h2>
-          <Field label={format(b.seatsLabel, { min: minSeats })} name="seats" type="number" min={Math.max(minSeats, used)} max={500} defaultValue={v.sub?.quantity ?? minSeats} required />
-          <SubmitButton variant="secondary">{b.changeSeats}</SubmitButton>
-        </form>
-      )}
-
-      {isOwner && v.canCancel && (
-        <a className="self-start underline" href="/virksomhed/abonnement/opsig">
-          {t.account.cancel}
-        </a>
-      )}
-      {isOwner && v.canResume && (
-        <>
-          {v.endDate && <p>{format(t.account.canceledNotice, { date: v.endDate })}</p>}
-          <form action={resume}>
-            <input type="hidden" name="from" value="virksomhed" />
-            <SubmitButton variant="secondary">{t.account.resume}</SubmitButton>
+        <Section title={b.seatsTitle}>
+          <form action={updateSeats} className="flex flex-col gap-4 sm:flex-row sm:items-end">
+            <div className="sm:w-64">
+              <Field label={format(b.seatsLabel, { min: minSeats })} name="seats" type="number" min={Math.max(minSeats, used)} max={500} defaultValue={v.sub?.quantity ?? minSeats} required className="tabular-nums" />
+            </div>
+            <SubmitButton variant="secondary">{b.changeSeats}</SubmitButton>
           </form>
-        </>
+        </Section>
       )}
-      {isOwner && active && (
-        <form action={openPortal}>
-          <input type="hidden" name="from" value="virksomhed" />
-          <SubmitButton variant="secondary">{t.account.portal}</SubmitButton>
-        </form>
+
+      {hasManage && (
+        <Section title={s.manageTitle}>
+          {v.canResume && v.endDate && <Notice tone="hint">{format(t.account.canceledNotice, { date: v.endDate })}</Notice>}
+          <div className="flex flex-wrap items-center gap-3">
+            {active && (
+              <form action={openPortal}>
+                <input type="hidden" name="from" value="virksomhed" />
+                <AdminSubmit variant="secondary" icon="card">
+                  {t.account.portal}
+                </AdminSubmit>
+              </form>
+            )}
+            {v.canResume && (
+              <form action={resume}>
+                <input type="hidden" name="from" value="virksomhed" />
+                <SubmitButton variant="secondary">{t.account.resume}</SubmitButton>
+              </form>
+            )}
+            {v.canCancel && (
+              <ButtonLink href="/virksomhed/abonnement/opsig" variant="danger">
+                {t.account.cancel}
+              </ButtonLink>
+            )}
+          </div>
+        </Section>
       )}
     </>
   );
@@ -151,10 +163,10 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
 
 export default function BusinessSubscriptionPage(props: PageProps<"/virksomhed/abonnement">) {
   return (
-    <Page title={getMessages().billing.business.title}>
+    <AdminShell title={getMessages().billing.business.title} lead={getMessages().orgAdmin.subscription.lead}>
       <Suspense>
         <Content searchParams={props.searchParams as Promise<Search>} />
       </Suspense>
-    </Page>
+    </AdminShell>
   );
 }
