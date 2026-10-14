@@ -7,7 +7,7 @@ import { Icon } from "@/components/ui/icons";
 import { Illustration } from "@/components/ui/illustration";
 import { coverGround } from "@/components/ui/module-cover";
 import { Badge, ButtonLink, cx, EmptyState, TextLink } from "@/components/ui/primitives";
-import { illustrationForModule } from "@/lib/config/illustrations";
+import { coverPhoto, illustrationForModule } from "@/lib/config/illustrations";
 import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
@@ -23,7 +23,44 @@ import { playableOptions } from "@/server/modules/deps";
 
 const t = getMessages().player;
 
+/** Photo variant (reference: community-app hero): photo banner on top, text below — never on top of the photo. */
+function NextModulePhoto({ entry, number, photo }: { entry: CatalogEntry; number: number; photo: string }) {
+  const started = entry.status === "IN_PROGRESS";
+  return (
+    <section className="overflow-hidden rounded-2xl border border-line bg-surface shadow-xs">
+      <div className="relative aspect-[21/8] bg-sunken">
+        {/* eslint-disable-next-line @next/next/no-img-element -- static, pre-optimized WebP from /public */}
+        <img src={photo} alt="" aria-hidden="true" className="absolute inset-0 size-full object-cover object-[70%_55%]" />
+        <span className="absolute top-4 left-4 inline-flex h-7 items-center gap-2 rounded-full bg-on-night/90 px-3 text-caption font-semibold text-night shadow-xs backdrop-blur-sm">
+          <span className="size-1.5 rounded-full bg-rav" />
+          {started ? t.home.continueEyebrow : t.home.startEyebrow}
+        </span>
+      </div>
+      <div className="flex flex-col gap-5 p-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8 sm:p-8">
+        <div className="flex min-w-0 flex-col gap-2">
+          <p className="text-overline text-accent uppercase">{format(t.list.moduleNumber, { n: number })}</p>
+          <h2 className="text-title-1 text-ink">{entry.title}</h2>
+          <p className="max-w-xl text-body text-ink-muted">{entry.summary}</p>
+          <p className="mt-1 flex flex-wrap items-center gap-4 font-mono text-mono text-ink-muted">
+            <span className="inline-flex items-center gap-1.5">
+              <Icon name="clock" size={14} />
+              {format(t.list.minutes, { minutes: num(entry.minutes) })}
+            </span>
+            {entry.steps > 0 && <span>{format(t.list.steps, { count: num(entry.steps) })}</span>}
+            {started && <Badge tone="accent">{t.home.inProgress}</Badge>}
+          </p>
+        </div>
+        <ButtonLink href={`/modul/${entry.slug}`} size="lg" trailingIcon="arrowRight" className="shrink-0 self-start sm:self-end">
+          {started ? t.home.continue : t.home.start}
+        </ButtonLink>
+      </div>
+    </section>
+  );
+}
+
 function NextModule({ entry, number }: { entry: CatalogEntry; number: number }) {
+  const photo = coverPhoto(entry.slug);
+  if (photo) return <NextModulePhoto entry={entry} number={number} photo={photo} />;
   const started = entry.status === "IN_PROGRESS";
   const g = coverGround(entry.slug);
   return (
@@ -126,9 +163,10 @@ function Practice() {
     ["/sandkasse/claude", s.tracks.claude, "bg-cover-coral-ink"],
   ] as const;
   return (
-    <section className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-6 shadow-xs">
-      <Illustration name="computer" className="absolute top-5 right-5 h-14" />
-      <div className="flex flex-col gap-1 pr-16">
+    <section className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-6 pt-0 shadow-xs">
+      {/* eslint-disable-next-line @next/next/no-img-element -- static, pre-optimized WebP from /public */}
+      <img src="/heroes/hero-sandbox.webp" alt="" aria-hidden="true" loading="lazy" className="-mx-6 aspect-[16/9] w-[calc(100%+3rem)] max-w-none object-cover object-[75%_50%]" />
+      <div className="flex flex-col gap-1">
         <h2 className="text-title-3 text-ink">{t.home.practiceTitle}</h2>
         <p className="text-body-sm text-ink-muted">{t.home.practiceBody}</p>
       </div>
