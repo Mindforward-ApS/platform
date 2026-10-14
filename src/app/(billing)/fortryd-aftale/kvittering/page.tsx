@@ -1,5 +1,7 @@
 import { Suspense } from "react";
-import { Notice, Page } from "@/components/ui/primitives";
+import { AuthCard, AuthMain } from "@/components/auth/auth-shell";
+import { CheckoutRow } from "@/components/billing/checkout-parts";
+import { Notice } from "@/components/ui/primitives";
 import { serverEnv } from "@/lib/env";
 import { format, getMessages } from "@/lib/i18n";
 import { formatDate, formatTime } from "@/server/billing/time";
@@ -10,26 +12,37 @@ import { db } from "@/server/db";
 async function Content({ searchParams }: { searchParams: Promise<{ id?: string; t?: string }> }) {
   const t = getMessages().billing.withdrawal;
   const { id, t: token } = await searchParams;
-  if (!id || !token || !verifyReceiptToken(serverEnv().BETTER_AUTH_SECRET, id, token)) return <Notice tone="error">{t.receiptInvalid}</Notice>;
-  const request = await db().withdrawalRequest.findUnique({ where: { id } });
-  if (!request) return <Notice tone="error">{t.receiptInvalid}</Notice>;
+  const request = id && token && verifyReceiptToken(serverEnv().BETTER_AUTH_SECRET, id, token) ? await db().withdrawalRequest.findUnique({ where: { id } }) : null;
+  if (!request) {
+    return (
+      <AuthCard icon="file" iconTone="neutral" title={t.receiptTitle}>
+        <Notice tone="error">{t.receiptInvalid}</Notice>
+      </AuthCard>
+    );
+  }
+  const date = formatDate(request.submittedAt);
+  const time = formatTime(request.submittedAt);
   return (
-    <section className="flex flex-col gap-2" role="status" data-testid="withdrawal-receipt">
-      <p>{format(t.receiptBody, { date: formatDate(request.submittedAt), time: formatTime(request.submittedAt) })}</p>
-      <p>{format(t.receiptAgreement, { agreement: request.agreementReference })}</p>
-      <p>{format(t.receiptName, { name: request.name })}</p>
-      <p>{format(t.receiptEmail, { email: request.email })}</p>
-      <p>{format(t.receiptNext, { email: request.email })}</p>
+    <section role="status" data-testid="withdrawal-receipt">
+      <AuthCard icon="check" iconTone="success" title={t.receiptTitle} lead={<p className="text-body-lg text-ink">{format(t.receiptBody, { date, time })}</p>}>
+        <dl className="flex flex-col gap-2.5 rounded-md border border-line bg-sunken px-4 py-4">
+          <CheckoutRow label={t.receivedLabel} value={format(t.receivedValue, { date, time })} />
+          <CheckoutRow label={t.agreementLabel} value={request.agreementReference} />
+          <CheckoutRow label={t.name} value={request.name} />
+          <CheckoutRow label={t.email} value={request.email} />
+        </dl>
+        <p className="text-body-sm text-ink-muted">{format(t.receiptNext, { email: request.email })}</p>
+      </AuthCard>
     </section>
   );
 }
 
 export default function WithdrawalReceiptPage(props: PageProps<"/fortryd-aftale/kvittering">) {
   return (
-    <Page title={getMessages().billing.withdrawal.receiptTitle}>
+    <AuthMain>
       <Suspense>
         <Content searchParams={props.searchParams as Promise<{ id?: string; t?: string }>} />
       </Suspense>
-    </Page>
+    </AuthMain>
   );
 }

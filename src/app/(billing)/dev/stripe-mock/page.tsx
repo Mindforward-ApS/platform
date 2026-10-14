@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { Page } from "@/components/ui/primitives";
+import { AuthCard, AuthMain } from "@/components/auth/auth-shell";
+import { Badge } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { serverEnv } from "@/lib/env";
 import { getMessages } from "@/lib/i18n";
@@ -16,22 +17,29 @@ async function Content({ searchParams }: { searchParams: Promise<{ session?: str
   await guardPage(() => requireUser());
   const t = getMessages().billing.mock;
   return (
-    <>
-      <p>{t.body}</p>
+    <AuthCard
+      eyebrow={
+        <Badge tone="hint" icon="alert" className="normal-case">
+          {t.badge}
+        </Badge>
+      }
+      title={t.title}
+      lead={t.body}
+    >
       <form action={payMockCheckout}>
         <input type="hidden" name="session" value={session} />
-        <SubmitButton>{t.pay}</SubmitButton>
+        <SubmitButton className="w-full">{t.pay}</SubmitButton>
       </form>
-    </>
+    </AuthCard>
   );
 }
 
 export default function MockCheckoutPage(props: PageProps<"/dev/stripe-mock">) {
   return (
-    <Page title={getMessages().billing.mock.title}>
+    <AuthMain>
       <Suspense>
         <Content searchParams={props.searchParams as Promise<{ session?: string }>} />
       </Suspense>
-    </Page>
+    </AuthMain>
   );
 }

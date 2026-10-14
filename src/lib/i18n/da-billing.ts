@@ -41,6 +41,16 @@ export const daBilling = {
     rateLimited: "Du har forsøgt mange gange. Prøv igen om lidt.",
     unavailable: "Betaling er ikke sat op endnu. Prøv igen senere.",
     canceled: "Betalingen blev ikke gennemført. Du kan prøve igen.",
+    planTitle: "Plan",
+    selected: "Valgt",
+    infoTitle: "Det skal du vide før købet",
+    declarationsTitle: "Adgang med det samme",
+    summaryTitle: "Oversigt",
+    summaryBilled: "Betales",
+    summaryBinding: "Binding",
+    summaryNoBinding: "Ingen",
+    summaryVat: "Heraf moms",
+    toAccount: "Gå til abonnement",
   },
   account: {
     title: "Abonnement",
@@ -94,6 +104,16 @@ export const daBilling = {
     receiptEmail: "Email: {email}",
     receiptNext: "Vi sender kvitteringen til {email}. Finder vi aftalen, stopper vi abonnementet med det samme og refunderer det fulde beløb til dit kort.",
     receiptInvalid: "Kvitteringen kunne ikke findes.",
+    formTitle: "Dine oplysninger",
+    stepsTitle: "Sådan foregår det",
+    steps: [
+      "Udfyld navn, aftale og email, og tryk på \"Bekræft fortrydelse\".",
+      "Du får straks en kvittering med dato og klokkeslæt, også på mail.",
+      "Finder vi aftalen, stopper vi abonnementet med det samme og refunderer det fulde beløb til dit kort.",
+    ],
+    receivedLabel: "Modtaget",
+    receivedValue: "{date} kl. {time}",
+    agreementLabel: "Aftale",
   },
   business: {
     title: "Virksomhedens abonnement",
@@ -129,6 +149,7 @@ export const daBilling = {
     title: "Testbetaling",
     body: "Testtilstand (STRIPE_MOCK): her ville Stripes betalingsside stå. Ingen rigtig betaling.",
     pay: "Gennemfør testbetaling",
+    badge: "Testtilstand",
   },
   seats: {
     limitReached:
