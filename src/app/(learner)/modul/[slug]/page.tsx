@@ -1,12 +1,12 @@
 import { Suspense } from "react";
-import { Notice } from "@/components/ui/primitives";
-import { format, getMessages } from "@/lib/i18n";
+import { ButtonLink, EmptyState } from "@/components/ui/primitives";
+import { getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
 import { db } from "@/server/db";
 import { findPlayableVersion, getPlayerState, latestAttemptId } from "@/server/modules/attempts";
 import { playableOptions } from "@/server/modules/deps";
-import { ModuleView } from "./module-view";
+import { ModuleView, type ModuleIntro } from "./module-view";
 
 async function Content({ params }: { params: Promise<{ slug: string }> }) {
   const t = getMessages().player;
@@ -18,42 +18,38 @@ async function Content({ params }: { params: Promise<{ slug: string }> }) {
   const playable = await findPlayableVersion(db(), slug, playableOptions());
   if (!playable && !attemptId) {
     return (
-      <>
-        <Notice tone="error">{t.intro.unavailable}</Notice>
-        <a className="underline" href="/moduler">
-          {t.intro.back}
-        </a>
-      </>
+      <div className="mx-auto flex w-full max-w-read flex-col px-4 pt-14 pb-20 sm:px-6">
+        <EmptyState
+          icon="alert"
+          title={t.intro.unavailable}
+          action={
+            <ButtonLink href="/moduler" variant="secondary" icon="arrowLeft">
+              {t.intro.back}
+            </ButtonLink>
+          }
+        />
+      </div>
     );
   }
   const state = attemptId ? await getPlayerState(db(), actor, attemptId) : null;
   const content = playable?.content;
+  const intro: ModuleIntro | null = content
+    ? {
+        title: content.title,
+        summary: content.summary,
+        objectives: content.objectives,
+        minutes: content.minutes,
+        steps: content.steps.length,
+        passPct: Math.round(content.passThreshold * 100),
+      }
+    : null;
 
-  return (
-    <>
-      <h1 className="text-2xl font-semibold">{state?.module.title ?? content?.title}</h1>
-      {content && !state && (
-        <>
-          <p>{content.summary}</p>
-          <h2 className="font-semibold">{t.intro.objectives}</h2>
-          <ul className="list-disc pl-6">
-            {content.objectives.map((o) => (
-              <li key={o}>{o}</li>
-            ))}
-          </ul>
-          <p className="text-sm text-muted">
-            {format(t.list.minutes, { minutes: content.minutes })} · {format(t.intro.passRule, { pct: Math.round(content.passThreshold * 100) })}
-          </p>
-        </>
-      )}
-      <ModuleView slug={slug} initial={state} />
-    </>
-  );
+  return <ModuleView slug={slug} initial={state} intro={intro} />;
 }
 
 export default function ModulePage(props: PageProps<"/modul/[slug]">) {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-6">
+    <main className="flex w-full flex-1 flex-col">
       <Suspense>
         <Content params={props.params} />
       </Suspense>
