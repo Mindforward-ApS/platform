@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("forsiden svarer 200 og viser Mindforward", async ({ page }) => {
   const response = await page.goto("/");
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Mindforward");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Lær AI ved at gøre det.");
 });
 
 test("health svarer", async ({ request }) => {

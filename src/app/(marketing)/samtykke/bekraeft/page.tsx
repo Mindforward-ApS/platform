@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Notice, Page } from "@/components/ui/primitives";
+import { Card, Notice, Page } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { getMessages } from "@/lib/i18n";
 import { db } from "@/server/db";
@@ -16,25 +16,25 @@ async function Content({ searchParams }: { searchParams: Promise<{ t?: string; s
   const sp = await searchParams;
   if (sp.status && sp.status in MESSAGE) {
     const key = MESSAGE[sp.status as keyof typeof MESSAGE];
-    return <Notice tone={key === "confirmed" ? "info" : "error"}>{t[key]}</Notice>;
+    return <Notice tone={key === "confirmed" ? "success" : "error"}>{t[key]}</Notice>;
   }
   const state = sp.t ? await confirmationState(db(), sp.t) : "INVALID";
-  if (state === "CONFIRMED") return <Notice>{t.confirmed}</Notice>;
+  if (state === "CONFIRMED") return <Notice tone="success">{t.confirmed}</Notice>;
   if (state !== "VALID") return <Notice tone="error">{t[state === "EXPIRED" ? "expired" : state === "WITHDRAWN" ? "withdrawn" : "invalid"]}</Notice>;
   return (
-    <>
-      <p>{t.body}</p>
+    <Card>
+      <p className="text-body text-ink">{t.body}</p>
       <form action={confirmConsent}>
         <input type="hidden" name="t" value={sp.t} />
-        <SubmitButton>{t.button}</SubmitButton>
+        <SubmitButton className="w-full">{t.button}</SubmitButton>
       </form>
-    </>
+    </Card>
   );
 }
 
 export default function ConfirmConsentPage(props: PageProps<"/samtykke/bekraeft">) {
   return (
-    <Page title={getMessages().placement.confirm.title}>
+    <Page title={getMessages().placement.confirm.title} width="narrow">
       <Suspense>
         <Content searchParams={props.searchParams as Promise<{ t?: string; status?: string }>} />
       </Suspense>

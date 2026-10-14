@@ -2,9 +2,10 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { PlacementForm, type ClientTest } from "@/components/placement/placement-form";
+import { Icon } from "@/components/ui/icons";
 import { Notice } from "@/components/ui/primitives";
 import { serverEnv } from "@/lib/env";
-import { getMessages } from "@/lib/i18n";
+import { format, getMessages } from "@/lib/i18n";
 import { getAuthContext } from "@/server/auth/authz";
 import { getPlacementTest, trackFromSlug } from "@/server/placement/content";
 import { issueStartToken } from "@/server/placement/tokens";
@@ -25,11 +26,18 @@ async function Content({ params, searchParams }: { params: Promise<{ track: stri
   const ctx = await getAuthContext();
   const errorKey = sp.fejl && sp.fejl in ERRORS ? ERRORS[sp.fejl as keyof typeof ERRORS] : undefined;
 
+  const tracks = getMessages().placement.tracks;
   return (
     <>
-      <h1 className="text-2xl font-semibold">{test.title}</h1>
-      <p>{test.intro}</p>
-      <p className="text-sm text-muted">{t.noTimeLimit}</p>
+      <header className="flex flex-col gap-3">
+        <p className="text-overline text-accent uppercase">{format(t.eyebrow, { track: tracks[track] })}</p>
+        <h1 className="text-title-1 text-ink">{test.title}</h1>
+        <p className="text-body-lg text-pretty text-ink-muted">{test.intro}</p>
+        <p className="flex items-center gap-1.5 text-body-sm text-ink-muted">
+          <Icon name="clock" />
+          {t.noTimeLimit}
+        </p>
+      </header>
       {ctx && <Notice>{t.loggedInNote}</Notice>}
       {errorKey && <Notice tone="error">{t.errors[errorKey]}</Notice>}
       <PlacementForm test={clientTest} t={t} action={submitPlacementTest} slug={slug} startToken={issueStartToken(track, serverEnv().BETTER_AUTH_SECRET)} />
@@ -39,7 +47,7 @@ async function Content({ params, searchParams }: { params: Promise<{ track: stri
 
 export default function PlacementTestPage(props: PageProps<"/niveautest/[track]">) {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 p-6">
+    <main className="mx-auto flex w-full max-w-read flex-1 flex-col gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-14">
       <Suspense>
         <Content params={props.params} searchParams={props.searchParams as Promise<{ fejl?: string }>} />
       </Suspense>

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Notice, Page } from "@/components/ui/primitives";
+import { Card, Notice, Page } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { format, getMessages } from "@/lib/i18n";
 import { serverEnv } from "@/lib/env";
@@ -11,26 +11,26 @@ import { unsubscribe } from "./actions";
 async function Content({ searchParams }: { searchParams: Promise<{ t?: string; status?: string }> }) {
   const t = getMessages().placement.unsubscribe;
   const sp = await searchParams;
-  if (sp.status === "afmeldt") return <Notice>{t.done}</Notice>;
+  if (sp.status === "afmeldt") return <Notice tone="success">{t.done}</Notice>;
   if (sp.status === "fejl") return <Notice tone="error">{t.unavailable}</Notice>;
   const secret = serverEnv().UNSUBSCRIBE_TOKEN_SECRET;
   if (!secret) return <Notice tone="error">{t.unavailable}</Notice>;
   const email = sp.t ? verifyUnsubscribeToken(sp.t, secret) : null;
   if (sp.status === "ugyldig" || !email) return <Notice tone="error">{t.invalid}</Notice>;
   return (
-    <>
-      <p>{format(t.body, { email })}</p>
+    <Card>
+      <p className="text-body text-ink">{format(t.body, { email })}</p>
       <form action={unsubscribe}>
         <input type="hidden" name="t" value={sp.t} />
-        <SubmitButton>{t.button}</SubmitButton>
+        <SubmitButton className="w-full">{t.button}</SubmitButton>
       </form>
-    </>
+    </Card>
   );
 }
 
 export default function UnsubscribePage(props: PageProps<"/afmeld">) {
   return (
-    <Page title={getMessages().placement.unsubscribe.title}>
+    <Page title={getMessages().placement.unsubscribe.title} width="narrow">
       <Suspense>
         <Content searchParams={props.searchParams as Promise<{ t?: string; status?: string }>} />
       </Suspense>
