@@ -33,6 +33,8 @@ describe("owner digest (docs/08 § 7)", () => {
   it("lists open escalations by SLA (overdue flagged), support stats, errors and AI spend — then sends once", async () => {
     const now = new Date();
     const yesterday = new Date(yesterdayWindow(now).start.getTime() + 2 * 60 * 60 * 1000);
+    // Earlier runs leave open escalations in the shared test DB; they would crowd this one out of the capped list.
+    await db.escalation.updateMany({ where: { status: { not: "RESOLVED" } }, data: { status: "RESOLVED" } });
     const fx = await makeFixture("b2c_active_day3");
     const conv = await db.supportConversation.create({ data: { userId: fx.userId, organizationId: fx.orgId, promptVersion: "v1", modelId: "m", createdAt: yesterday } });
     const tag = randomUUID().slice(0, 6);
