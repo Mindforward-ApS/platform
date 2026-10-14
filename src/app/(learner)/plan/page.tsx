@@ -54,7 +54,7 @@ async function Content() {
   if (!view) {
     return (
       <EmptyState
-        icon="route"
+        icon="plan"
         title={t.plan.empty}
         action={
           <ButtonLink href="/niveautest" trailingIcon="arrowRight">

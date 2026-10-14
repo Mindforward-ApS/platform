@@ -3,7 +3,7 @@ import { PlayerMock } from "@/components/marketing/player-mock";
 import { Pricing } from "@/components/marketing/pricing";
 import { SectionPhoto } from "@/components/marketing/section-photo";
 import { Band, SectionHeading } from "@/components/marketing/section";
-import { Icon, type IconName } from "@/components/ui/icons";
+import { AppIcon, Icon, type IconName } from "@/components/ui/icons";
 import { ButtonLink, TextLink } from "@/components/ui/primitives";
 import { billingRules } from "@/lib/config/plans";
 import { PLACEMENT_TRACKS, placementConfig } from "@/lib/config/placement";
@@ -12,8 +12,9 @@ import { format, getMessages } from "@/lib/i18n";
 // P1 landing page (docs/01 § 5): value promise, how it works, product cut-out, tracks, business section,
 // prices from config, FAQ and a closing CTA. No invented numbers, customers, quotes or logos (CLAUDE.md ALDRIG).
 
-const HOW_ICONS: IconName[] = ["target", "route", "sandbox", "chart", "clock"];
-const FEATURE_ICONS: IconName[] = ["clock", "chart", "award", "chat", "lock", "sparkle"];
+const HOW_ICONS: IconName[] = ["graduation", "plan", "sandbox", "chart", "rocket"];
+const TILE_TONES = ["blue", "amber", "mint", "coral", "sky", "slate"] as const;
+const FEATURE_ICONS: IconName[] = ["lightning", "chart", "award", "chats", "shield", "sparkle"];
 const BUSINESS_ICONS: IconName[] = ["users", "grid", "file", "shield"];
 
 function Hero() {
@@ -82,9 +83,7 @@ function HowItWorks() {
               className="flex flex-col gap-4 bg-surface p-6 sm:last:col-span-2 lg:last:col-span-1"
             >
               <div className="flex items-center justify-between">
-                <span className="grid size-10 place-items-center rounded-md bg-accent-soft text-accent-ink">
-                  <Icon name={HOW_ICONS[i] ?? "sparkle"} size={20} />
-                </span>
+                <AppIcon name={HOW_ICONS[i] ?? "sparkle"} tone={TILE_TONES[i % TILE_TONES.length]} size="md" />
                 <span className="font-mono text-mono text-ink-subtle tabular-nums">{String(i + 1).padStart(2, "0")}</span>
               </div>
               <h3 className="text-title-3 text-ink">{s.title}</h3>
@@ -131,7 +130,7 @@ function Features() {
         <ul className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {t.items.map((f, i) => (
             <li key={f.title} className="flex flex-col gap-3 border-t border-line pt-6">
-              <Icon name={FEATURE_ICONS[i] ?? "sparkle"} size={20} className="text-accent" />
+              <AppIcon name={FEATURE_ICONS[i] ?? "sparkle"} tone={TILE_TONES[(i + 1) % TILE_TONES.length]} size="lg" />
               <h3 className="text-title-3 text-ink">{f.title}</h3>
               <p className="text-body-sm text-ink-muted">{f.body}</p>
             </li>

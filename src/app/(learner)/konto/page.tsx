@@ -116,7 +116,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
 
       <Card title={t.training.title} description={t.training.description} padded={false}>
         <SettingsList label={t.training.title}>
-          <SettingsRow id="row-modules" href="/moduler" icon="route" label={m.player.list.toModules} hint={t.training.modulesHint} />
+          <SettingsRow id="row-modules" href="/moduler" icon="book" label={m.player.list.toModules} hint={t.training.modulesHint} />
         </SettingsList>
         {active && (
           <section className="border-t border-line" data-testid="sandbox-links" aria-labelledby="sandbox-heading">

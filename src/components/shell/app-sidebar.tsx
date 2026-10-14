@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { signOut } from "@/app/(learner)/konto/actions";
 import { Wordmark } from "@/components/ui/brand";
-import { Icon, type IconName } from "@/components/ui/icons";
+import { AppIcon, Icon, type IconName, type IconTone } from "@/components/ui/icons";
 import { getMessages } from "@/lib/i18n";
 import { getAuthContext } from "@/server/auth/authz";
 import { MobileNav } from "./mobile-nav";
@@ -15,8 +15,8 @@ export interface SidebarItem {
   href: string;
   label: string;
   icon?: IconName;
-  /** Icon color (inactive state). */
-  tone?: string;
+  /** App-icon tile color. */
+  tone?: IconTone;
   /** Small colored dot instead of an icon (sandbox tracks). */
   dot?: string;
   exact?: boolean;
@@ -32,18 +32,18 @@ export function learnerGroups(): SidebarGroup[] {
     {
       label: t.learnGroup,
       items: [
-        { href: "/hjem", label: t.learner.home, icon: "grid", tone: "text-cover-blue-ink" },
-        { href: "/moduler", label: t.learner.modules, icon: "route", tone: "text-cover-amber-ink" },
-        { href: "/plan", label: t.learner.plan, icon: "target", tone: "text-cover-mint-ink" },
-        { href: "/certifikater", label: t.learner.certificates, icon: "award", tone: "text-cover-coral-ink" },
+        { href: "/hjem", label: t.learner.home, icon: "home", tone: "blue" },
+        { href: "/moduler", label: t.learner.modules, icon: "book", tone: "amber" },
+        { href: "/plan", label: t.learner.plan, icon: "plan", tone: "mint" },
+        { href: "/certifikater", label: t.learner.certificates, icon: "award", tone: "coral" },
       ],
     },
     {
       label: t.sandboxGroup,
       items: [
-        { href: "/sandkasse/chatgpt", label: t.tracks.chatgpt, dot: "bg-cover-mint-ink" },
-        { href: "/sandkasse/copilot", label: t.tracks.copilot, dot: "bg-cover-sky-ink" },
-        { href: "/sandkasse/claude", label: t.tracks.claude, dot: "bg-cover-coral-ink" },
+        { href: "/sandkasse/chatgpt", label: t.tracks.chatgpt, icon: "chats", tone: "mint" },
+        { href: "/sandkasse/copilot", label: t.tracks.copilot, icon: "chats", tone: "sky" },
+        { href: "/sandkasse/claude", label: t.tracks.claude, icon: "chats", tone: "coral" },
       ],
     },
   ];
@@ -55,11 +55,11 @@ export function companyGroup(): SidebarGroup {
   return {
     label: t.shell.companyGroup,
     items: [
-      { href: "/virksomhed", label: n.overview, icon: "chart", exact: true, tone: "text-cover-sky-ink" },
-      { href: "/virksomhed/medarbejdere", label: n.members, icon: "users", tone: "text-cover-sky-ink" },
-      { href: "/virksomhed/rapport", label: n.report, icon: "file", tone: "text-cover-sky-ink" },
-      { href: "/virksomhed/data", label: n.data, icon: "shield", tone: "text-cover-sky-ink" },
-      { href: "/virksomhed/databehandleraftale", label: n.dpa, icon: "lock", tone: "text-cover-sky-ink" },
+      { href: "/virksomhed", label: n.overview, icon: "chart", exact: true, tone: "blue" },
+      { href: "/virksomhed/medarbejdere", label: n.members, icon: "users", tone: "sky" },
+      { href: "/virksomhed/rapport", label: n.report, icon: "file", tone: "slate" },
+      { href: "/virksomhed/data", label: n.data, icon: "shield", tone: "mint" },
+      { href: "/virksomhed/databehandleraftale", label: n.dpa, icon: "lock", tone: "ink" },
     ],
   };
 }
@@ -139,11 +139,11 @@ function SidebarContent({ groups }: { groups: SidebarGroup[] }) {
             {g.items.map((item) => (
               <NavLink key={item.href} href={item.href} exact={item.exact} variant="sidebar">
                 {item.dot ? (
-                  <span className="grid size-4 place-items-center">
-                    <span className={`nav-dot size-2 rounded-full ${item.dot}`} />
+                  <span className="grid size-7 place-items-center">
+                    <span className={`size-2.5 rounded-full ring-4 ring-surface ${item.dot}`} />
                   </span>
                 ) : (
-                  item.icon && <Icon name={item.icon} className={item.tone} />
+                  item.icon && <AppIcon name={item.icon} tone={item.tone} size="sm" />
                 )}
                 <span className="truncate">{item.label}</span>
               </NavLink>
@@ -153,7 +153,7 @@ function SidebarContent({ groups }: { groups: SidebarGroup[] }) {
       </nav>
       <div className="mt-auto flex flex-col gap-0.5 border-t border-line pt-3">
         <NavLink href="/hjaelp" variant="sidebar">
-          <Icon name="help" />
+          <AppIcon name="help" tone="slate" size="sm" />
           {t.shell.learner.help}
         </NavLink>
         <div className="mt-2 flex items-center gap-1">

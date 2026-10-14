@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Icon, type IconName } from "@/components/ui/icons";
+import { AppIcon, Icon, type IconName } from "@/components/ui/icons";
 import { cx } from "@/components/ui/primitives";
 
 // Account-area building blocks (Stripe-style settings): hairline rows inside a `<Card padded={false}>`.
@@ -39,9 +39,7 @@ export function SettingsRow({
   const hintId = hint ? `${id}-hint` : undefined;
   const inner = (
     <>
-      <span className="grid size-9 shrink-0 place-items-center rounded-md border border-line bg-sunken text-ink-muted transition-colors group-hover:text-ink">
-        <Icon name={icon} size={16} />
-      </span>
+      <AppIcon name={icon} size="md" />
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span id={labelId} className="text-label text-ink">
           {label}

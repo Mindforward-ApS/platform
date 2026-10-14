@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Icon } from "@/components/ui/icons";
+import { AppIcon, Icon } from "@/components/ui/icons";
 import { ButtonLink } from "@/components/ui/primitives";
 import { getMessages } from "@/lib/i18n";
 
@@ -29,9 +29,7 @@ export function SupportCard() {
   return (
     <section className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
       <div className="flex gap-4">
-        <span className="grid size-10 shrink-0 place-items-center rounded-md bg-accent-soft text-accent-ink">
-          <Icon name="chat" size={20} />
-        </span>
+        <AppIcon name="chats" tone="sky" size="md" />
         <div className="flex flex-col gap-1">
           <h2 className="text-title-3 text-ink">{t.supportTitle}</h2>
           <p className="text-body-sm text-ink-muted">{t.supportBody}</p>

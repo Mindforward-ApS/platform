@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Icon, type IconName } from "@/components/ui/icons";
+import { AppIcon, Icon, type IconName } from "@/components/ui/icons";
 import { Badge, cx, type Tone } from "@/components/ui/primitives";
 
 // Small presentation pieces shared by the company admin and the owner console. Tokens only; no data access.
@@ -61,9 +61,7 @@ export function LinkCard({ href, icon, title, body, cta }: { href: string; icon:
       href={href}
       className="group flex flex-col gap-4 rounded-lg border border-line bg-surface p-6 transition-[box-shadow,border-color] duration-[120ms] hover:border-line-strong hover:shadow-sm"
     >
-      <span className="grid size-10 place-items-center rounded-md bg-accent-soft text-accent-ink">
-        <Icon name={icon} size={20} />
-      </span>
+      <AppIcon name={icon} size="md" />
       <span className="flex flex-col gap-1">
         <span className="text-title-3 text-ink">{title}</span>
         <span className="text-body-sm text-ink-muted">{body}</span>

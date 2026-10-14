@@ -125,3 +125,5 @@ Marco ≤ 2 timer/uge efter launch: 1-klik-godkendelse af indhold, læse daglig 
 - Kilde: https://claude.ai/artifact/XQwYFamA9HLSbaAbYRhMyf. Kobolt (`accent`) som eneste brandfarve, rav kun til hints, Schibsted Grotesk + IBM Plex Mono (kun tal der tælles), lyst og mørkt tema (følger systemets indstilling).
 - Logoet (prik + vinkel frem) er en retning; varemærket er ikke tjekket (se OPEN-QUESTIONS).
 - Reglen "neutrale placeholders" i CLAUDE.md er erstattet af designsystemet. Funktion og tekster fjernes ikke i redesignet uden Marcos ja.
+- Ikoner (14. okt. 2026): Marco valgte ikonsystem "E · App-ikoner" — farvefelter med blød gradient og hvidt, fyldt Phosphor-ikon i menu og på fremhævede steder; Phosphor-linjeikoner til små UI-ikoner. Moduler = åben bog med tekst, Min plan = to cirkler (ring + prik) uden pil. Gradienter er derfor tilladt, men kun i ikonfelter.
+- Billeder (14. okt. 2026): modul-covers og forsidebilleder er fotorealistiske objektfotos lavet af Marco (én serie: lys sten/creme på pastelbaggrund, tom flade til venstre).

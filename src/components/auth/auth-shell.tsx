@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { Icon, type IconName } from "@/components/ui/icons";
-import { cx } from "@/components/ui/primitives";
+import { AppIcon, Icon, type IconName } from "@/components/ui/icons";
+
 
 // Layout pieces for the focused auth flows (login, signup, check mail, invitations): one calm card on bg,
 // optionally next to a short value statement on wide screens.
@@ -40,15 +40,13 @@ export function AuthCard({
   children?: ReactNode;
   "data-testid"?: string;
 }) {
-  const tile = iconTone === "success" ? "bg-success-soft text-success" : iconTone === "neutral" ? "bg-sunken text-ink-muted" : "bg-accent-soft text-accent-ink";
+  const tone = iconTone === "success" ? "mint" : iconTone === "neutral" ? "slate" : "blue";
   return (
     <section className="overflow-hidden rounded-lg border border-line bg-surface" {...rest}>
       <div className="flex flex-col gap-6 px-6 py-8 sm:px-8">
         <header className="flex flex-col gap-3">
           {icon && (
-            <span className={cx("mb-1 grid size-11 place-items-center rounded-md", tile)}>
-              <Icon name={icon} size={22} />
-            </span>
+            <AppIcon name={icon} tone={tone} size="lg" className="mb-1" />
           )}
           {eyebrow && <p className="text-overline text-ink-muted uppercase">{eyebrow}</p>}
           <h1 className="text-title-2 text-ink">{title}</h1>

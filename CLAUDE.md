@@ -111,7 +111,8 @@ Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installat
 - Designsystemet er **besluttet**: https://claude.ai/artifact/XQwYFamA9HLSbaAbYRhMyf (brandbog, tokens, komponenter). Forbillede: Stripe — roligt, præcist, én farve der betyder noget.
 - Farver, fonte, skygger og radier defineres **kun** i `src/styles/tokens.css` (håndhæves af `pnpm check:tokens`). Komponenter bruger Tailwind-navnene (`bg-surface`, `text-ink-muted`, `text-title-1` …), aldrig rå værdier.
 - Byg med UI-kittet: `src/components/ui/primitives.tsx` (Page, Card, Button/ButtonLink, Field, Badge, Notice, Table …), `icons.tsx`, `brand.tsx`; skaller i `src/components/shell/`.
-- Én primær knap pr. visning. Kanter før skygger. Status aldrig med farve alene. Ingen emoji, gradienter eller farvede venstrekanter.
+- Én primær knap pr. visning. Kanter før skygger. Status aldrig med farve alene. Ingen emoji eller farvede venstrekanter. Gradienter kun i app-ikonfelter (`AppIcon`).
+- Ikoner: `Icon` (Phosphor, små UI-ikoner) og `AppIcon` (farvefelt med gradient og hvidt ikon) til menu, feature-lister, dashboards og tomme tilstande. Licenser: `docs/design/third-party-assets.md`.
 - Sandkassen har egen visuel identitet. Skins spejler kun layout-regioner og generiske menubegreber. Aldrig leverandørernes logoer, farver, fonte, ikoner, skærmbilleder eller "look and feel".
 - Fast disclaimer i sandkassen: "Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google." Svar mærkes "Øvemodel".
 

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { SupportLauncher } from "@/components/support/support-widget";
-import { Icon } from "@/components/ui/icons";
+import { AppIcon, Icon } from "@/components/ui/icons";
 import { ButtonLink, EmptyState, Page, buttonClass } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { serverEnv } from "@/lib/env";
@@ -42,9 +42,7 @@ async function Content() {
         return (
           <li key={c.id} className="flex flex-col overflow-hidden rounded-lg border border-line bg-surface">
             <div className="flex items-start gap-4 border-b border-line px-6 py-5">
-              <span className="grid size-11 shrink-0 place-items-center rounded-md bg-accent-soft text-accent-ink">
-                <Icon name="award" size={20} />
-              </span>
+              <AppIcon name="award" tone="coral" size="lg" />
               <div className="flex min-w-0 flex-col gap-0.5">
                 <h2 className="text-title-3 text-ink">{c.track.displayName}</h2>
                 <p className="text-body-sm text-ink-muted">{c.levelLabel}</p>

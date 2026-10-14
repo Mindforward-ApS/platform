@@ -206,7 +206,7 @@ async function Content() {
         <p className="text-body-lg text-ink-muted">{t.home.lead}</p>
       </header>
       {visible.length === 0 ? (
-        <EmptyState icon="route" title={t.home.emptyTitle}>
+        <EmptyState icon="book" title={t.home.emptyTitle}>
           {t.home.emptyBody}
         </EmptyState>
       ) : (

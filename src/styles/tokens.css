@@ -79,6 +79,23 @@
   --mf-cover-sky: #dcf0f8;
   --mf-cover-sky-ink: #1b7aa3;
 
+  /* App-icon tiles (icon system E, Marco 14 Oct 2026): soft top-to-bottom gradient, white glyph. The only place gradients are allowed. */
+  --mf-tile-blue-from: #5b7bf5;
+  --mf-tile-blue-to: #2447cc;
+  --mf-tile-amber-from: #f7c35a;
+  --mf-tile-amber-to: #e08a0b;
+  --mf-tile-mint-from: #3cc58c;
+  --mf-tile-mint-to: #11895a;
+  --mf-tile-coral-from: #f58a64;
+  --mf-tile-coral-to: #d9471b;
+  --mf-tile-sky-from: #4cb7e8;
+  --mf-tile-sky-to: #1584b8;
+  --mf-tile-slate-from: #8a97ab;
+  --mf-tile-slate-to: #56657a;
+  --mf-tile-ink-from: #3a4b5f;
+  --mf-tile-ink-to: #0b1b2b;
+  --mf-shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.12), 0 2px 6px -1px rgba(11, 27, 43, 0.25);
+
   --mf-shadow-xs: 0 1px 2px rgba(11, 27, 43, 0.06);
   --mf-shadow-sm: 0 1px 3px rgba(11, 27, 43, 0.08), 0 1px 2px -1px rgba(11, 27, 43, 0.06);
   --mf-shadow-md: 0 8px 20px -6px rgba(11, 27, 43, 0.14), 0 2px 6px -2px rgba(11, 27, 43, 0.08);
@@ -124,6 +141,7 @@
     --mf-cover-coral-ink: #ff8f6b;
     --mf-cover-sky: #0d2633;
     --mf-cover-sky-ink: #5cc2ea;
+    --mf-shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.25), 0 2px 8px -1px rgba(0, 0, 0, 0.6);
     --mf-object-shadow: 0 18px 24px rgba(0, 0, 0, 0.45);
     --mf-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
     --mf-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
@@ -173,6 +191,20 @@
   --color-cover-coral-ink: var(--mf-cover-coral-ink);
   --color-cover-sky: var(--mf-cover-sky);
   --color-cover-sky-ink: var(--mf-cover-sky-ink);
+  --color-tile-blue-from: var(--mf-tile-blue-from);
+  --color-tile-blue-to: var(--mf-tile-blue-to);
+  --color-tile-amber-from: var(--mf-tile-amber-from);
+  --color-tile-amber-to: var(--mf-tile-amber-to);
+  --color-tile-mint-from: var(--mf-tile-mint-from);
+  --color-tile-mint-to: var(--mf-tile-mint-to);
+  --color-tile-coral-from: var(--mf-tile-coral-from);
+  --color-tile-coral-to: var(--mf-tile-coral-to);
+  --color-tile-sky-from: var(--mf-tile-sky-from);
+  --color-tile-sky-to: var(--mf-tile-sky-to);
+  --color-tile-slate-from: var(--mf-tile-slate-from);
+  --color-tile-slate-to: var(--mf-tile-slate-to);
+  --color-tile-ink-from: var(--mf-tile-ink-from);
+  --color-tile-ink-to: var(--mf-tile-ink-to);
   /* Legacy aliases from the placeholder era — keep working, prefer the names above in new code. */
   --color-fg: var(--mf-ink);
   --color-muted: var(--mf-ink-muted);
@@ -236,6 +268,7 @@
   --shadow-lg: var(--mf-shadow-lg);
   --shadow-ring: var(--mf-ring);
   --drop-shadow-object: var(--mf-object-shadow);
+  --shadow-tile: var(--mf-shadow-tile);
 
   --container-read: 680px;
   --container-app: 1200px;

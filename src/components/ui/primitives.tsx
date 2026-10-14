@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
-import { Icon, type IconName } from "./icons";
+import { AppIcon, Icon, type IconName } from "./icons";
 
 // Mindforward UI kit. Every value comes from src/styles/tokens.css via Tailwind names.
 // Rules (design system README): one primary button per view, borders before shadows, status never by color alone.
@@ -90,8 +90,8 @@ export function Card({
 export function Stat({ label, value, hint, icon }: { label: ReactNode; value: ReactNode; hint?: ReactNode; icon?: IconName }) {
   return (
     <div className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-5">
-      <p className="flex items-center gap-2 text-label text-ink-muted">
-        {icon && <Icon name={icon} />}
+      <p className="flex items-center gap-2.5 text-label text-ink-muted">
+        {icon && <AppIcon name={icon} size="xs" />}
         {label}
       </p>
       <p className="text-title-1 text-ink">{value}</p>
@@ -103,9 +103,7 @@ export function Stat({ label, value, hint, icon }: { label: ReactNode; value: Re
 export function EmptyState({ icon = "sparkle", title, children, action }: { icon?: IconName; title: ReactNode; children?: ReactNode; action?: ReactNode }) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-line bg-surface px-6 py-12 text-center">
-      <span className="grid size-10 place-items-center rounded-md bg-sunken text-ink-muted">
-        <Icon name={icon} size={20} />
-      </span>
+      <AppIcon name={icon} size="lg" />
       <p className="text-title-3 text-ink">{title}</p>
       {children && <div className="max-w-sm text-body-sm text-ink-muted">{children}</div>}
       {action && <div className="mt-2">{action}</div>}
