@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { num, PlayerHeader } from "@/components/player/kit";
+import { ModuleCover } from "@/components/ui/module-cover";
 import { ModulePlayer, type PlayerServerActions } from "@/components/player/module-player";
 import { Icon } from "@/components/ui/icons";
 import { Button, Notice } from "@/components/ui/primitives";
@@ -45,6 +46,7 @@ export function ModuleView({ slug, initial, intro }: { slug: string; initial: Pl
 
   return (
     <div className="mx-auto flex w-full max-w-read flex-1 flex-col gap-10 px-4 pt-8 pb-20 sm:px-6 sm:pt-12">
+      <ModuleCover seed={slug} size="lg" priority className="-mb-2 rounded-2xl" />
       <div className="flex flex-col gap-3">
         <PlayerHeader title={intro.title} large />
         <p className="text-body-lg text-ink-muted">{intro.summary}</p>

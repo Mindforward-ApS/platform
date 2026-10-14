@@ -4,8 +4,10 @@ import { Suspense } from "react";
 import { num } from "@/components/player/kit";
 import { ModuleCard } from "@/components/player/module-card";
 import { Icon } from "@/components/ui/icons";
-import { ModuleCover } from "@/components/ui/module-cover";
-import { Badge, ButtonLink, EmptyState, ProgressBar, TextLink } from "@/components/ui/primitives";
+import { Illustration } from "@/components/ui/illustration";
+import { coverGround } from "@/components/ui/module-cover";
+import { Badge, ButtonLink, cx, EmptyState, TextLink } from "@/components/ui/primitives";
+import { illustrationForModule } from "@/lib/config/illustrations";
 import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
@@ -23,16 +25,17 @@ const t = getMessages().player;
 
 function NextModule({ entry, number }: { entry: CatalogEntry; number: number }) {
   const started = entry.status === "IN_PROGRESS";
+  const g = coverGround(entry.slug);
   return (
-    <section className="grid overflow-hidden rounded-xl border border-line bg-surface md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-      <div className="flex flex-col gap-4 p-6 sm:p-8">
-        <p className="flex items-center gap-2 text-overline text-accent uppercase">
+    <section className={cx("relative isolate grid overflow-hidden rounded-2xl md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]", g.ground)}>
+      <div className="flex flex-col gap-5 p-7 sm:p-10">
+        <span className="inline-flex h-7 items-center gap-2 self-start rounded-full bg-surface/90 px-3 text-caption font-semibold text-ink shadow-xs">
           <span className="size-1.5 rounded-full bg-rav" />
-          {started ? t.home.continueEyebrow : t.home.startEyebrow}
-        </p>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-title-2 text-ink">{entry.title}</h2>
-          <p className="text-body text-ink-muted">{entry.summary}</p>
+          {started ? t.home.continueEyebrow : t.home.startEyebrow} · {format(t.list.moduleNumber, { n: number })}
+        </span>
+        <div className="flex flex-col gap-3">
+          <h2 className="text-title-1 text-ink">{entry.title}</h2>
+          <p className="max-w-md text-body-lg text-ink-muted">{entry.summary}</p>
         </div>
         <p className="flex flex-wrap items-center gap-4 font-mono text-mono text-ink-muted">
           <span className="inline-flex items-center gap-1.5">
@@ -42,14 +45,37 @@ function NextModule({ entry, number }: { entry: CatalogEntry; number: number }) 
           {entry.steps > 0 && <span>{format(t.list.steps, { count: num(entry.steps) })}</span>}
           {started && <Badge tone="accent">{t.home.inProgress}</Badge>}
         </p>
-        <div className="mt-auto pt-2">
+        <div className="pt-1">
           <ButtonLink href={`/modul/${entry.slug}`} size="lg" trailingIcon="arrowRight">
             {started ? t.home.continue : t.home.start}
           </ButtonLink>
         </div>
       </div>
-      <ModuleCover seed={entry.slug} label={String(number).padStart(2, "0")} size="lg" className="order-first h-full min-h-44 md:order-none md:aspect-auto" />
+      <div className="relative hidden min-h-64 md:block" aria-hidden="true">
+        <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full" fill="none">
+          <g className={g.ring} strokeWidth="1.5" opacity=".22">
+            <circle cx="150" cy="150" r="72" />
+            <circle cx="150" cy="150" r="112" />
+            <circle cx="150" cy="150" r="152" />
+          </g>
+        </svg>
+        <Illustration name={illustrationForModule(entry.slug)} priority className="absolute top-1/2 left-1/2 h-[62%] max-h-60 -translate-x-1/2 -translate-y-1/2" />
+        <Illustration name="tick" className="absolute top-[14%] right-[12%] h-[16%] max-h-14 rotate-12 opacity-90" />
+        <Illustration name="flash" className="absolute bottom-[12%] left-[10%] h-[18%] max-h-16 -rotate-12 opacity-90" />
+      </div>
     </section>
+  );
+}
+
+function Ring({ value, max }: { value: number; max: number }) {
+  const r = 34;
+  const c = 2 * Math.PI * r;
+  const pct = max > 0 ? value / max : 0;
+  return (
+    <svg viewBox="0 0 80 80" className="size-24 -rotate-90" aria-hidden="true">
+      <circle cx="40" cy="40" r={r} className="stroke-sunken" strokeWidth="8" fill="none" />
+      {pct > 0 && <circle cx="40" cy="40" r={r} className="stroke-success" strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={`${c * pct} ${c}`} />}
+    </svg>
   );
 }
 
@@ -57,32 +83,37 @@ function Progress({ modules, certificates }: { modules: CatalogEntry[]; certific
   const passed = modules.filter((m) => m.status === "PASSED");
   const best = passed.map((m) => m.bestScorePct).filter((v): v is number => v !== null);
   const avg = best.length ? Math.round(best.reduce((a, b) => a + b, 0) / best.length) : null;
-  const rows: [string, string][] = [
+  const tiles: [string, string][] = [
     [t.home.inProgress, num(modules.filter((m) => m.status === "IN_PROGRESS").length)],
     [t.home.certificates, num(certificates)],
-    [t.home.bestAverage, avg === null ? t.home.none : `${num(avg)} %`],
+    [t.home.bestAverageShort, avg === null ? t.home.none : `${num(avg)} %`],
   ];
   return (
-    <section className="flex flex-col gap-5 rounded-xl border border-line bg-surface p-6">
-      <h2 className="text-title-3 text-ink">{t.home.progressTitle}</h2>
-      <div className="flex flex-col gap-3">
-        <p className="flex items-baseline gap-2">
-          <span className="text-title-1 text-ink">{format(t.home.passedOf, { passed: num(passed.length), total: num(modules.length) })}</span>
-          <span className="text-body-sm text-ink-muted">{t.home.passedLabel}</span>
-        </p>
-        <ProgressBar value={passed.length} max={modules.length} tone="success" label={t.home.passedLabel} />
+    <section className="flex flex-col gap-5 rounded-2xl border border-line bg-surface p-6 shadow-xs">
+      <div className="flex items-center justify-between">
+        <h2 className="text-title-3 text-ink">{t.home.progressTitle}</h2>
+        <TextLink href="/plan" className="text-body-sm">
+          {t.home.planLink}
+        </TextLink>
       </div>
-      <dl className="flex flex-col divide-y divide-line border-t border-line">
-        {rows.map(([k, v]) => (
-          <div key={k} className="flex items-center justify-between py-2.5 text-body-sm">
-            <dt className="text-ink-muted">{k}</dt>
-            <dd className="font-medium text-ink">{v}</dd>
+      <div className="flex items-center gap-5">
+        <div className="relative grid place-items-center">
+          <Ring value={passed.length} max={modules.length} />
+          <span className="absolute text-title-3 text-ink">
+            {num(passed.length)}
+            <span className="text-body-sm text-ink-subtle">/{num(modules.length)}</span>
+          </span>
+        </div>
+        <p className="text-body-sm text-ink-muted">{format(t.home.passedSentence, { passed: num(passed.length), total: num(modules.length) })}</p>
+      </div>
+      <dl className="grid grid-cols-3 gap-2">
+        {tiles.map(([k, v]) => (
+          <div key={k} className="flex flex-col gap-1 rounded-lg bg-sunken px-3 py-2.5">
+            <dd className="text-title-3 text-ink">{v}</dd>
+            <dt className="text-caption text-ink-muted">{k}</dt>
           </div>
         ))}
       </dl>
-      <TextLink href="/plan" className="text-body-sm">
-        {t.home.planLink}
-      </TextLink>
     </section>
   );
 }
@@ -95,8 +126,9 @@ function Practice() {
     ["/sandkasse/claude", s.tracks.claude, "bg-cover-coral-ink"],
   ] as const;
   return (
-    <section className="flex flex-col gap-4 rounded-xl border border-line bg-surface p-6">
-      <div className="flex flex-col gap-1">
+    <section className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-6 shadow-xs">
+      <Illustration name="computer" className="absolute top-5 right-5 h-14" />
+      <div className="flex flex-col gap-1 pr-16">
         <h2 className="text-title-3 text-ink">{t.home.practiceTitle}</h2>
         <p className="text-body-sm text-ink-muted">{t.home.practiceBody}</p>
       </div>
@@ -132,7 +164,7 @@ async function Content() {
   return (
     <>
       <header className="flex flex-col gap-2">
-        <h1 className="text-title-1 text-ink">{firstName ? format(t.home.greeting, { name: firstName }) : t.home.greetingNoName}</h1>
+        <h1 className="text-display text-ink">{firstName ? format(t.home.greeting, { name: firstName }) : t.home.greetingNoName}</h1>
         <p className="text-body-lg text-ink-muted">{t.home.lead}</p>
       </header>
       {visible.length === 0 ? (

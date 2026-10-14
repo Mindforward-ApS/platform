@@ -15,6 +15,8 @@ export interface SidebarItem {
   href: string;
   label: string;
   icon?: IconName;
+  /** Icon color (inactive state). */
+  tone?: string;
   /** Small colored dot instead of an icon (sandbox tracks). */
   dot?: string;
   exact?: boolean;
@@ -30,10 +32,10 @@ export function learnerGroups(): SidebarGroup[] {
     {
       label: t.learnGroup,
       items: [
-        { href: "/hjem", label: t.learner.home, icon: "grid" },
-        { href: "/moduler", label: t.learner.modules, icon: "route" },
-        { href: "/plan", label: t.learner.plan, icon: "target" },
-        { href: "/certifikater", label: t.learner.certificates, icon: "award" },
+        { href: "/hjem", label: t.learner.home, icon: "grid", tone: "text-cover-blue-ink" },
+        { href: "/moduler", label: t.learner.modules, icon: "route", tone: "text-cover-amber-ink" },
+        { href: "/plan", label: t.learner.plan, icon: "target", tone: "text-cover-mint-ink" },
+        { href: "/certifikater", label: t.learner.certificates, icon: "award", tone: "text-cover-coral-ink" },
       ],
     },
     {
@@ -53,11 +55,11 @@ export function companyGroup(): SidebarGroup {
   return {
     label: t.shell.companyGroup,
     items: [
-      { href: "/virksomhed", label: n.overview, icon: "chart", exact: true },
-      { href: "/virksomhed/medarbejdere", label: n.members, icon: "users" },
-      { href: "/virksomhed/rapport", label: n.report, icon: "file" },
-      { href: "/virksomhed/data", label: n.data, icon: "shield" },
-      { href: "/virksomhed/databehandleraftale", label: n.dpa, icon: "lock" },
+      { href: "/virksomhed", label: n.overview, icon: "chart", exact: true, tone: "text-cover-sky-ink" },
+      { href: "/virksomhed/medarbejdere", label: n.members, icon: "users", tone: "text-cover-sky-ink" },
+      { href: "/virksomhed/rapport", label: n.report, icon: "file", tone: "text-cover-sky-ink" },
+      { href: "/virksomhed/data", label: n.data, icon: "shield", tone: "text-cover-sky-ink" },
+      { href: "/virksomhed/databehandleraftale", label: n.dpa, icon: "lock", tone: "text-cover-sky-ink" },
     ],
   };
 }
@@ -66,6 +68,46 @@ function initials(name: string | null | undefined, email: string) {
   const source = name?.trim() || email.split("@")[0] || "";
   const parts = source.split(/[\s._-]+/).filter(Boolean);
   return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "?";
+}
+
+async function Avatar() {
+  const ctx = await getAuthContext().catch(() => null);
+  if (!ctx) return null;
+  return (
+    <Link href="/konto" aria-label={getMessages().shell.learner.account} className="grid size-9 place-items-center rounded-full bg-accent-soft text-caption font-semibold text-accent-ink ring-2 ring-surface transition-shadow hover:shadow-ring">
+      {initials(ctx.user.name, ctx.user.email)}
+    </Link>
+  );
+}
+
+/** Panel top bar (desktop): search the help center, help, avatar. */
+function TopBar() {
+  const t = getMessages();
+  return (
+    <div className="sticky top-2 z-30 hidden h-16 items-center gap-4 rounded-t-xl border-b border-line bg-surface/90 px-8 backdrop-blur-md lg:flex">
+      <form action="/hjaelp" role="search" className="relative w-full max-w-md">
+        <label htmlFor="topbar-search" className="sr-only">
+          {t.shell.searchLabel}
+        </label>
+        <Icon name="search" className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-ink-subtle" />
+        <input
+          id="topbar-search"
+          name="q"
+          type="search"
+          placeholder={t.shell.searchPlaceholder}
+          className="h-10 w-full rounded-full border border-line bg-sunken pr-4 pl-10 text-body-sm text-ink placeholder:text-ink-subtle transition-[border-color,box-shadow,background-color] focus:border-accent focus:bg-surface focus:shadow-ring focus:outline-none"
+        />
+      </form>
+      <div className="ml-auto flex items-center gap-2">
+        <Link href="/hjaelp" aria-label={t.shell.learner.help} title={t.shell.learner.help} className="grid size-9 place-items-center rounded-full text-ink-muted transition-colors hover:bg-sunken hover:text-ink">
+          <Icon name="help" size={18} />
+        </Link>
+        <Suspense fallback={<span className="size-9 rounded-full bg-sunken" />}>
+          <Avatar />
+        </Suspense>
+      </div>
+    </div>
+  );
 }
 
 async function UserChip() {
@@ -83,26 +125,13 @@ async function UserChip() {
   );
 }
 
-function SidebarContent({ groups, idPrefix }: { groups: SidebarGroup[]; idPrefix: string }) {
+function SidebarContent({ groups }: { groups: SidebarGroup[] }) {
   const t = getMessages();
   return (
     <div className="flex min-h-full flex-col gap-6 px-3 pt-5 pb-3">
       <Link href="/hjem" className="self-start rounded-sm px-2.5" aria-label={t.brand}>
         <Wordmark size={18} />
       </Link>
-      <form action="/hjaelp" role="search" className="relative px-0.5">
-        <label htmlFor={`${idPrefix}-search`} className="sr-only">
-          {t.shell.searchLabel}
-        </label>
-        <Icon name="search" className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-ink-subtle" />
-        <input
-          id={`${idPrefix}-search`}
-          name="q"
-          type="search"
-          placeholder={t.shell.searchPlaceholder}
-          className="h-9 w-full rounded-md border border-line bg-surface pr-3 pl-9 text-body-sm text-ink placeholder:text-ink-subtle focus:border-accent focus:shadow-ring focus:outline-none"
-        />
-      </form>
       <nav aria-label={t.shell.mainNav} className="flex flex-col gap-6">
         {groups.map((g, i) => (
           <div key={g.label ?? i} className="flex flex-col gap-0.5">
@@ -114,7 +143,7 @@ function SidebarContent({ groups, idPrefix }: { groups: SidebarGroup[]; idPrefix
                     <span className={`nav-dot size-2 rounded-full ${item.dot}`} />
                   </span>
                 ) : (
-                  item.icon && <Icon name={item.icon} />
+                  item.icon && <Icon name={item.icon} className={item.tone} />
                 )}
                 <span className="truncate">{item.label}</span>
               </NavLink>
@@ -156,7 +185,7 @@ export function AppFrame({ groups = learnerGroups(), children }: { groups?: Side
         {t.shell.skipToContent}
       </a>
       <aside className="sticky top-0 hidden h-dvh overflow-y-auto lg:block">
-        <SidebarContent groups={groups} idPrefix="sidebar" />
+        <SidebarContent groups={groups} />
       </aside>
       <MobileNav
         openLabel={t.shell.openMenu}
@@ -167,10 +196,11 @@ export function AppFrame({ groups = learnerGroups(), children }: { groups?: Side
           </Link>
         }
       >
-        <SidebarContent groups={groups} idPrefix="drawer" />
+        <SidebarContent groups={groups} />
       </MobileNav>
       <div className="flex min-w-0 flex-1 flex-col lg:py-2 lg:pr-2">
         <div id="indhold" className="flex min-h-[calc(100dvh-3.5rem)] flex-1 flex-col bg-surface lg:min-h-[calc(100dvh-1rem)] lg:rounded-xl lg:border lg:border-line lg:shadow-xs">
+          <TopBar />
           {children}
         </div>
       </div>

@@ -30,7 +30,7 @@ function NavLinkView({ href, variant = "bar", tone = "default", children, active
         href={href}
         aria-current={active ? "page" : undefined}
         className={cx(
-          "flex h-9 items-center gap-3 rounded-md px-2.5 text-label transition-colors duration-[120ms] [&[aria-current=page]_.nav-dot]:bg-on-accent",
+          "flex h-9 items-center gap-3 rounded-md px-2.5 text-label transition-colors duration-[120ms] [&[aria-current=page]_.nav-dot]:bg-on-accent [&[aria-current=page]_svg]:text-on-accent",
           active ? "bg-accent text-on-accent shadow-xs" : "text-ink-muted hover:bg-surface hover:text-ink",
         )}
       >

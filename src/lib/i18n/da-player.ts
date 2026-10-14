@@ -19,6 +19,8 @@ export const daPlayer = {
     inProgress: "I gang",
     certificates: "Certifikater",
     bestAverage: "Gennemsnit af bedste forsøg",
+    bestAverageShort: "Snit",
+    passedSentence: "Du har bestået {passed} af {total} moduler. Hvert bestået modul tæller mod dit certifikat.",
     none: "—",
     planLink: "Se min plan",
     practiceTitle: "Øv dig frit",
