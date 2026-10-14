@@ -94,7 +94,7 @@ export function Stat({ label, value, hint, icon }: { label: ReactNode; value: Re
         {icon && <Icon name={icon} />}
         {label}
       </p>
-      <p className="text-title-1 text-ink tabular-nums">{value}</p>
+      <p className="text-title-1 text-ink">{value}</p>
       {hint && <p className="text-body-sm text-ink-muted">{hint}</p>}
     </div>
   );
@@ -307,9 +307,16 @@ const badgeTones: Record<Tone, string> = {
   hint: "bg-hint-soft text-hint",
 };
 
-export function Badge({ tone = "neutral", icon, dot, children, className = "" }: { tone?: Tone; icon?: IconName; dot?: boolean; children: ReactNode; className?: string }) {
+export function Badge({
+  tone = "neutral",
+  icon,
+  dot,
+  children,
+  className = "",
+  ...rest
+}: { tone?: Tone; icon?: IconName; dot?: boolean; children: ReactNode; className?: string; "data-testid"?: string }) {
   return (
-    <span className={cx("inline-flex h-[22px] items-center gap-[5px] rounded-xs px-2 text-caption font-[550] whitespace-nowrap", badgeTones[tone], className)}>
+    <span {...rest} className={cx("inline-flex h-[22px] items-center gap-[5px] rounded-xs px-2 text-caption font-[550] whitespace-nowrap", badgeTones[tone], className)}>
       {dot && <span className="size-1.5 rounded-full bg-rav" />}
       {icon && <Icon name={icon} size={12} strokeWidth={2} />}
       {children}
@@ -333,6 +340,7 @@ export function Notice({
   icon,
   children,
   className = "",
+  ...rest
 }: {
   tone?: keyof typeof noticeLook;
   title?: ReactNode;
@@ -340,11 +348,12 @@ export function Notice({
   icon?: IconName;
   children?: ReactNode;
   className?: string;
+  "data-testid"?: string;
 }) {
   const look = noticeLook[tone];
   const alert = tone === "error" || tone === "danger";
   return (
-    <div role={alert ? "alert" : "status"} className={cx("flex gap-3 rounded-md border px-4 py-3.5", look.box, className)}>
+    <div {...rest} role={alert ? "alert" : "status"} className={cx("flex gap-3 rounded-md border px-4 py-3.5", look.box, className)}>
       <Icon name={icon ?? look.icon} size={18} className={cx("mt-px", look.accent)} />
       <div className="flex min-w-0 flex-col gap-0.5 text-body-sm">
         {title && (

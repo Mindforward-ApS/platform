@@ -53,7 +53,7 @@ export function CookieBanner({ t }: { t: Strings }) {
 
   if (!open) return null;
   return (
-    <section aria-label={t.label} className="border-b border-line bg-surface" data-testid="cookie-banner">
+    <section aria-label={t.label} className="border-b border-line bg-surface print:hidden" data-testid="cookie-banner">
       <div className="mx-auto flex max-w-app flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between md:gap-8">
         <div className="flex max-w-read flex-col gap-1">
           <h2 className="text-label font-semibold text-ink">{t.title}</h2>
