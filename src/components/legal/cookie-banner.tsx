@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { buttonClass } from "@/components/ui/primitives";
 
 // Cookie banner (docs/00 § 10a, docs/10 § 3): defaults to necessary-only; "Kun nødvendige" is exactly as prominent
 // as "Accepter statistik". No analytics is loaded in M5 — the choice is only stored in a first-party cookie.
@@ -52,21 +53,23 @@ export function CookieBanner({ t }: { t: Strings }) {
 
   if (!open) return null;
   return (
-    <section aria-label={t.label} className="border-b border-border bg-surface p-4" data-testid="cookie-banner">
-      <div className="mx-auto flex max-w-3xl flex-col gap-3">
-        <h2 className="font-semibold">{t.title}</h2>
-        <p className="text-sm">
-          {t.body}{" "}
-          <a className="underline" href="/cookies">
-            {t.readMore}
-          </a>
-        </p>
-        <div className="flex flex-wrap gap-2">
+    <section aria-label={t.label} className="border-b border-line bg-surface" data-testid="cookie-banner">
+      <div className="mx-auto flex max-w-app flex-col gap-4 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between md:gap-8">
+        <div className="flex max-w-read flex-col gap-1">
+          <h2 className="text-label font-semibold text-ink">{t.title}</h2>
+          <p className="text-body-sm text-ink-muted">
+            {t.body}{" "}
+            <a className="font-medium text-accent underline decoration-accent/30 underline-offset-[3px] hover:text-accent-hover" href="/cookies">
+              {t.readMore}
+            </a>
+          </p>
+        </div>
+        <div className="flex shrink-0 flex-wrap gap-2">
           {/* Same element, same classes: neither choice is visually preferred. */}
-          <button type="button" className="rounded-md border border-border bg-bg px-4 py-2" onClick={() => choose("necessary")}>
+          <button type="button" className={buttonClass("secondary")} onClick={() => choose("necessary")}>
             {t.necessaryOnly}
           </button>
-          <button type="button" className="rounded-md border border-border bg-bg px-4 py-2" onClick={() => choose("statistics")}>
+          <button type="button" className={buttonClass("secondary")} onClick={() => choose("statistics")}>
             {t.acceptStatistics}
           </button>
         </div>
@@ -77,7 +80,7 @@ export function CookieBanner({ t }: { t: Strings }) {
 
 export function CookieSettingsButton({ children }: { children: string }) {
   return (
-    <button type="button" className="underline" onClick={() => window.dispatchEvent(new Event(OPEN_EVENT))}>
+    <button type="button" className="text-left transition-colors hover:text-ink" onClick={() => window.dispatchEvent(new Event(OPEN_EVENT))}>
       {children}
     </button>
   );

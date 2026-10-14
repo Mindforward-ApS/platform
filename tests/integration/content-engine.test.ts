@@ -74,7 +74,8 @@ beforeEach(async () => {
 
 describe("content sources seed", () => {
   it("seeds the official sources; Gemini is seeded but disabled; re-seeding keeps the admin's enabled switch", async () => {
-    const all = await testDb().contentSource.findMany({ include: { track: true } });
+    // Other test files create throwaway sources ("src-<uuid>") in the shared test DB; only the seeded ones matter here.
+    const all = (await testDb().contentSource.findMany({ include: { track: true } })).filter((s) => !s.key.startsWith("src-"));
     expect(all.map((s) => s.key).sort()).toEqual(["claude-rn", "gemini-rn", "ms-learn-copilot-rn", "ms-m365-roadmap", "openai-chatgpt-business-rn", "openai-chatgpt-rn", "workspace-gemini-feed"]);
     expect(all.filter((s) => s.track.key === "GEMINI").every((s) => !s.enabled && !s.autoPublishAllowed)).toBe(true);
     expect(all.find((s) => s.key === "ms-learn-copilot-rn")?.attribution).toContain("CC BY 4.0");

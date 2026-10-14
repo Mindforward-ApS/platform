@@ -10,7 +10,7 @@ Kunder: virksomheder (seats, admin, dokumentationsrapport efter AI-forordningens
 3. Plan før kode: filliste + tilgang → vent på Marcos godkendelse → tests først for logik → kode → checks.
 4. Ingen gætterier: er en beslutning uklar eller virker forkert, stop og skriv den i `docs/OPEN-QUESTIONS.md`. Improvisér ikke.
 5. Juridiske regler (forbrugeraftaleloven, markedsføringsloven, GDPR, varemærker) er krav, ikke forslag. Se `docs/10-compliance.md`.
-6. Design er ikke besluttet. Byg funktion med neutrale placeholders — ikke færdigt look.
+6. Design er besluttet (Mindforward-designsystemet, godkendt af Marco 14. okt. 2026, se 00-beslutninger § 10d). Brug UI-kittet i `src/components/ui/` og tokens fra `src/styles/tokens.css`.
 
 ## Dokumentkort — hvilket dokument til hvilken opgave
 | Opgave | Læs |
@@ -108,8 +108,10 @@ docs/               # spec + OPEN-QUESTIONS.md
 Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installation eller brug — din viden kan være forældet. Virker en beslutning forkert, umulig eller modstridende: **stop**, tilføj den til `docs/OPEN-QUESTIONS.md` (spørgsmål, kontekst, dit forslag, hvad der er blokeret) og spørg Marco. Improvisér ikke.
 
 ## Designregel
-- Design er **IKKE** besluttet. Brug neutrale placeholder-tokens kun i `src/styles/tokens.css` (farver, typografi, radius, spacing). Ingen farver/fonte direkte i komponenter.
-- Marco designer skærm for skærm og vælger mellem **flere visuelle versioner**. Byg ikke et færdigt design i blinde, og lås ikke standard-layouts fast.
+- Designsystemet er **besluttet**: https://claude.ai/artifact/XQwYFamA9HLSbaAbYRhMyf (brandbog, tokens, komponenter). Forbillede: Stripe — roligt, præcist, én farve der betyder noget.
+- Farver, fonte, skygger og radier defineres **kun** i `src/styles/tokens.css` (håndhæves af `pnpm check:tokens`). Komponenter bruger Tailwind-navnene (`bg-surface`, `text-ink-muted`, `text-title-1` …), aldrig rå værdier.
+- Byg med UI-kittet: `src/components/ui/primitives.tsx` (Page, Card, Button/ButtonLink, Field, Badge, Notice, Table …), `icons.tsx`, `brand.tsx`; skaller i `src/components/shell/`.
+- Én primær knap pr. visning. Kanter før skygger. Status aldrig med farve alene. Ingen emoji, gradienter eller farvede venstrekanter.
 - Sandkassen har egen visuel identitet. Skins spejler kun layout-regioner og generiske menubegreber. Aldrig leverandørernes logoer, farver, fonte, ikoner, skærmbilleder eller "look and feel".
 - Fast disclaimer i sandkassen: "Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google." Svar mærkes "Øvemodel".
 

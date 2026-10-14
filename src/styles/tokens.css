@@ -1,24 +1,243 @@
 /*
- * Greb design tokens — NEUTRAL PLACEHOLDERS.
- * Design is not decided (CLAUDE.md "Designregel"). This is the ONLY file allowed to define
- * colors, fonts, radius and spacing. Final values are chosen with Marco screen by screen.
+ * Mindforward design tokens — the ONLY file allowed to define colors, fonts, radii, shadows.
+ * Source of truth: the Mindforward design system (approved by Marco 14 Oct 2026,
+ * https://claude.ai/artifact/XQwYFamA9HLSbaAbYRhMyf). Change values there and here together.
  */
-@theme {
-  --color-bg: #ffffff;
-  --color-surface: #f5f5f5;
-  --color-fg: #1a1a1a;
-  --color-muted: #6b6b6b;
-  --color-border: #d9d9d9;
-  --color-accent: #3a3a3a;
-  --color-accent-fg: #ffffff;
-  --color-danger: #8a1c1c;
 
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/SchibstedGrotesk-Italic-Variable.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/IBMPlexMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/IBMPlexMono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
 
-  --radius-sm: 4px;
+/* Raw palette per theme. Components never use these directly — use the Tailwind names in @theme below. */
+:root {
+  color-scheme: light;
+  --mf-bg: #f6f8fb;
+  --mf-surface: #ffffff;
+  --mf-surface-sunken: #eef2f7;
+  --mf-line: #e3e8ef;
+  --mf-line-strong: #7d8a9c;
+  --mf-ink: #0b1b2b;
+  --mf-ink-muted: #475669;
+  --mf-ink-subtle: #5f6d80;
+  --mf-accent: #2447cc;
+  --mf-accent-hover: #1b38a8;
+  --mf-accent-soft: #e9eeff;
+  --mf-accent-ink: #1b38a8;
+  --mf-on-accent: #ffffff;
+  --mf-focus: #2447cc;
+  --mf-rav: #f0b03c;
+  --mf-on-rav: #0b1b2b;
+  --mf-mark-dot: #86a0ff;
+  --mf-hint: #875400;
+  --mf-hint-soft: #fdf1d8;
+  --mf-success: #13724f;
+  --mf-success-soft: #e4f4ec;
+  --mf-danger: #b3261e;
+  --mf-danger-soft: #fdecea;
+  /* Fixed dark band (marketing hero/footer): same in both themes. */
+  --mf-night: #0b1b2b;
+  --mf-night-raised: #13263a;
+  --mf-night-line: #24384f;
+  --mf-on-night: #edf2f7;
+  --mf-on-night-muted: #a8b5c4;
+  --mf-night-accent: #86a0ff;
+
+  --mf-shadow-xs: 0 1px 2px rgba(11, 27, 43, 0.06);
+  --mf-shadow-sm: 0 1px 3px rgba(11, 27, 43, 0.08), 0 1px 2px -1px rgba(11, 27, 43, 0.06);
+  --mf-shadow-md: 0 8px 20px -6px rgba(11, 27, 43, 0.14), 0 2px 6px -2px rgba(11, 27, 43, 0.08);
+  --mf-shadow-lg: 0 24px 48px -12px rgba(11, 27, 43, 0.22), 0 8px 16px -8px rgba(11, 27, 43, 0.1);
+  --mf-ring: 0 0 0 1px var(--mf-accent), 0 0 0 4px var(--mf-accent-soft);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --mf-bg: #08121c;
+    --mf-surface: #0f1c29;
+    --mf-surface-sunken: #0b1621;
+    --mf-line: #21324a;
+    --mf-line-strong: #64788f;
+    --mf-ink: #edf2f7;
+    --mf-ink-muted: #a8b5c4;
+    --mf-ink-subtle: #8f9db0;
+    --mf-accent: #86a0ff;
+    --mf-accent-hover: #a3b7ff;
+    --mf-accent-soft: #17275a;
+    --mf-accent-ink: #b8c7ff;
+    --mf-on-accent: #08121c;
+    --mf-focus: #9fb3ff;
+    --mf-mark-dot: #2447cc;
+    --mf-hint: #f3c362;
+    --mf-hint-soft: #2e230b;
+    --mf-success: #4ccf9c;
+    --mf-success-soft: #0c2c22;
+    --mf-danger: #ff8b7e;
+    --mf-danger-soft: #3a1614;
+    --mf-night: #050c14;
+    --mf-night-raised: #0f1c29;
+    --mf-night-line: #21324a;
+    --mf-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --mf-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    --mf-shadow-md: 0 8px 20px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    --mf-shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+}
+
+@theme inline {
+  /* Colors → bg-*, text-*, border-*, fill-* … */
+  --color-bg: var(--mf-bg);
+  --color-surface: var(--mf-surface);
+  --color-sunken: var(--mf-surface-sunken);
+  --color-line: var(--mf-line);
+  --color-line-strong: var(--mf-line-strong);
+  --color-ink: var(--mf-ink);
+  --color-ink-muted: var(--mf-ink-muted);
+  --color-ink-subtle: var(--mf-ink-subtle);
+  --color-accent: var(--mf-accent);
+  --color-accent-hover: var(--mf-accent-hover);
+  --color-accent-soft: var(--mf-accent-soft);
+  --color-accent-ink: var(--mf-accent-ink);
+  --color-on-accent: var(--mf-on-accent);
+  --color-focus: var(--mf-focus);
+  --color-rav: var(--mf-rav);
+  --color-on-rav: var(--mf-on-rav);
+  --color-mark-dot: var(--mf-mark-dot);
+  --color-hint: var(--mf-hint);
+  --color-hint-soft: var(--mf-hint-soft);
+  --color-success: var(--mf-success);
+  --color-success-soft: var(--mf-success-soft);
+  --color-danger: var(--mf-danger);
+  --color-danger-soft: var(--mf-danger-soft);
+  --color-night: var(--mf-night);
+  --color-night-raised: var(--mf-night-raised);
+  --color-night-line: var(--mf-night-line);
+  --color-on-night: var(--mf-on-night);
+  --color-on-night-muted: var(--mf-on-night-muted);
+  --color-night-accent: var(--mf-night-accent);
+  /* Legacy aliases from the placeholder era — keep working, prefer the names above in new code. */
+  --color-fg: var(--mf-ink);
+  --color-muted: var(--mf-ink-muted);
+  --color-border: var(--mf-line);
+  --color-accent-fg: var(--mf-on-accent);
+
+  --font-sans: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  /* Type scale → text-display-xl, text-title-1 … (size, leading, tracking, weight in one class) */
+  --text-display-xl: 4rem;
+  --text-display-xl--line-height: 1.0625;
+  --text-display-xl--letter-spacing: -0.035em;
+  --text-display-xl--font-weight: 600;
+  --text-display: 2.75rem;
+  --text-display--line-height: 1.136;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 600;
+  --text-title-1: 2rem;
+  --text-title-1--line-height: 1.1875;
+  --text-title-1--letter-spacing: -0.025em;
+  --text-title-1--font-weight: 600;
+  --text-title-2: 1.5rem;
+  --text-title-2--line-height: 1.25;
+  --text-title-2--letter-spacing: -0.02em;
+  --text-title-2--font-weight: 600;
+  --text-title-3: 1.125rem;
+  --text-title-3--line-height: 1.444;
+  --text-title-3--letter-spacing: -0.012em;
+  --text-title-3--font-weight: 600;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.556;
+  --text-body: 1rem;
+  --text-body--line-height: 1.5;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.43;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.43;
+  --text-label--font-weight: 550;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.333;
+  --text-caption--letter-spacing: 0.01em;
+  --text-caption--font-weight: 500;
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1.333;
+  --text-overline--letter-spacing: 0.08em;
+  --text-overline--font-weight: 600;
+  --text-mono: 0.8125rem;
+  --text-mono--line-height: 1.538;
+  --text-mono--font-weight: 500;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --shadow-xs: var(--mf-shadow-xs);
+  --shadow-sm: var(--mf-shadow-sm);
+  --shadow-md: var(--mf-shadow-md);
+  --shadow-lg: var(--mf-shadow-lg);
+  --shadow-ring: var(--mf-ring);
+
+  --container-read: 680px;
+  --container-app: 1200px;
+
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
 
   --spacing: 0.25rem;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-feature-settings: "kern", "liga";
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  ::selection {
+    background: var(--mf-accent-soft);
+    color: var(--mf-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--mf-focus);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
 }
