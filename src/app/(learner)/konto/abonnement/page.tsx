@@ -98,7 +98,7 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
                 ? ([
                     [
                       canceled ? t.account.endsOn : t.account.renewsOn,
-                      <span key="end" className="tabular-nums" data-testid="period-end">
+                      <span key="end" data-testid="period-end">
                         {v.endDate}
                       </span>,
                     ],

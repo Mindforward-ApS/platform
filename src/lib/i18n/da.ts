@@ -150,7 +150,7 @@ export const da = {
       visibilityTitle: "Hvem kan se dine data",
       modulesTitle: "Moduler",
       certificatesTitle: "Certifikater",
-      deleteWarning: "Det kan ikke fortrydes",
+      deleteWarning: "Din konto slettes permanent",
       keepAccount: "Behold min konto",
     },
     certificates: {

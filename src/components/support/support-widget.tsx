@@ -264,7 +264,7 @@ export function SupportWidget({ t, variant = "page", autoFocus = false }: { t: S
             <Icon name="lock" size={12} className="mt-0.5 shrink-0" />
             {t.piiNote}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-2">
             {messages.length > 0 && (
               <Button type="button" variant="ghost" onClick={reset} disabled={busy}>
                 {t.newConversation}

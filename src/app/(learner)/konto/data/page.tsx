@@ -59,7 +59,7 @@ async function Content() {
                       {detail.modules.map((mod) => (
                         <li key={mod.slug} className="flex flex-col gap-1 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
                           <span className="text-body text-ink">{mod.title}</span>
-                          <span className="flex flex-wrap items-center gap-x-3 text-body-sm text-ink-muted tabular-nums">
+                          <span className="flex flex-wrap items-center gap-x-3 text-body-sm text-ink-muted">
                             <span>{t.detail.assignmentStatus[mod.status as keyof typeof t.detail.assignmentStatus] ?? mod.status}</span>
                             {mod.bestScorePct !== null && <span>{`${mod.bestScorePct} %`}</span>}
                             {mod.passedAt && <span>{formatDateDa(mod.passedAt)}</span>}
@@ -78,7 +78,7 @@ async function Content() {
                           <span className="text-body text-ink">
                             {t.members.columns.certificates}: {c.trackName} · {c.levelLabel}
                           </span>
-                          <span className="text-body-sm text-ink-muted tabular-nums">{formatDateDa(c.issuedAt)}</span>
+                          <span className="text-body-sm text-ink-muted">{formatDateDa(c.issuedAt)}</span>
                         </li>
                       ))}
                     </ul>
@@ -127,11 +127,15 @@ async function Content() {
         }
       />
 
-      <Card title={t.myData.deleteTitle} description={t.myData.deleteBody}>
-        <ActionForm action={requestDeletion} className="flex flex-col items-start gap-3">
-          <DangerSubmitButton icon="trash">{t.myData.deleteButton}</DangerSubmitButton>
-        </ActionForm>
-      </Card>
+      <Card
+        title={t.myData.deleteTitle}
+        description={t.myData.deleteBody}
+        footer={
+          <ActionForm action={requestDeletion} className="flex w-full flex-col items-end gap-3">
+            <DangerSubmitButton icon="trash">{t.myData.deleteButton}</DangerSubmitButton>
+          </ActionForm>
+        }
+      />
     </>
   );
 }

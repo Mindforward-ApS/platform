@@ -44,7 +44,7 @@ async function Content() {
       <DescriptionList
         items={[
           [m.billing.account.plan, v.planName],
-          [m.account.subscription.accessUntil, <span key="end" className="tabular-nums">{v.endDate}</span>],
+          [m.account.subscription.accessUntil, <span key="end">{v.endDate}</span>],
         ]}
       />
       <p className="text-body-sm text-ink-muted">{m.account.subscription.cancelPageNote}</p>

@@ -13,8 +13,7 @@ async function Content() {
   const t = getMessages().orgAdmin.firstLogin;
   const org = await db().organization.findUniqueOrThrow({ where: { id: ctx.membership.organizationId }, select: { name: true } });
   return (
-    <>
-      <p className="text-body-lg text-ink-muted">{format(t.intro, { organization: org.name })}</p>
+    <Page title={t.title} lead={format(t.intro, { organization: org.name })}>
       <div className="grid gap-6 sm:grid-cols-2">
         <Card title={t.canSeeTitle} data-testid="admin-can-see">
           <ul className="flex flex-col gap-3">
@@ -66,16 +65,14 @@ async function Content() {
           {t.privacyLinks} <TextLink href="/privatliv">{t.privacyLink}</TextLink>
         </p>
       </Card>
-    </>
+    </Page>
   );
 }
 
 export default function DataInfoPage() {
   return (
-    <Page title={getMessages().orgAdmin.firstLogin.title}>
-      <Suspense>
-        <Content />
-      </Suspense>
-    </Page>
+    <Suspense>
+      <Content />
+    </Suspense>
   );
 }

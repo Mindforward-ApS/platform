@@ -53,7 +53,7 @@ async function Content() {
 
             <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 px-6 py-5 text-body-sm">
               <dt className="text-ink-muted">{a.issuedLabel}</dt>
-              <dd className="text-ink tabular-nums">
+              <dd className="text-ink">
                 {formatDateDa(c.issuedAt)}
               </dd>
               <dt className="text-ink-muted">{a.organization}</dt>
