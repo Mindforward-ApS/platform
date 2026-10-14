@@ -14,6 +14,14 @@ export const daContent = {
     intro: "Nyhedsmoduler fra officielle release notes. Alt, der rører grundpensum eller kræver ny sandkasse-UI, venter her på din godkendelse.",
     back: "Tilbage til drift",
     navLink: "Indholdsmotor",
+    stats: {
+      queue: "Til godkendelse",
+      published: "Publicerede moduler",
+      sources: "Aktive kilder",
+      sourcesOf: "af {total} kilder",
+      runs: "Kørsler i loggen",
+    },
+    stepsJson: "Trin, modeller og promptversioner",
     switches: {
       title: "Kill switches",
       pipeline: "Pipeline (classify, draft, verify)",

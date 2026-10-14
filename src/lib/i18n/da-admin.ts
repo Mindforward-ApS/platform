@@ -18,6 +18,12 @@ export const orgAdminMessages = {
   },
   overview: {
     title: "Overblik",
+    lead: "Status for jeres AI-træning og de næste skridt.",
+    inviteCta: "Invitér medarbejdere",
+    checklistProgress: "{done} af {total} trin er færdige",
+    stepOpen: "Åbn",
+    seatsTitle: "Pladser",
+    figuresTitle: "Nøgletal",
     checklistTitle: "Kom godt i gang",
     checklist: {
       dpa: "Accepter databehandleraftalen",
@@ -40,6 +46,14 @@ export const orgAdminMessages = {
   },
   members: {
     title: "Medarbejdere",
+    lead: "Invitér kolleger, vælg spor og følg status. Du ser status, scores og certifikater — aldrig prompts.",
+    listTitle: "Alle medarbejdere",
+    scoreShort: "Bedste forsøg (gns.)",
+    passedLatest: "Senest {date}",
+    manage: "Administrér",
+    manageTitle: "Spor, rolle og adgang",
+    employee: "Medarbejder",
+    pagination: "Sider",
     empty: "Ingen medarbejdere matcher filteret.",
     columns: {
       name: "Navn",
@@ -80,6 +94,8 @@ export const orgAdminMessages = {
     pending: "Åbne invitationer",
   },
   detail: {
+    privacyTitle: "Privat for medarbejderen",
+    summaryTitle: "Samlet",
     title: "Fremskridt for {name}",
     modules: "Moduler",
     module: "Modul",
@@ -94,6 +110,7 @@ export const orgAdminMessages = {
   },
   invite: {
     title: "Invitér via email",
+    description: "Indsæt emails eller en CSV. Hver invitation bruger en plads, til den er accepteret eller annulleret.",
     emails: "Emails (én pr. linje, kommasepareret eller indsat fra CSV)",
     role: "Rolle",
     track: "Spor",
@@ -110,6 +127,7 @@ export const orgAdminMessages = {
   },
   link: {
     title: "Invitationslink",
+    statusLabel: "Status",
     body: "Alle med linket kan blive medarbejder, så længe der er ledige pladser. Nulstil linket, hvis det er delt for bredt.",
     enable: "Opret link",
     reset: "Nulstil link",
@@ -121,6 +139,7 @@ export const orgAdminMessages = {
   },
   domain: {
     title: "Verificeret domæne",
+    txtLabel: "TXT-værdi",
     body: "Når jeres domæne er verificeret, kan alle med en bekræftet email på domænet blive medarbejder (så længe der er ledige pladser).",
     label: "Domæne (fx firma.dk)",
     save: "Gem domæne",
@@ -147,6 +166,7 @@ export const orgAdminMessages = {
   },
   dpa: {
     title: "Databehandleraftale",
+    acceptTitle: "Accepter på vegne af virksomheden",
     intro: "Før I inviterer medarbejdere, skal ejeren acceptere databehandleraftalen på vegne af virksomheden. Mindforward behandler medarbejdernes data som databehandler for jer.",
     name: "Dit fulde navn",
     jobTitle: "Din titel",
@@ -204,6 +224,7 @@ export const orgAdminMessages = {
   },
   orgData: {
     title: "Data og GDPR",
+    exportBody: "En CSV med de samme felter som rapporten. Prompts og svar kommer aldrig med.",
     intro: "Som dataansvarlig kan I eksportere jeres træningsdata og slette en medarbejders data. Mindforward handler som databehandler efter jeres instruks.",
     exportTitle: "Eksportér virksomhedens træningsdata",
     exportButton: "Download CSV",
@@ -254,6 +275,10 @@ export const orgAdminMessages = {
   },
   report: {
     title: "Rapport",
+    lead: "Dokumentér jeres AI-kompetencetiltag efter art. 4 — som CSV, PDF eller direkte her.",
+    exportDescription: "Vælg periode og filtre. Noterne kommer med i rapporten.",
+    aiPolicyDescription: "Linket står i rapporten, så læseren kan se jeres egne regler.",
+    documentLabel: "Dokument",
     docTitle: "Dokumentation af AI-kompetencetiltag",
     subtitle: "Dokumenteret, rollebaseret tiltag efter art. 4 i AI-forordningen",
     intro: "Rapporten dokumenterer, hvilken AI-træning virksomhedens medarbejdere er tilbudt og har gennemført i Mindforward i perioden, fordelt på roller og spor.",
@@ -313,6 +338,15 @@ export const orgAdminMessages = {
     OTHER: "Andet",
   },
   tiers: { COPILOT_CHAT: "Copilot Chat (gratis med Microsoft 365)", COPILOT_M365: "Microsoft 365 Copilot (betalt licens)", UNKNOWN: "Ved ikke" },
+  business: {
+    createLead: "Opret en virksomhedskonto for at invitere kolleger, vælge spor og dokumentere jeres træning.",
+    createNext: "Bagefter kan du acceptere databehandleraftalen og invitere de første medarbejdere.",
+  },
+  subscription: {
+    lead: "Plan, pladser og betaling for virksomheden.",
+    summaryTitle: "Abonnement",
+    manageTitle: "Administrér abonnement",
+  },
   roles: { OWNER: "Ejer", ADMIN: "Administrator", LEARNER: "Medarbejder" },
   errors: {
     notAllowed: "Du har ikke adgang til at gøre det.",
