@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { ActionForm } from "@/components/admin/action-form";
 import { AdminShell, Section } from "@/components/admin/admin-shell";
-import { Markdown } from "@/components/player/markdown";
-import { Field, Notice } from "@/components/ui/primitives";
+import { LegalText } from "@/components/admin/legal-text";
+import { Badge, Check, Field, Notice } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { formatDateDa } from "@/lib/format-date";
 import { format, getMessages } from "@/lib/i18n";
@@ -23,40 +23,55 @@ async function Content() {
     return c;
   }, "/virksomhed/databehandleraftale");
   const t = getMessages().orgAdmin.dpa;
+  const o = getMessages().orgAdmin.overview;
   const org = await db().organization.findUniqueOrThrow({ where: { id: ctx.membership.organizationId }, select: { dpaAcceptedAt: true, dpaVersion: true, cvr: true } });
   return (
     <>
-      <p>{t.intro}</p>
       {org.dpaAcceptedAt && (
-        <Notice>
+        <Notice tone="success">
           <span data-testid="dpa-accepted">{format(t.accepted, { version: org.dpaVersion ?? DPA_VERSION, date: formatDateDa(org.dpaAcceptedAt) })}</span>
         </Notice>
       )}
-      <Section title={format(t.version, { version: DPA_VERSION })}>
-        <div className="max-h-96 overflow-y-auto">
-          <Markdown text={dpaText()} />
+      <Section
+        title={format(t.version, { version: DPA_VERSION })}
+        actions={
+          <Badge tone={org.dpaAcceptedAt ? "success" : "neutral"} icon={org.dpaAcceptedAt ? "check" : "clock"}>
+            {org.dpaAcceptedAt ? o.done : o.todo}
+          </Badge>
+        }
+      >
+        <div className="-mx-6 -my-6 max-h-[28rem] overflow-y-auto px-6 py-6 sm:px-8" tabIndex={0} role="region" aria-label={t.title}>
+          <div className="max-w-read">
+            <LegalText text={dpaText()} />
+          </div>
         </div>
       </Section>
       {!org.dpaAcceptedAt && ctx.membership.role === "OWNER" && (
-        <ActionForm action={acceptDataProcessingAgreement} testId="dpa-form">
-          <Field label={t.name} name="signerName" required minLength={2} maxLength={120} autoComplete="name" />
-          <Field label={t.jobTitle} name="signerTitle" required minLength={2} maxLength={120} />
-          <Field label={t.cvr} name="cvr" required pattern="\d{8}" inputMode="numeric" defaultValue={org.cvr ?? ""} />
-          <label className="flex items-start gap-2">
-            <input type="checkbox" name="accept" required />
-            <span>{t.accept}</span>
-          </label>
-          <SubmitButton>{t.submit}</SubmitButton>
-        </ActionForm>
+        <Section title={t.acceptTitle}>
+          <ActionForm action={acceptDataProcessingAgreement} testId="dpa-form" className="flex flex-col gap-5">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label={t.name} name="signerName" required minLength={2} maxLength={120} autoComplete="name" />
+              <Field label={t.jobTitle} name="signerTitle" required minLength={2} maxLength={120} />
+              <Field label={t.cvr} name="cvr" required pattern="\d{8}" inputMode="numeric" defaultValue={org.cvr ?? ""} className="tabular-nums" />
+            </div>
+            <div className="rounded-md border border-line bg-sunken p-4">
+              <Check name="accept" required label={t.accept} />
+            </div>
+            <div>
+              <SubmitButton>{t.submit}</SubmitButton>
+            </div>
+          </ActionForm>
+        </Section>
       )}
-      {!org.dpaAcceptedAt && ctx.membership.role !== "OWNER" && <Notice>{t.ownerOnly}</Notice>}
+      {!org.dpaAcceptedAt && ctx.membership.role !== "OWNER" && <Notice tone="hint" icon="lock">{t.ownerOnly}</Notice>}
     </>
   );
 }
 
 export default function DpaPage() {
+  const t = getMessages().orgAdmin.dpa;
   return (
-    <AdminShell title={getMessages().orgAdmin.dpa.title}>
+    <AdminShell title={t.title} lead={t.intro}>
       <Suspense>
         <Content />
       </Suspense>
