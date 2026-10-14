@@ -1,7 +1,7 @@
 import { Suspense } from "react";
+import { DangerSubmitButton } from "@/components/account/danger-submit-button";
 import { ActionForm } from "@/components/admin/action-form";
-import { Page } from "@/components/ui/primitives";
-import { SubmitButton } from "@/components/ui/submit-button";
+import { ButtonLink, Card, Notice, Page } from "@/components/ui/primitives";
 import { getMessages } from "@/lib/i18n";
 import { requireUser } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
@@ -12,15 +12,23 @@ import { confirmDeletion } from "../actions";
 async function Content({ searchParams }: { searchParams: Promise<{ token?: string }> }) {
   const { token } = await searchParams;
   await guardPage(() => requireUser(), `/konto/data/slet?token=${encodeURIComponent(token ?? "")}`);
-  const t = getMessages().orgAdmin.myData;
+  const m = getMessages();
+  const t = m.orgAdmin.myData;
   return (
-    <>
-      <p>{t.confirmBody}</p>
-      <ActionForm action={confirmDeletion}>
+    <Card>
+      <Notice tone="danger" icon="alert" title={m.account.data.deleteWarning}>
+        {t.confirmBody}
+      </Notice>
+      <ActionForm action={confirmDeletion} className="flex flex-col gap-4">
         <input type="hidden" name="token" value={token ?? ""} />
-        <SubmitButton>{t.confirmButton}</SubmitButton>
+        <div className="flex flex-col-reverse gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-end">
+          <ButtonLink href="/konto/data" variant="ghost">
+            {m.account.data.keepAccount}
+          </ButtonLink>
+          <DangerSubmitButton icon="trash">{t.confirmButton}</DangerSubmitButton>
+        </div>
       </ActionForm>
-    </>
+    </Card>
   );
 }
 

@@ -1,7 +1,9 @@
 import { Suspense } from "react";
+import { DangerSubmitButton } from "@/components/account/danger-submit-button";
 import { ActionForm } from "@/components/admin/action-form";
-import { Page } from "@/components/ui/primitives";
-import { SubmitButton } from "@/components/ui/submit-button";
+import { SupportLauncher } from "@/components/support/support-widget";
+import { Icon } from "@/components/ui/icons";
+import { Card, DescriptionList, Page, buttonClass } from "@/components/ui/primitives";
 import { formatDateDa } from "@/lib/format-date";
 import { format, getMessages } from "@/lib/i18n";
 import { employeeDetail } from "@/server/admin/queries";
@@ -14,77 +16,134 @@ import { requestDeletion } from "./actions";
 
 async function Content() {
   const ctx = await guardPage(() => requireUser(), "/konto/data");
-  const t = getMessages().orgAdmin;
+  const m = getMessages();
+  const t = m.orgAdmin;
+  const a = m.account.data;
   const orgId = ctx.session.activeOrganizationId;
   const org = orgId ? await db().organization.findUnique({ where: { id: orgId }, select: { name: true, type: true } }) : null;
   const detail = org?.type === "BUSINESS" && orgId ? await employeeDetail(db(), orgId, { userId: ctx.user.id }) : null;
+  const none = <span className="text-ink-subtle">{t.members.none}</span>;
   return (
     <>
-      <section className="flex flex-col gap-2" data-testid="admin-sees">
+      <section data-testid="admin-sees" className="flex flex-col gap-6">
         {detail && org ? (
           <>
-            <h2 className="font-semibold">{format(t.myData.adminSeesTitle, { organization: org.name })}</h2>
-            <dl className="grid grid-cols-2 gap-1 text-sm">
-              <dt>{t.members.columns.name}</dt>
-              <dd>{detail.row.name} · {detail.row.email}</dd>
-              <dt>{t.members.columns.role}</dt>
-              <dd>{t.roles[detail.row.role]}</dd>
-              <dt>{t.members.columns.jobRole}</dt>
-              <dd>{detail.row.jobRole ? t.jobRoles[detail.row.jobRole] : t.members.none}</dd>
-              <dt>{t.members.columns.track}</dt>
-              <dd>{detail.row.tracks.map((x) => x.name).join(", ") || t.members.none}</dd>
-              <dt>{t.members.columns.status}</dt>
-              <dd>{t.members.status[detail.row.status]}</dd>
-              <dt>{t.members.columns.score}</dt>
-              <dd>{detail.row.avgBestScorePct === null ? t.members.none : `${detail.row.avgBestScorePct} %`}</dd>
-              <dt>{t.members.columns.lastActivity}</dt>
-              <dd>{formatDateDa(detail.row.lastActivityAt) || t.members.none}</dd>
-            </dl>
-            <ul className="text-sm">
-              {detail.modules.map((m) => (
-                <li key={m.slug}>
-                  {m.title} · {t.detail.assignmentStatus[m.status as keyof typeof t.detail.assignmentStatus] ?? m.status}
-                  {m.bestScorePct !== null ? ` · ${m.bestScorePct} %` : ""}
-                  {m.passedAt ? ` · ${formatDateDa(m.passedAt)}` : ""}
-                </li>
-              ))}
-              {detail.row.certificates.map((c) => (
-                <li key={`${c.trackName}-${c.level}`}>
-                  {t.members.columns.certificates}: {c.trackName} · {c.levelLabel} · {formatDateDa(c.issuedAt)}
-                </li>
-              ))}
-            </ul>
-            <p className="text-sm">{t.firstLogin.cannotSeeTitle}: {t.firstLogin.cannotSee.join(" · ")}</p>
+            <Card title={format(t.myData.adminSeesTitle, { organization: org.name })}>
+              <DescriptionList
+                items={[
+                  [
+                    t.members.columns.name,
+                    <span key="name" className="break-words">
+                      {detail.row.name} · {detail.row.email}
+                    </span>,
+                  ],
+                  [t.members.columns.role, t.roles[detail.row.role]],
+                  [t.members.columns.jobRole, detail.row.jobRole ? t.jobRoles[detail.row.jobRole] : none],
+                  [t.members.columns.track, detail.row.tracks.map((x) => x.name).join(", ") || none],
+                  [t.members.columns.status, t.members.status[detail.row.status]],
+                  [
+                    t.members.columns.score,
+                    detail.row.avgBestScorePct === null ? none : <span key="score" className="tabular-nums">{`${detail.row.avgBestScorePct} %`}</span>,
+                  ],
+                  [t.members.columns.lastActivity, formatDateDa(detail.row.lastActivityAt) || none],
+                ]}
+              />
+            </Card>
+
+            {(detail.modules.length > 0 || detail.row.certificates.length > 0) && (
+              <Card padded={false}>
+                {detail.modules.length > 0 && (
+                  <div>
+                    <h3 className="border-b border-line bg-sunken px-6 py-2.5 text-caption font-semibold text-ink-muted">{a.modulesTitle}</h3>
+                    <ul className="divide-y divide-line">
+                      {detail.modules.map((mod) => (
+                        <li key={mod.slug} className="flex flex-col gap-1 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+                          <span className="text-body text-ink">{mod.title}</span>
+                          <span className="flex flex-wrap items-center gap-x-3 text-body-sm text-ink-muted tabular-nums">
+                            <span>{t.detail.assignmentStatus[mod.status as keyof typeof t.detail.assignmentStatus] ?? mod.status}</span>
+                            {mod.bestScorePct !== null && <span>{`${mod.bestScorePct} %`}</span>}
+                            {mod.passedAt && <span>{formatDateDa(mod.passedAt)}</span>}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {detail.row.certificates.length > 0 && (
+                  <div className={detail.modules.length > 0 ? "border-t border-line" : undefined}>
+                    <h3 className="border-b border-line bg-sunken px-6 py-2.5 text-caption font-semibold text-ink-muted">{a.certificatesTitle}</h3>
+                    <ul className="divide-y divide-line">
+                      {detail.row.certificates.map((c) => (
+                        <li key={`${c.trackName}-${c.level}`} className="flex flex-col gap-1 px-6 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+                          <span className="text-body text-ink">
+                            {t.members.columns.certificates}: {c.trackName} · {c.levelLabel}
+                          </span>
+                          <span className="text-body-sm text-ink-muted tabular-nums">{formatDateDa(c.issuedAt)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </Card>
+            )}
+
+            <Card title={t.firstLogin.cannotSeeTitle}>
+              <ul className="flex flex-col gap-2.5">
+                {t.firstLogin.cannotSee.map((line) => (
+                  <li key={line} className="flex items-start gap-3 text-body text-ink">
+                    <Icon name="lock" className="mt-1 shrink-0 text-ink-muted" />
+                    {line}
+                  </li>
+                ))}
+              </ul>
+              <p className="flex items-start gap-3 border-t border-line pt-4 text-body-sm text-ink-muted">
+                <Icon name="clock" className="mt-0.5 shrink-0" />
+                {t.myData.promptRetention}
+              </p>
+            </Card>
           </>
         ) : (
-          <p>{t.myData.noAdmin}</p>
+          <Card title={a.visibilityTitle}>
+            <p className="flex items-start gap-3 text-body text-ink">
+              <Icon name="shield" className="mt-1 shrink-0 text-success" />
+              {t.myData.noAdmin}
+            </p>
+            <p className="flex items-start gap-3 border-t border-line pt-4 text-body-sm text-ink-muted">
+              <Icon name="clock" className="mt-0.5 shrink-0" />
+              {t.myData.promptRetention}
+            </p>
+          </Card>
         )}
-        <p className="text-sm">{t.myData.promptRetention}</p>
       </section>
-      <section className="flex flex-col gap-2">
-        <h2 className="font-semibold">{t.myData.exportTitle}</h2>
-        <p className="text-sm">{t.myData.exportBody}</p>
-        <a className="underline" href="/api/me/export" download>
-          {t.myData.exportButton}
-        </a>
-      </section>
-      <section className="flex flex-col gap-2">
-        <h2 className="font-semibold">{t.myData.deleteTitle}</h2>
-        <p className="text-sm">{t.myData.deleteBody}</p>
-        <ActionForm action={requestDeletion}>
-          <SubmitButton variant="secondary">{t.myData.deleteButton}</SubmitButton>
+
+      <Card
+        title={t.myData.exportTitle}
+        description={t.myData.exportBody}
+        footer={
+          <a className={buttonClass("secondary")} href="/api/me/export" download>
+            <Icon name="download" />
+            {t.myData.exportButton}
+          </a>
+        }
+      />
+
+      <Card title={t.myData.deleteTitle} description={t.myData.deleteBody}>
+        <ActionForm action={requestDeletion} className="flex flex-col items-start gap-3">
+          <DangerSubmitButton icon="trash">{t.myData.deleteButton}</DangerSubmitButton>
         </ActionForm>
-      </section>
+      </Card>
     </>
   );
 }
 
 export default function MyDataPage() {
+  const m = getMessages();
   return (
-    <Page title={getMessages().orgAdmin.myData.title}>
+    <Page title={m.orgAdmin.myData.title} lead={m.account.data.lead}>
       <Suspense>
         <Content />
       </Suspense>
+      <SupportLauncher t={m.support.widget} />
     </Page>
   );
 }

@@ -1,4 +1,5 @@
 import { setTrainingReminders } from "@/app/(learner)/konto/paamindelser/actions";
+import { Badge, Card } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { getMessages } from "@/lib/i18n";
 import { db } from "@/server/db";
@@ -9,13 +10,25 @@ export async function TrainingReminders({ userId }: { userId: string }) {
   const t = getMessages().monthly.account;
   const enabled = await trainingRemindersEnabled(db(), userId);
   return (
-    <section className="flex flex-col gap-1" data-testid="training-reminders">
-      <h2 className="font-semibold">{t.heading}</h2>
-      <p className="text-sm">{enabled ? t.on : t.off}</p>
-      <form action={setTrainingReminders}>
-        <input type="hidden" name="enabled" value={enabled ? "0" : "1"} />
-        <SubmitButton variant="secondary">{enabled ? t.turnOff : t.turnOn}</SubmitButton>
-      </form>
-    </section>
+    <Card
+      data-testid="training-reminders"
+      title={t.heading}
+      description={t.description}
+      actions={
+        <Badge tone={enabled ? "success" : "neutral"} icon={enabled ? "check" : "dash"}>
+          {enabled ? t.statusOn : t.statusOff}
+        </Badge>
+      }
+      footer={
+        <form action={setTrainingReminders}>
+          <input type="hidden" name="enabled" value={enabled ? "0" : "1"} />
+          <SubmitButton variant="secondary">
+            {enabled ? t.turnOff : t.turnOn}
+          </SubmitButton>
+        </form>
+      }
+    >
+      <p className="text-body-sm text-ink-muted">{enabled ? t.on : t.off}</p>
+    </Card>
   );
 }

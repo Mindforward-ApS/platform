@@ -1,5 +1,6 @@
 import { Suspense } from "react";
-import { Page } from "@/components/ui/primitives";
+import { Icon } from "@/components/ui/icons";
+import { Card, Page, TextLink, buttonClass } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
@@ -13,43 +14,58 @@ async function Content() {
   const org = await db().organization.findUniqueOrThrow({ where: { id: ctx.membership.organizationId }, select: { name: true } });
   return (
     <>
-      <p>{format(t.intro, { organization: org.name })}</p>
-      <section data-testid="admin-can-see">
-        <h2 className="font-semibold">{t.canSeeTitle}</h2>
-        <ul className="list-disc pl-5">
-          {t.canSee.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ul>
-      </section>
-      <section data-testid="admin-cannot-see">
-        <h2 className="font-semibold">{t.cannotSeeTitle}</h2>
-        <ul className="list-disc pl-5">
-          {t.cannotSee.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h2 className="font-semibold">{t.retentionTitle}</h2>
-        <p>{t.retention}</p>
-        <p>{t.learning}</p>
-      </section>
-      <p className="text-sm">
-        {t.privacyLinks}{" "}
-        <a className="underline" href="/privatliv">
-          {t.privacyLink}
-        </a>
-      </p>
-      <a className="underline" href="/konto/data">
-        {t.myData}
-      </a>
-      {/* Plain POST (full navigation) so the client router never replays the pre-acknowledgement /konto redirect. */}
-      <form method="post" action="/api/me/data-info">
-        <button type="submit" className="rounded-md bg-accent px-4 py-2 text-accent-fg">
-          {t.continue}
-        </button>
-      </form>
+      <p className="text-body-lg text-ink-muted">{format(t.intro, { organization: org.name })}</p>
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Card title={t.canSeeTitle} data-testid="admin-can-see">
+          <ul className="flex flex-col gap-3">
+            {t.canSee.map((line) => (
+              <li key={line} className="flex items-start gap-3 text-body text-ink">
+                <Icon name="check" className="mt-1 shrink-0 text-success" />
+                {line}
+              </li>
+            ))}
+          </ul>
+        </Card>
+        <Card title={t.cannotSeeTitle} data-testid="admin-cannot-see">
+          <ul className="flex flex-col gap-3">
+            {t.cannotSee.map((line) => (
+              <li key={line} className="flex items-start gap-3 text-body text-ink">
+                <Icon name="lock" className="mt-1 shrink-0 text-ink-muted" />
+                {line}
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </div>
+      <Card
+        title={t.retentionTitle}
+        footer={
+          <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <TextLink href="/konto/data" className="text-label">
+              {t.myData}
+            </TextLink>
+            {/* Plain POST (full navigation) so the client router never replays the pre-acknowledgement /konto redirect. */}
+            <form method="post" action="/api/me/data-info">
+              <button type="submit" className={buttonClass("primary", "md", "w-full sm:w-auto")}>
+                {t.continue}
+                <Icon name="arrowRight" />
+              </button>
+            </form>
+          </div>
+        }
+      >
+        <p className="flex items-start gap-3 text-body text-ink">
+          <Icon name="clock" className="mt-1 shrink-0 text-ink-muted" />
+          {t.retention}
+        </p>
+        <p className="flex items-start gap-3 text-body text-ink">
+          <Icon name="shield" className="mt-1 shrink-0 text-ink-muted" />
+          {t.learning}
+        </p>
+        <p className="border-t border-line pt-4 text-body-sm text-ink-muted">
+          {t.privacyLinks} <TextLink href="/privatliv">{t.privacyLink}</TextLink>
+        </p>
+      </Card>
     </>
   );
 }

@@ -1,9 +1,11 @@
 import { Suspense } from "react";
-import { Page } from "@/components/ui/primitives";
+import { SupportLauncher } from "@/components/support/support-widget";
+import { Icon } from "@/components/ui/icons";
+import { ButtonLink, EmptyState, Page, buttonClass } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { serverEnv } from "@/lib/env";
 import { formatDateDa } from "@/lib/format-date";
-import { format, getMessages } from "@/lib/i18n";
+import { getMessages } from "@/lib/i18n";
 import { requireUser } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
 import { listMyCertificates } from "@/server/certificates/service";
@@ -14,52 +16,99 @@ import { togglePublicVerification } from "./actions";
 
 async function Content() {
   const ctx = await guardPage(() => requireUser(), "/certifikater");
-  const t = getMessages().orgAdmin.certificates;
+  const m = getMessages();
+  const t = m.orgAdmin.certificates;
+  const a = m.account.certificates;
   const certs = await listMyCertificates(db(), ctx.user.id);
-  if (certs.length === 0) return <p>{t.empty}</p>;
+  if (certs.length === 0) {
+    return (
+      <EmptyState
+        icon="award"
+        title={a.emptyTitle}
+        action={
+          <ButtonLink href="/moduler" variant="secondary" trailingIcon="arrowRight">
+            {m.player.list.toModules}
+          </ButtonLink>
+        }
+      >
+        {t.empty}
+      </EmptyState>
+    );
+  }
   return (
-    <ul className="flex flex-col gap-3" data-testid="certificates">
-      {certs.map((c) => (
-        <li key={c.id} className="flex flex-col gap-2 rounded-md border border-border p-3">
-          <strong>
-            {c.track.displayName} · {c.levelLabel}
-          </strong>
-          <span className="text-sm">
-            {format(t.issued, { date: formatDateDa(c.issuedAt) })} · {c.organization.name}
-          </span>
-          <span className="text-sm" data-testid="certificate-code">
-            {format(t.code, { code: c.verificationCode })}
-          </span>
-          <a className="underline" href={`/api/certifikater/${c.id}/pdf`}>
-            {t.download}
-          </a>
-          <p className="text-sm">{c.publicVerificationEnabled ? t.publicOn : t.publicOff}</p>
-          {c.publicVerificationEnabled && (
-            <p className="text-sm">
-              {t.publicUrl}{" "}
-              <a className="underline" href={`/certifikat/${c.verificationCode}`}>
-                {`${serverEnv().APP_URL}/certifikat/${c.verificationCode}`}
+    <ul className="grid gap-6 lg:grid-cols-2" data-testid="certificates">
+      {certs.map((c) => {
+        const publicHref = `/certifikat/${c.verificationCode}`;
+        return (
+          <li key={c.id} className="flex flex-col overflow-hidden rounded-lg border border-line bg-surface">
+            <div className="flex items-start gap-4 border-b border-line px-6 py-5">
+              <span className="grid size-11 shrink-0 place-items-center rounded-md bg-accent-soft text-accent-ink">
+                <Icon name="award" size={20} />
+              </span>
+              <div className="flex min-w-0 flex-col gap-0.5">
+                <h2 className="text-title-3 text-ink">{c.track.displayName}</h2>
+                <p className="text-body-sm text-ink-muted">{c.levelLabel}</p>
+              </div>
+            </div>
+
+            <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 px-6 py-5 text-body-sm">
+              <dt className="text-ink-muted">{a.issuedLabel}</dt>
+              <dd className="text-ink tabular-nums">
+                {formatDateDa(c.issuedAt)}
+              </dd>
+              <dt className="text-ink-muted">{a.organization}</dt>
+              <dd className="min-w-0 break-words text-ink">{c.organization.name}</dd>
+              <dt className="text-ink-muted">{a.codeLabel}</dt>
+              <dd className="font-mono text-mono text-ink" data-testid="certificate-code">
+                {c.verificationCode}
+              </dd>
+            </dl>
+
+            <div className="mt-auto flex flex-col gap-3 border-t border-line px-6 py-5">
+              <div className="flex flex-col gap-1">
+                <p className="text-label text-ink">{a.publicTitle}</p>
+                <p className="flex items-start gap-2 text-body-sm text-ink">
+                  <Icon name={c.publicVerificationEnabled ? "check" : "lock"} className={c.publicVerificationEnabled ? "mt-0.5 shrink-0 text-success" : "mt-0.5 shrink-0 text-ink-muted"} />
+                  {c.publicVerificationEnabled ? t.publicOn : t.publicOff}
+                </p>
+              </div>
+              {c.publicVerificationEnabled && (
+                <p className="flex min-w-0 flex-wrap items-center gap-x-2 text-body-sm text-ink-muted">
+                  {t.publicUrl}
+                  <a className="inline-flex min-w-0 items-center gap-1 font-medium break-all text-accent underline decoration-accent/30 underline-offset-[3px] hover:text-accent-hover" href={publicHref}>
+                    {`${serverEnv().APP_URL}${publicHref}`}
+                  </a>
+                </p>
+              )}
+              <p className="text-body-sm text-ink-muted">{t.publicExplain}</p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-end gap-3 border-t border-line bg-sunken px-6 py-4">
+              <form action={togglePublicVerification}>
+                <input type="hidden" name="certificateId" value={c.id} />
+                <input type="hidden" name="enabled" value={c.publicVerificationEnabled ? "0" : "1"} />
+                <SubmitButton variant="secondary">{c.publicVerificationEnabled ? t.disablePublic : t.enablePublic}</SubmitButton>
+              </form>
+              <a className={buttonClass("secondary")} href={`/api/certifikater/${c.id}/pdf`}>
+                <Icon name="download" />
+                {t.download}
               </a>
-            </p>
-          )}
-          <p className="text-sm">{t.publicExplain}</p>
-          <form action={togglePublicVerification}>
-            <input type="hidden" name="certificateId" value={c.id} />
-            <input type="hidden" name="enabled" value={c.publicVerificationEnabled ? "0" : "1"} />
-            <SubmitButton variant="secondary">{c.publicVerificationEnabled ? t.disablePublic : t.enablePublic}</SubmitButton>
-          </form>
-        </li>
-      ))}
+            </div>
+          </li>
+        );
+      })}
     </ul>
   );
 }
 
 export default function CertificatesPage() {
+  const m = getMessages();
   return (
-    <Page title={getMessages().orgAdmin.certificates.title}>
+    <Page title={m.orgAdmin.certificates.title} lead={m.account.certificates.lead} width="app">
       <Suspense>
         <Content />
       </Suspense>
+      <SupportLauncher t={m.support.widget} />
     </Page>
   );
 }

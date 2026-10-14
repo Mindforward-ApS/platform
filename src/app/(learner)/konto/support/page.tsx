@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Suspense } from "react";
-import { Page } from "@/components/ui/primitives";
+import { SettingsList, SettingsRow } from "@/components/account/settings";
 import { SupportWidget } from "@/components/support/support-widget";
+import { Card, Page } from "@/components/ui/primitives";
 import { getMessages } from "@/lib/i18n";
 import { requireUser } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
@@ -13,16 +13,19 @@ async function Content() {
   return (
     <>
       <SupportWidget t={t.widget} />
-      <Link className="underline" href="/hjaelp">
-        {t.widget.helpCenterLink}
-      </Link>
+      <Card padded={false}>
+        <SettingsList>
+          <SettingsRow id="row-help" href="/hjaelp" icon="help" label={t.widget.helpCenterLink} hint={t.widget.helpCenterBody} />
+        </SettingsList>
+      </Card>
     </>
   );
 }
 
 export default function SupportPage() {
+  const t = getMessages().support.widget;
   return (
-    <Page title={getMessages().support.widget.title}>
+    <Page title={t.title} lead={t.pageLead}>
       <Suspense>
         <Content />
       </Suspense>

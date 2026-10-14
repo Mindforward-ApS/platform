@@ -34,6 +34,9 @@ export const daMonthly = {
     off: "Påmindelser er slået fra. Du får ingen mails om månedspakken.",
     turnOff: "Slå påmindelser fra",
     turnOn: "Slå påmindelser til",
+    description: "Mails om månedspakken den 1., 14. og 25. i måneden.",
+    statusOn: "Til",
+    statusOff: "Fra",
   },
   orgStatus: {
     pageTitle: "Månedspakke",
@@ -44,6 +47,8 @@ export const daMonthly = {
     minutes: "ca. {minutes} min",
     status: { PENDING: "Ikke startet", IN_PROGRESS: "I gang", COMPLETED: "Gennemført", NONE: "Ingen pakke" },
     note: "Du ser kun status. Medarbejdernes svar og tekster vises aldrig.",
+    description: "Status pr. medarbejder for denne måneds pakke.",
+    progressLabel: "Andel medarbejdere, der har gennemført månedspakken",
   },
   marketing: {
     label: "Markedsføring fra Mindforward",

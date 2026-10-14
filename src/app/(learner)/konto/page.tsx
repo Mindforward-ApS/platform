@@ -1,10 +1,12 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { SettingsItem, SettingsList, SettingsRow } from "@/components/account/settings";
 import { AccountDataLinks } from "@/components/admin/account-data-links";
 import { needsFirstLoginInfo } from "@/server/admin/first-login";
 import { TrainingReminders } from "@/components/monthly/training-reminders";
-import { Notice, Page } from "@/components/ui/primitives";
+import { Icon } from "@/components/ui/icons";
+import { SupportLauncher } from "@/components/support/support-widget";
+import { Badge, ButtonLink, Card, DescriptionList, Notice, Page } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { format, getMessages } from "@/lib/i18n";
 import { requireUser } from "@/server/auth/authz";
@@ -13,7 +15,8 @@ import { db } from "@/server/db";
 import { signOut, switchOrganization } from "./actions";
 
 async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string }> }) {
-  const t = getMessages().account;
+  const m = getMessages();
+  const t = m.account;
   const ctx = await guardPage(() => requireUser(), "/konto");
   const sp = await searchParams;
   const memberships = await db().membership.findMany({
@@ -21,81 +24,148 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
     orderBy: { createdAt: "asc" },
     select: { role: true, organization: { select: { id: true, name: true, type: true } } },
   });
-  const active = memberships.find((m) => m.organization.id === ctx.session.activeOrganizationId);
+  const active = memberships.find((x) => x.organization.id === ctx.session.activeOrganizationId);
   // M7: B2B employees see once what their admin can and cannot see (docs/10 § 1.6).
   if (active && (await needsFirstLoginInfo(db(), ctx.user.id, active.organization.id))) redirect("/konto/data-info");
   const tracks = await db().track.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" }, select: { key: true, displayName: true } });
-  const ts = getMessages().sandbox;
+  const ts = m.sandbox;
+  const others = memberships.filter((x) => x.organization.id !== active?.organization.id);
+  const isBusinessAdmin = Boolean(active && active.role !== "LEARNER" && active.organization.type === "BUSINESS");
 
   return (
     <>
-      {sp.fejl === "adgang" && <Notice tone="error">{getMessages().business.errors.notAllowed}</Notice>}
-      <p>{[ctx.user.name, ctx.user.email].filter(Boolean).join(" · ")}</p>
-      {active && (
-        <dl className="grid grid-cols-2 gap-2" data-testid="active-org">
-          <dt>{t.activeOrg}</dt>
-          <dd>
-            {active.organization.name} ({t.orgType[active.organization.type]})
-          </dd>
-          <dt>{t.role}</dt>
-          <dd data-testid="active-role">{t.roles[active.role]}</dd>
-        </dl>
-      )}
-      {active && active.role !== "LEARNER" && active.organization.type === "BUSINESS" && (
-        <Link className="underline" href="/virksomhed/medarbejdere">
-          {t.members}
-        </Link>
-      )}
-      {memberships
-        .filter((m) => m.organization.id !== active?.organization.id)
-        .map((m) => (
-          <form key={m.organization.id} action={switchOrganization}>
-            <input type="hidden" name="organizationId" value={m.organization.id} />
-            <SubmitButton variant="secondary">
-              {t.switchOrg} {m.organization.name}
-            </SubmitButton>
+      {sp.fejl === "adgang" && <Notice tone="error">{m.business.errors.notAllowed}</Notice>}
+
+      <Card
+        title={t.profile.title}
+        description={t.profile.description}
+        footer={
+          <form action={signOut}>
+            <SubmitButton variant="secondary">{m.auth.logout}</SubmitButton>
           </form>
-        ))}
-      <a className="underline" href="/moduler">
-        {getMessages().player.list.toModules}
-      </a>
-      <a className="underline" href="/konto/abonnement">
-        {getMessages().billing.account.accountLink}
-      </a>
-      <a className="underline" href="/konto/support">
-        {getMessages().support.widget.title}
-      </a>
-      {active && (
-        <section className="flex flex-col gap-1" data-testid="sandbox-links">
-          <h2 className="font-semibold">{ts.accountHeading}</h2>
-          {tracks.length === 0 && <p className="text-muted">{ts.noTracks}</p>}
-          {tracks.map((tr) => (
-            <a key={tr.key} className="underline" href={`/sandkasse/${tr.key.toLowerCase()}`}>
-              {ts.accountLink}: {format(ts.practiceFor, { product: tr.displayName })}
-            </a>
-          ))}
-        </section>
-      )}
-      <AccountDataLinks user={ctx.user} isBusinessAdmin={Boolean(active && active.role !== "LEARNER" && active.organization.type === "BUSINESS")} />
+        }
+      >
+        <DescriptionList
+          items={[
+            [t.profile.name, ctx.user.name || <span key="noname" className="text-ink-subtle">{t.profile.noName}</span>],
+            [t.profile.email, <span key="email" className="break-all">{ctx.user.email}</span>],
+          ]}
+        />
+      </Card>
+
+      <Card
+        title={t.organization.title}
+        description={t.organization.description}
+        padded={false}
+        footer={
+          <>
+            {isBusinessAdmin && (
+              <ButtonLink href="/virksomhed/medarbejdere" variant="ghost" icon="users">
+                {t.members}
+              </ButtonLink>
+            )}
+            <ButtonLink href="/virksomhed/opret" variant="secondary" icon="plus">
+              {t.createBusiness}
+            </ButtonLink>
+          </>
+        }
+      >
+        <div className="p-6">
+          {active ? (
+            <div data-testid="active-org">
+              <DescriptionList
+                items={[
+                  [
+                    t.activeOrg,
+                    <span key="org" className="flex flex-wrap items-center gap-2">
+                      <span className="font-medium">{active.organization.name}</span>
+                      <Badge>{t.orgType[active.organization.type]}</Badge>
+                    </span>,
+                  ],
+                  [
+                    t.role,
+                    <span key="role" data-testid="active-role">
+                      {t.roles[active.role]}
+                    </span>,
+                  ],
+                ]}
+              />
+            </div>
+          ) : (
+            <p className="text-body-sm text-ink-muted">{t.organization.none}</p>
+          )}
+        </div>
+        {others.length > 0 && (
+          <div className="border-t border-line">
+            <p className="px-6 pt-4 text-overline text-ink-muted uppercase">{t.organization.otherTitle}</p>
+            <div className="divide-y divide-line">
+              {others.map((x) => (
+                <SettingsItem key={x.organization.id} title={x.organization.name} description={`${t.orgType[x.organization.type]} · ${t.roles[x.role]}`}>
+                  <form action={switchOrganization}>
+                    <input type="hidden" name="organizationId" value={x.organization.id} />
+                    <SubmitButton variant="secondary">
+                      {t.switchOrg} {x.organization.name}
+                    </SubmitButton>
+                  </form>
+                </SettingsItem>
+              ))}
+            </div>
+          </div>
+        )}
+      </Card>
+
+      <Card title={t.training.title} description={t.training.description} padded={false}>
+        <SettingsList label={t.training.title}>
+          <SettingsRow id="row-modules" href="/moduler" icon="route" label={m.player.list.toModules} hint={t.training.modulesHint} />
+        </SettingsList>
+        {active && (
+          <section className="border-t border-line" data-testid="sandbox-links" aria-labelledby="sandbox-heading">
+            <h3 id="sandbox-heading" className="px-6 pt-4 text-overline text-ink-muted uppercase">
+              {ts.accountHeading}
+            </h3>
+            {tracks.length === 0 ? (
+              <p className="px-6 py-4 text-body-sm text-ink-muted">{ts.noTracks}</p>
+            ) : (
+              <ul className="divide-y divide-line">
+                {tracks.map((tr) => (
+                  <li key={tr.key}>
+                    <a
+                      href={`/sandkasse/${tr.key.toLowerCase()}`}
+                      className="group flex items-center gap-4 px-6 py-3.5 transition-colors hover:bg-sunken focus-visible:-outline-offset-2"
+                    >
+                      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                        <span className="text-label text-ink">{tr.displayName}</span>
+                        <span className="text-body-sm text-ink-muted">{format(ts.practiceFor, { product: tr.displayName })}</span>
+                      </span>
+                      <span className="flex shrink-0 items-center gap-1.5 text-label text-accent">
+                        <span className="hidden sm:inline">{ts.accountLink}</span>
+                        <span className="sr-only sm:hidden">{ts.accountLink}</span>
+                        <Icon name="arrowRight" className="transition-transform duration-[120ms] group-hover:translate-x-0.5" />
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+      </Card>
+
       <TrainingReminders userId={ctx.user.id} />
-      <a className="underline" href="/virksomhed/opret">
-        {t.createBusiness}
-      </a>
-      <form action={signOut}>
-        <SubmitButton variant="secondary">
-          {getMessages().auth.logout}
-        </SubmitButton>
-      </form>
+
+      <AccountDataLinks user={ctx.user} isBusinessAdmin={isBusinessAdmin} />
     </>
   );
 }
 
 export default function AccountPage(props: PageProps<"/konto">) {
+  const t = getMessages().account;
   return (
-    <Page title={getMessages().account.title}>
+    <Page title={t.title} lead={t.lead}>
       <Suspense>
         <Content searchParams={props.searchParams as Promise<{ fejl?: string }>} />
       </Suspense>
+      <SupportLauncher t={getMessages().support.widget} />
     </Page>
   );
 }
