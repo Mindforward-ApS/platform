@@ -54,8 +54,16 @@ export interface ChatTurnView {
   text: string;
 }
 
+/** A link in the track switcher. Label and href are passed in from Track data, never hardcoded here. */
+export interface TrackLink {
+  href: string;
+  label: string;
+  current: boolean;
+}
+
 export interface SandboxProps {
   sessionId: string;
+  tracks?: TrackLink[];
   skin: SkinConfig;
   initialState: SandboxState;
   conversationId: string | null;

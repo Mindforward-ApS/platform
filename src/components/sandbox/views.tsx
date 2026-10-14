@@ -1,230 +1,590 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
+import { Badge, Button, Check, cx, EmptyState, Field, Notice, Select, TextArea, type Tone } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import { detectPii } from "@/lib/pii";
 import type { ConnectorId, Scope } from "@/server/sandbox/events";
 import type { SandboxState } from "@/server/sandbox/reducer";
 import { newOverlayId } from "./api";
+import { SbIcon, type LocalIconName } from "./sandbox-icons";
 import type { CalendarItem, CustomerItem, FileItem, Intent, MailItem, SheetCellView } from "./types";
+import type { IconName } from "@/components/ui/icons";
 
-// Neutral placeholder views for the simulated Nordlys surfaces. Only token classes (src/styles/tokens.css).
+// Views for the simulated Nordlys surfaces: a pane header, then list + detail (or a form column).
+// Only token classes (src/styles/tokens.css) and Mindforward's own kit — never a vendor's look.
 
 const t = getMessages().sandbox;
 type Emit = (intent: Intent) => void;
+const nf = new Intl.NumberFormat("da-DK");
 
-const listButton = "w-full rounded-md border border-border p-2 text-left";
-const primary = "rounded-md bg-accent px-3 py-2 text-accent-fg";
-const secondary = "rounded-md border border-border bg-surface px-3 py-2";
+/* ───────────────────────── Local layout helpers ───────────────────────── */
 
-export function Heading({ children }: { children: React.ReactNode }) {
-  return <h2 className="text-lg font-semibold">{children}</h2>;
+export function Heading({ children }: { children: ReactNode }) {
+  return <h2 className="text-title-3 text-ink">{children}</h2>;
 }
+
+/** Top bar of a workspace pane: title, a quiet count and optional tools. */
+function PaneHeader({ title, meta, children }: { title: ReactNode; meta?: ReactNode; children?: ReactNode }) {
+  return (
+    <div className="flex min-h-14 shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-line bg-surface px-4 py-3 sm:px-6">
+      <div className="flex min-w-0 items-baseline gap-3">
+        <Heading>{title}</Heading>
+        {meta && <span className="text-caption text-ink-subtle">{meta}</span>}
+      </div>
+      {children && <div className="ml-auto flex flex-wrap items-center gap-2">{children}</div>}
+    </div>
+  );
+}
+
+/**
+ * List + detail inside a pane. Side by side when the pane is wide enough (container query), otherwise the
+ * list, and the detail with a back button once something is open.
+ */
+function ListDetail({ list, detail, empty, onBack, listWidth = "@3xl:w-[340px]" }: { list: ReactNode; detail: ReactNode | null; empty: ReactNode; onBack: () => void; listWidth?: string }) {
+  return (
+    <div className="@container flex min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1">
+        <div className={cx("min-h-0 w-full shrink-0 overflow-y-auto border-line bg-surface @3xl:border-r", listWidth, detail ? "hidden @3xl:block" : "block")}>{list}</div>
+        <div className={cx("min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-surface", detail ? "flex" : "hidden @3xl:flex")}>
+          {detail ? (
+            <>
+              <div className="sticky top-0 z-10 border-b border-line bg-surface px-4 py-2 @3xl:hidden">
+                <Button type="button" variant="ghost" size="sm" icon="arrowLeft" onClick={onBack}>
+                  {t.frame.back}
+                </Button>
+              </div>
+              {detail}
+            </>
+          ) : (
+            <div className="grid flex-1 place-items-center p-8">
+              <p className="max-w-xs text-center text-body-sm text-ink-subtle">{empty}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** One row in a pane list. */
+function ListRow({ selected, onClick, children }: { selected: boolean; onClick: () => void; children: ReactNode }) {
+  return (
+    <li className="border-b border-line last:border-b-0">
+      <button
+        type="button"
+        aria-current={selected ? "true" : undefined}
+        className={cx("flex w-full flex-col gap-1 px-4 py-3 text-left transition-colors sm:px-5", selected ? "bg-accent-soft" : "hover:bg-sunken")}
+        onClick={onClick}
+      >
+        {children}
+      </button>
+    </li>
+  );
+}
+
+/** A centered reading column for forms and settings-like views. */
+function FormColumn({ children }: { children: ReactNode }) {
+  return (
+    <div className="min-h-0 flex-1 overflow-y-auto bg-bg">
+      <div className="mx-auto flex w-full max-w-read flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">{children}</div>
+    </div>
+  );
+}
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase())
+    .join("");
+}
+
+function Avatar({ name }: { name: string }) {
+  return (
+    <span aria-hidden="true" className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken text-caption text-ink-muted ring-1 ring-line ring-inset">
+      {initials(name)}
+    </span>
+  );
+}
+
+/** Consecutive items with the same day label, in the given order. */
+function groupByDay<T>(items: T[], label: (item: T) => string) {
+  const days: { label: string; items: T[] }[] = [];
+  for (const item of items) {
+    const l = label(item);
+    const last = days[days.length - 1];
+    if (last && last.label === l) last.items.push(item);
+    else days.push({ label: l, items: [item] });
+  }
+  return days;
+}
+
+function DayHeading({ children }: { children: ReactNode }) {
+  return <h3 className="sticky top-0 z-[1] border-b border-line bg-sunken px-4 py-1.5 text-caption text-ink-muted first-letter:uppercase sm:px-5">{children}</h3>;
+}
+
+const fileIcon = (kind: FileItem["kind"]): LocalIconName | IconName => (kind === "doc" ? "file" : "table");
+
+/* ───────────────────────── Mail ───────────────────────── */
 
 export function MailView({ mail, emit }: { mail: MailItem[]; emit: Emit }) {
   const [open, setOpen] = useState<MailItem | null>(null);
   return (
-    <div className="grid gap-4 md:grid-cols-2" data-testid="sandbox-mail">
-      <div className="flex flex-col gap-2">
-        <Heading>{t.mail.inbox}</Heading>
-        <ul className="flex flex-col gap-1">
-          {mail.map((m) => (
-            <li key={m.id}>
-              <button
-                type="button"
-                className={`${listButton} ${open?.id === m.id ? "bg-surface" : ""}`}
-                onClick={() => {
-                  setOpen(m);
-                  emit({ event: { type: "MAIL_OPENED", payload: { mailId: m.id } } });
-                }}
-              >
-                <span className="block text-sm text-muted">
-                  {m.fromName} · {m.dateLabel} {m.time}
-                </span>
-                <span className="block">{m.subject}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <article className="flex flex-col gap-2">
-        {open ? (
-          <>
-            <Heading>{open.subject}</Heading>
-            <p className="text-sm text-muted">
-              {t.mail.from}: {open.fromName} &lt;{open.fromEmail}&gt; · {t.mail.to}: {open.to.join(", ")}
-            </p>
-            <p className="whitespace-pre-wrap">{open.body}</p>
-            {open.attachments.length > 0 && (
-              <p className="text-sm">
-                {t.mail.attachments}: {open.attachments.join(", ")}
-              </p>
-            )}
-          </>
-        ) : (
-          <p className="text-muted">{t.mail.select}</p>
-        )}
-      </article>
+    <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-mail">
+      <PaneHeader title={t.mail.inbox} meta={format(t.mail.count, { n: mail.length })} />
+      <ListDetail
+        onBack={() => setOpen(null)}
+        empty={t.mail.select}
+        list={
+          <div className="flex flex-col">
+            {groupByDay(mail, (m) => m.dateLabel).map((d) => (
+              <section key={d.label} aria-label={d.label}>
+                <DayHeading>{d.label}</DayHeading>
+                <ul>
+                  {d.items.map((m) => (
+                    <ListRow
+                      key={m.id}
+                      selected={open?.id === m.id}
+                      onClick={() => {
+                        setOpen(m);
+                        emit({ event: { type: "MAIL_OPENED", payload: { mailId: m.id } } });
+                      }}
+                    >
+                      <span className="flex items-baseline justify-between gap-3">
+                        <span className="truncate text-label text-ink">{m.fromName}</span>
+                        <span className="shrink-0 text-caption text-ink-subtle">{m.time}</span>
+                      </span>
+                      <span className="truncate text-body-sm text-ink">{m.subject}</span>
+                      <span className="line-clamp-1 text-body-sm text-ink-subtle">{m.body.replace(/\s+/g, " ")}</span>
+                    </ListRow>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        }
+        detail={
+          open && (
+            <article className="mx-auto flex w-full max-w-read flex-col gap-6 px-4 py-6 sm:px-8 sm:py-8">
+              <h3 className="text-title-2 text-ink">{open.subject}</h3>
+              <div className="flex items-start gap-3 border-b border-line pb-5">
+                <Avatar name={open.fromName} />
+                <div className="flex min-w-0 flex-1 flex-col gap-0.5 text-body-sm">
+                  <p className="flex flex-wrap items-baseline gap-x-2">
+                    <span className="text-label text-ink">{open.fromName}</span>
+                    <span className="truncate text-ink-subtle">&lt;{open.fromEmail}&gt;</span>
+                  </p>
+                  <p className="text-ink-muted">
+                    {t.mail.to}: {open.to.join(", ")}
+                  </p>
+                  <p className="text-caption text-ink-subtle">
+                    {open.dateLabel} {open.time}
+                  </p>
+                </div>
+              </div>
+              <p className="text-body leading-relaxed whitespace-pre-wrap text-ink">{open.body}</p>
+              {open.attachments.length > 0 && (
+                <div className="flex flex-col gap-2 border-t border-line pt-5">
+                  <p className="text-overline text-ink-subtle uppercase">{t.mail.attachments}</p>
+                  <ul className="flex flex-wrap gap-2">
+                    {open.attachments.map((a) => (
+                      <li key={a} className="inline-flex h-8 items-center gap-2 rounded-sm border border-line bg-sunken px-3 text-body-sm text-ink">
+                        <SbIcon name="paperclip" className="text-ink-subtle" />
+                        {a}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </article>
+          )
+        }
+      />
     </div>
   );
 }
 
+/* ───────────────────────── Calendar ───────────────────────── */
+
 export function CalendarView({ calendar, emit }: { calendar: CalendarItem[]; emit: Emit }) {
   const [open, setOpen] = useState<string | null>(null);
+  const days = groupByDay(calendar, (c) => (c.dayOffset === 0 ? `${t.calendar.today} · ${c.dateLabel}` : c.dateLabel));
+  const sel = calendar.find((c) => c.id === open) ?? null;
   return (
-    <div className="flex flex-col gap-2" data-testid="sandbox-calendar">
-      <Heading>{t.calendar.heading}</Heading>
-      <ul className="flex flex-col gap-1">
-        {calendar.map((c) => (
-          <li key={c.id}>
-            <button
-              type="button"
-              className={listButton}
-              onClick={() => {
-                setOpen(open === c.id ? null : c.id);
-                emit({ event: { type: "CALENDAR_EVENT_OPENED", payload: { eventId: c.id } } });
-              }}
-            >
-              <span className="block text-sm text-muted">
-                {c.dayOffset === 0 ? t.calendar.today : c.dateLabel} · {c.start}–{c.end}
-              </span>
-              <span className="block">{c.title}</span>
-              {open === c.id && (
-                <span className="block text-sm">
-                  {t.calendar.attendees}: {c.attendees.join(", ")}
-                  {c.note ? ` · ${c.note}` : ""}
-                </span>
-              )}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-calendar">
+      <PaneHeader title={t.calendar.heading} meta={format(t.calendar.count, { n: calendar.length })} />
+      <ListDetail
+        onBack={() => setOpen(null)}
+        empty={t.calendar.select}
+        list={
+          <div className="flex flex-col">
+            {days.map((d) => (
+              <section key={d.label} aria-label={d.label}>
+                <DayHeading>{d.label}</DayHeading>
+                <ul>
+                  {d.items.map((c) => (
+                    <ListRow
+                      key={c.id}
+                      selected={open === c.id}
+                      onClick={() => {
+                        setOpen(c.id);
+                        emit({ event: { type: "CALENDAR_EVENT_OPENED", payload: { eventId: c.id } } });
+                      }}
+                    >
+                      <span className="flex items-baseline gap-4">
+                        <span className="w-24 shrink-0 text-body-sm text-ink-muted">
+                          {c.start}–{c.end}
+                        </span>
+                        <span className="min-w-0 truncate text-label text-ink">{c.title}</span>
+                      </span>
+                    </ListRow>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        }
+        detail={
+          sel && (
+            <article className="mx-auto flex w-full max-w-read flex-col gap-6 px-4 py-6 sm:px-8 sm:py-8">
+              <div className="flex flex-col gap-2">
+                <p className="text-overline text-ink-subtle uppercase">{sel.dayOffset === 0 ? t.calendar.today : sel.dateLabel}</p>
+                <h3 className="text-title-2 text-ink">{sel.title}</h3>
+              </div>
+              <dl className="divide-y divide-line rounded-lg border border-line">
+                <div className="grid gap-1 px-4 py-3 sm:grid-cols-[140px_1fr] sm:gap-4">
+                  <dt className="text-body-sm text-ink-muted">{t.calendar.time}</dt>
+                  <dd className="text-body text-ink">
+                    {sel.dateLabel} · {sel.start}–{sel.end}
+                  </dd>
+                </div>
+                <div className="grid gap-1 px-4 py-3 sm:grid-cols-[140px_1fr] sm:gap-4">
+                  <dt className="text-body-sm text-ink-muted">{t.calendar.attendees}</dt>
+                  <dd className="text-body text-ink">{sel.attendees.join(", ")}</dd>
+                </div>
+                {sel.note && (
+                  <div className="grid gap-1 px-4 py-3 sm:grid-cols-[140px_1fr] sm:gap-4">
+                    <dt className="text-body-sm text-ink-muted">{t.calendar.note}</dt>
+                    <dd className="text-body text-ink">{sel.note}</dd>
+                  </div>
+                )}
+              </dl>
+            </article>
+          )
+        }
+      />
     </div>
   );
 }
+
+/* ───────────────────────── Files ───────────────────────── */
 
 export function FilesView({ files, emit, onOpenSheet }: { files: FileItem[]; emit: Emit; onOpenSheet: () => void }) {
   const [open, setOpen] = useState<FileItem | null>(null);
   return (
-    <div className="grid gap-4 md:grid-cols-2" data-testid="sandbox-files">
-      <div className="flex flex-col gap-2">
-        <Heading>{t.files.heading}</Heading>
-        <ul className="flex flex-col gap-1">
-          {files.map((f) => (
-            <li key={f.id}>
-              <button
-                type="button"
-                className={listButton}
+    <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-files">
+      <PaneHeader title={t.files.heading} meta={format(t.files.count, { n: files.length })} />
+      <ListDetail
+        onBack={() => setOpen(null)}
+        empty={t.files.select}
+        listWidth="@3xl:w-[360px]"
+        list={
+          <ul>
+            {files.map((f) => (
+              <ListRow
+                key={f.id}
+                selected={open?.id === f.id}
                 onClick={() => {
                   if (f.kind === "sheet") return onOpenSheet();
                   setOpen(f);
                   emit({ event: { type: "FILE_OPENED", payload: { fileId: f.id } } });
                 }}
               >
-                <span className="block">{f.name}</span>
-                <span className="block text-sm text-muted">
-                  {f.summary}
-                  {f.confidential ? ` · ${t.files.confidential}` : ""}
+                <span className="flex items-start gap-3">
+                  <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-sm bg-sunken text-ink-muted ring-1 ring-line ring-inset">
+                    <SbIcon name={fileIcon(f.kind)} />
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="flex items-center gap-2">
+                      <span className="truncate text-label text-ink">{f.name}</span>
+                      {f.confidential && (
+                        <Badge tone="hint" icon="lock">
+                          {t.files.confidential}
+                        </Badge>
+                      )}
+                    </span>
+                    <span className="line-clamp-2 text-body-sm text-ink-subtle">
+                      {t.files.kinds[f.kind]} · {f.summary}
+                    </span>
+                  </span>
                 </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <article className="flex min-w-0 flex-col gap-2">
-        {open ? (
-          <>
-            <Heading>{open.name}</Heading>
-            <pre className="overflow-x-auto whitespace-pre-wrap rounded-md border border-border bg-surface p-3 font-mono text-sm">{open.body}</pre>
-          </>
-        ) : (
-          <p className="text-muted">{t.files.select}</p>
-        )}
-      </article>
+              </ListRow>
+            ))}
+          </ul>
+        }
+        detail={
+          open && (
+            <article className="mx-auto flex w-full max-w-read flex-col gap-5 px-4 py-6 sm:px-8 sm:py-8">
+              <div className="flex flex-col gap-2">
+                <p className="flex items-center gap-2 text-overline text-ink-subtle uppercase">
+                  <SbIcon name={fileIcon(open.kind)} size={14} />
+                  {t.files.kinds[open.kind]}
+                  {open.confidential && (
+                    <Badge tone="hint" icon="lock">
+                      {t.files.confidential}
+                    </Badge>
+                  )}
+                </p>
+                <h3 className="text-title-2 break-words text-ink">{open.name}</h3>
+                <p className="text-body-sm text-ink-muted">{open.summary}</p>
+              </div>
+              <pre
+                className={cx(
+                  "overflow-x-auto rounded-lg border border-line p-5",
+                  open.kind === "table" ? "bg-sunken font-mono text-mono whitespace-pre text-ink" : "bg-surface font-sans text-body leading-relaxed whitespace-pre-wrap text-ink",
+                )}
+              >
+                {open.body}
+              </pre>
+            </article>
+          )
+        }
+      />
     </div>
+  );
+}
+
+/* ───────────────────────── CRM ───────────────────────── */
+
+const statusTone: Record<CustomerItem["status"], Tone> = { ACTIVE: "success", LEAD: "accent", TRIAL: "hint", CANCELED: "neutral" };
+
+function ToolbarSelect({ label, value, onChange, children }: { label: string; value: string; onChange: (v: string) => void; children: ReactNode }) {
+  return (
+    <span className="relative">
+      <select
+        aria-label={label}
+        className="h-8 appearance-none rounded-sm border border-line-strong bg-surface pr-8 pl-3 text-body-sm text-ink shadow-xs focus:border-accent focus:shadow-ring focus:outline-none"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {children}
+      </select>
+      <SbIcon name="chevronDown" size={14} className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 text-ink-muted" />
+    </span>
   );
 }
 
 export function CrmView({ crm, emit }: { crm: CustomerItem[]; emit: Emit }) {
   const [segment, setSegment] = useState("");
   const [status, setStatus] = useState("");
+  const [open, setOpen] = useState<string | null>(null);
   const rows = crm.filter((k) => (!segment || k.segment === segment) && (!status || k.status === status));
   const apply = (seg: string, st: string) => {
     const resultCount = crm.filter((k) => (!seg || k.segment === seg) && (!st || k.status === st)).length;
     emit({ event: { type: "CRM_FILTER_APPLIED", payload: { filter: { ...(seg ? { segment: seg } : {}), ...(st ? { status: st } : {}) }, resultCount } } });
   };
+  const sel = crm.find((k) => k.id === open) ?? null;
+  const select = (id: string) => {
+    setOpen(id);
+    emit({ event: { type: "CRM_RECORD_OPENED", payload: { customerId: id } } });
+  };
+  const cols = [t.crm.name, t.crm.industry, t.crm.city, t.crm.segment, t.crm.status, t.crm.revenue, t.crm.contact, t.crm.nps];
+
   return (
-    <div className="flex flex-col gap-2" data-testid="sandbox-crm">
-      <Heading>{t.crm.heading}</Heading>
-      <div className="flex flex-wrap gap-2">
-        <select aria-label={t.crm.segment} className="rounded-md border border-border bg-bg p-2" value={segment} onChange={(e) => (setSegment(e.target.value), apply(e.target.value, status))}>
+    <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-crm">
+      <PaneHeader title={t.crm.heading} meta={format(t.crm.count, { n: rows.length })}>
+        <ToolbarSelect
+          label={t.crm.segment}
+          value={segment}
+          onChange={(v) => {
+            setSegment(v);
+            apply(v, status);
+          }}
+        >
           <option value="">{t.crm.allSegments}</option>
           {["A", "B", "C"].map((s) => (
             <option key={s} value={s}>
               {s}
             </option>
           ))}
-        </select>
-        <select aria-label={t.crm.status} className="rounded-md border border-border bg-bg p-2" value={status} onChange={(e) => (setStatus(e.target.value), apply(segment, e.target.value))}>
+        </ToolbarSelect>
+        <ToolbarSelect
+          label={t.crm.status}
+          value={status}
+          onChange={(v) => {
+            setStatus(v);
+            apply(segment, v);
+          }}
+        >
           <option value="">{t.crm.allStatuses}</option>
           {(Object.keys(t.crm.statuses) as (keyof typeof t.crm.statuses)[]).map((s) => (
             <option key={s} value={s}>
               {t.crm.statuses[s]}
             </option>
           ))}
-        </select>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-border">
-              {[t.crm.name, t.crm.industry, t.crm.city, t.crm.segment, t.crm.status, t.crm.revenue, t.crm.contact, t.crm.nps].map((h) => (
-                <th key={h} className="p-2">
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((k) => (
-              <tr key={k.id} className="cursor-pointer border-b border-border" onClick={() => emit({ event: { type: "CRM_RECORD_OPENED", payload: { customerId: k.id } } })}>
-                <td className="p-2">{k.name}</td>
-                <td className="p-2">{k.industry}</td>
-                <td className="p-2">{k.city}</td>
-                <td className="p-2">{k.segment ?? "—"}</td>
-                <td className="p-2">{t.crm.statuses[k.status]}</td>
-                <td className="p-2">{k.annualRevenueDkk.toLocaleString("da-DK")}</td>
-                <td className="p-2">{k.contact}</td>
-                <td className="p-2">{k.nps ?? "—"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        </ToolbarSelect>
+      </PaneHeader>
+      <div className="@container flex min-h-0 flex-1">
+        <div className={cx("min-h-0 min-w-0 flex-1 overflow-auto bg-surface", sel ? "hidden @5xl:block" : "block")}>
+          {rows.length === 0 ? (
+            <p className="p-8 text-center text-body-sm text-ink-subtle">{t.crm.none}</p>
+          ) : (
+            <table className="w-full min-w-[880px] border-collapse text-left text-body-sm">
+              <thead className="sticky top-0 z-[1]">
+                <tr>
+                  {cols.map((h, i) => (
+                    <th key={h} scope="col" className={cx("border-b border-line bg-sunken px-4 py-2.5 text-caption font-semibold whitespace-nowrap text-ink-muted", (i === 5 || i === 7) && "text-right")}>
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((k) => (
+                  <tr key={k.id} className={cx("border-b border-line transition-colors", open === k.id ? "bg-accent-soft" : "hover:bg-sunken/60")}>
+                    <td className="px-4 py-2.5">
+                      <button type="button" className="text-left text-label whitespace-nowrap text-ink hover:text-accent" aria-current={open === k.id ? "true" : undefined} onClick={() => select(k.id)}>
+                        {k.name}
+                      </button>
+                    </td>
+                    <td className="px-4 py-2.5 text-ink-muted">{k.industry}</td>
+                    <td className="px-4 py-2.5 text-ink-muted">{k.city}</td>
+                    <td className="px-4 py-2.5 text-ink">{k.segment ?? "—"}</td>
+                    <td className="px-4 py-2.5">
+                      <Badge tone={statusTone[k.status]}>{t.crm.statuses[k.status]}</Badge>
+                    </td>
+                    <td className="px-4 py-2.5 text-right text-ink">{nf.format(k.annualRevenueDkk)}</td>
+                    <td className="px-4 py-2.5 whitespace-nowrap text-ink-muted">{k.contact}</td>
+                    <td className="px-4 py-2.5 text-right text-ink">{k.nps ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+        {sel && (
+          <aside aria-label={sel.name} className="flex min-h-0 w-full min-w-0 flex-col overflow-y-auto border-line bg-surface @5xl:w-[320px] @5xl:shrink-0 @5xl:border-l">
+            <div className="flex items-center justify-between gap-2 border-b border-line px-4 py-2">
+              <span className="@5xl:hidden">
+                <Button type="button" variant="ghost" size="sm" icon="arrowLeft" onClick={() => setOpen(null)}>
+                  {t.frame.back}
+                </Button>
+              </span>
+              <span className="ml-auto hidden @5xl:block">
+                <Button type="button" variant="ghost" size="sm" aria-label={t.frame.back} onClick={() => setOpen(null)}>
+                  <SbIcon name="x" />
+                </Button>
+              </span>
+            </div>
+            <div className="mx-auto flex w-full max-w-read flex-col gap-5 p-5">
+              <div className="flex items-start gap-3">
+                <Avatar name={sel.name} />
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <h3 className="text-title-3 text-ink">{sel.name}</h3>
+                  <Badge tone={statusTone[sel.status]} className="self-start">
+                    {t.crm.statuses[sel.status]}
+                  </Badge>
+                </div>
+              </div>
+              <dl className="divide-y divide-line border-y border-line">
+                {(
+                  [
+                    [t.crm.industry, sel.industry],
+                    [t.crm.city, sel.city],
+                    [t.crm.segment, sel.segment ?? "—"],
+                    [t.crm.revenue, nf.format(sel.annualRevenueDkk)],
+                    [t.crm.contact, sel.contact],
+                    [t.crm.nps, sel.nps ?? "—"],
+                  ] as [string, ReactNode][]
+                ).map(([k, v]) => (
+                  <div key={k} className="flex items-baseline justify-between gap-4 py-2.5">
+                    <dt className="text-body-sm text-ink-muted">{k}</dt>
+                    <dd className="text-right text-body-sm text-ink">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </aside>
+        )}
       </div>
     </div>
   );
 }
+
+/* ───────────────────────── Sheet ───────────────────────── */
 
 export function SheetView({ cells }: { cells: Record<string, SheetCellView> }) {
   const cols = ["A", "B", "C", "D", "E", "F", "G", "H"];
   const rows = Array.from(new Set(Object.keys(cells).map((c) => Number(c.slice(1))))).sort((a, b) => a - b);
   const [selected, setSelected] = useState<string | null>(null);
   const sel = selected ? cells[selected] : undefined;
+  const show = (v: SheetCellView["value"] | undefined) => (typeof v === "number" ? nf.format(v) : v);
   return (
-    <div className="flex flex-col gap-2" data-testid="sandbox-sheet">
-      <Heading>{t.sheet.heading}</Heading>
-      <div className="overflow-x-auto">
-        <table className="text-right font-mono text-sm">
+    <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-sheet">
+      <PaneHeader title={t.sheet.heading} />
+      {/* Cell bar: reference · value or formula · note. */}
+      <div className="flex min-h-11 shrink-0 flex-wrap items-center gap-x-4 gap-y-1 border-b border-line bg-surface px-4 py-2 text-body-sm sm:px-6" aria-live="polite">
+        <span className="inline-flex h-7 min-w-14 items-center justify-center rounded-xs border border-line bg-sunken px-2 font-mono text-mono text-ink" aria-label={t.sheet.cell}>
+          {selected ?? "—"}
+        </span>
+        {selected && sel ? (
+          <>
+            <span className="min-w-0 truncate text-ink">
+              <span className="text-ink-muted">{sel.formula ? t.sheet.formula : t.sheet.value}: </span>
+              <span className={sel.formula ? "font-mono text-mono" : ""}>{sel.formula ?? show(sel.value)}</span>
+            </span>
+            {sel.note && (
+              <span className="min-w-0 text-ink-muted">
+                {t.sheet.note}: {sel.note}
+              </span>
+            )}
+          </>
+        ) : (
+          <span className="text-ink-subtle">{t.sheet.select}</span>
+        )}
+      </div>
+      <div className="min-h-0 flex-1 overflow-auto bg-surface">
+        <table className="border-separate border-spacing-0 text-body-sm">
+          <thead className="sticky top-0 z-[2]">
+            <tr>
+              <th className="sticky left-0 z-[3] w-10 border-r border-b border-line bg-sunken" aria-hidden="true" />
+              {cols.map((c) => (
+                <th key={c} scope="col" className="border-r border-b border-line bg-sunken px-3 py-1.5 text-center text-caption font-semibold text-ink-muted">
+                  {c}
+                </th>
+              ))}
+            </tr>
+          </thead>
           <tbody>
             {rows.map((r) => (
-              <tr key={r} className="border-b border-border">
-                <th className="p-1 text-muted">{r}</th>
+              <tr key={r}>
+                <th scope="row" className="sticky left-0 z-[1] w-10 border-r border-b border-line bg-sunken px-2 text-center text-caption font-semibold text-ink-muted">
+                  {r}
+                </th>
                 {cols.map((c) => {
-                  const cell = cells[`${c}${r}`];
-                  const v = cell?.value;
+                  const ref = `${c}${r}`;
+                  const cell = cells[ref];
+                  const isSel = selected === ref;
+                  const header = r === 1;
                   return (
-                    <td key={c} className={`p-1 ${c === "A" ? "text-left" : ""} ${selected === `${c}${r}` ? "bg-surface" : ""}`} onClick={() => setSelected(`${c}${r}`)}>
-                      {typeof v === "number" ? v.toLocaleString("da-DK") : v}
+                    <td key={c} className={cx("border-r border-b border-line p-0", c === "A" ? "min-w-48" : "min-w-28")}>
+                      <button
+                        type="button"
+                        aria-label={ref}
+                        aria-pressed={isSel}
+                        className={cx(
+                          "flex h-9 w-full items-center px-3 whitespace-nowrap",
+                          c === "A" ? "justify-start" : "justify-end",
+                          header ? "font-semibold text-ink" : "text-ink",
+                          isSel ? "bg-accent-soft outline-2 -outline-offset-2 outline-accent" : "hover:bg-sunken/60",
+                          cell?.note && "underline decoration-hint decoration-dotted underline-offset-4",
+                        )}
+                        onClick={() => setSelected(ref)}
+                      >
+                        {show(cell?.value)}
+                      </button>
                     </td>
                   );
                 })}
@@ -233,16 +593,11 @@ export function SheetView({ cells }: { cells: Record<string, SheetCellView> }) {
           </tbody>
         </table>
       </div>
-      {selected && sel && (
-        <p className="text-sm">
-          {selected}
-          {sel.formula ? ` · ${t.sheet.formula}: ${sel.formula}` : ""}
-          {sel.note ? ` · ${t.sheet.note}: ${sel.note}` : ""}
-        </p>
-      )}
     </div>
   );
 }
+
+/* ───────────────────────── Connectors ───────────────────────── */
 
 const CONNECTOR_SCOPES: Record<ConnectorId, Scope[]> = {
   mail: ["mail.read", "mail.draft", "mail.send"],
@@ -252,93 +607,116 @@ const CONNECTOR_SCOPES: Record<ConnectorId, Scope[]> = {
   sheet: ["sheet.read", "sheet.write"],
 };
 
+const CONNECTOR_ICON: Record<ConnectorId, LocalIconName | IconName> = { mail: "mail", calendar: "calendar", files: "file", crm: "building", sheet: "table" };
+
 export function ConnectorsView({ state, emit }: { state: SandboxState; emit: Emit }) {
   const [dialog, setDialog] = useState<ConnectorId | null>(null);
   const [chosen, setChosen] = useState<Scope[]>([]);
   return (
-    <div className="flex flex-col gap-3" data-testid="sandbox-connectors">
-      <Heading>{t.connectors.heading}</Heading>
-      <p className="text-muted">{t.connectors.intro}</p>
-      <ul className="flex flex-col gap-2">
-        {(Object.keys(CONNECTOR_SCOPES) as ConnectorId[]).map((id) => {
-          const c = state.connectors[id];
-          return (
-            <li key={id} className="flex flex-wrap items-center gap-3 rounded-md border border-border p-3">
-              <span className="font-semibold">{t.connectors.names[id]}</span>
-              <span className="text-sm text-muted">{c.connected ? `${t.connectors.connected}: ${c.scopes.map((s) => t.connectors.scopes[s]).join(", ")}` : t.connectors.notConnected}</span>
-              {c.connected ? (
-                <button type="button" className={`${secondary} ml-auto`} onClick={() => emit({ event: { type: "CONNECTOR_DISCONNECTED", payload: { connectorId: id } } })}>
-                  {t.connectors.disconnect}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className={`${primary} ml-auto`}
-                  onClick={() => {
-                    setDialog(id);
-                    setChosen([]);
-                    emit({ event: { type: "CONNECTOR_CONNECT_STARTED", payload: { connectorId: id } } });
-                  }}
-                >
-                  {t.connectors.connect} {t.connectors.names[id]}
-                </button>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      {dialog && (
-        <div role="dialog" aria-labelledby="perm-title" className="flex flex-col gap-2 rounded-md border border-border bg-surface p-3">
-          <h3 id="perm-title" className="font-semibold">
-            {t.connectors.permissionTitle} ({t.connectors.names[dialog]})
-          </h3>
-          {CONNECTOR_SCOPES[dialog].map((s) => (
-            <label key={s} className="flex items-center gap-2">
-              <input type="checkbox" checked={chosen.includes(s)} onChange={(e) => setChosen((c) => (e.target.checked ? [...c, s] : c.filter((x) => x !== s)))} />
-              {t.connectors.scopes[s]}
-            </label>
-          ))}
-          <details>
-            <summary className="cursor-pointer underline">{t.connectors.whatDoesItMean}</summary>
-            <p className="text-sm">{t.connectors.leastPrivilege}</p>
-          </details>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              className={primary}
-              disabled={chosen.length === 0}
-              onClick={() => {
-                emit({ event: { type: "CONNECTOR_PERMISSION_GRANTED", payload: { connectorId: dialog, scopes: chosen } } });
-                setDialog(null);
-              }}
-            >
-              {t.connectors.grant}
-            </button>
-            <button
-              type="button"
-              className={secondary}
-              onClick={() => {
-                emit({ event: { type: "CONNECTOR_PERMISSION_DENIED", payload: { connectorId: dialog, deniedScopes: CONNECTOR_SCOPES[dialog] } } });
-                setDialog(null);
-              }}
-            >
-              {t.connectors.deny}
-            </button>
-          </div>
-        </div>
-      )}
+    <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-connectors">
+      <PaneHeader title={t.connectors.heading} />
+      <FormColumn>
+        <p className="text-body text-ink-muted">{t.connectors.intro}</p>
+        {dialog && (
+          <section role="dialog" aria-labelledby="perm-title" className="overflow-hidden rounded-lg border border-line-strong bg-surface">
+            <div className="flex items-center gap-3 border-b border-line px-6 py-4">
+              <SbIcon name="shield" className="text-accent" />
+              <h3 id="perm-title" className="text-title-3 text-ink">
+                {t.connectors.permissionTitle} ({t.connectors.names[dialog]})
+              </h3>
+            </div>
+            <div className="flex flex-col gap-4 p-6">
+              <div className="flex flex-col gap-3">
+                {CONNECTOR_SCOPES[dialog].map((s) => (
+                  <Check key={s} label={t.connectors.scopes[s]} checked={chosen.includes(s)} onChange={(e) => setChosen((c) => (e.target.checked ? [...c, s] : c.filter((x) => x !== s)))} />
+                ))}
+              </div>
+              <details className="group rounded-md border border-line bg-sunken px-4 py-3">
+                <summary className="flex cursor-pointer list-none items-center gap-2 text-label text-ink">
+                  <SbIcon name="chevronRight" className="text-ink-subtle transition-transform group-open:rotate-90" />
+                  {t.connectors.whatDoesItMean}
+                </summary>
+                <p className="mt-2 pl-6 text-body-sm text-ink-muted">{t.connectors.leastPrivilege}</p>
+              </details>
+            </div>
+            <div className="flex flex-wrap items-center justify-end gap-3 border-t border-line bg-sunken px-6 py-4">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  emit({ event: { type: "CONNECTOR_PERMISSION_DENIED", payload: { connectorId: dialog, deniedScopes: CONNECTOR_SCOPES[dialog] } } });
+                  setDialog(null);
+                }}
+              >
+                {t.connectors.deny}
+              </Button>
+              <Button
+                type="button"
+                disabled={chosen.length === 0}
+                onClick={() => {
+                  emit({ event: { type: "CONNECTOR_PERMISSION_GRANTED", payload: { connectorId: dialog, scopes: chosen } } });
+                  setDialog(null);
+                }}
+              >
+                {t.connectors.grant}
+              </Button>
+            </div>
+          </section>
+        )}
+        <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
+          {(Object.keys(CONNECTOR_SCOPES) as ConnectorId[]).map((id) => {
+            const c = state.connectors[id];
+            return (
+              <li key={id} className="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4">
+                <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-sunken text-ink-muted ring-1 ring-line ring-inset">
+                  <SbIcon name={CONNECTOR_ICON[id]} />
+                </span>
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <span className="flex flex-wrap items-center gap-2">
+                    <span className="text-label text-ink">{t.connectors.names[id]}</span>
+                    {c.connected ? (
+                      <Badge tone="success" icon="check">
+                        {t.connectors.connected}
+                      </Badge>
+                    ) : (
+                      <Badge>{t.connectors.notConnected}</Badge>
+                    )}
+                  </span>
+                  {c.connected && <span className="text-body-sm text-ink-muted">{c.scopes.map((s) => t.connectors.scopes[s]).join(", ")}</span>}
+                </div>
+                {c.connected ? (
+                  <Button type="button" variant="secondary" size="sm" onClick={() => emit({ event: { type: "CONNECTOR_DISCONNECTED", payload: { connectorId: id } } })}>
+                    {t.connectors.disconnect}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => {
+                      setDialog(id);
+                      setChosen([]);
+                      emit({ event: { type: "CONNECTOR_CONNECT_STARTED", payload: { connectorId: id } } });
+                    }}
+                  >
+                    {t.connectors.connect} {t.connectors.names[id]}
+                  </Button>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </FormColumn>
     </div>
   );
 }
 
+/* ───────────────────────── Assistants ───────────────────────── */
+
 function TextGate({ text }: { text: string }) {
   const r = detectPii(text);
   const kind = r.findings.find((f) => f.severity === "BLOCK")?.kind;
-  return kind ? (
-    <p role="alert" className="text-sm text-danger">
-      {t.pii.blocked[kind]}
-    </p>
-  ) : null;
+  return kind ? <Notice tone="danger">{t.pii.blocked[kind]}</Notice> : null;
 }
 
 export function AssistantsView({ state, files, emit }: { state: SandboxState; files: FileItem[]; emit: Emit }) {
@@ -346,49 +724,69 @@ export function AssistantsView({ state, files, emit }: { state: SandboxState; fi
   const [knowledge, setKnowledge] = useState<string[]>([]);
   const blocked = detectPii(instructions).action === "BLOCK";
   return (
-    <div className="flex flex-col gap-3" data-testid="sandbox-assistants">
-      <Heading>{t.assistants.heading}</Heading>
-      <p className="text-muted">{t.assistants.intro}</p>
-      <ul className="flex flex-col gap-1">
-        {state.assistants.length === 0 && <li className="text-muted">{t.assistants.none}</li>}
-        {state.assistants.map((a, i) => (
-          <li key={a.id} className="rounded-md border border-border p-2">
-            {format(t.assistants.created, { n: i + 1 })} · {a.knowledgeFileIds.join(", ")}
-          </li>
-        ))}
-      </ul>
-      <label className="flex flex-col gap-1">
-        {t.assistants.instructions}
-        <textarea className="min-h-24 rounded-md border border-border bg-bg p-2" value={instructions} onChange={(e) => setInstructions(e.target.value)} maxLength={8000} />
-      </label>
-      <TextGate text={instructions} />
-      <fieldset className="flex flex-col gap-1">
-        <legend>{t.assistants.knowledge}</legend>
-        {files.filter((f) => f.kind !== "sheet").map((f) => (
-          <label key={f.id} className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={knowledge.includes(f.id)} onChange={(e) => setKnowledge((k) => (e.target.checked ? [...k, f.id] : k.filter((x) => x !== f.id)))} />
-            {f.name}
-          </label>
-        ))}
-      </fieldset>
-      <button
-        type="button"
-        className={`${primary} self-start disabled:opacity-50`}
-        disabled={!instructions.trim() || blocked}
-        onClick={() => {
-          emit({
-            event: { type: "ASSISTANT_CREATED", payload: { assistantId: newOverlayId("asst"), instructionCharCount: instructions.length, knowledgeFileIds: knowledge, connectorIds: [], starterCount: 0 } },
-            contentText: instructions,
-          });
-          setInstructions("");
-          setKnowledge([]);
-        }}
-      >
-        {t.assistants.create}
-      </button>
+    <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-assistants">
+      <PaneHeader title={t.assistants.heading} meta={state.assistants.length > 0 ? String(state.assistants.length) : undefined} />
+      <FormColumn>
+        <p className="text-body text-ink-muted">{t.assistants.intro}</p>
+        {state.assistants.length === 0 ? (
+          <EmptyState icon="user" title={t.assistants.none} />
+        ) : (
+          <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
+            {state.assistants.map((a, i) => (
+              <li key={a.id} className="flex items-center gap-3 px-5 py-3.5">
+                <SbIcon name="assistant" className="text-ink-subtle" />
+                <span className="text-label text-ink">{format(t.assistants.created, { n: i + 1 })}</span>
+                {a.knowledgeFileIds.length > 0 && <span className="truncate text-body-sm text-ink-subtle">{a.knowledgeFileIds.join(", ")}</span>}
+              </li>
+            ))}
+          </ul>
+        )}
+        <section className="overflow-hidden rounded-lg border border-line bg-surface">
+          <div className="border-b border-line px-6 py-4">
+            <h3 className="text-title-3 text-ink">{t.terms.newAssistant}</h3>
+          </div>
+          <div className="flex flex-col gap-5 p-6">
+            <TextArea label={t.assistants.instructions} value={instructions} onChange={(e) => setInstructions(e.target.value)} maxLength={8000} className="min-h-32" />
+            <TextGate text={instructions} />
+            <fieldset className="flex flex-col gap-3">
+              <legend className="mb-3 text-label text-ink">{t.assistants.knowledge}</legend>
+              <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                {files
+                  .filter((f) => f.kind !== "sheet")
+                  .map((f) => (
+                    <Check
+                      key={f.id}
+                      label={<span className="text-body-sm">{f.name}</span>}
+                      checked={knowledge.includes(f.id)}
+                      onChange={(e) => setKnowledge((k) => (e.target.checked ? [...k, f.id] : k.filter((x) => x !== f.id)))}
+                    />
+                  ))}
+              </div>
+            </fieldset>
+          </div>
+          <div className="flex justify-end border-t border-line bg-sunken px-6 py-4">
+            <Button
+              type="button"
+              disabled={!instructions.trim() || blocked}
+              onClick={() => {
+                emit({
+                  event: { type: "ASSISTANT_CREATED", payload: { assistantId: newOverlayId("asst"), instructionCharCount: instructions.length, knowledgeFileIds: knowledge, connectorIds: [], starterCount: 0 } },
+                  contentText: instructions,
+                });
+                setInstructions("");
+                setKnowledge([]);
+              }}
+            >
+              {t.assistants.create}
+            </Button>
+          </div>
+        </section>
+      </FormColumn>
     </div>
   );
 }
+
+/* ───────────────────────── Automations ───────────────────────── */
 
 export function AutomationsView({ state, emit }: { state: SandboxState; emit: Emit }) {
   const [prompt, setPrompt] = useState("");
@@ -396,73 +794,107 @@ export function AutomationsView({ state, emit }: { state: SandboxState; emit: Em
   const [time, setTime] = useState("08:00");
   const blocked = detectPii(prompt).action === "BLOCK";
   return (
-    <div className="flex flex-col gap-3" data-testid="sandbox-automations">
-      <Heading>{t.automations.heading}</Heading>
-      <p className="text-muted">{t.automations.intro}</p>
-      <ul className="flex flex-col gap-2">
-        {state.automations.length === 0 && <li className="text-muted">{t.automations.none}</li>}
-        {state.automations.map((a, i) => (
-          <li key={a.id} className="flex flex-wrap items-center gap-2 rounded-md border border-border p-2">
-            <span>{format(t.automations.item, { n: i + 1 })}</span>
-            <span className="text-sm text-muted">
-              {a.enabled ? t.automations.enabled : t.automations.disabled} · {format(t.automations.testRuns, { n: a.testRuns })}
-            </span>
-            <button type="button" className={`${secondary} ml-auto`} onClick={() => emit({ event: { type: a.enabled ? "AUTOMATION_DISABLED" : "AUTOMATION_ENABLED", payload: { automationId: a.id } } })}>
-              {a.enabled ? t.automations.disable : t.automations.enable}
-            </button>
-            <button type="button" className={secondary} onClick={() => emit({ event: { type: "AUTOMATION_TEST_RUN", payload: { automationId: a.id, success: true, actionsRun: a.actionTypes.length } } })}>
-              {t.automations.testRun}
-            </button>
-          </li>
-        ))}
-      </ul>
-      <label className="flex flex-col gap-1">
-        {t.automations.prompt}
-        <textarea className="min-h-20 rounded-md border border-border bg-bg p-2" value={prompt} onChange={(e) => setPrompt(e.target.value)} maxLength={8000} />
-      </label>
-      <TextGate text={prompt} />
-      <div className="flex flex-wrap gap-2">
-        <label className="flex flex-col gap-1">
-          {t.automations.weekday}
-          <select className="rounded-md border border-border bg-bg p-2" value={weekday} onChange={(e) => setWeekday(Number(e.target.value))}>
-            {t.automations.weekdays.map((d, i) => (
-              <option key={d} value={i + 1}>
-                {d}
-              </option>
+    <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-automations">
+      <PaneHeader title={t.automations.heading} meta={state.automations.length > 0 ? String(state.automations.length) : undefined} />
+      <FormColumn>
+        <p className="text-body text-ink-muted">{t.automations.intro}</p>
+        {state.automations.length === 0 ? (
+          <EmptyState icon="clock" title={t.automations.none} />
+        ) : (
+          <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
+            {state.automations.map((a, i) => (
+              <li key={a.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4">
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <span className="text-label text-ink">{format(t.automations.item, { n: i + 1 })}</span>
+                  <span className="flex flex-wrap items-center gap-2 text-body-sm text-ink-muted">
+                    {a.enabled ? (
+                      <Badge tone="success" icon="check">
+                        {t.automations.enabled}
+                      </Badge>
+                    ) : (
+                      <Badge>{t.automations.disabled}</Badge>
+                    )}
+                    <span>{format(t.automations.testRuns, { n: a.testRuns })}</span>
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <Button type="button" variant="secondary" size="sm" onClick={() => emit({ event: { type: a.enabled ? "AUTOMATION_DISABLED" : "AUTOMATION_ENABLED", payload: { automationId: a.id } } })}>
+                    {a.enabled ? t.automations.disable : t.automations.enable}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => emit({ event: { type: "AUTOMATION_TEST_RUN", payload: { automationId: a.id, success: true, actionsRun: a.actionTypes.length } } })}
+                  >
+                    {t.automations.testRun}
+                  </Button>
+                </div>
+              </li>
             ))}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1">
-          {t.automations.time}
-          <input type="time" className="rounded-md border border-border bg-bg p-2" value={time} onChange={(e) => setTime(e.target.value)} />
-        </label>
-      </div>
-      <button
-        type="button"
-        className={`${primary} self-start disabled:opacity-50`}
-        disabled={!prompt.trim() || blocked || !/^\d{2}:\d{2}$/.test(time)}
-        onClick={() => {
-          emit({
-            event: {
-              type: "AUTOMATION_CREATED",
-              payload: { automationId: newOverlayId("auto"), trigger: { type: "SCHEDULE", freq: "WEEKLY", weekday, time }, actions: [{ type: "RUN_PROMPT", connectorIds: [] }, { type: "NOTIFY_ME", connectorIds: [] }], promptCharCount: prompt.length },
-            },
-            contentText: prompt,
-          });
-          setPrompt("");
-        }}
-      >
-        {t.automations.create}
-      </button>
+          </ul>
+        )}
+        <section className="overflow-hidden rounded-lg border border-line bg-surface">
+          <div className="border-b border-line px-6 py-4">
+            <h3 className="text-title-3 text-ink">{t.automations.create}</h3>
+          </div>
+          <div className="flex flex-col gap-5 p-6">
+            <TextArea label={t.automations.prompt} value={prompt} onChange={(e) => setPrompt(e.target.value)} maxLength={8000} />
+            <TextGate text={prompt} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Select label={t.automations.weekday} value={weekday} onChange={(e) => setWeekday(Number(e.target.value))}>
+                {t.automations.weekdays.map((d, i) => (
+                  <option key={d} value={i + 1}>
+                    {d}
+                  </option>
+                ))}
+              </Select>
+              <Field label={t.automations.time} type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+            </div>
+          </div>
+          <div className="flex justify-end border-t border-line bg-sunken px-6 py-4">
+            <Button
+              type="button"
+              disabled={!prompt.trim() || blocked || !/^\d{2}:\d{2}$/.test(time)}
+              onClick={() => {
+                emit({
+                  event: {
+                    type: "AUTOMATION_CREATED",
+                    payload: {
+                      automationId: newOverlayId("auto"),
+                      trigger: { type: "SCHEDULE", freq: "WEEKLY", weekday, time },
+                      actions: [
+                        { type: "RUN_PROMPT", connectorIds: [] },
+                        { type: "NOTIFY_ME", connectorIds: [] },
+                      ],
+                      promptCharCount: prompt.length,
+                    },
+                  },
+                  contentText: prompt,
+                });
+                setPrompt("");
+              }}
+            >
+              {t.automations.create}
+            </Button>
+          </div>
+        </section>
+      </FormColumn>
     </div>
   );
 }
 
+/* ───────────────────────── Stub ───────────────────────── */
+
 export function StubView({ heading, body }: { heading: string; body: string }) {
   return (
-    <div className="flex flex-col gap-2">
-      <Heading>{heading}</Heading>
-      <p className="text-muted">{body}</p>
+    <div className="flex min-h-0 flex-1 flex-col">
+      <PaneHeader title={heading} />
+      <FormColumn>
+        <EmptyState icon="sparkle" title={heading}>
+          {body}
+        </EmptyState>
+      </FormColumn>
     </div>
   );
 }

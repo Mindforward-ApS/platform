@@ -26,8 +26,16 @@ async function Sandbox({ params }: { params: Promise<{ track: string }> }) {
     if (err instanceof SandboxError && err.code === "TRACK_NOT_FOUND") notFound();
     throw err;
   }
-  const props = await buildSandboxProps(db(), owner, session);
-  return <SandboxApp key={session.id} {...props} />;
+  const [props, tracks] = await Promise.all([
+    buildSandboxProps(db(), owner, session),
+    // Track switcher: names are Track data (descriptive use only, docs/04 § 1), links go to /sandkasse/<track>.
+    db().track.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" }, select: { key: true, displayName: true } }),
+  ]);
+  const trackLinks = tracks
+    .map((tr) => ({ slug: Object.keys(TRACK_KEYS).find((k) => TRACK_KEYS[k] === tr.key), label: tr.displayName }))
+    .filter((tr): tr is { slug: string; label: string } => Boolean(tr.slug))
+    .map((tr) => ({ href: `/sandkasse/${tr.slug}`, label: tr.label, current: tr.slug === track }));
+  return <SandboxApp key={session.id} {...props} tracks={trackLinks} />;
 }
 
 export default function SandboxPage(props: PageProps<"/sandkasse/[track]">) {
