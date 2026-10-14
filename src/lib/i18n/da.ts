@@ -1,6 +1,7 @@
 import { orgAdminMessages } from "./da-admin";
 import { daBilling } from "./da-billing";
 import { daContent } from "./da-content";
+import { daMarketing } from "./da-marketing";
 import { daMonthly } from "./da-monthly";
 import { daPlacement } from "./da-placement";
 import { daPlayer } from "./da-player";
@@ -21,6 +22,7 @@ export const da = {
   orgAdmin: orgAdminMessages,
   monthly: daMonthly,
   support: daSupport,
+  marketing: daMarketing,
   shell: {
     skipToContent: "Spring til indhold",
     mainNav: "Hovedmenu",
@@ -56,7 +58,7 @@ export const da = {
   },
   home: {
     heading: "Mindforward",
-    tagline: "Lær AI ved at gøre det. Kommer snart.",
+    tagline: "Lær AI ved at gøre det.",
     login: "Log ind",
     signup: "Opret bruger",
   },
