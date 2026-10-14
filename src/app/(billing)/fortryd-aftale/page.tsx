@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Field, Notice, Page } from "@/components/ui/primitives";
+import { Card, Field, Notice, PageHeader, Select } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { getMessages } from "@/lib/i18n";
 import { getAuthContext } from "@/server/auth/authz";
@@ -23,44 +23,54 @@ async function prefill() {
   return { name: ctx.user.name, email: ctx.user.email, agreement: open && sub ? agreementLabel(sub.planKey, sub.createdAt) : null };
 }
 
-async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string }> }) {
+async function Form({ searchParams }: { searchParams: Promise<{ fejl?: string }> }) {
   const t = getMessages().billing.withdrawal;
   const sp = await searchParams;
   const known = await prefill();
   return (
     <>
-      <p>{t.intro}</p>
       {sp.fejl === "invalid" && <Notice tone="error">{t.invalid}</Notice>}
       {sp.fejl === "rate" && <Notice tone="error">{t.rateLimited}</Notice>}
-      <form action={submitWithdrawalForm} className="flex flex-col gap-3">
+      <form action={submitWithdrawalForm} className="flex flex-col gap-5">
         <Field label={t.name} name="name" required defaultValue={known?.name ?? ""} autoComplete="name" />
         {known?.agreement ? (
-          <label className="flex flex-col gap-1">
-            <span className="text-sm">{t.agreement}</span>
-            <select name="agreement" defaultValue={known.agreement} className="rounded-md border border-border bg-bg px-3 py-2">
-              <option value={known.agreement}>{known.agreement}</option>
-            </select>
-          </label>
+          <Select label={t.agreement} name="agreement" defaultValue={known.agreement}>
+            <option value={known.agreement}>{known.agreement}</option>
+          </Select>
         ) : (
-          <label className="flex flex-col gap-1">
-            <span className="text-sm">{t.agreement}</span>
-            <input name="agreement" required className="rounded-md border border-border bg-bg px-3 py-2" />
-            <span className="text-sm text-muted">{t.agreementHelp}</span>
-          </label>
+          <Field label={t.agreement} name="agreement" required help={t.agreementHelp} />
         )}
-        <Field label={t.email} name="email" type="email" required defaultValue={known?.email ?? ""} autoComplete="email" />
-        <SubmitButton>{t.confirm}</SubmitButton>
+        <Field label={t.email} name="email" type="email" required defaultValue={known?.email ?? ""} autoComplete="email" inputMode="email" />
+        <div className="border-t border-line pt-5">
+          <SubmitButton className="w-full sm:w-auto">{t.confirm}</SubmitButton>
+        </div>
       </form>
     </>
   );
 }
 
 export default function WithdrawalPage(props: PageProps<"/fortryd-aftale">) {
+  const t = getMessages().billing.withdrawal;
   return (
-    <Page title={getMessages().billing.withdrawal.title}>
-      <Suspense>
-        <Content searchParams={props.searchParams as Promise<{ fejl?: string }>} />
-      </Suspense>
-    </Page>
+    <main className="mx-auto flex w-full max-w-app flex-1 flex-col gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-14">
+      <PageHeader title={t.title} lead={t.intro} />
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-8">
+        <Card title={t.formTitle}>
+          <Suspense>
+            <Form searchParams={props.searchParams as Promise<{ fejl?: string }>} />
+          </Suspense>
+        </Card>
+        <Card title={t.stepsTitle}>
+          <ol className="flex flex-col gap-4">
+            {t.steps.map((step, i) => (
+              <li key={step} className="flex items-start gap-3 text-body-sm text-ink-muted">
+                <span className="grid size-6 shrink-0 place-items-center rounded-full border border-line-strong text-caption text-ink tabular-nums">{i + 1}</span>
+                <span className="pt-0.5">{step}</span>
+              </li>
+            ))}
+          </ol>
+        </Card>
+      </div>
+    </main>
   );
 }
