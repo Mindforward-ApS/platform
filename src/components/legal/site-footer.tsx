@@ -26,7 +26,7 @@ export function SiteFooter({ variant = "full" }: { variant?: "full" | "compact" 
   if (variant === "compact") {
     return (
       <footer className="mt-auto border-t border-line">
-        <div className="mx-auto flex max-w-app flex-col gap-3 px-4 py-6 sm:px-6">
+        <div className="mx-auto flex max-w-app flex-col gap-3 px-4 py-6 sm:px-6 in-[.app-panel]:mx-0 in-[.app-panel]:max-w-none lg:in-[.app-panel]:px-10">
           {nav}
           <p className="text-caption text-ink-subtle">{t.disclaimer}</p>
         </div>

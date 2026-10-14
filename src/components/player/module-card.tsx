@@ -8,7 +8,7 @@ import { num } from "./kit";
 
 const t = getMessages().player.list;
 
-function StatusBadge({ status }: { status: CatalogEntry["status"] }) {
+export function StatusBadge({ status }: { status: CatalogEntry["status"] }) {
   const label = t.status[status];
   if (status === "PASSED")
     return (

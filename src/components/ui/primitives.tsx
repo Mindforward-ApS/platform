@@ -28,10 +28,19 @@ export function Page({
   children: ReactNode;
 }) {
   const max = width === "app" ? "max-w-app" : width === "narrow" ? "max-w-[440px]" : "max-w-read";
+  // Inside the signed-in app panel the page runs full width and left-aligned (dashboard layout, Marco 14 Oct 2026);
+  // reading-width pages keep a comfortable measure for their content. Elsewhere (marketing, checkout) it stays centered.
+  const inner = width === "app" ? "in-[.app-panel]:max-w-none" : width === "narrow" ? "in-[.app-panel]:max-w-[440px]" : "in-[.app-panel]:max-w-3xl";
   return (
-    <main className={cx("mx-auto flex w-full flex-1 flex-col gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-14", max)}>
+    <main
+      className={cx(
+        "mx-auto flex w-full flex-1 flex-col gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-14",
+        max,
+        "in-[.app-panel]:mx-0 in-[.app-panel]:max-w-none in-[.app-panel]:gap-6 in-[.app-panel]:pt-8 in-[.app-panel]:pb-16 lg:in-[.app-panel]:px-10",
+      )}
+    >
       <PageHeader title={title} lead={lead} eyebrow={eyebrow} actions={actions} />
-      <div className="flex flex-col gap-6">{children}</div>
+      <div className={cx("flex flex-col gap-6", inner)}>{children}</div>
     </main>
   );
 }

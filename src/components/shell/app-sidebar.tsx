@@ -87,7 +87,7 @@ async function Avatar() {
 function TopBar() {
   const t = getMessages();
   return (
-    <div className="sticky top-2 z-30 hidden h-16 items-center gap-4 rounded-t-xl border-b border-line bg-surface/90 px-8 backdrop-blur-md lg:flex">
+    <div className="sticky top-2 z-30 hidden h-16 items-center gap-4 rounded-t-xl border-b border-line bg-surface/90 px-6 backdrop-blur-md lg:flex lg:px-10">
       <form action="/hjaelp" role="search" className="relative w-full max-w-md">
         <label htmlFor="topbar-search" className="sr-only">
           {t.shell.searchLabel}
@@ -204,7 +204,7 @@ export function AppFrame({ groups = learnerGroups(), children }: { groups?: Side
         <SidebarContent groups={groups} />
       </MobileNav>
       <div className="flex min-w-0 flex-1 flex-col lg:py-2 lg:pr-2">
-        <div id="indhold" className="flex min-h-[calc(100dvh-3.5rem)] flex-1 flex-col bg-surface lg:min-h-[calc(100dvh-1rem)] lg:rounded-xl lg:border lg:border-line lg:shadow-xs">
+        <div id="indhold" className="app-panel flex min-h-[calc(100dvh-3.5rem)] flex-1 flex-col bg-surface lg:min-h-[calc(100dvh-1rem)] lg:rounded-xl lg:border lg:border-line lg:shadow-xs">
           <TopBar />
           {children}
         </div>

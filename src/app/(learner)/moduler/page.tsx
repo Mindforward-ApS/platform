@@ -8,7 +8,7 @@ import { db } from "@/server/db";
 import { listModulesForLearner, type CatalogEntry } from "@/server/modules/catalog";
 import { playableOptions } from "@/server/modules/deps";
 
-const GRID = "grid gap-6 sm:grid-cols-2 lg:grid-cols-3";
+const GRID = "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 min-[1700px]:grid-cols-4";
 
 async function Content() {
   const t = getMessages().player.list;
