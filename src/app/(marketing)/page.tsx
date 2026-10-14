@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { AdminMock } from "@/components/marketing/admin-mock";
 import { PlayerMock } from "@/components/marketing/player-mock";
 import { Pricing } from "@/components/marketing/pricing";
-import { SandboxMock } from "@/components/marketing/sandbox-mock";
+import { SectionPhoto } from "@/components/marketing/section-photo";
 import { Band, SectionHeading } from "@/components/marketing/section";
 import { Icon, type IconName } from "@/components/ui/icons";
 import { ButtonLink, TextLink } from "@/components/ui/primitives";
@@ -117,7 +116,7 @@ function SandboxBand() {
             ))}
           </ul>
         </div>
-        <SandboxMock />
+        <SectionPhoto src="/heroes/hero-sandbox.webp" />
       </div>
     </Band>
   );
@@ -208,7 +207,7 @@ function Business() {
             </ButtonLink>
           </div>
         </div>
-        <AdminMock />
+        <SectionPhoto src="/heroes/hero-team.webp" />
       </div>
     </Band>
   );

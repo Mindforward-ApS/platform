@@ -65,6 +65,10 @@ export function AuthCard({
 export function AuthValue({ eyebrow, title, points }: { eyebrow: ReactNode; title: ReactNode; points: readonly string[] }) {
   return (
     <div className="flex max-w-[420px] flex-col gap-6">
+      <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-sunken" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element -- static, pre-optimized WebP from /public */}
+        <img src="/heroes/hero-workspace.webp" alt="" decoding="async" className="absolute inset-0 size-full object-cover object-[72%_50%]" />
+      </div>
       <p className="text-overline text-ink-muted uppercase">{eyebrow}</p>
       <h2 className="text-display text-ink">{title}</h2>
       <ul className="flex flex-col gap-4 border-t border-line pt-6">
