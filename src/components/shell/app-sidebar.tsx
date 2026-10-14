@@ -6,6 +6,7 @@ import { AppIcon, Icon, type IconName, type IconTone } from "@/components/ui/ico
 import { getMessages } from "@/lib/i18n";
 import { getAuthContext } from "@/server/auth/authz";
 import { MobileNav } from "./mobile-nav";
+import { BrandIcon, type BrandKey } from "@/components/ui/brand-icon";
 import { NavLink } from "./nav-link";
 
 // Signed-in app frame (Marco 14 Oct 2026, reference: community-app layout): grouped sidebar on the left,
@@ -17,8 +18,10 @@ export interface SidebarItem {
   icon?: IconName;
   /** App-icon tile color. */
   tone?: IconTone;
-  /** Small colored dot instead of an icon (sandbox tracks). */
+  /** Small colored dot instead of an icon. */
   dot?: string;
+  /** Vendor mark (sandbox tracks). */
+  brand?: BrandKey;
   exact?: boolean;
 }
 export interface SidebarGroup {
@@ -41,9 +44,9 @@ export function learnerGroups(): SidebarGroup[] {
     {
       label: t.sandboxGroup,
       items: [
-        { href: "/sandkasse/chatgpt", label: t.tracks.chatgpt, icon: "chats", tone: "mint" },
-        { href: "/sandkasse/copilot", label: t.tracks.copilot, icon: "chats", tone: "sky" },
-        { href: "/sandkasse/claude", label: t.tracks.claude, icon: "chats", tone: "coral" },
+        { href: "/sandkasse/chatgpt", label: t.tracks.chatgpt, brand: "chatgpt" },
+        { href: "/sandkasse/copilot", label: t.tracks.copilot, brand: "copilot" },
+        { href: "/sandkasse/claude", label: t.tracks.claude, brand: "claude" },
       ],
     },
   ];
@@ -138,7 +141,9 @@ function SidebarContent({ groups }: { groups: SidebarGroup[] }) {
             {g.label && <p className="px-2.5 pb-1.5 text-overline text-ink-subtle uppercase">{g.label}</p>}
             {g.items.map((item) => (
               <NavLink key={item.href} href={item.href} exact={item.exact} variant="sidebar">
-                {item.dot ? (
+                {item.brand ? (
+                  <BrandIcon brand={item.brand} />
+                ) : item.dot ? (
                   <span className="grid size-7 place-items-center">
                     <span className={`size-2.5 rounded-full ring-4 ring-surface ${item.dot}`} />
                   </span>

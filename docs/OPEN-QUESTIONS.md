@@ -187,3 +187,7 @@
 - [ ] **Indholdsmotoren ved ≥ 95 %:** gatewayen pauser `CONTENT_DRAFT`/`CONTENT_VERIFY` (AI_DISABLED, reason DEGRADED_PAUSE) og blokerer alle features ved 100 %. M9 skal håndtere fejlen som `PipelineRunStatus.SKIPPED_BUDGET`. · Blokerer: M9-integration.
 - [ ] **PostHog-klienten identificerer ikke brugeren** (ingen `identify` i browseren); forretningsevents sendes serverside med `distinct_id = user.id`. Klientens anonyme page views kobles derfor ikke til personer. · Forslag: OK for MVP (mindre data). · Blokerer: intet.
 - [ ] **Offentlig kontaktformular → Escalation** (docs/08 § 1) og `/admin/support/:id`, `/admin/digest/:date` er ikke bygget (admin-UI = M7-området). Eskalationsmails linker til `/admin/support/{id}`. · Blokerer: Marcos svar-flow i appen (mail virker).
+
+## Design (14. okt. 2026)
+
+- [JURA] **Leverandørlogoer i app-navigationen.** Marco har valgt at vise ChatGPT-, Microsoft 365 Copilot- og Claude-logoerne ved sporene (sidemenu + Hjem). Det er i strid med CLAUDE.md's ALDRIG-regel og kan ifølge OpenAI/Microsoft/Anthropics brand-retningslinjer kræve tilladelse eller kunne opfattes som tilknytning. Billederne er hentet online uden licens. Spørgsmål til advokat: må vi bruge mærkerne nominativt ved siden af spornavnene med vores disclaimer? Hvis nej: fjern `public/brands/` og `BrandIcon` (ét sted: `src/components/shell/app-sidebar.tsx` + `src/app/(learner)/hjem/page.tsx`). Blokerer: launch.

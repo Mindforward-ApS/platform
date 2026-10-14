@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { num } from "@/components/player/kit";
 import { ModuleCard } from "@/components/player/module-card";
 import { Icon } from "@/components/ui/icons";
+import { BrandIcon } from "@/components/ui/brand-icon";
 import { Illustration } from "@/components/ui/illustration";
 import { coverGround } from "@/components/ui/module-cover";
 import { Badge, ButtonLink, cx, EmptyState, TextLink } from "@/components/ui/primitives";
@@ -158,9 +159,9 @@ function Progress({ modules, certificates }: { modules: CatalogEntry[]; certific
 function Practice() {
   const s = getMessages().shell;
   const tracks = [
-    ["/sandkasse/chatgpt", s.tracks.chatgpt, "bg-cover-mint-ink"],
-    ["/sandkasse/copilot", s.tracks.copilot, "bg-cover-sky-ink"],
-    ["/sandkasse/claude", s.tracks.claude, "bg-cover-coral-ink"],
+    ["/sandkasse/chatgpt", s.tracks.chatgpt, "chatgpt"],
+    ["/sandkasse/copilot", s.tracks.copilot, "copilot"],
+    ["/sandkasse/claude", s.tracks.claude, "claude"],
   ] as const;
   return (
     <section className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-6 pt-0 shadow-xs">
@@ -171,10 +172,10 @@ function Practice() {
         <p className="text-body-sm text-ink-muted">{t.home.practiceBody}</p>
       </div>
       <ul className="-mx-2 flex flex-col">
-        {tracks.map(([href, label, dot]) => (
+        {tracks.map(([href, label, brand]) => (
           <li key={href}>
             <Link href={href} className="group flex items-center gap-3 rounded-md px-2 py-2.5 text-label text-ink transition-colors hover:bg-sunken">
-              <span className={`size-2 rounded-full ${dot}`} />
+              <BrandIcon brand={brand} size={24} />
               {label}
               <Icon name="arrowRight" className="ml-auto text-ink-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-ink" />
             </Link>

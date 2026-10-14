@@ -126,7 +126,7 @@ Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installat
 - Sende MARKETING-email uden at gå gennem samtykke-gaten (gyldigt `ConsentRecord` + dobbelt opt-in).
 - Lægge tilbud, rabatter eller upsell i påmindelses- eller andre SERVICE-mails.
 - Lade sandkassen kalde rigtige tredjepartstjenester (mail, kalender, CRM, OpenAI, Microsoft …). Alt kører mod Nordlys-data.
-- Bruge leverandørernes logoer, farver, skærmbilleder eller trade dress i UI.
+- Bruge leverandørernes logoer, farver, skærmbilleder eller trade dress i UI. (Eneste undtagelse, besluttet af Marco 14. okt. 2026: logoerne ved spornavnene i appens navigation via `BrandIcon` — se 00 § 10d og OPEN-QUESTIONS. Aldrig i sandkassen.)
 - Auto-publicere `CORE`-moduler eller moduler, der kræver ny sandkasse-UI.
 - Bruge rigtige kundedata i sandkassen eller i seed/tests.
 - Springe webhook-signaturverifikation over.
