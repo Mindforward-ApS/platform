@@ -11,6 +11,8 @@ export interface CatalogEntry {
   summary: string;
   minutes: number;
   level: number;
+  /** Number of steps in the module (display only). */
+  steps: number;
   status: "NONE" | "ASSIGNED" | "IN_PROGRESS" | "PASSED" | "REMOVED";
   bestScorePct: number | null;
 }
@@ -38,7 +40,7 @@ export async function listModulesForLearner(db: PrismaClient, actor: Actor, opts
   return modules.flatMap((m) => {
     const version = m.publishedVersion?.status === "PUBLISHED" ? m.publishedVersion : m.versions[0];
     if (!version) return [];
-    const content = version.content as { summary?: unknown; level?: unknown };
+    const content = version.content as { summary?: unknown; level?: unknown; steps?: unknown };
     const assignment = m.assignments[0];
     return [
       {
@@ -47,6 +49,7 @@ export async function listModulesForLearner(db: PrismaClient, actor: Actor, opts
         summary: typeof content.summary === "string" ? content.summary : "",
         minutes: version.estimatedMinutes,
         level: typeof content.level === "number" ? content.level : 1,
+        steps: Array.isArray(content.steps) ? content.steps.length : 0,
         status: assignment?.status ?? "NONE",
         bestScorePct: assignment?.bestScorePct === null || assignment?.bestScorePct === undefined ? null : Number(assignment.bestScorePct),
       },
