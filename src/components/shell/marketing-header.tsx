@@ -26,7 +26,7 @@ export function MarketingHeader({ tone = "default" }: { tone?: "default" | "nigh
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/log-ind"
-            className={`flex h-9 items-center rounded-sm px-3 text-label transition-colors ${night ? "text-on-night-muted hover:text-on-night" : "text-ink-muted hover:bg-sunken hover:text-ink"}`}
+            className={`flex h-9 items-center whitespace-nowrap rounded-sm px-3 text-label transition-colors ${night ? "text-on-night-muted hover:text-on-night" : "text-ink-muted hover:bg-sunken hover:text-ink"}`}
           >
             {m.login}
           </Link>
