@@ -67,6 +67,18 @@
   --mf-on-night-muted: #a8b5c4;
   --mf-night-accent: #86a0ff;
 
+  /* Module covers: soft ground + one strong shape color each (design: "covers på modulkort", 14 Oct 2026). */
+  --mf-cover-blue: #e3eaff;
+  --mf-cover-blue-ink: #2447cc;
+  --mf-cover-amber: #fdf0d2;
+  --mf-cover-amber-ink: #e39a1c;
+  --mf-cover-mint: #dcf3e8;
+  --mf-cover-mint-ink: #13724f;
+  --mf-cover-coral: #fde6df;
+  --mf-cover-coral-ink: #d4552e;
+  --mf-cover-sky: #dcf0f8;
+  --mf-cover-sky-ink: #1b7aa3;
+
   --mf-shadow-xs: 0 1px 2px rgba(11, 27, 43, 0.06);
   --mf-shadow-sm: 0 1px 3px rgba(11, 27, 43, 0.08), 0 1px 2px -1px rgba(11, 27, 43, 0.06);
   --mf-shadow-md: 0 8px 20px -6px rgba(11, 27, 43, 0.14), 0 2px 6px -2px rgba(11, 27, 43, 0.08);
@@ -101,6 +113,16 @@
     --mf-night: #050c14;
     --mf-night-raised: #0f1c29;
     --mf-night-line: #21324a;
+    --mf-cover-blue: #16244d;
+    --mf-cover-blue-ink: #86a0ff;
+    --mf-cover-amber: #2e2410;
+    --mf-cover-amber-ink: #f0b03c;
+    --mf-cover-mint: #0e2a20;
+    --mf-cover-mint-ink: #4ccf9c;
+    --mf-cover-coral: #33180f;
+    --mf-cover-coral-ink: #ff8f6b;
+    --mf-cover-sky: #0d2633;
+    --mf-cover-sky-ink: #5cc2ea;
     --mf-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
     --mf-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
     --mf-shadow-md: 0 8px 20px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -139,6 +161,16 @@
   --color-on-night: var(--mf-on-night);
   --color-on-night-muted: var(--mf-on-night-muted);
   --color-night-accent: var(--mf-night-accent);
+  --color-cover-blue: var(--mf-cover-blue);
+  --color-cover-blue-ink: var(--mf-cover-blue-ink);
+  --color-cover-amber: var(--mf-cover-amber);
+  --color-cover-amber-ink: var(--mf-cover-amber-ink);
+  --color-cover-mint: var(--mf-cover-mint);
+  --color-cover-mint-ink: var(--mf-cover-mint-ink);
+  --color-cover-coral: var(--mf-cover-coral);
+  --color-cover-coral-ink: var(--mf-cover-coral-ink);
+  --color-cover-sky: var(--mf-cover-sky);
+  --color-cover-sky-ink: var(--mf-cover-sky-ink);
   /* Legacy aliases from the placeholder era — keep working, prefer the names above in new code. */
   --color-fg: var(--mf-ink);
   --color-muted: var(--mf-ink-muted);

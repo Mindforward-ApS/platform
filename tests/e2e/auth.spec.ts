@@ -14,7 +14,8 @@ async function signInWithMagicLink(page: Page, email: string, from: "/opret" | "
 
 test("B2C signup with magic link creates a PERSONAL org with the OWNER role", async ({ page }) => {
   await signInWithMagicLink(page, newEmail("b2c"));
-  await expect(page).toHaveURL(/\/konto$/);
+  await expect(page).toHaveURL(/\/hjem$/);
+  await page.goto("/konto");
   await expect(page.getByTestId("active-org")).toContainText("Personlig");
   await expect(page.getByTestId("active-role")).toHaveText("Ejer");
 });
@@ -56,7 +57,8 @@ test("OWNER creates a business, invites an employee, who accepts and lands as LE
   // M7: first login in a business shows what the admin can and cannot see (docs/10 § 1.6).
   await expect(learner).toHaveURL(/\/konto\/data-info$/);
   await learner.getByRole("button", { name: "Forstået — fortsæt" }).click();
-  await expect(learner).toHaveURL(/\/konto$/);
+  await expect(learner).toHaveURL(/\/hjem$/);
+  await learner.goto("/konto");
   await expect(learner.getByTestId("active-org")).toContainText("E2E Firma ApS");
   await expect(learner.getByTestId("active-role")).toHaveText("Medarbejder");
 

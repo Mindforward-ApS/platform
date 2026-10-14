@@ -1,15 +1,12 @@
 import { SiteFooter } from "@/components/legal/site-footer";
-import { AppHeader } from "@/components/shell/app-header";
+import { AppFrame } from "@/components/shell/app-sidebar";
 
-// Signed-in learner area: one top bar, content, slim legal footer.
+// Signed-in learner area: sidebar frame, content panel, slim legal footer at the bottom of the panel.
 export default function LearnerLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <AppHeader />
-      <div id="indhold" className="flex flex-1 flex-col">
-        {children}
-      </div>
+    <AppFrame>
+      <div className="flex flex-1 flex-col">{children}</div>
       <SiteFooter variant="compact" />
-    </>
+    </AppFrame>
   );
 }

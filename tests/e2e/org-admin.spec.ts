@@ -34,7 +34,7 @@ async function newContextPage(browser: Browser) {
 test("admin accepts the DPA, invites an employee, who accepts and shows on the dashboard — without prompt text", async ({ page, browser }) => {
   const ownerEmail = newEmail("m7-owner");
   await signIn(page, ownerEmail);
-  await expect(page).toHaveURL(/\/konto$/);
+  await expect(page).toHaveURL(/\/hjem$/);
   await page.goto("/virksomhed/opret");
   await page.getByLabel("Virksomhedens navn").fill("M7 Firma ApS");
   await page.getByRole("button", { name: "Opret" }).click();
@@ -71,7 +71,7 @@ test("admin accepts the DPA, invites an employee, who accepts and shows on the d
   await expect(learner.page).toHaveURL(/\/konto\/data-info$/);
   await expect(learner.page.getByTestId("admin-cannot-see")).toContainText("prompts");
   await learner.page.getByRole("button", { name: "Forstået — fortsæt" }).click();
-  await expect(learner.page).toHaveURL(/\/konto$/);
+  await expect(learner.page).toHaveURL(/\/hjem$/);
 
   // The employee has written a prompt in a module (seeded directly): admins must never see it.
   const secret = `HEMMELIG-PROMPT-${randomUUID()}`;
@@ -134,7 +134,7 @@ test("admin accepts the DPA, invites an employee, who accepts and shows on the d
 test("a certificate's public page works only after the holder enables it", async ({ page }) => {
   const email = newEmail("m7-cert");
   await signIn(page, email);
-  await expect(page).toHaveURL(/\/konto$/);
+  await expect(page).toHaveURL(/\/hjem$/);
   const [ids] = await sql<{ userId: string; organizationId: string }>(
     `SELECT m."userId", m."organizationId" FROM membership m JOIN "user" u ON u.id = m."userId" WHERE u.email = $1`,
     [email],

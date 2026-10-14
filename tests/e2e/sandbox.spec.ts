@@ -19,7 +19,8 @@ test("learner opens the sandbox from /konto, sends a chat message and sees an Ø
   await page.getByRole("button", { name: "Send login-link" }).click();
   await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
   await page.goto(await waitForLink(email, "magic-link"));
-  await expect(page).toHaveURL(/\/konto$/);
+  await expect(page).toHaveURL(/\/hjem$/);
+  await page.goto("/konto");
 
   await page.getByTestId("sandbox-links").getByRole("link", { name: /ChatGPT/ }).click();
   await expect(page).toHaveURL(/\/sandkasse\/chatgpt$/);

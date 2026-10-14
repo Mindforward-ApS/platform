@@ -208,7 +208,7 @@ export function SandboxApp(props: SandboxProps) {
 
   return (
     <div
-      className="flex h-[calc(100dvh-6.75rem)] min-h-[560px] flex-col bg-bg md:h-[calc(100dvh-4rem)]"
+      className="flex h-[calc(100dvh-3.5rem)] min-h-[560px] flex-col overflow-hidden bg-bg lg:h-[calc(100dvh-1rem)] lg:rounded-xl"
       data-shell={skin.shell}
       data-accent={skin.tokens.accentSlot}
     >

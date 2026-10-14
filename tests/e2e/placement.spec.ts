@@ -29,7 +29,7 @@ async function takeTest(page: Page, track: "ChatGPT" | "Microsoft 365 Copilot" =
 
 test("public test → result is shown without consent; checkbox is NOT pre-ticked; double opt-in confirms", async ({ page }) => {
   await takeTest(page);
-  await expect(page.getByRole("heading", { name: "Dit resultat" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Dit resultat", exact: true })).toBeVisible();
   await expect(page.getByTestId("result-overall")).toContainText("Dit niveau:");
   await expect(page.getByTestId("result-areas").getByRole("listitem")).toHaveCount(5);
   await expect(page.getByTestId("result-recommendations").getByRole("listitem")).toHaveCount(3);

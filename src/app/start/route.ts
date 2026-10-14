@@ -30,6 +30,8 @@ export async function GET(request: Request) {
       }
       if (claimed && target === "/konto") target = "/plan";
     }
+    // Signed-in home is /hjem (Marco 14 Oct 2026); runStart keeps "/konto" as its generic "you're in" target.
+    if (target === "/konto") target = "/hjem";
 
     const response = NextResponse.redirect(new URL(target, request.url));
     if (placementToken && organizationId) response.cookies.delete(PLACEMENT_COOKIE);

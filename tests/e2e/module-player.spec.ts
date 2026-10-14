@@ -11,7 +11,7 @@ async function signIn(page: Page) {
   await page.getByRole("button", { name: "Send login-link" }).click();
   await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
   await page.goto(await waitForLink(email, "magic-link"));
-  await expect(page).toHaveURL(/\/konto$/);
+  await expect(page).toHaveURL(/\/hjem$/);
 }
 
 const next = (page: Page) => page.getByRole("button", { name: "Næste", exact: true }).click();
@@ -19,7 +19,7 @@ const answer = (page: Page) => page.getByRole("button", { name: "Svar", exact: t
 
 test("gennemfør core-prompt-01 og se bestået-skærmen med kriterier", async ({ page }) => {
   await signIn(page);
-  await page.getByRole("link", { name: "Se moduler" }).click();
+  await page.getByRole("navigation", { name: "Hovedmenu" }).getByRole("link", { name: "Moduler", exact: true }).click();
   await expect(page.getByTestId("module-list")).toContainText("Din første gode prompt");
   await page.locator('a[href="/modul/core-prompt-01"]').first().click();
   await expect(page).toHaveURL(/\/modul\/core-prompt-01$/);

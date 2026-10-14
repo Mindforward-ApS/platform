@@ -25,7 +25,7 @@ async function signUp(page: Page, email: string) {
   await page.getByRole("button", { name: "Send login-link" }).click();
   await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
   await page.goto(await waitForLink(email, "magic-link"));
-  await expect(page).toHaveURL(/\/konto$/);
+  await expect(page).toHaveURL(/\/hjem$/);
 }
 
 async function buy(page: Page) {

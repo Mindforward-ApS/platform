@@ -23,7 +23,7 @@ test("GREB_ADMIN with verified 2FA sees the content engine review screen; a norm
   await page.getByRole("button", { name: "Send login-link" }).click();
   await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
   await page.goto(await waitForLink(email, "magic-link"));
-  await expect(page).toHaveURL(/\/konto/);
+  await expect(page).toHaveURL(/\/hjem/);
 
   // Not yet an admin → no access.
   await page.goto("/admin/indhold");

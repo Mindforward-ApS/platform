@@ -11,7 +11,8 @@ test("support widget answers a help-center question with an article link", async
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Send login-link" }).click();
   await page.goto(await waitForLink(email, "magic-link"));
-  await expect(page).toHaveURL(/\/konto$/);
+  await expect(page).toHaveURL(/\/hjem$/);
+  await page.goto("/konto");
 
   await page.getByRole("link", { name: "Support", exact: true }).click();
   await expect(page).toHaveURL(/\/konto\/support$/);

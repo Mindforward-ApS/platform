@@ -15,5 +15,5 @@ export async function POST() {
     if (!(err instanceof AuthzError)) throw err;
     return NextResponse.redirect(new URL("/log-ind", serverEnv().APP_URL), 303);
   }
-  return NextResponse.redirect(new URL("/konto", serverEnv().APP_URL), 303);
+  return NextResponse.redirect(new URL("/hjem", serverEnv().APP_URL), 303);
 }
