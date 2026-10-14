@@ -1,4 +1,4 @@
-import { illustrationForModule } from "@/lib/config/illustrations";
+import { coverPhoto, illustrationForModule } from "@/lib/config/illustrations";
 import { Illustration } from "./illustration";
 import { cx } from "./primitives";
 
@@ -47,6 +47,20 @@ export function ModuleCover({
   priority?: boolean;
 }) {
   const g = coverGround(seed);
+  const photo = coverPhoto(seed);
+  if (photo) {
+    return (
+      <div className={cx("relative overflow-hidden bg-sunken", size === "lg" ? "aspect-[2/1] min-h-56" : "aspect-[16/9]", className)} aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element -- static, pre-optimized WebP from /public */}
+        <img src={photo} alt="" loading={priority ? "eager" : "lazy"} decoding="async" className="absolute inset-0 size-full object-cover object-[72%_50%]" />
+        {label && (
+          <span className="absolute top-3 left-3 inline-flex h-6 items-center rounded-full bg-surface/90 px-2.5 text-caption font-semibold text-ink shadow-xs backdrop-blur-sm">
+            {label}
+          </span>
+        )}
+      </div>
+    );
+  }
   return (
     <div className={cx("relative overflow-hidden", size === "lg" ? "min-h-56" : "aspect-[16/9]", g.ground, className)} aria-hidden="true">
       <svg viewBox="0 0 320 180" preserveAspectRatio="xMaxYMid slice" className="absolute inset-0 size-full" fill="none">

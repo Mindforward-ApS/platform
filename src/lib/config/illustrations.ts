@@ -28,3 +28,11 @@ export function illustrationForModule(slug: string): IllustrationName {
   for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) >>> 0;
   return FALLBACK[h % FALLBACK.length]!;
 }
+
+// Photographic covers (public/covers/<slug>.webp): premium object shots on a soft tinted backdrop with empty space
+// on the left (Marco 14 Oct 2026). A module with a photo uses it instead of the 3D illustration.
+const COVER_PHOTOS = new Set<string>(["core-data-01"]);
+
+export function coverPhoto(slug: string): string | null {
+  return COVER_PHOTOS.has(slug) ? `/covers/${slug}.webp` : null;
+}
