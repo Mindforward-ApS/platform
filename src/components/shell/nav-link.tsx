@@ -2,13 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { cx } from "@/components/ui/primitives";
 
-/** Top-bar / sidebar link that marks itself as the current page. `exact` for index routes like /virksomhed. */
-export function NavLink({ href, exact = false, variant = "bar", tone = "default", children }: { href: string; exact?: boolean; variant?: "bar" | "side"; tone?: "default" | "night"; children: ReactNode }) {
+type Props = { href: string; exact?: boolean; variant?: "bar" | "side"; tone?: "default" | "night"; children: ReactNode };
+
+/** Top-bar / sidebar link that marks itself as the current page. `exact` for index routes like /virksomhed.
+ *  The pathname is runtime data, so the active state streams in; the prerendered fallback is the same link, inactive. */
+export function NavLink(props: Props) {
+  return (
+    <Suspense fallback={<NavLinkView {...props} active={false} />}>
+      <ActiveNavLink {...props} />
+    </Suspense>
+  );
+}
+
+function ActiveNavLink(props: Props) {
   const pathname = usePathname();
-  const active = exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
+  const active = props.exact ? pathname === props.href : pathname === props.href || pathname.startsWith(`${props.href}/`);
+  return <NavLinkView {...props} active={active} />;
+}
+
+function NavLinkView({ href, variant = "bar", tone = "default", children, active }: Props & { active: boolean }) {
   if (variant === "side") {
     return (
       <Link
