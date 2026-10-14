@@ -17,6 +17,13 @@ export const daPlacement = {
     unsure: "Ved ikke / flere værktøjer",
     unsureHelp: "Vi starter dig på ChatGPT-sporet. Du kan altid skifte senere.",
     disclaimer: "Mindforward er ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google. Produktnavne bruges kun til at beskrive, hvad du lærer.",
+    eyebrow: "Niveautest",
+    facts: ["Ca. 5 minutter", "Ingen bruger eller email", "Niveau, anbefalinger og plan"],
+    trackHelp: {
+      CHATGPT: "Du bruger ChatGPT på jobbet eller vil i gang.",
+      COPILOT: "Du bruger Copilot Chat eller har en Microsoft 365 Copilot-licens.",
+      CLAUDE: "Du bruger Claude i dit arbejde.",
+    },
   },
   test: {
     profileTitle: "Om dig",
@@ -27,6 +34,7 @@ export const daPlacement = {
     submit: "Se mit resultat",
     noTimeLimit: "Der er ingen tidsgrænse.",
     honeypotLabel: "Lad dette felt være tomt",
+    eyebrow: "Niveautest · {track}",
     loggedInNote: "Du er logget ind — resultatet gemmes på din konto, og din plan opdateres.",
     errors: {
       incomplete: "Besvar alle spørgsmål, før du ser dit resultat.",
@@ -59,6 +67,10 @@ export const daPlacement = {
     toPlan: "Se din plan",
     retake: "Tag testen igen",
     notFound: "Vi kunne ikke finde et resultat. Tag testen for at se dit niveau.",
+    notFoundTitle: "Intet resultat endnu",
+    levelOf: "Niveau {level} af 3",
+    savedTitle: "Dit resultat er gemt",
+    savedBody: "Din plan er klar. Start med det første modul, når du er klar.",
   },
   consent: {
     title: "Vil du have tips om AI på arbejdet?",
