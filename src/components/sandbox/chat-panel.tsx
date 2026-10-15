@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { LogoMark } from "@/components/ui/brand";
 import { Badge, Button, cx, Notice } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
@@ -12,6 +12,13 @@ import type { ChatTurnView, FileItem, Intent } from "./types";
 const t = getMessages().sandbox;
 const MAX_CHARS = 4000;
 const nf = new Intl.NumberFormat("da-DK");
+const noSubscribe = () => () => undefined;
+/** Time-of-day greeting (client only; the server renders the neutral one). */
+function clientGreeting(): string {
+  const h = new Date().getHours();
+  const key = h < 10 ? "morning" : h < 18 ? "afternoon" : "evening";
+  return format(t.chat.greeting[key], { name: t.chat.persona });
+}
 
 interface Props {
   sessionId: string;
@@ -25,12 +32,21 @@ interface Props {
   emit: (intent: Intent) => void;
   /** Chat is the main region (centered reading column) rather than a side panel. */
   wide?: boolean;
+  /** Shell look: centered greeting + composer, centered pill composer, or side panel. */
+  variant?: "center" | "pill" | "panel";
+  /** Nordlys connectors for the composer's "+" menu. */
+  connectors?: { id: string; label: string; icon: "mail" | "calendar" | "file" | "building" | "table"; connected: boolean }[];
+  /** The learner's industry practice connectors (neutral names). */
+  practice?: string[];
+  onOpenConnectors?: () => void;
 }
 
-export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false }: Props) {
+export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined }: Props) {
   const [text, setText] = useState("");
   const [attachments, setAttachments] = useState<string[]>([]);
   const [picker, setPicker] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const greeting = useSyncExternalStore(noSubscribe, clientGreeting, () => format(t.chat.greeting.neutral, { name: t.chat.persona }));
   const [busy, setBusy] = useState(false);
   const [blocked, setBlocked] = useState<PiiKind | null>(null);
   const [warn, setWarn] = useState<PiiKind[] | null>(null);
@@ -39,7 +55,7 @@ export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConve
   const scroller = useRef<HTMLDivElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
   const compact = density === "compact";
-  const column = wide ? "mx-auto w-full max-w-read" : "w-full";
+  const column = wide ? "mx-auto w-full max-w-3xl" : "w-full";
 
   // Keep the newest message in view while the answer streams in.
   useEffect(() => {
@@ -100,173 +116,295 @@ export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConve
 
   const fileName = (id: string) => files.find((f) => f.id === id)?.name ?? id;
 
-  return (
-    <section className="flex min-h-0 flex-1 flex-col bg-bg" data-testid="sandbox-chat" aria-label={t.terms.chat}>
-      <div ref={scroller} className={cx("flex min-h-0 flex-1 flex-col overflow-y-auto", compact ? "px-4 py-5" : "px-4 py-6 sm:px-6 sm:py-8")}>
-        <ol className={cx("flex flex-col", compact ? "gap-4" : "gap-6", column, turns.length === 0 && "my-auto")} aria-live="polite">
-          {turns.length === 0 && (
-            <li className="flex flex-col gap-6">
-              <div className="flex flex-col items-start gap-3">
-                <LogoMark size={32} />
-                <div className="flex flex-col gap-1">
-                  <h2 className={cx(compact ? "text-title-3" : "text-title-2", "text-ink")}>{t.chat.emptyTitle}</h2>
-                  <p className="text-body-sm text-ink-muted">{t.chat.empty}</p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <p className="text-overline text-ink-subtle uppercase">{t.chat.suggestionsTitle}</p>
-                <ul className={cx("grid gap-2", wide && "sm:grid-cols-2")}>
-                  {t.chat.suggestions.map((s) => (
-                    <li key={s}>
-                      <button
-                        type="button"
-                        className="flex h-full w-full items-start gap-2.5 rounded-md border border-line bg-surface px-3.5 py-3 text-left text-body-sm text-ink transition-[border-color,box-shadow] hover:border-line-strong hover:shadow-sm"
-                        aria-label={`${t.chat.useSuggestion}: ${s}`}
-                        onClick={() => {
-                          setText(s);
-                          composer.current?.focus();
-                        }}
-                      >
-                        <SbIcon name="arrowRight" className="mt-0.5 text-ink-subtle" />
-                        {s}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          )}
-          {turns.map((turn) => {
-            const who = turn.role === "assistant" ? t.modelLabel : t.chat.you;
-            return turn.role === "user" ? (
-              <li key={turn.seq} className="flex flex-col items-end gap-1.5">
-                <p className="text-caption text-ink-subtle">{who}</p>
-                <p className="max-w-[85%] rounded-lg rounded-tr-xs bg-accent-soft px-4 py-2.5 text-body whitespace-pre-wrap text-ink">{turn.text}</p>
+  const connectedCount = connectors.filter((c) => c.connected).length;
+
+  // Messages (or the variant's empty state), the composer and the "+" menu. The layout mirrors the familiar desktop
+  // chat apps per shell — centered greeting, centered pill, or side panel — always in Mindforward's own look.
+  const menu = menuOpen && (
+    <div role="dialog" aria-label={t.chat.menu.open} className={cx("absolute left-0 z-20 flex w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-line bg-surface p-1.5 shadow-lg", turns.length === 0 && variant !== "panel" ? "top-full mt-2" : "bottom-full mb-2")} data-testid="composer-menu">
+      {attachFromFiles && (
+        <button type="button" className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-body-sm text-ink hover:bg-sunken" onClick={() => { setMenuOpen(false); setPicker(true); emit({ event: { type: "UI_CLICKED", target: "composer.attach", payload: { region: "composer", control: "attach" } } }); }}>
+          <SbIcon name="paperclip" className="text-ink-subtle" />
+          {t.chat.menu.attach}
+        </button>
+      )}
+      <p className="px-2.5 pt-2.5 pb-1 text-overline text-ink-subtle uppercase">{t.chat.menu.connectors}</p>
+      {connectors.map((c) => (
+        <button key={c.id} type="button" className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-body-sm text-ink hover:bg-sunken" onClick={() => { setMenuOpen(false); onOpenConnectors(); }}>
+          <SbIcon name={c.icon} className="text-ink-subtle" />
+          <span className="flex-1">{c.label}</span>
+          <span className={cx("text-caption", c.connected ? "text-success" : "text-ink-subtle")}>{c.connected ? t.chat.menu.connected : t.chat.menu.connect}</span>
+        </button>
+      ))}
+      {practice.length > 0 && (
+        <>
+          <p className="px-2.5 pt-2.5 pb-1 text-overline text-ink-subtle uppercase">{t.chat.menu.industry}</p>
+          {practice.map((label) => (
+            <button key={label} type="button" className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-body-sm text-ink hover:bg-sunken" onClick={() => { setMenuOpen(false); onOpenConnectors(); }}>
+              <SbIcon name="sparkle" className="text-accent" />
+              <span className="flex-1">{label}</span>
+              <SbIcon name="chevronRight" size={14} className="text-ink-subtle" />
+            </button>
+          ))}
+        </>
+      )}
+      <div className="my-1 h-px bg-line" />
+      <button type="button" className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-body-sm text-ink-muted hover:bg-sunken" onClick={() => { setMenuOpen(false); onOpenConnectors(); }}>
+        <SbIcon name="apps" className="text-ink-subtle" />
+        {t.chat.menu.all}
+      </button>
+    </div>
+  );
+
+  const composerBox = (
+    <form
+      className={cx("relative flex flex-col gap-2", variant === "panel" ? "w-full" : "mx-auto w-full max-w-3xl")}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+    >
+      {menu}
+      {picker && (
+        <div role="dialog" aria-label={t.chat.attachTitle} className="absolute inset-x-0 bottom-full z-10 mb-2 flex flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-lg">
+          <div className="flex flex-col gap-0.5 border-b border-line px-4 py-3">
+            <p className="text-label text-ink">{t.chat.attachTitle}</p>
+            <p className="text-caption text-ink-muted">{t.chat.attachHint}</p>
+          </div>
+          <ul className="max-h-60 overflow-y-auto p-1.5">
+            {files.map((f) => (
+              <li key={f.id}>
+                <button type="button" className="flex w-full items-center gap-2.5 rounded-sm px-2.5 py-2 text-left text-body-sm text-ink hover:bg-sunken" onClick={() => attach(f.id)}>
+                  <SbIcon name={f.kind === "doc" ? "file" : "table"} className="text-ink-subtle" />
+                  <span className="truncate">{f.name}</span>
+                </button>
               </li>
-            ) : (
-              <li key={turn.seq} className="flex flex-col gap-2.5 rounded-lg border border-line bg-surface p-4 sm:p-5">
-                <p className="flex items-center gap-2">
-                  <LogoMark size={18} />
-                  <Badge tone="accent">
-                    <span data-testid="model-label">{who}</span>
-                  </Badge>
-                </p>
-                {turn.text ? (
-                  <p className="text-body leading-relaxed whitespace-pre-wrap text-ink">{turn.text}</p>
-                ) : (
-                  <p className="flex items-center gap-2 text-body-sm text-ink-muted">
-                    <span className="size-1.5 animate-pulse rounded-full bg-accent" aria-hidden="true" />
-                    {busy ? t.chat.sending : ""}
-                  </p>
-                )}
-              </li>
-            );
-          })}
-        </ol>
-        {(toolNotes.length > 0 || error || blocked) && (
-          <div className={cx("mt-4 flex flex-col gap-3", column)}>
-            {toolNotes.length > 0 && (
-              <ul className="flex flex-col gap-1">
-                {toolNotes.map((n, i) => (
-                  <li key={i} className="flex items-center gap-2 text-caption text-ink-muted">
-                    <SbIcon name="plug" size={14} className="text-ink-subtle" />
-                    {n}
-                  </li>
-                ))}
-              </ul>
-            )}
-            {error && <Notice tone="error">{error}</Notice>}
-            {blocked && (
-              <div data-testid="pii-blocked">
-                <Notice tone="danger">{t.pii.blocked[blocked]}</Notice>
-              </div>
-            )}
+            ))}
+          </ul>
+        </div>
+      )}
+      <div
+        className={cx(
+          "flex flex-col border border-line bg-surface transition-[border-color,box-shadow] focus-within:border-accent/60",
+          variant === "pill" ? "rounded-[1.75rem] shadow-md" : variant === "center" ? "rounded-2xl shadow-md" : "rounded-xl shadow-xs",
+        )}
+      >
+        {attachments.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5 px-4 pt-3">
+            <span className="text-caption text-ink-muted">{t.chat.attached}</span>
+            {attachments.map((id) => (
+              <button
+                key={id}
+                type="button"
+                className="inline-flex h-6 items-center gap-1.5 rounded-xs bg-sunken px-2 text-caption text-ink ring-1 ring-line ring-inset hover:ring-line-strong"
+                onClick={() => setAttachments((a) => a.filter((x) => x !== id))}
+                aria-label={`${t.chat.removeAttachment} ${fileName(id)}`}
+              >
+                {fileName(id)}
+                <SbIcon name="x" size={12} className="text-ink-subtle" />
+              </button>
+            ))}
           </div>
         )}
-      </div>
-
-      <div className={cx("shrink-0 border-t border-line bg-bg", compact ? "p-3" : "px-4 py-4 sm:px-6")}>
-        <form
-          className={cx("relative flex flex-col gap-2", column)}
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit();
+        <label className="sr-only" htmlFor="sandbox-composer">
+          {t.chat.placeholder}
+        </label>
+        <textarea
+          id="sandbox-composer"
+          ref={composer}
+          className={cx("w-full resize-none bg-transparent px-5 pt-4 text-body text-ink placeholder:text-ink-subtle focus:outline-none", variant === "panel" ? "min-h-14 px-4 pt-3" : "min-h-16")}
+          placeholder={t.chat.placeholder}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              onSubmit();
+            }
           }}
-        >
-          {picker && (
-            <div role="dialog" aria-label={t.chat.attachTitle} className="absolute inset-x-0 bottom-full z-10 mb-2 flex flex-col overflow-hidden rounded-lg border border-line bg-surface shadow-md">
-              <div className="flex flex-col gap-0.5 border-b border-line px-4 py-3">
-                <p className="text-label text-ink">{t.chat.attachTitle}</p>
-                <p className="text-caption text-ink-muted">{t.chat.attachHint}</p>
-              </div>
-              <ul className="max-h-60 overflow-y-auto p-1.5">
-                {files.map((f) => (
-                  <li key={f.id}>
-                    <button type="button" className="flex w-full items-center gap-2.5 rounded-sm px-2.5 py-2 text-left text-body-sm text-ink hover:bg-sunken" onClick={() => attach(f.id)}>
-                      <SbIcon name={f.kind === "doc" ? "file" : "table"} className="text-ink-subtle" />
-                      <span className="truncate">{f.name}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          maxLength={MAX_CHARS}
+        />
+        <div className="flex items-center gap-1.5 px-3 pb-3">
+          <button
+            type="button"
+            aria-label={t.chat.menu.open}
+            aria-expanded={menuOpen}
+            className={cx("grid size-9 place-items-center rounded-full text-ink-muted transition-colors hover:bg-sunken hover:text-ink", variant === "pill" ? "bg-sunken" : "border border-line")}
+            onClick={() => {
+              setPicker(false);
+              setMenuOpen((o) => !o);
+            }}
+          >
+            <SbIcon name="plus" />
+          </button>
+          {connectedCount > 0 && (
+            <button type="button" onClick={() => setMenuOpen((o) => !o)} className="inline-flex h-8 items-center gap-1.5 rounded-full border border-accent/25 bg-accent-soft px-3 text-caption font-medium text-accent-ink">
+              <SbIcon name="plug" size={14} />
+              {connectedCount === 1 ? t.chat.menu.one : format(t.chat.menu.count, { n: connectedCount })}
+            </button>
           )}
-          <div className="flex flex-col rounded-lg border border-line-strong bg-surface shadow-xs transition-[border-color,box-shadow] focus-within:border-accent focus-within:shadow-ring">
-            {attachments.length > 0 && (
-              <div className="flex flex-wrap items-center gap-1.5 px-3 pt-3">
-                <span className="text-caption text-ink-muted">{t.chat.attached}</span>
-                {attachments.map((id) => (
-                  <button
-                    key={id}
-                    type="button"
-                    className="inline-flex h-6 items-center gap-1.5 rounded-xs bg-sunken px-2 text-caption text-ink ring-1 ring-line ring-inset hover:ring-line-strong"
-                    onClick={() => setAttachments((a) => a.filter((x) => x !== id))}
-                    aria-label={`${t.chat.removeAttachment} ${fileName(id)}`}
-                  >
-                    {fileName(id)}
-                    <SbIcon name="x" size={12} className="text-ink-subtle" />
-                  </button>
-                ))}
-              </div>
-            )}
-            <label className="sr-only" htmlFor="sandbox-composer">
-              {t.chat.placeholder}
-            </label>
-            <textarea
-              id="sandbox-composer"
-              ref={composer}
-              className={cx("w-full resize-none bg-transparent px-4 pt-3 text-body text-ink placeholder:text-ink-subtle focus:outline-none", compact ? "min-h-16" : "min-h-20")}
-              placeholder={t.chat.placeholder}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              maxLength={MAX_CHARS}
-            />
-            <div className="flex items-center gap-2 px-2 pb-2">
-              {attachFromFiles && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  aria-expanded={picker}
-                  onClick={() => {
-                    setPicker((p) => !p);
-                    emit({ event: { type: "UI_CLICKED", target: "composer.attach", payload: { region: "composer", control: "attach" } } });
-                  }}
-                >
-                  <SbIcon name="paperclip" />
-                  {t.terms.attach}
-                </Button>
-              )}
-              <span className="ml-auto font-mono text-mono text-ink-subtle" aria-label={format(t.chat.counterLabel, { n: text.length, max: nf.format(MAX_CHARS) })}>
+          <span className="ml-auto flex items-center gap-2">
+            {text.length > MAX_CHARS * 0.75 && (
+              <span className="font-mono text-mono text-ink-subtle" aria-label={format(t.chat.counterLabel, { n: text.length, max: nf.format(MAX_CHARS) })}>
                 {format(t.chat.counter, { n: nf.format(text.length), max: nf.format(MAX_CHARS) })}
               </span>
-              <Button type="submit" size="sm" disabled={busy || !text.trim()} icon={busy ? undefined : "send"}>
-                {busy ? t.chat.sending : t.chat.send}
-              </Button>
-            </div>
-          </div>
-        </form>
+            )}
+            {variant !== "panel" && <span className="hidden text-caption text-ink-subtle sm:inline">{t.modelLabel}</span>}
+            <button
+              type="submit"
+              aria-label={busy ? t.chat.sending : t.chat.send}
+              disabled={busy || !text.trim()}
+              className={cx("grid size-9 place-items-center rounded-full text-on-accent transition-[background-color,opacity] disabled:opacity-35", variant === "pill" ? "bg-ink" : "bg-accent hover:bg-accent-hover")}
+            >
+              {busy ? <span className="size-2 animate-pulse rounded-full bg-on-accent" aria-hidden="true" /> : <SbIcon name="arrowUp" />}
+            </button>
+          </span>
+        </div>
       </div>
+    </form>
+  );
+
+  const suggestionChips = (
+    <ul className="mx-auto flex w-full max-w-3xl flex-wrap justify-center gap-2">
+      {t.chat.suggestions.map((s) => (
+        <li key={s}>
+          <button
+            type="button"
+            className="inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-2 text-left text-body-sm text-ink-muted transition-[border-color,color] hover:border-line-strong hover:text-ink"
+            aria-label={`${t.chat.useSuggestion}: ${s}`}
+            onClick={() => {
+              setText(s);
+              composer.current?.focus();
+            }}
+          >
+            <SbIcon name="arrowRight" size={14} className="shrink-0 text-ink-subtle" />
+            <span className="truncate">{s}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+
+  const empty = turns.length === 0;
+  const centered = empty && variant !== "panel";
+
+  return (
+    <section className={cx("flex min-h-0 flex-1 flex-col", variant === "panel" ? "bg-bg" : "bg-surface")} data-testid="sandbox-chat" data-variant={variant} aria-label={t.terms.chat}>
+      {centered ? (
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-7 overflow-y-auto px-4 py-8 sm:px-6">
+          {variant === "center" ? (
+            <h2 className="flex items-center gap-3 text-center text-title-1 text-ink">
+              <LogoMark size={34} />
+              {greeting}
+            </h2>
+          ) : (
+            <h2 className="text-center text-title-2 text-ink">{t.chat.askTitle}</h2>
+          )}
+          {composerBox}
+          {suggestionChips}
+          {(error || blocked) && (
+            <div className="mx-auto flex w-full max-w-3xl flex-col gap-3">
+              {error && <Notice tone="error">{error}</Notice>}
+              {blocked && (
+                <div data-testid="pii-blocked">
+                  <Notice tone="danger">{t.pii.blocked[blocked]}</Notice>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <>
+          <div ref={scroller} className={cx("flex min-h-0 flex-1 flex-col overflow-y-auto", compact ? "px-4 py-5" : "px-4 py-6 sm:px-6 sm:py-8")}>
+            <ol className={cx("flex flex-col", compact ? "gap-4" : "gap-6", column, empty && "my-auto")} aria-live="polite">
+              {empty && (
+                <li className="flex flex-col gap-6">
+                  <div className="flex flex-col items-start gap-3">
+                    <LogoMark size={32} />
+                    <div className="flex flex-col gap-1">
+                      <h2 className="text-title-3 text-ink">{t.chat.emptyTitle}</h2>
+                      <p className="text-body-sm text-ink-muted">{t.chat.empty}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="text-overline text-ink-subtle uppercase">{t.chat.suggestionsTitle}</p>
+                    <ul className="grid gap-2">
+                      {t.chat.suggestions.map((s) => (
+                        <li key={s}>
+                          <button
+                            type="button"
+                            className="flex h-full w-full items-start gap-2.5 rounded-md border border-line bg-surface px-3.5 py-3 text-left text-body-sm text-ink transition-[border-color,box-shadow] hover:border-line-strong hover:shadow-sm"
+                            aria-label={`${t.chat.useSuggestion}: ${s}`}
+                            onClick={() => {
+                              setText(s);
+                              composer.current?.focus();
+                            }}
+                          >
+                            <SbIcon name="arrowRight" className="mt-0.5 text-ink-subtle" />
+                            {s}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              )}
+              {turns.map((turn) => {
+                const who = turn.role === "assistant" ? t.modelLabel : t.chat.you;
+                return turn.role === "user" ? (
+                  <li key={turn.seq} className="flex flex-col items-end gap-1.5">
+                    <p className="sr-only">{who}</p>
+                    <p className={cx("max-w-[85%] rounded-2xl px-4 py-2.5 text-body whitespace-pre-wrap", variant === "panel" ? "rounded-br-md bg-accent text-on-accent" : "bg-sunken text-ink")}>{turn.text}</p>
+                  </li>
+                ) : (
+                  <li key={turn.seq} className={cx("flex gap-3", variant === "panel" && "flex-col gap-2 rounded-xl border border-line bg-surface p-4")}>
+                    <span className="shrink-0 pt-0.5">
+                      <LogoMark size={variant === "panel" ? 18 : 24} />
+                    </span>
+                    <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                      <span className="sr-only" data-testid="model-label">
+                        {who}
+                      </span>
+                      <Badge tone="accent" className="self-start" aria-hidden="true">
+                        {who}
+                      </Badge>
+                      {turn.text ? (
+                        <p className="text-body leading-relaxed whitespace-pre-wrap text-ink">{turn.text}</p>
+                      ) : (
+                        <p className="flex items-center gap-2 text-body-sm text-ink-muted">
+                          <span className="size-1.5 animate-pulse rounded-full bg-accent" aria-hidden="true" />
+                          {busy ? t.chat.sending : ""}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+            {(toolNotes.length > 0 || error || blocked) && (
+              <div className={cx("mt-4 flex flex-col gap-3", column)}>
+                {toolNotes.length > 0 && (
+                  <ul className="flex flex-col gap-1">
+                    {toolNotes.map((n, i) => (
+                      <li key={i} className="flex items-center gap-2 text-caption text-ink-muted">
+                        <SbIcon name="plug" size={14} className="text-ink-subtle" />
+                        {n}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {error && <Notice tone="error">{error}</Notice>}
+                {blocked && (
+                  <div data-testid="pii-blocked">
+                    <Notice tone="danger">{t.pii.blocked[blocked]}</Notice>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <div className={cx("shrink-0", variant === "panel" ? "border-t border-line bg-bg p-3" : "bg-surface px-4 pt-2 pb-4 sm:px-6")}>{composerBox}</div>
+        </>
+      )}
 
       {warn && (
         <div role="alertdialog" aria-modal="true" aria-labelledby="pii-warn-title" className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-4">

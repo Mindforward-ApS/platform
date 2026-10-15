@@ -7,6 +7,7 @@ import { format, getMessages } from "@/lib/i18n";
 import type { Concept } from "@/server/sandbox/events";
 import type { SandboxState } from "@/server/sandbox/reducer";
 import type { NavId } from "@/server/sandbox/skin-schema";
+import { LogoMark } from "@/components/ui/brand";
 import { postIntent } from "./api";
 import { ChatPanel } from "./chat-panel";
 import { CONCEPT_ICON, MODEL_CONCEPTS, SbIcon } from "./sandbox-icons";
@@ -17,6 +18,7 @@ import { AssistantsView, AutomationsView, CalendarView, ConnectorsView, CrmView,
 // Mindforward's own tokens. Every user action is sent as an intent and becomes a SandboxEvent on the server.
 
 const t = getMessages().sandbox;
+const CONNECTOR_ICONS = { mail: "mail", calendar: "calendar", files: "file", crm: "building", sheet: "table" } as const;
 
 export function DisclaimerBar() {
   return (
@@ -80,6 +82,31 @@ export function SandboxApp(props: SandboxProps) {
     .filter((g) => g.items.length > 0)
     .sort((a, b) => items.indexOf(a.items[0]!) - items.indexOf(b.items[0]!));
 
+  const shell = skin.shell;
+  const isRail = shell === "APP_RAIL_SIDE_PANEL";
+
+  // App-rail shell: narrow app rail with icon over label (all concepts, skin order).
+  const rail = (
+    <nav aria-label={t.frame.navLabel} className="flex flex-col items-stretch gap-1 px-1.5 py-3" data-testid="sandbox-nav">
+      {items.map((n) => {
+        const active = concept === n.concept && n.id !== "new-chat";
+        return (
+          <button
+            key={n.id}
+            type="button"
+            data-target={`nav.${n.id}`}
+            aria-current={active ? "page" : undefined}
+            className={cx("flex flex-col items-center gap-1 rounded-md px-1 py-2 text-[0.6875rem] leading-tight transition-colors", active ? "bg-accent-soft text-accent-ink" : "text-ink-muted hover:bg-sunken hover:text-ink")}
+            onClick={() => navigate(n.id, n.concept)}
+          >
+            <SbIcon name={n.id === "new-chat" ? "plus" : CONCEPT_ICON[n.concept]} size={20} />
+            <span className="w-full truncate text-center">{t.terms[n.labelKey]}</span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+
   const nav = (
     <nav aria-label={t.frame.navLabel} className="flex flex-col gap-5" data-testid="sandbox-nav">
       {groups.map((g) => (
@@ -94,13 +121,23 @@ export function SandboxApp(props: SandboxProps) {
                 data-target={`nav.${n.id}`}
                 aria-current={active ? "page" : undefined}
                 className={cx(
-                  "flex w-full items-center gap-2.5 rounded-sm px-3 text-left text-label transition-colors",
+                  "flex w-full items-center gap-2.5 rounded-md px-3 text-left text-label transition-colors",
                   compact ? "h-8" : "h-9",
-                  active ? "bg-accent-soft text-accent-ink" : "text-ink-muted hover:bg-sunken hover:text-ink",
+                  n.id === "new-chat" ? "font-medium text-ink hover:bg-surface/70" : active ? "bg-surface text-ink shadow-xs ring-1 ring-line" : "text-ink-muted hover:bg-surface/70 hover:text-ink",
                 )}
                 onClick={() => navigate(n.id, n.concept)}
               >
-                <SbIcon name={n.id === "new-chat" ? "plus" : CONCEPT_ICON[n.concept]} className={active ? "" : "text-ink-subtle"} />
+                {n.id === "new-chat" ? (
+                  shell === "SIDEBAR_CHAT_WORKPANE" ? (
+                    <span className="grid size-6 place-items-center rounded-full bg-accent text-on-accent">
+                      <SbIcon name="plus" size={14} />
+                    </span>
+                  ) : (
+                    <SbIcon name="compose" />
+                  )
+                ) : (
+                  <SbIcon name={CONCEPT_ICON[n.concept]} className={active ? "" : "text-ink-subtle"} />
+                )}
                 <span className="truncate">{t.terms[n.labelKey]}</span>
               </button>
             );
@@ -112,7 +149,7 @@ export function SandboxApp(props: SandboxProps) {
 
   const history = skin.regions.includes("history") ? (
     <section aria-label={t.terms.history} className="flex flex-col gap-1.5">
-      <h2 className="px-3 text-overline text-ink-subtle uppercase">{t.terms.history}</h2>
+      <h2 className="px-3 text-caption text-ink-subtle">{shell === "SIDEBAR_CHAT" ? t.frame.chats : t.frame.recent}</h2>
       {state.chat.conversations === 0 ? (
         <p className="px-3 text-body-sm text-ink-subtle">{t.chat.noHistory}</p>
       ) : (
@@ -124,8 +161,21 @@ export function SandboxApp(props: SandboxProps) {
     </section>
   ) : null;
 
-  const sidebar = (
+  const sidebar = isRail ? (
     <div className="flex min-h-0 flex-1 flex-col">
+      <div className="min-h-0 flex-1 overflow-y-auto">{rail}</div>
+      <div className="border-t border-line p-1.5">
+        <button type="button" aria-label={t.terms.reset} title={t.terms.reset} className="flex w-full flex-col items-center gap-1 rounded-md py-2 text-[0.6875rem] text-ink-muted hover:bg-sunken hover:text-ink" onClick={reset}>
+          <SbIcon name="refresh" size={18} />
+        </button>
+      </div>
+    </div>
+  ) : (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="hidden items-center gap-2.5 px-5 pt-4 lg:flex">
+        <LogoMark size={26} />
+        {shell === "SIDEBAR_CHAT_WORKPANE" && <span className="text-label font-semibold text-ink">{t.modelLabel}</span>}
+      </div>
       <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-3 py-4">
         <div className="flex flex-col gap-0.5 rounded-md border border-line bg-sunken px-3 py-2.5 lg:hidden">
           <p className="text-label text-ink">{t.company}</p>
@@ -134,14 +184,14 @@ export function SandboxApp(props: SandboxProps) {
         {nav}
         {history}
       </div>
-      <div className="border-t border-line p-3">
-        <button
-          type="button"
-          className="flex h-9 w-full items-center gap-2.5 rounded-sm px-3 text-left text-label text-ink-muted transition-colors hover:bg-sunken hover:text-ink"
-          onClick={reset}
-        >
-          <SbIcon name="refresh" className="text-ink-subtle" />
-          {t.terms.reset}
+      <div className="flex items-center gap-2.5 border-t border-line p-3">
+        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-caption font-semibold text-on-accent">{t.frame.userInitials}</span>
+        <span className="flex min-w-0 flex-1 flex-col">
+          <span className="truncate text-label text-ink">{t.frame.user}</span>
+          <span className="truncate text-caption text-ink-subtle">{t.frame.userSub}</span>
+        </span>
+        <button type="button" aria-label={t.terms.reset} title={t.terms.reset} className="grid size-8 place-items-center rounded-md text-ink-subtle transition-colors hover:bg-surface hover:text-ink" onClick={reset}>
+          <SbIcon name="refresh" />
         </button>
       </div>
     </div>
@@ -159,6 +209,10 @@ export function SandboxApp(props: SandboxProps) {
       density={skin.tokens.density}
       emit={emit}
       wide={skin.shell !== "APP_RAIL_SIDE_PANEL"}
+      variant={shell === "SIDEBAR_CHAT_WORKPANE" ? "center" : shell === "SIDEBAR_CHAT" ? "pill" : "panel"}
+      connectors={(["mail", "calendar", "files", "crm", "sheet"] as const).map((id) => ({ id, label: t.connectors.names[id], icon: CONNECTOR_ICONS[id], connected: state.connectors[id].connected }))}
+      practice={(props.practice?.items ?? []).map((i) => t.practice.kinds[i.kind])}
+      onOpenConnectors={() => navigate("connectors", "CONNECTORS")}
     />
   );
 
@@ -199,12 +253,14 @@ export function SandboxApp(props: SandboxProps) {
   // Which regions exist for this shell right now. Phones show one at a time via the pane tabs.
   const showChat = skin.shell !== "SIDEBAR_CHAT" || workspace === null;
   const showContent = skin.shell === "APP_RAIL_SIDE_PANEL" || workspace !== null;
-  const contentNode = workspace ?? <StubView heading={t.terms.chat} body={t.chat.empty} />;
+  // App-rail shell: with the chat open on the side, the middle shows the inbox (like a work app), never an empty stub.
+  const contentNode = workspace ?? <MailView mail={world.mail} emit={emit} />;
   const tabs: Pane[] = ["nav", ...(showContent ? (["content"] as const) : []), ...(showChat ? (["chat"] as const) : [])];
   const activePane: Pane = tabs.includes(pane) ? pane : (tabs[tabs.length - 1] ?? "nav");
   const vis = (p: Pane) => (activePane === p ? "flex" : "hidden lg:flex");
 
-  const sidebarWidth = skin.shell === "APP_RAIL_SIDE_PANEL" ? "lg:w-52" : "lg:w-60";
+  const sidebarWidth = isRail ? "lg:w-[4.75rem]" : "lg:w-64";
+  const sidebarLook = shell === "SIDEBAR_CHAT" ? "bg-sunken lg:border-r-0" : isRail ? "bg-bg" : "bg-bg";
 
   return (
     <div
@@ -213,6 +269,13 @@ export function SandboxApp(props: SandboxProps) {
       data-accent={skin.tokens.accentSlot}
     >
       <DisclaimerBar />
+      {isRail && (
+        <div className="hidden h-11 shrink-0 items-center gap-3 bg-night px-4 text-on-night lg:flex" data-testid="workplace-bar">
+          <SbIcon name="apps" size={18} />
+          <span className="text-label">{t.frame.workplace}</span>
+          <span className="ml-auto grid size-7 place-items-center rounded-full bg-mark-dot text-caption font-semibold text-night">{t.frame.userInitials}</span>
+        </div>
+      )}
       <header className={cx("h-12 shrink-0 items-center justify-start border-b border-line bg-surface px-4 sm:px-6 lg:flex lg:h-14 lg:justify-between lg:gap-6", tracks.length < 2 ? "hidden" : "flex")}>
         <div className="flex min-w-0 items-center gap-3">
           <span className="hidden size-8 shrink-0 place-items-center rounded-sm bg-accent-soft text-accent-ink lg:grid">
@@ -255,7 +318,7 @@ export function SandboxApp(props: SandboxProps) {
       )}
 
       <div className="flex min-h-0 flex-1">
-        <aside id="sb-pane-nav" aria-labelledby="sb-tab-nav" className={cx(vis("nav"), "w-full min-w-0 flex-col border-line bg-surface lg:shrink-0 lg:border-r", sidebarWidth)}>
+        <aside id="sb-pane-nav" aria-labelledby="sb-tab-nav" className={cx(vis("nav"), "w-full min-w-0 flex-col border-line lg:shrink-0 lg:border-r", sidebarLook, sidebarWidth)}>
           {sidebar}
         </aside>
 

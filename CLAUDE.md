@@ -113,7 +113,7 @@ Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installat
 - Byg med UI-kittet: `src/components/ui/primitives.tsx` (Page, Card, Button/ButtonLink, Field, Badge, Notice, Table …), `icons.tsx`, `brand.tsx`; skaller i `src/components/shell/`.
 - Én primær knap pr. visning. Kanter før skygger. Status aldrig med farve alene. Ingen emoji eller farvede venstrekanter. Gradienter kun i app-ikonfelter (`AppIcon`).
 - Ikoner: `Icon` (Phosphor, små UI-ikoner) og `AppIcon` (farvefelt med gradient og hvidt ikon) til menu, feature-lister, dashboards og tomme tilstande. Licenser: `docs/design/third-party-assets.md`.
-- Sandkassen har egen visuel identitet. Skins spejler kun layout-regioner og generiske menubegreber. Aldrig leverandørernes logoer, farver, fonte, ikoner, skærmbilleder eller "look and feel".
+- Sandkassen ligner de rigtige desktop-apps så meget som muligt i **opbygning og arbejdsgang** (sidebjælke, startskærm, skrivefelt med "+"-menu og forbindelser, app-bjælke + sidepanel) — Marco 15. okt. 2026: "ligne dem så meget som muligt uden at ligne dem". Udseendet er altid Mindforwards: aldrig leverandørernes logoer, farver, fonte, ikoner, navne, skærmbilleder eller trade dress.
 - Fast disclaimer i sandkassen: "Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google." Svar mærkes "Øvemodel".
 
 ## Git
