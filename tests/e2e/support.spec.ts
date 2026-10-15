@@ -14,7 +14,7 @@ test("support widget answers a help-center question with an article link", async
   await expect(page).toHaveURL(/\/hjem$/);
   await page.goto("/konto");
 
-  await page.getByRole("link", { name: "Support", exact: true }).click();
+  await page.getByRole("link", { name: /^Support\b/ }).click();
   await expect(page).toHaveURL(/\/konto\/support$/);
   const widget = page.getByTestId("support-widget");
   await expect(widget).toContainText("AI-assistent — kan tage fejl. Du kan altid bede om et menneske.");
