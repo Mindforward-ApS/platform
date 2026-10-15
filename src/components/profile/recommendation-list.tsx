@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AppIcon, Icon } from "@/components/ui/icons";
 import { Badge, Button, ButtonLink } from "@/components/ui/primitives";
+import { streamProfileDemo } from "./demo-api";
 import { DemoPanel, type DemoPanelData, type DemoPanelText } from "./demo-panel";
 
 export interface RecommendationCard {
@@ -79,7 +80,7 @@ export function RecommendationList({ items, platform, platformName, canDemo, t }
               </div>
             </div>
           </article>
-          {open === c.id && c.demo && <DemoPanel demo={c.demo} platform={platform} sourceUrl={c.sourceUrl} t={{ ...t.demo, label: fill(t.demo.label, { platform: platformName }), setup: fill(t.demo.setup, { platform: platformName }), note: fill(t.demo.note, { platform: platformName }) }} onClose={() => setOpen(null)} />}
+          {open === c.id && c.demo && <DemoPanel demo={c.demo} stream={(prompt, onDelta) => streamProfileDemo(c.demo!.demoId, { prompt, platform }, onDelta)} sourceUrl={c.sourceUrl} t={{ ...t.demo, label: fill(t.demo.label, { platform: platformName }), setup: fill(t.demo.setup, { platform: platformName }), note: fill(t.demo.note, { platform: platformName }) }} onClose={() => setOpen(null)} />}
         </li>
       ))}
     </ol>

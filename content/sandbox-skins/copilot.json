@@ -17,5 +17,6 @@
   ],
   "composer": { "attachFromFiles": true, "toolsMenu": ["attach"], "modelPicker": false },
   "concepts": { "assistants": true, "connectors": true, "automations": true, "agents": true },
+  "connectorsLayout": "PANEL",
   "tokens": { "density": "compact", "accentSlot": "b" }
 }

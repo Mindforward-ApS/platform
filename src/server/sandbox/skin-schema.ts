@@ -26,6 +26,9 @@ export type Region = (typeof REGIONS)[number];
 
 export const SKIN_KEYS = ["chatgpt", "copilot", "claude", "gemini"] as const;
 
+export const CONNECTORS_LAYOUTS = ["GRID", "LIST", "PANEL"] as const;
+export type ConnectorsLayout = (typeof CONNECTORS_LAYOUTS)[number];
+
 export const skinConfigSchema = z
   .strictObject({
     key: z.enum(SKIN_KEYS),
@@ -36,6 +39,8 @@ export const skinConfigSchema = z
     composer: z.strictObject({ attachFromFiles: z.boolean(), toolsMenu: z.array(z.enum(TERM_KEYS)), modelPicker: z.literal(false) }),
     concepts: z.strictObject({ assistants: z.boolean(), connectors: z.boolean(), automations: z.boolean(), agents: z.boolean() }),
     tokens: z.strictObject({ density: z.enum(["compact", "comfortable"]), accentSlot: z.enum(["a", "b"]) }),
+    /** How the "Forbindelser" view is laid out (layout pattern only): catalog grid, list, or compact side panel. */
+    connectorsLayout: z.enum(CONNECTORS_LAYOUTS).default("LIST"),
   })
   .superRefine((s, ctx) => {
     if (new Set(s.regions).size !== s.regions.length) ctx.addIssue({ code: "custom", message: "duplicate region" });

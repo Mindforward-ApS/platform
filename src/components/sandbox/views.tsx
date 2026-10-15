@@ -6,9 +6,12 @@ import { format, getMessages } from "@/lib/i18n";
 import { detectPii } from "@/lib/pii";
 import type { ConnectorId, Scope } from "@/server/sandbox/events";
 import type { SandboxState } from "@/server/sandbox/reducer";
-import { newOverlayId } from "./api";
+import { newOverlayId, streamConnectorDemo } from "./api";
 import { SbIcon, type LocalIconName } from "./sandbox-icons";
-import type { CalendarItem, CustomerItem, FileItem, Intent, MailItem, SheetCellView } from "./types";
+import type { CalendarItem, CustomerItem, FileItem, Intent, MailItem, PracticeKind, PracticeView, SheetCellView } from "./types";
+import { DemoPanel } from "@/components/profile/demo-panel";
+import { AppIcon, type IconTone } from "@/components/ui/icons";
+import type { ConnectorsLayout } from "@/server/sandbox/skin-schema";
 import type { IconName } from "@/components/ui/icons";
 
 // Views for the simulated Nordlys surfaces: a pane header, then list + detail (or a form column).
@@ -609,13 +612,125 @@ const CONNECTOR_SCOPES: Record<ConnectorId, Scope[]> = {
 
 const CONNECTOR_ICON: Record<ConnectorId, LocalIconName | IconName> = { mail: "mail", calendar: "calendar", files: "file", crm: "building", sheet: "table" };
 
-export function ConnectorsView({ state, emit }: { state: SandboxState; emit: Emit }) {
+const KIND_ICON: Record<PracticeKind, { icon: IconName; tone: IconTone }> = {
+  office: { icon: "mail", tone: "blue" },
+  files: { icon: "file", tone: "sky" },
+  chat: { icon: "chats", tone: "sky" },
+  projects: { icon: "plan", tone: "mint" },
+  crm: { icon: "users", tone: "blue" },
+  shop: { icon: "grid", tone: "amber" },
+  payments: { icon: "card", tone: "mint" },
+  design: { icon: "sparkle", tone: "coral" },
+  accounting: { icon: "chart", tone: "amber" },
+  jobs: { icon: "building", tone: "coral" },
+  automation: { icon: "lightning", tone: "ink" },
+};
+
+/** "Til jeres branche": the industry's connectors under neutral names; the layout follows the skin (grid, list, panel). */
+function PracticeConnectors({ practice, layout, sessionId }: { practice: PracticeView | null; layout: ConnectorsLayout; sessionId: string }) {
+  const p = t.practice;
+  const [open, setOpen] = useState<PracticeKind | null>(null);
+  const [tried, setTried] = useState<PracticeKind[]>([]);
+  if (!practice) {
+    return (
+      <section className="flex flex-col items-start gap-3 rounded-lg border border-dashed border-line-strong/50 bg-surface p-5" data-testid="practice-empty">
+        <p className="text-label text-ink">{p.noProfileTitle}</p>
+        <p className="text-body-sm text-ink-muted">{p.noProfileBody}</p>
+        <a href="/profil/virksomhed" className="text-body-sm font-medium text-accent underline decoration-accent/30 underline-offset-[3px]">
+          {p.noProfileCta}
+        </a>
+      </section>
+    );
+  }
+  const openItem = practice.items.find((i) => i.kind === open);
+  const action = (kind: PracticeKind, hasDemo: boolean) =>
+    !hasDemo ? null : practice.canDemo ? (
+      <Button type="button" size="sm" variant={tried.includes(kind) ? "secondary" : "primary"} icon={tried.includes(kind) ? "check" : "sparkle"} onClick={() => setOpen(open === kind ? null : kind)} aria-expanded={open === kind}>
+        {tried.includes(kind) ? p.connected : p.tryIt}
+      </Button>
+    ) : (
+      <Badge icon="lock">{p.locked}</Badge>
+    );
+  const panel = openItem?.demo ? (
+    <DemoPanel
+      demo={{ demoId: openItem.demo.id, title: openItem.demo.title, prompt: openItem.demo.prompt, data: openItem.demo.data }}
+      stream={(prompt, onDelta) => streamConnectorDemo(sessionId, { demoId: openItem.demo!.id, prompt, kind: openItem.kind }, onDelta).then((r) => (r === null && setTried((x) => (x.includes(openItem.kind) ? x : [...x, openItem.kind])), r))}
+      sourceUrl={null}
+      t={p.demo}
+      onClose={() => setOpen(null)}
+    />
+  ) : null;
+
+  return (
+    <section className="flex flex-col gap-4" data-testid="practice-connectors" data-layout={layout}>
+      <div className="flex flex-col gap-1">
+        <p className="text-title-3 text-ink">{p.heading}</p>
+        <p className="text-body-sm text-ink-muted">{format(p.lead, { industry: practice.industry.toLocaleLowerCase("da") })}</p>
+      </div>
+      {layout === "GRID" && (
+        <ul className="grid gap-3 sm:grid-cols-2">
+          {practice.items.map((i) => (
+            <li key={i.kind} className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-4 shadow-xs">
+              <div className="flex items-center gap-3">
+                <AppIcon name={KIND_ICON[i.kind].icon} tone={KIND_ICON[i.kind].tone} size="md" />
+                <span className="text-label text-ink">{p.kinds[i.kind]}</span>
+              </div>
+              {i.useCase && <p className="line-clamp-3 text-body-sm text-ink-muted">{i.useCase}</p>}
+              <div className="mt-auto">{action(i.kind, Boolean(i.demo))}</div>
+            </li>
+          ))}
+        </ul>
+      )}
+      {layout === "LIST" && (
+        <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
+          {practice.items.map((i) => (
+            <li key={i.kind} className="flex flex-wrap items-center gap-x-4 gap-y-2 px-5 py-4">
+              <AppIcon name={KIND_ICON[i.kind].icon} tone={KIND_ICON[i.kind].tone} size="sm" />
+              <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="text-label text-ink">{p.kinds[i.kind]}</span>
+                {i.useCase && <span className="text-body-sm text-ink-muted">{i.useCase}</span>}
+              </div>
+              {action(i.kind, Boolean(i.demo))}
+            </li>
+          ))}
+        </ul>
+      )}
+      {layout === "PANEL" && (
+        <ul className="flex flex-col gap-1.5">
+          {practice.items.map((i) => (
+            <li key={i.kind}>
+              <details className="group rounded-md border border-line bg-surface">
+                <summary className="flex cursor-pointer list-none items-center gap-3 px-3 py-2.5">
+                  <AppIcon name={KIND_ICON[i.kind].icon} tone={KIND_ICON[i.kind].tone} size="xs" />
+                  <span className="flex-1 text-body-sm text-ink">{p.kinds[i.kind]}</span>
+                  <SbIcon name="chevronRight" className="text-ink-subtle transition-transform group-open:rotate-90" />
+                </summary>
+                <div className="flex flex-col items-start gap-3 border-t border-line px-3 py-3">
+                  {i.useCase && <p className="text-body-sm text-ink-muted">{i.useCase}</p>}
+                  {action(i.kind, Boolean(i.demo))}
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
+      )}
+      {panel}
+    </section>
+  );
+}
+
+export function ConnectorsView({ state, emit, practice = null, layout = "LIST", sessionId }: { state: SandboxState; emit: Emit; practice?: PracticeView | null; layout?: ConnectorsLayout; sessionId: string }) {
   const [dialog, setDialog] = useState<ConnectorId | null>(null);
   const [chosen, setChosen] = useState<Scope[]>([]);
   return (
     <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-connectors">
       <PaneHeader title={t.connectors.heading} />
       <FormColumn>
+        <PracticeConnectors practice={practice} layout={layout} sessionId={sessionId} />
+        <div className="flex flex-col gap-1 border-t border-line pt-6">
+          <p className="text-title-3 text-ink">{t.practice.nordlysHeading}</p>
+          <p className="text-body-sm text-ink-muted">{t.practice.nordlysLead}</p>
+        </div>
         <p className="text-body text-ink-muted">{t.connectors.intro}</p>
         {dialog && (
           <section role="dialog" aria-labelledby="perm-title" className="overflow-hidden rounded-lg border border-line-strong bg-surface">

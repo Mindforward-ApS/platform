@@ -102,6 +102,11 @@ export const daProfile = {
       generic: "Demoen kunne ikke køre lige nu. Prøv igen om lidt.",
     },
   },
+  realStrip: {
+    label: "Uden for øvemiljøet",
+    body: "Rigtige forbindelser i {platform} til {industry}:",
+    cta: "Se hele listen",
+  },
   homeCard: {
     title: "Få anbefalet forbindelser til jeres branche",
     body: "Svar på to korte spørgsmål, så viser vi, hvilke forbindelser i din AI-assistent der passer til jeres arbejde.",

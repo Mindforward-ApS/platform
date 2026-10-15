@@ -75,3 +75,20 @@ describe("relevance", () => {
     expect((await recommendationsFor(testDb(), s, "CHATGPT"))?.recommended.map((x) => x.name)).toContain("Shopify");
   });
 });
+
+describe("practice connectors in the øvemiljø", () => {
+  it("groups the industry's connectors into neutral kinds, with demos and no vendor names", async () => {
+    const { practiceConnectorsFor } = await import("@/server/connectors/practice");
+    const [org, user] = await Promise.all([makeOrg("PERSONAL"), makeUser()]);
+    await addMember(org.id, user.id, "OWNER");
+    const s = { userId: user.id, organizationId: org.id };
+    expect(await practiceConnectorsFor(testDb(), s)).toBeNull();
+    const webshop = await testDb().industry.findUniqueOrThrow({ where: { slug: "webshop" } });
+    await saveIndustry(testDb(), s, { industryId: webshop.id });
+    const p = await practiceConnectorsFor(testDb(), s);
+    expect(p?.industry).toBe("Webshop & e-handel");
+    expect(p?.items.map((i) => i.kind)).toContain("shop");
+    expect(p?.items.some((i) => i.demo)).toBe(true);
+    expect(JSON.stringify(p)).not.toMatch(/chatgpt|openai|copilot|microsoft|claude|anthropic|gemini|google|shopify|hubspot|e-conomic/i);
+  });
+});

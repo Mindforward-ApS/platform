@@ -5,6 +5,7 @@ import type { Intent } from "./types";
 
 export const actionsUrl = (sessionId: string) => `/api/sandbox/${encodeURIComponent(sessionId)}/actions`;
 export const chatUrl = (sessionId: string) => `/api/sandbox/${encodeURIComponent(sessionId)}/chat`;
+export const connectorDemoUrl = (sessionId: string) => `/api/sandbox/${encodeURIComponent(sessionId)}/connector-demo`;
 
 export interface ApiError {
   error: string;
@@ -69,4 +70,35 @@ export function newOverlayId(prefix: string): string {
   const bytes = new Uint8Array(5);
   crypto.getRandomValues(bytes);
   return `${prefix}-${Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("")}`;
+}
+
+/** "Prøv" on a practice connector: streams the example-data demo. Returns an error message, "" for a generic error, or null. */
+export async function streamConnectorDemo(sessionId: string, body: { demoId: string; prompt: string; kind: string }, onDelta: (text: string) => void): Promise<string | null> {
+  let res: Response;
+  try {
+    res = await fetch(connectorDemoUrl(sessionId), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  } catch {
+    return "";
+  }
+  if (!res.ok || !res.body) return ((await res.json().catch(() => null)) as ApiError | null)?.message ?? "";
+  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+  let buffer = "";
+  let failure: string | null = null;
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += value;
+    let idx: number;
+    while ((idx = buffer.indexOf("\n\n")) >= 0) {
+      const frame = buffer.slice(0, idx);
+      buffer = buffer.slice(idx + 2);
+      const event = /^event: (.+)$/m.exec(frame)?.[1];
+      const dataLine = /^data: (.+)$/m.exec(frame)?.[1];
+      if (!event || !dataLine) continue;
+      const data = JSON.parse(dataLine) as { text?: string; message?: string };
+      if (event === "delta") onDelta(data.text ?? "");
+      else if (event === "error") failure = data.message ?? "";
+    }
+  }
+  return failure;
 }

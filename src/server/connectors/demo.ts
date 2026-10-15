@@ -31,7 +31,7 @@ export async function prepareDemoRun(
   db: PrismaClient,
   runner: ConnectorTestRunner,
   scope: { userId: string; organizationId: string },
-  input: { demoId: string; prompt: string; platform: ConnectorPlatformKey },
+  input: { demoId: string; prompt: string; platform: ConnectorPlatformKey; /** Neutral name in the øvemiljø (never a vendor name there). */ connectorLabel?: string },
 ) {
   const demo = await db.connectorDemo.findUnique({ where: { id: input.demoId }, select: { id: true, connectorId: true, prompt: true, data: true, connector: { select: { name: true } } } });
   if (!demo) throw new DemoError("NOT_FOUND", 404);
@@ -50,7 +50,7 @@ export async function prepareDemoRun(
   const prompt = input.prompt.trim();
   if (!prompt || prompt.length > DEMO_PROMPT_MAX) throw new DemoError("PROMPT_TOO_LONG", 400);
 
-  const prepared = await runner.prepare({ ...scope, platform: input.platform, connectorName: demo.connector.name, data: demo.data, prompt });
+  const prepared = await runner.prepare({ ...scope, platform: input.platform, connectorName: input.connectorLabel ?? demo.connector.name, data: demo.data, prompt });
   return {
     demo,
     async run(handlers: { onText?: (delta: string) => void }) {

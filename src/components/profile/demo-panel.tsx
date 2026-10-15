@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Icon } from "@/components/ui/icons";
 import { Button, buttonClass, Notice } from "@/components/ui/primitives";
 
-// "Prøv den": 1) the fictional data the connector "sees", 2) the prompt (editable), 3) the answer, streamed live.
+// "Prøv den" (profile page and øvemiljø): 1) the fictional data the connector "sees", 2) the prompt (editable), 3) the answer, streamed live.
 // Always labelled as a demo; never claims to run in the learner's ChatGPT or Copilot.
 
 export interface DemoPanelData {
@@ -26,39 +26,6 @@ export interface DemoPanelText {
   close: string;
   note: string;
   generic: string;
-}
-
-async function streamDemo(demoId: string, body: { prompt: string; platform: string }, onDelta: (t: string) => void): Promise<string | null> {
-  let res: Response;
-  try {
-    res = await fetch(`/api/connectors/demo/${encodeURIComponent(demoId)}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-  } catch {
-    return null;
-  }
-  if (!res.ok || !res.body) {
-    const err = (await res.json().catch(() => null)) as { message?: string } | null;
-    return err?.message ?? "";
-  }
-  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
-  let buffer = "";
-  let failure: string | null = null;
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buffer += value;
-    let idx: number;
-    while ((idx = buffer.indexOf("\n\n")) >= 0) {
-      const frame = buffer.slice(0, idx);
-      buffer = buffer.slice(idx + 2);
-      const event = /^event: (.+)$/m.exec(frame)?.[1];
-      const dataLine = /^data: (.+)$/m.exec(frame)?.[1];
-      if (!event || !dataLine) continue;
-      const data = JSON.parse(dataLine) as { text?: string; message?: string };
-      if (event === "delta") onDelta(data.text ?? "");
-      else if (event === "error") failure = data.message ?? "";
-    }
-  }
-  return failure;
 }
 
 function DataPreview({ data }: { data: DemoPanelData["data"] }) {
@@ -85,7 +52,9 @@ function DataPreview({ data }: { data: DemoPanelData["data"] }) {
   );
 }
 
-export function DemoPanel({ demo, platform, sourceUrl, t, onClose }: { demo: DemoPanelData; platform: string; sourceUrl: string | null; t: DemoPanelText; onClose: () => void }) {
+export type DemoStream = (prompt: string, onDelta: (text: string) => void) => Promise<string | null>;
+
+export function DemoPanel({ demo, stream, sourceUrl, t, onClose }: { demo: DemoPanelData; stream: DemoStream; sourceUrl: string | null; t: DemoPanelText; onClose: () => void }) {
   const [prompt, setPrompt] = useState(demo.prompt);
   const [answer, setAnswer] = useState("");
   const [running, setRunning] = useState(false);
@@ -96,7 +65,7 @@ export function DemoPanel({ demo, platform, sourceUrl, t, onClose }: { demo: Dem
     setRunning(true);
     setError(null);
     setAnswer("");
-    const failure = await streamDemo(demo.demoId, { prompt, platform }, (d) => setAnswer((a) => a + d));
+    const failure = await stream(prompt, (d) => setAnswer((a) => a + d));
     setRunning(false);
     setRan(true);
     if (failure !== null) setError(failure || t.generic);

@@ -184,7 +184,7 @@ export function SandboxApp(props: SandboxProps) {
       case "SHEET":
         return <SheetView cells={world.sheet} />;
       case "CONNECTORS":
-        return <ConnectorsView state={state} emit={emit} />;
+        return <ConnectorsView state={state} emit={emit} practice={props.practice ?? null} layout={skin.connectorsLayout} sessionId={sessionId} />;
       case "ASSISTANTS":
         return <AssistantsView state={state} files={world.files} emit={emit} />;
       case "AUTOMATIONS":

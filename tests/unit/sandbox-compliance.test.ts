@@ -68,11 +68,12 @@ describe("network allowlist (docs/04 § 1)", () => {
       const src = readFileSync(file, "utf8");
       expect(src, file).not.toMatch(/https?:\/\//);
       expect(src, file).not.toMatch(/XMLHttpRequest|WebSocket|EventSource|navigator\.sendBeacon|new Image\(/);
-      for (const m of src.matchAll(/fetch\(([^,)]+)/g)) expect(m[1], file).toMatch(/^(actionsUrl|chatUrl)\(/);
+      for (const m of src.matchAll(/fetch\(([^,)]+)/g)) expect(m[1], file).toMatch(/^(actionsUrl|chatUrl|connectorDemoUrl)\(/);
     }
     const api = readFileSync("src/components/sandbox/api.ts", "utf8");
     expect(api).toMatch(/`\/api\/sandbox\/\$\{encodeURIComponent\(sessionId\)\}\/actions`/);
     expect(api).toMatch(/`\/api\/sandbox\/\$\{encodeURIComponent\(sessionId\)\}\/chat`/);
+    expect(api).toMatch(/`\/api\/sandbox\/\$\{encodeURIComponent\(sessionId\)\}\/connector-demo`/);
   });
 
   it("server sandbox code makes no network calls; only src/server/ai/client.ts talks to Anthropic", () => {

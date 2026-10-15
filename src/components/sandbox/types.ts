@@ -61,8 +61,18 @@ export interface TrackLink {
   current: boolean;
 }
 
+export type PracticeKind = "office" | "files" | "chat" | "projects" | "crm" | "shop" | "payments" | "design" | "accounting" | "jobs" | "automation";
+
+/** The learner's industry connectors under neutral names (src/server/connectors/practice.ts). null = no work profile yet. */
+export interface PracticeView {
+  industry: string;
+  canDemo: boolean;
+  items: { kind: PracticeKind; useCase: string | null; demo: { id: string; title: string; prompt: string; data: Record<string, Record<string, string | number | boolean>[]> } | null }[];
+}
+
 export interface SandboxProps {
   sessionId: string;
+  practice?: PracticeView | null;
   tracks?: TrackLink[];
   skin: SkinConfig;
   initialState: SandboxState;
