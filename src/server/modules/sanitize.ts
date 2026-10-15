@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 import { scoringConfig } from "@/lib/config/scoring";
 import type { ModuleContent, Step } from "@/lib/schemas/module";
+import { loadWorld } from "@/server/sandbox/world";
 import { displayPct } from "@/server/scoring/score";
 import { computeAttemptScore, isGraded, maxSubmissionsOf, missingSteps, scoreStepRow, stepStatus, type StepResultRow } from "./attempt-rules";
 import type { PlayerCriterion, PlayerHint, PlayerResult, PlayerState, PlayerStep, PlayerStepResult } from "./player-types";
@@ -14,6 +15,11 @@ import type { PlayerCriterion, PlayerHint, PlayerResult, PlayerState, PlayerStep
 export interface OwnerFeedback {
   overallFeedback?: string;
   criteria?: Record<string, string>;
+}
+
+/** Attachments are sandbox-world file ids (f11); learners see the file name ("Tone of voice Nordlys.md"). */
+function attachmentName(id: string): string {
+  return loadWorld().files.find((f) => f.id === id)?.name ?? id;
 }
 
 export interface SanitizeRow extends StepResultRow {
@@ -108,7 +114,7 @@ export function sanitizeStep(
         type: "PROMPT_TASK",
         instruction: step.instruction,
         scenario: step.scenario,
-        attachments: step.attachments ?? [],
+        attachments: (step.attachments ?? []).map(attachmentName),
         maxChars: step.maxChars ?? scoringConfig.promptTask.defaultMaxChars,
         maxSubmissions: maxSubmissionsOf(step),
         ...(criteria ? { criteria } : {}),

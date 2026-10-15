@@ -116,3 +116,13 @@ describe("sanitizer never leaks answers", () => {
     expect(state.canFinish).toBe(false);
   });
 });
+
+describe("prompt task attachments", () => {
+  it("shows sandbox file names, never raw file ids", () => {
+    const step = mod.steps.find((s) => s.type === "PROMPT_TASK" && (s.attachments?.length ?? 0) > 0);
+    expect(step).toBeDefined();
+    const out = sanitizeStep(step!, undefined, { attemptId: "a1" }) as { attachments: string[] };
+    expect(out.attachments).toContain("Tone of voice Nordlys.md");
+    expect(out.attachments.some((a) => /^f\d+$/.test(a))).toBe(false);
+  });
+});
