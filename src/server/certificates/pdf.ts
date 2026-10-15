@@ -4,6 +4,7 @@ import { CERTIFICATE_DISCLAIMER } from "@/lib/config/certificates";
 import { formatDateDa } from "@/lib/format-date";
 import { format, getMessages } from "@/lib/i18n";
 import { rasterTokens } from "@/server/brand/raster-tokens";
+import { drawMark } from "@/server/pdf/brand";
 import { renderPdf, type PdfDoc } from "@/server/pdf/render";
 import type { CertificateDetails } from "./service";
 
@@ -25,17 +26,6 @@ export function certificateLines(c: CertificateDetails, verifyUrl: string): { he
       CERTIFICATE_DISCLAIMER,
     ],
   };
-}
-
-/** The brand mark (rounded tile, dot, chevron) on the 64 grid of src/components/ui/brand.tsx. */
-function drawMark(pdf: PdfDoc, x: number, y: number, size: number, c: ReturnType<typeof rasterTokens>) {
-  const k = size / 64;
-  pdf.save();
-  pdf.roundedRect(x, y, size, size, 16 * k).fill(c.ink);
-  pdf.circle(x + 21 * k, y + 32 * k, 6 * k).fill(c.accent);
-  pdf.moveTo(x + 32 * k, y + 19 * k).lineTo(x + 45 * k, y + 32 * k).lineTo(x + 32 * k, y + 45 * k)
-    .lineWidth(7 * k).lineCap("round").lineJoin("round").stroke(c.surface);
-  pdf.restore();
 }
 
 /** QR code as vector squares (no image embedding). */
