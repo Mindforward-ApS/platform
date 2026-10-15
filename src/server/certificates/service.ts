@@ -51,6 +51,9 @@ export async function checkAndIssueCertificates(
     for (const level of CERTIFICATE_LEVELS) {
       const existing = await db.certificate.findUnique({ where: { userId_organizationId_trackId_level: { userId, organizationId, trackId: enrollment.trackId, level: level.level } }, select: { id: true } });
       if (existing) continue;
+      // Brought along from the learner's other account (CredentialTransfer): never issue a second one.
+      const shared = await db.certificateShare.findFirst({ where: { organizationId, userId, certificate: { trackId: enrollment.trackId, level: level.level, revokedAt: null } }, select: { id: true } });
+      if (shared) continue;
       const trackModules = await db.module.findMany({
         where: { slug: { in: [...level.requiredModules] }, tracks: { some: { trackId: enrollment.trackId } } },
         select: { slug: true, requiredLicense: true },

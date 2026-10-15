@@ -5,6 +5,7 @@ import { getEntitlements } from "@/server/billing/entitlements";
 import type { EmployeeFilter } from "@/server/admin/queries";
 import type { ReportData } from "./render";
 import { findBannedTerms } from "./wording";
+import { certificatesVisibleIn } from "@/server/certificates/transfer";
 
 // Loads the company report's data (docs/01 § 4.2.7): who was offered training, which role- and track-specific
 // modules were passed in the period (with content version), certificates, the org's own notes. Org-scoped and
@@ -64,7 +65,7 @@ export async function loadReportData(db: PrismaClient, params: ReportParams, now
       select: { userId: true, status: true, passedAt: true, bestAttemptId: true, module: { select: { slug: true } } },
     }),
     db.certificate.findMany({
-      where: { organizationId, userId: { in: userIds }, revokedAt: null, issuedAt: { gte: from, lte: to } },
+      where: { userId: { in: userIds }, issuedAt: { gte: from, lte: to }, ...certificatesVisibleIn(organizationId) },
       select: { userId: true, levelLabel: true, issuedAt: true, track: { select: { displayName: true } } },
     }),
     db.trackEnrollment.findMany({ where: { organizationId, userId: { in: userIds }, active: true }, select: { userId: true, track: { select: { displayName: true } } } }),

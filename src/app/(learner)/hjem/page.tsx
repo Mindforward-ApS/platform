@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { TransferOffers } from "@/components/certificate/transfer-offer";
 import { num } from "@/components/player/kit";
 import { StatusBadge } from "@/components/player/module-card";
 import { AppIcon, Icon, type IconName } from "@/components/ui/icons";
@@ -276,6 +277,7 @@ async function Content() {
           {t.home.planCta}
         </ButtonLink>
       </header>
+      <TransferOffers userId={ctx.user.id} organizationId={ctx.membership.organizationId} />
       {visible.length === 0 ? (
         <EmptyState icon="book" title={t.home.emptyTitle}>
           {t.home.emptyBody}

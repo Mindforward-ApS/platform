@@ -104,6 +104,12 @@ enum AssignmentSource {
   ADMIN
   MONTHLY
   SELF
+  CARRIED_OVER // passed in another account, brought along by the learner (CredentialTransfer)
+}
+
+enum CredentialTransferDecision {
+  ACCEPTED
+  DECLINED
 }
 
 enum AssignmentStatus {
@@ -460,6 +466,8 @@ model User {
   aiCalls              AiCall[]
   withdrawalRequests   WithdrawalRequest[]
   trackEnrollments     TrackEnrollment[]
+  credentialTransfers  CredentialTransfer[]
+  certificateShares    CertificateShare[]
 
   @@map("user")
 }
@@ -574,21 +582,23 @@ model Organization {
   dpaVersion              String?
   deletedAt               DateTime? // soft delete → hard delete job after 30 days (legal records kept)
 
-  members              Membership[]
-  invitations          Invitation[]
-  subscriptions        Subscription[]
-  assignments          Assignment[]
-  attempts             Attempt[]
-  certificates         Certificate[]
-  monthlyAssignments   MonthlyAssignment[]
-  placementResults     PlacementResult[]
-  emailMessages        EmailMessage[]
-  supportConversations SupportConversation[]
-  escalations          Escalation[]
-  auditLogs            AuditLog[]
-  sandboxSessions      SandboxSession[]
-  withdrawalRequests   WithdrawalRequest[]
-  trackEnrollments     TrackEnrollment[]
+  members               Membership[]
+  invitations           Invitation[]
+  subscriptions         Subscription[]
+  assignments           Assignment[]
+  attempts              Attempt[]
+  certificates          Certificate[]
+  monthlyAssignments    MonthlyAssignment[]
+  placementResults      PlacementResult[]
+  emailMessages         EmailMessage[]
+  supportConversations  SupportConversation[]
+  escalations           Escalation[]
+  auditLogs             AuditLog[]
+  sandboxSessions       SandboxSession[]
+  withdrawalRequests    WithdrawalRequest[]
+  trackEnrollments      TrackEnrollment[]
+  credentialTransfersIn CredentialTransfer[]
+  certificateShares     CertificateShare[]
 
   @@index([type])
   @@map("organization")
@@ -628,10 +638,10 @@ model Invitation {
   inviter        User            @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 
   // Greb: what the invitee gets on accept (docs/01 § 4.2.3)
-  trackId        String?
-  track          Track?          @relation(fields: [trackId], references: [id], onDelete: SetNull)
-  jobRole        JobRole?
-  licenseTier    LicenseTier?
+  trackId     String?
+  track       Track?       @relation(fields: [trackId], references: [id], onDelete: SetNull)
+  jobRole     JobRole?
+  licenseTier LicenseTier?
 
   @@index([organizationId, status])
   @@index([email])
@@ -643,21 +653,21 @@ model Invitation {
 /// DB mirror of src/lib/config/plans.ts (docs/07-betaling.md). Amount shown to users comes from the Stripe Price;
 /// unitAmountOre = expectedUnitAmountOre cross-check. Never hardcode prices in components.
 model Plan {
-  id               String          @id @default(cuid())
-  code             String          @unique // B2C_MONTHLY | B2C_ANNUAL | B2B_MONTHLY | B2B_ANNUAL (FREE has no row)
-  audience         PlanAudience
-  interval         BillingInterval
-  unitAmountOre    Int // 4900 = 49 kr
-  currency         String          @default("dkk")
-  taxBehavior      TaxBehavior
-  minSeats         Int             @default(1) // B2B: 5
-  trialDays        Int             @default(0) // B2B: 14
-  trialMaxSeats    Int? // B2B: 5
-  stripePriceId    String?         @unique
-  active           Boolean         @default(true)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  subscriptions    Subscription[]
+  id            String          @id @default(cuid())
+  code          String          @unique // B2C_MONTHLY | B2C_ANNUAL | B2B_MONTHLY | B2B_ANNUAL (FREE has no row)
+  audience      PlanAudience
+  interval      BillingInterval
+  unitAmountOre Int // 4900 = 49 kr
+  currency      String          @default("dkk")
+  taxBehavior   TaxBehavior
+  minSeats      Int             @default(1) // B2B: 5
+  trialDays     Int             @default(0) // B2B: 14
+  trialMaxSeats Int? // B2B: 5
+  stripePriceId String?         @unique
+  active        Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  subscriptions Subscription[]
 
   @@map("plan")
 }
@@ -689,12 +699,12 @@ model Subscription {
   lastStripeEventId    String
 
   // Consumer-law (B2C) — copied from Checkout Session metadata set server-side before redirect
-  immediateAccessConsentAt          DateTime? // "Jeg ønsker adgang straks …" checkbox
-  withdrawalWaiverAcknowledgedAt    DateTime? // erkendelse: fortrydelsesret bortfalder/begrænses
-  withdrawalConsentTextVersion      String? // e.g. "withdrawal-consent.v1"
-  withdrawalDeadlineAt              DateTime? // purchase + 14 days → "Fortryd aftale" button visible until then
-  orderConfirmationEmailMessageId   String? // durable-medium confirmation (EmailMessage.id)
-  cancellationRequestedInAppAt      DateTime? // § 28 a: in-app cancellation
+  immediateAccessConsentAt        DateTime? // "Jeg ønsker adgang straks …" checkbox
+  withdrawalWaiverAcknowledgedAt  DateTime? // erkendelse: fortrydelsesret bortfalder/begrænses
+  withdrawalConsentTextVersion    String? // e.g. "withdrawal-consent.v1"
+  withdrawalDeadlineAt            DateTime? // purchase + 14 days → "Fortryd aftale" button visible until then
+  orderConfirmationEmailMessageId String? // durable-medium confirmation (EmailMessage.id)
+  cancellationRequestedInAppAt    DateTime? // § 28 a: in-app cancellation
 
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -737,20 +747,20 @@ model WithdrawalRequest {
 // ───────────────────────────── Curriculum ─────────────────────────────
 
 model Track {
-  id              String        @id @default(cuid())
-  key             TrackKey      @unique
-  displayName     String // descriptive only, e.g. "Microsoft 365 Copilot"
-  vendorName      String // "Microsoft" — used in disclaimer copy only
-  skinKey         String // content/sandbox-skins/<skinKey>.json
-  isActive        Boolean       @default(false) // MVP: CHATGPT + COPILOT + CLAUDE
-  sortOrder       Int           @default(0)
-  licenseTiers    LicenseTier[] @default([]) // COPILOT: [COPILOT_CHAT, COPILOT_M365]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id           String        @id @default(cuid())
+  key          TrackKey      @unique
+  displayName  String // descriptive only, e.g. "Microsoft 365 Copilot"
+  vendorName   String // "Microsoft" — used in disclaimer copy only
+  skinKey      String // content/sandbox-skins/<skinKey>.json
+  isActive     Boolean       @default(false) // MVP: CHATGPT + COPILOT + CLAUDE
+  sortOrder    Int           @default(0)
+  licenseTiers LicenseTier[] @default([]) // COPILOT: [COPILOT_CHAT, COPILOT_M365]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   modules          ModuleTrack[]
   invitations      Invitation[]
-  defaultForOrgs   Organization[] @relation("OrgDefaultTrack")
+  defaultForOrgs   Organization[]    @relation("OrgDefaultTrack")
   certificates     Certificate[]
   monthlyCycles    MonthlyCycle[]
   placementResults PlacementResult[]
@@ -762,23 +772,23 @@ model Track {
 }
 
 model Module {
-  id                 String       @id @default(cuid())
-  slug               String       @unique // = module JSON "id", e.g. "core-prompt-01"
+  id                 String         @id @default(cuid())
+  slug               String         @unique // = module JSON "id", e.g. "core-prompt-01"
   tracks             ModuleTrack[] // a CORE module runs on several tracks (§ 10a)
   type               ModuleType
   jobRole            JobRole? // only for type ROLE
   requiredLicense    LicenseTier? // denormalized from published version (module JSON requiresTier)
-  sortOrder          Int          @default(0) // curriculum order; "first 3 free" is computed from config + order
-  publishedVersionId String?      @unique
+  sortOrder          Int            @default(0) // curriculum order; "first 3 free" is computed from config + order
+  publishedVersionId String?        @unique
   publishedVersion   ModuleVersion? @relation("PublishedVersion", fields: [publishedVersionId], references: [id])
-  isStale            Boolean      @default(false) // freshness audit flag
+  isStale            Boolean        @default(false) // freshness audit flag
   retiringAt         DateTime? // feature-registry retire date → banner
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 
-  versions           ModuleVersion[]     @relation("ModuleVersions")
-  assignments        Assignment[]
-  refresherFor       MonthlyAssignment[]
+  versions     ModuleVersion[]     @relation("ModuleVersions")
+  assignments  Assignment[]
+  refresherFor MonthlyAssignment[]
 
   @@index([type])
   @@map("module")
@@ -815,24 +825,24 @@ model ModuleVersion {
   contentHash      String // sha256 of canonical JSON
 
   // Content-engine provenance (origin = AUTO)
-  changeEventId    String?
-  changeEvent      ChangeEvent?        @relation(fields: [changeEventId], references: [id], onDelete: SetNull)
-  pipelineRunId    String?
-  pipelineRun      PipelineRun?        @relation(fields: [pipelineRunId], references: [id], onDelete: SetNull)
-  draftAttempt     Int                 @default(0)
-  promptVersions   Json? // { draft: "content-draft.v1", verify: "content-verify.v1" }
-  modelIds         Json?
-  verifyReport     Json?
+  changeEventId  String?
+  changeEvent    ChangeEvent? @relation(fields: [changeEventId], references: [id], onDelete: SetNull)
+  pipelineRunId  String?
+  pipelineRun    PipelineRun? @relation(fields: [pipelineRunId], references: [id], onDelete: SetNull)
+  draftAttempt   Int          @default(0)
+  promptVersions Json? // { draft: "content-draft.v1", verify: "content-verify.v1" }
+  modelIds       Json?
+  verifyReport   Json?
 
-  publishedAt      DateTime?
-  publishedById    String? // User.id or null for auto-publish
-  archivedAt       DateTime?
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
+  publishedAt   DateTime?
+  publishedById String? // User.id or null for auto-publish
+  archivedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  publishedIn      Module?             @relation("PublishedVersion")
-  attempts         Attempt[]
-  sandboxSessions  SandboxSession[]
+  publishedIn     Module?          @relation("PublishedVersion")
+  attempts        Attempt[]
+  sandboxSessions SandboxSession[]
 
   @@unique([moduleId, version])
   @@unique([changeEventId, draftAttempt])
@@ -889,26 +899,27 @@ model PlacementResult {
 }
 
 model Assignment {
-  id             String           @id @default(cuid())
-  organizationId String
-  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  userId         String
-  user           User             @relation("AssignmentLearner", fields: [userId], references: [id], onDelete: Cascade)
-  moduleId       String
-  module         Module           @relation(fields: [moduleId], references: [id])
-  source         AssignmentSource
-  assignedById   String?
-  assignedBy     User?            @relation("AssignmentAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
-  sortOrder      Int              @default(0)
-  status         AssignmentStatus @default(ASSIGNED)
-  dueAt          DateTime?
-  bestAttemptId  String?
-  bestScorePct   Decimal?         @db.Decimal(5, 2)
-  passedAt       DateTime?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  id                      String           @id @default(cuid())
+  organizationId          String
+  organization            Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId                  String
+  user                    User             @relation("AssignmentLearner", fields: [userId], references: [id], onDelete: Cascade)
+  moduleId                String
+  module                  Module           @relation(fields: [moduleId], references: [id])
+  source                  AssignmentSource
+  assignedById            String?
+  assignedBy              User?            @relation("AssignmentAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
+  sortOrder               Int              @default(0)
+  status                  AssignmentStatus @default(ASSIGNED)
+  dueAt                   DateTime?
+  bestAttemptId           String?
+  bestScorePct            Decimal?         @db.Decimal(5, 2)
+  passedAt                DateTime?
+  carriedFromAssignmentId String? // source = CARRIED_OVER: the passed assignment in the learner's other account (no FK; that org may be deleted)
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
 
-  attempts       Attempt[]
+  attempts Attempt[]
 
   @@unique([organizationId, userId, moduleId])
   @@index([userId, status])
@@ -947,33 +958,33 @@ model Attempt {
 }
 
 model StepResult {
-  id                  String        @id @default(cuid())
-  attemptId           String
-  attempt             Attempt       @relation(fields: [attemptId], references: [id], onDelete: Cascade)
-  stepId              String // step id inside ModuleVersion.content
-  stepType            StepType
-  points              Int           @default(0)
-  maxPoints           Int
-  passed              Boolean       @default(false)
-  hintLevelUsed       Int           @default(0) // 0–3; 3 = solution shown → 0 points
-  tryCount            Int           @default(1)
-  answer              Json? // structured answers only (option ids, spot-error selection) — never free text
-  gradingStatus       GradingStatus @default(GRADED)
-  checksReport        Json? // deterministic PROMPT_TASK checks (ids + pass/fail)
-  rubricScores        Json? // [{ criterionId, met, points }] — no quotes of the learner's text
-  rubricVersion       String?
-  modelId             String?
-  promptVersion       String?
+  id                    String        @id @default(cuid())
+  attemptId             String
+  attempt               Attempt       @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  stepId                String // step id inside ModuleVersion.content
+  stepType              StepType
+  points                Int           @default(0)
+  maxPoints             Int
+  passed                Boolean       @default(false)
+  hintLevelUsed         Int           @default(0) // 0–3; 3 = solution shown → 0 points
+  tryCount              Int           @default(1)
+  answer                Json? // structured answers only (option ids, spot-error selection) — never free text
+  gradingStatus         GradingStatus @default(GRADED)
+  checksReport          Json? // deterministic PROMPT_TASK checks (ids + pass/fail)
+  rubricScores          Json? // [{ criterionId, met, points }] — no quotes of the learner's text
+  rubricVersion         String?
+  modelId               String?
+  promptVersion         String?
   matchedSandboxEventId String? // CLICK_TASK: the SandboxEvent that satisfied the assertion
-  flags               Json? // statistics only, e.g. { fastAnswer: true } (docs/05 § 7) — no sanctions
+  flags                 Json? // statistics only, e.g. { fastAnswer: true } (docs/05 § 7) — no sanctions
 
   // Free text — owner-only, purged after 30 days (retention.purge-prompt-text)
-  promptText          String?       @db.Text
-  aiFeedback          String?       @db.Text
-  promptTextPurgedAt  DateTime?
+  promptText         String?   @db.Text
+  aiFeedback         String?   @db.Text
+  promptTextPurgedAt DateTime?
 
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([attemptId, stepId])
   @@index([createdAt]) // retention scan
@@ -981,24 +992,25 @@ model StepResult {
 }
 
 model Certificate {
-  id               String       @id @default(cuid())
-  verificationCode String       @unique // public verify URL /certifikat/<code>
-  userId           String
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organizationId   String
-  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  trackId          String
-  track            Track        @relation(fields: [trackId], references: [id])
-  level            Int
-  levelLabel       String // snapshot of the label at issue time
-  licenseTier      LicenseTier?
-  holderName       String // snapshot
-  moduleVersionIds String[]     @default([]) // evidence snapshot
-  pdfStorageKey    String?
-  contentVersion   String // curriculum/content version shown on the certificate
-  publicVerificationEnabled Boolean @default(false) // opt-in by the learner (GDPR art. 25, § 10a)
-  issuedAt         DateTime     @default(now())
-  revokedAt        DateTime?
+  id                        String             @id @default(cuid())
+  verificationCode          String             @unique // public verify URL /certifikat/<code>
+  userId                    String
+  user                      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId            String
+  organization              Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  trackId                   String
+  track                     Track              @relation(fields: [trackId], references: [id])
+  level                     Int
+  levelLabel                String // snapshot of the label at issue time
+  licenseTier               LicenseTier?
+  holderName                String // snapshot
+  moduleVersionIds          String[]           @default([]) // evidence snapshot
+  pdfStorageKey             String?
+  contentVersion            String // curriculum/content version shown on the certificate
+  publicVerificationEnabled Boolean            @default(false) // opt-in by the learner (GDPR art. 25, § 10a)
+  issuedAt                  DateTime           @default(now())
+  revokedAt                 DateTime?
+  shares                    CertificateShare[]
 
   @@unique([userId, organizationId, trackId, level])
   @@index([organizationId])
@@ -1007,14 +1019,14 @@ model Certificate {
 
 /// One per (calendar month, track): the NEWS package shared by all learners on that track.
 model MonthlyCycle {
-  id          String              @id @default(cuid())
-  month       String // "2026-11"
-  trackId     String
-  track       Track               @relation(fields: [trackId], references: [id])
-  moduleIds   String[]            @default([]) // NEWS modules (ordered)
-  composedAt  DateTime            @default(now())
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  id         String   @id @default(cuid())
+  month      String // "2026-11"
+  trackId    String
+  track      Track    @relation(fields: [trackId], references: [id])
+  moduleIds  String[] @default([]) // NEWS modules (ordered)
+  composedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   assignments MonthlyAssignment[]
 
@@ -1024,24 +1036,24 @@ model MonthlyCycle {
 
 /// Personal monthly package: cycle NEWS modules filtered by license tier + 1 refresher. Target ≤ 15 min.
 model MonthlyAssignment {
-  id                 String                  @id @default(cuid())
-  cycleId            String
-  cycle              MonthlyCycle            @relation(fields: [cycleId], references: [id], onDelete: Cascade)
-  organizationId     String
-  organization       Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  userId             String
-  user               User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  moduleIds          String[]                @default([])
-  refresherModuleId  String?
-  refresherModule    Module?                 @relation(fields: [refresherModuleId], references: [id], onDelete: SetNull)
-  estimatedMinutes   Int
-  status             MonthlyAssignmentStatus @default(PENDING)
-  completedAt        DateTime?
+  id                  String                  @id @default(cuid())
+  cycleId             String
+  cycle               MonthlyCycle            @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  organizationId      String
+  organization        Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId              String
+  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moduleIds           String[]                @default([])
+  refresherModuleId   String?
+  refresherModule     Module?                 @relation(fields: [refresherModuleId], references: [id], onDelete: SetNull)
+  estimatedMinutes    Int
+  status              MonthlyAssignmentStatus @default(PENDING)
+  completedAt         DateTime?
   reminderDay1SentAt  DateTime?
   reminderDay14SentAt DateTime?
   reminderDay25SentAt DateTime?
-  createdAt          DateTime                @default(now())
-  updatedAt          DateTime                @updatedAt
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
 
   @@unique([cycleId, userId, organizationId])
   @@index([organizationId, status])
@@ -1071,9 +1083,9 @@ model ContentSource {
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
 
-  snapshots          SourceSnapshot[]
-  changeEvents       ChangeEvent[]
-  pipelineRuns       PipelineRun[]
+  snapshots    SourceSnapshot[]
+  changeEvents ChangeEvent[]
+  pipelineRuns PipelineRun[]
 
   @@map("content_source")
 }
@@ -1093,7 +1105,7 @@ model SourceSnapshot {
   entries       Json // ParsedEntry[] — kept while a PUBLISHED module cites it
   createdAt     DateTime       @default(now())
 
-  changeEvents  ChangeEvent[]
+  changeEvents ChangeEvent[]
 
   @@unique([sourceId, contentHash])
   @@index([sourceId, fetchedAt])
@@ -1124,7 +1136,7 @@ model ChangeEvent {
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
 
-  moduleVersions    ModuleVersion[]
+  moduleVersions ModuleVersion[]
 
   @@unique([sourceId, entryKey, entryHash])
   @@index([status])
@@ -1164,16 +1176,16 @@ model PipelineRun {
 /// Checkout declarations: two GRANTED rows (IMMEDIATE_ACCESS_REQUEST, WITHDRAWAL_LOSS_ACK) written BEFORE payment.
 /// confirmedAt / withdrawnAt are denormalized onto the GRANTED row for fast lookups; the action rows are the evidence.
 model ConsentRecord {
-  id                    String         @id @default(cuid())
+  id                    String          @id @default(cuid())
   userId                String?
-  user                  User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user                  User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
   organizationId        String?
   subjectEmail          String // normalized: lowercase + trim
-  channel               ConsentChannel @default(EMAIL)
+  channel               ConsentChannel  @default(EMAIL)
   purpose               ConsentPurpose
   action                ConsentAction
   grantId               String? // CONFIRMED/WITHDRAWN rows point to the GRANTED row they act on
-  grant                 ConsentRecord? @relation("ConsentGrant", fields: [grantId], references: [id], onDelete: SetNull)
+  grant                 ConsentRecord?  @relation("ConsentGrant", fields: [grantId], references: [id], onDelete: SetNull)
   followUps             ConsentRecord[] @relation("ConsentGrant")
   textVersion           String // e.g. "marketing-consent.v1" (content/legal/)
   textHash              String // sha256 of the exact text shown
@@ -1181,13 +1193,13 @@ model ConsentRecord {
   ip                    String?
   userAgent             String?
   checkoutSessionId     String? // checkout declarations only
-  confirmationTokenHash String?        @unique // double opt-in token (hash), on GRANTED row; expires after 7 days
+  confirmationTokenHash String?         @unique // double opt-in token (hash), on GRANTED row; expires after 7 days
   confirmationSentAt    DateTime?
   confirmedAt           DateTime? // double opt-in completed (set on GRANTED row)
   withdrawnAt           DateTime? // withdrawn (set on GRANTED row)
-  createdAt             DateTime       @default(now()) // = timestamp of this action
+  createdAt             DateTime        @default(now()) // = timestamp of this action
 
-  emailMessages         EmailMessage[]
+  emailMessages EmailMessage[]
 
   @@index([subjectEmail, purpose, channel, createdAt])
   @@index([userId])
@@ -1196,27 +1208,27 @@ model ConsentRecord {
 }
 
 model EmailMessage {
-  id                String        @id @default(cuid())
-  category          EmailCategory
-  template          String // e.g. "service/reminder-day-14"
-  templateVersion   String
-  toEmail           String
-  userId            String?
-  user              User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
-  organizationId    String?
-  organization      Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  consentRecordId   String? // REQUIRED by code when category = MARKETING
-  consentRecord     ConsentRecord? @relation(fields: [consentRecordId], references: [id], onDelete: SetNull)
-  idempotencyKey    String        @unique // e.g. "reminder:{monthlyAssignmentId}:14"
-  resendId          String?       @unique
-  status            EmailStatus   @default(QUEUED)
-  subject           String
-  sentAt            DateTime?
-  deliveredAt       DateTime?
-  lastEventAt       DateTime?
-  error             String?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  id              String         @id @default(cuid())
+  category        EmailCategory
+  template        String // e.g. "service/reminder-day-14"
+  templateVersion String
+  toEmail         String
+  userId          String?
+  user            User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId  String?
+  organization    Organization?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  consentRecordId String? // REQUIRED by code when category = MARKETING
+  consentRecord   ConsentRecord? @relation(fields: [consentRecordId], references: [id], onDelete: SetNull)
+  idempotencyKey  String         @unique // e.g. "reminder:{monthlyAssignmentId}:14"
+  resendId        String?        @unique
+  status          EmailStatus    @default(QUEUED)
+  subject         String
+  sentAt          DateTime?
+  deliveredAt     DateTime?
+  lastEventAt     DateTime?
+  error           String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   withdrawalReceipt WithdrawalRequest?
 
@@ -1254,8 +1266,8 @@ model SupportConversation {
   createdAt      DateTime                  @default(now())
   updatedAt      DateTime                  @updatedAt
 
-  messages       SupportMessage[]
-  escalations    Escalation[]
+  messages    SupportMessage[]
+  escalations Escalation[]
 
   @@index([userId, lastMessageAt])
   @@index([organizationId])
@@ -1348,7 +1360,7 @@ model SandboxSession {
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
 
-  events          SandboxEvent[]
+  events SandboxEvent[]
 
   @@index([userId, status])
   @@index([attemptId])
@@ -1357,21 +1369,21 @@ model SandboxSession {
 }
 
 model SandboxEvent {
-  id               String           @id @default(cuid())
-  sessionId        String
-  session          SandboxSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  userId           String
-  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organizationId   String
-  seq              Int // monotonically increasing per session (server-assigned)
-  type             SandboxEventType
-  actor            String           @default("USER") // USER | MODEL | AUTOMATION | SYSTEM
-  target           String? // stable UI/object target, e.g. "nav.newChat", "mail:m08" (Predicate `target`, docs/05 § 3)
-  payload          Json // Zod-validated per type; NO free text here
-  contentText      String?          @db.Text // free text (chat prompt/reply, drafts) — purged after 30 days
-  contentPurgedAt  DateTime?
-  stepId           String? // module step active when emitted
-  createdAt        DateTime         @default(now())
+  id              String           @id @default(cuid())
+  sessionId       String
+  session         SandboxSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId  String
+  seq             Int // monotonically increasing per session (server-assigned)
+  type            SandboxEventType
+  actor           String           @default("USER") // USER | MODEL | AUTOMATION | SYSTEM
+  target          String? // stable UI/object target, e.g. "nav.newChat", "mail:m08" (Predicate `target`, docs/05 § 3)
+  payload         Json // Zod-validated per type; NO free text here
+  contentText     String?          @db.Text // free text (chat prompt/reply, drafts) — purged after 30 days
+  contentPurgedAt DateTime?
+  stepId          String? // module step active when emitted
+  createdAt       DateTime         @default(now())
 
   @@unique([sessionId, seq])
   @@index([sessionId, type])
@@ -1403,24 +1415,24 @@ model AiUsageDaily {
 
 /// One row per LLM call (no prompt/response text). Kept 13 months.
 model AiCall {
-  id               String       @id @default(cuid())
-  userId           String?
-  user             User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
-  organizationId   String?
-  feature          AiFeature
-  model            String
-  promptKey        String // e.g. "sandbox-chat"
-  promptVersion    String // e.g. "v3"
-  inputTokens      Int          @default(0)
-  outputTokens     Int          @default(0)
-  cacheReadTokens  Int          @default(0)
-  cacheWriteTokens Int          @default(0)
-  costDkk          Decimal      @default(0) @db.Decimal(12, 4)
-  latencyMs        Int?
-  status           AiCallStatus
-  errorCode        String?
+  id                String       @id @default(cuid())
+  userId            String?
+  user              User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId    String?
+  feature           AiFeature
+  model             String
+  promptKey         String // e.g. "sandbox-chat"
+  promptVersion     String // e.g. "v3"
+  inputTokens       Int          @default(0)
+  outputTokens      Int          @default(0)
+  cacheReadTokens   Int          @default(0)
+  cacheWriteTokens  Int          @default(0)
+  costDkk           Decimal      @default(0) @db.Decimal(12, 4)
+  latencyMs         Int?
+  status            AiCallStatus
+  errorCode         String?
   providerRequestId String?
-  createdAt        DateTime     @default(now())
+  createdAt         DateTime     @default(now())
 
   @@index([createdAt])
   @@index([feature, createdAt])
@@ -1430,16 +1442,16 @@ model AiCall {
 
 /// Monthly budget state per scope. alert80SentAt guarantees exactly one 80 % alert per month.
 model BudgetMonth {
-  id            String      @id @default(cuid())
-  scope         BudgetScope
-  month         String // "2026-11" (Europe/Copenhagen)
-  limitDkk      Decimal     @db.Decimal(12, 2)
-  spentDkk      Decimal     @default(0) @db.Decimal(12, 4)
-  alert80SentAt DateTime?
+  id             String      @id @default(cuid())
+  scope          BudgetScope
+  month          String // "2026-11" (Europe/Copenhagen)
+  limitDkk       Decimal     @db.Decimal(12, 2)
+  spentDkk       Decimal     @default(0) @db.Decimal(12, 4)
+  alert80SentAt  DateTime?
   alert100SentAt DateTime?
-  degradedAt    DateTime? // graceful degradation switched on
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  degradedAt     DateTime? // graceful degradation switched on
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 
   @@unique([scope, month])
   @@map("budget_month")
@@ -1475,4 +1487,40 @@ model FeatureFlag {
   createdAt   DateTime @default(now())
 
   @@map("feature_flag")
+}
+
+/// The learner's own choice to bring passed modules and certificates from one of their accounts into another
+/// (private → company when joining, company → private when leaving). One decision per (user, from, to); logged.
+model CredentialTransfer {
+  id                 String                     @id @default(cuid())
+  userId             String
+  user               User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fromOrganizationId String // no FK: the source account may be deleted later
+  toOrganizationId   String
+  toOrganization     Organization               @relation(fields: [toOrganizationId], references: [id], onDelete: Cascade)
+  decision           CredentialTransferDecision
+  modulesCarried     Int                        @default(0)
+  certificatesShared Int                        @default(0)
+  decidedAt          DateTime                   @default(now())
+
+  @@unique([userId, fromOrganizationId, toOrganizationId])
+  @@index([toOrganizationId])
+  @@map("credential_transfer")
+}
+
+/// A certificate issued in another account that the holder chose to show in this organization.
+/// The certificate itself is never re-issued: same code, date and content version.
+model CertificateShare {
+  id             String       @id @default(cuid())
+  certificateId  String
+  certificate    Certificate  @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@unique([certificateId, organizationId])
+  @@index([organizationId])
+  @@map("certificate_share")
 }

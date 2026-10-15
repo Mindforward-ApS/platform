@@ -1,6 +1,7 @@
 import "server-only";
 import type { JobRole, MembershipRole, PrismaClient } from "@/generated/prisma/client";
 import { assertAdminSafe } from "./allowed-fields";
+import { certificatesVisibleIn } from "@/server/certificates/transfer";
 
 // The ONLY data source for company-admin screens, exports and the learner's "what my admin sees" page
 // (docs/03 § 5, docs/10 § 1.6). Every query is scoped by organizationId and selects explicit, allow-listed
@@ -57,7 +58,7 @@ async function buildRows(db: PrismaClient, organizationId: string, members: { id
     db.assignment.groupBy({ by: ["userId"], where: { organizationId, userId: { in: userIds }, status: "PASSED" }, _count: { _all: true }, _max: { passedAt: true } }),
     db.assignment.groupBy({ by: ["userId"], where: { organizationId, userId: { in: userIds }, status: { in: ["IN_PROGRESS", "PASSED"] } }, _count: { _all: true } }),
     db.certificate.findMany({
-      where: { organizationId, userId: { in: userIds }, revokedAt: null },
+      where: { userId: { in: userIds }, ...certificatesVisibleIn(organizationId) },
       orderBy: { issuedAt: "asc" },
       select: { userId: true, level: true, levelLabel: true, issuedAt: true, track: { select: { displayName: true } } },
     }),
@@ -191,7 +192,7 @@ export async function orgOverview(db: PrismaClient, organizationId: string, acto
     db.invitation.count({ where: { organizationId, status: "pending", expiresAt: { gt: now } } }),
     db.membership.count({ where: { organizationId, deactivatedAt: null } }),
     db.assignment.groupBy({ by: ["userId"], where: { organizationId, status: "PASSED", user: { memberships: { some: { organizationId, deactivatedAt: null } } } } }),
-    db.certificate.count({ where: { organizationId, revokedAt: null } }),
+    db.certificate.count({ where: certificatesVisibleIn(organizationId) }),
     db.trackEnrollment.count({ where: { organizationId, active: true } }),
     db.invitation.count({ where: { organizationId } }),
     db.attempt.count({ where: { organizationId, userId: actorUserId } }),
