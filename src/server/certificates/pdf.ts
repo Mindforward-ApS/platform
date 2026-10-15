@@ -88,7 +88,7 @@ export function certificatePdf(c: CertificateDetails, verifyUrl: string): Promis
       const cx = left + (i < half ? 0 : colW + 20);
       const cy = y + (i % half) * 17;
       pdf.circle(cx + 3, cy + 4.5, 2).fill(col.accent);
-      pdf.font("Helvetica").fontSize(9).fillColor(col.ink).text(m.title, cx + 12, cy, { width: colW - 70, lineBreak: false, ellipsis: true });
+      pdf.font("Helvetica").fontSize(9).fillColor(col.ink).text(m.title, cx + 12, cy, { width: colW - 70, height: 11, ellipsis: true });
       pdf.fillColor(col["ink-subtle"]).text(formatDateDa(m.passedAt), cx + colW - 64, cy, { width: 60, align: "right", lineBreak: false });
     });
 
