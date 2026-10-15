@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Icon } from "@/components/ui/icons";
-import { Badge, Button, Kbd, Notice, StepSegments } from "@/components/ui/primitives";
+import { Badge, Button, cx, Kbd, Notice, StepSegments } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
-import type { PlayerActionResult, PlayerState } from "@/server/modules/player-types";
+import type { OpenSandboxResult, PlayerActionResult, PlayerState } from "@/server/modules/player-types";
 import { num, PlayerHeader } from "./kit";
 import { ModuleResult } from "./module-result";
 import { HintPanel, StepBody, type StepActions } from "./steps";
@@ -17,6 +17,7 @@ export interface PlayerServerActions {
   hint: (attemptId: string, stepId: string, level: number) => Promise<PlayerActionResult>;
   checkClick: (attemptId: string, stepId: string) => Promise<PlayerActionResult>;
   skipClick: (attemptId: string, stepId: string) => Promise<PlayerActionResult>;
+  openSandbox: (attemptId: string, stepId: string) => Promise<OpenSandboxResult>;
   finish: (attemptId: string) => Promise<PlayerActionResult>;
 }
 
@@ -133,16 +134,19 @@ export function ModulePlayer({ initial, actions }: { initial: PlayerState; actio
     answer: (stepId, answer) => () => actions.answer(id, stepId, answer),
     checkClick: (stepId) => () => actions.checkClick(id, stepId),
     skipClick: (stepId) => () => actions.skipClick(id, stepId),
+    openSandbox: (stepId) => actions.openSandbox(id, stepId),
   };
   const readOnly = state.status !== "IN_PROGRESS";
   const minutesLeft = Math.max(1, Math.ceil((state.module.minutes * (total - index)) / Math.max(1, total)));
   // The prompt result card carries its own "Næste trin"; the bar then steps down so there is one primary action.
   const resultCarriesNext = step.type === "PROMPT_TASK" && step.result?.gradingStatus === "GRADED" && !isLast;
   const notice = message ? <Notice tone={message.tone}>{message.text}</Notice> : undefined;
+  // Opgavevisning: an open CLICK_TASK puts the task panel next to the sandbox, so the column widens on desktop.
+  const taskView = step.type === "CLICK_TASK" && step.status === "open" && !readOnly;
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="mx-auto flex w-full max-w-read flex-1 flex-col gap-10 px-4 pt-8 pb-16 sm:px-6 sm:pt-12">
+      <div className={cx("mx-auto flex w-full max-w-read flex-1 flex-col gap-10 px-4 pt-8 pb-16 sm:px-6 sm:pt-12", taskView && "lg:max-w-app")}>
         <header className="flex flex-col gap-6">
           <PlayerHeader title={state.module.title} />
           <nav aria-label={t.nav.stepList} className="flex flex-col gap-2.5">

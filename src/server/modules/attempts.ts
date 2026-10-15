@@ -49,7 +49,7 @@ export type SubmitNotice = "PII_REJECTED" | "GRADING_ERROR" | "GRADING_PENDING" 
 // ── Module versions ────────────────────────────────────────────────────────
 const contentCache = new Map<string, ModuleContent>();
 
-function parseContent(version: { id: string; contentHash: string; content: unknown }): ModuleContent {
+export function parseContent(version: { id: string; contentHash: string; content: unknown }): ModuleContent {
   const key = `${version.id}:${version.contentHash}`;
   let parsed = contentCache.get(key);
   if (!parsed) {

@@ -4,6 +4,7 @@ import type { PrismaClient, SandboxSession } from "@/generated/prisma/client";
 import { GatewayError, type ChatMessage, type Gateway } from "@/server/ai/gateway";
 import type { SandboxEventInput } from "./events";
 import { piiGate } from "./pii";
+import { verifySessionStep } from "./attempt-session";
 import { appendEvents, loadChatTurns, sessionState, type AppendInput, type Owner } from "./service";
 import { availableTools, executeTool, toolJsonSchema } from "./tools";
 import { loadWorld, worldSummary } from "./world";
@@ -29,7 +30,9 @@ const newId = (prefix: string) => `${prefix}-${randomBytes(6).toString("hex")}`;
 
 export class ChatInputError extends Error {}
 
-export async function prepareChat(db: PrismaClient, gw: Gateway, owner: Owner, session: SandboxSession, req: ChatRequest): Promise<PreparedChat> {
+export async function prepareChat(db: PrismaClient, gw: Gateway, owner: Owner, session: SandboxSession, input: ChatRequest): Promise<PreparedChat> {
+  // A step id is only accepted for a sandbox step of the session's own attempt (never trusted from the client).
+  const req: ChatRequest = { ...input, stepId: await verifySessionStep(db, owner, session, input.stepId) };
   const world = loadWorld();
   const state = sessionState(session);
   const knownFiles = new Set([...world.files.map((f) => f.id), ...state.files.createdFileIds]);
@@ -81,7 +84,7 @@ export async function prepareChat(db: PrismaClient, gw: Gateway, owner: Owner, s
     });
   } catch (err) {
     if (err instanceof GatewayError && err.code === "PII_BLOCKED" && err.details.kinds?.length) {
-      await appendEvents(db, owner, session.id, [{ event: { type: "PII_BLOCKED", actor: "SYSTEM", payload: { surface: "chat", kinds: err.details.kinds } } }]);
+      await appendEvents(db, owner, session.id, [{ event: { type: "PII_BLOCKED", actor: "SYSTEM", ...(req.stepId ? { stepId: req.stepId } : {}), payload: { surface: "chat", kinds: err.details.kinds } } }]);
     }
     throw err;
   }

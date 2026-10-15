@@ -29,11 +29,22 @@ test("gennemfør core-prompt-01 og se bestået-skærmen med kriterier", async ({
   await expect(page.getByRole("heading", { name: "Hvorfor prompten betyder noget" })).toBeVisible();
   await page.getByRole("button", { name: "Videre" }).click();
 
-  // CLICK_TASK (mocked evaluator): take hint 1 (free), then check.
+  // CLICK_TASK in opgavevisning: the embedded sandbox (desktop) with the disclaimer. Solve it there — every event is
+  // tagged with the step id — then take hint 1 (free) and check (mocked evaluator).
   await expect(page.getByRole("heading", { name: "Start en ny samtale med Nordlys' skrivestil" })).toBeVisible();
+  const sandbox = page.getByTestId("step-sandbox");
+  await expect(sandbox.getByTestId("sandbox-disclaimer")).toHaveText("Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google.");
+  await sandbox.getByTestId("sandbox-nav").getByRole("button", { name: "Ny chat" }).click();
+  await sandbox.getByRole("button", { name: "Tilføj og forbind" }).click();
+  await sandbox.getByRole("button", { name: "Vedhæft en Nordlys-fil" }).click();
+  const attached = page.waitForResponse((r) => /\/api\/sandbox\/[^/]+\/actions$/.test(r.url()) && (r.request().postDataJSON() as { event?: { type?: string } }).event?.type === "CHAT_FILE_ATTACHED");
+  await sandbox.getByRole("button", { name: /Tone of voice Nordlys/ }).click();
+  const response = await attached;
+  expect(response.ok()).toBe(true);
+  expect(response.request().postDataJSON()).toMatchObject({ event: { stepId: "ny-samtale", payload: { fileId: "f11" } } });
   await page.getByRole("button", { name: "Vis hint 1" }).click();
   await expect(page.getByRole("status").filter({ hasText: "Hint 1" })).toBeVisible();
-  await page.getByRole("button", { name: "Tjek" }).click();
+  await page.getByRole("button", { name: "Tjek", exact: true }).click();
   await expect(page.getByTestId("step-result-ny-samtale")).toContainText("Bestået");
   await next(page);
 
@@ -87,4 +98,20 @@ test("gennemfør core-prompt-01 og se bestået-skærmen med kriterier", async ({
   // The list now shows the module as passed.
   await page.goto("/moduler");
   await expect(page.getByTestId("module-list")).toContainText("Bestået");
+});
+
+test("sandkassetrin på mobil: 'Fortsæt på computer' i stedet for øvemiljøet, og opgaven kan springes over", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await signIn(page);
+  await page.goto("/modul/core-prompt-01");
+  await page.getByRole("button", { name: "Start modulet" }).click();
+  await page.getByRole("button", { name: "Videre" }).click();
+
+  await expect(page.getByRole("heading", { name: "Start en ny samtale med Nordlys' skrivestil" })).toBeVisible();
+  await expect(page.getByTestId("sandbox-desktop-only")).toContainText("Fortsæt på computer");
+  await expect(page.getByTestId("step-sandbox")).toBeHidden();
+  await expect(page.getByRole("button", { name: "Tjek", exact: true })).toBeHidden();
+  await page.getByRole("button", { name: "Spring over (0 point)" }).click();
+  await expect(page.getByText("Sprunget over — 0 point.")).toBeVisible();
+  await expect(page.getByTestId("sandbox-desktop-only")).toHaveCount(0);
 });

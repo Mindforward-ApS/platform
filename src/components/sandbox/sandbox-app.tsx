@@ -30,7 +30,7 @@ export function DisclaimerBar() {
 type Pane = "nav" | "content" | "chat";
 
 export function SandboxApp(props: SandboxProps) {
-  const { skin, sessionId, world } = props;
+  const { skin, sessionId, world, stepId, variant = "page" } = props;
   const [state, setState] = useState<SandboxState>(props.initialState);
   const [concept, setConcept] = useState<Concept>(skin.shell === "APP_RAIL_SIDE_PANEL" ? "MAIL" : "CHAT");
   const [turns, setTurns] = useState<ChatTurnView[]>(props.turns);
@@ -41,9 +41,11 @@ export function SandboxApp(props: SandboxProps) {
 
   // Actions are serialized so events reach the server in the order the user made them.
   const queue = useRef<Promise<unknown>>(Promise.resolve());
+  // In a task, every event carries the step id (the server checks it belongs to this attempt's sandbox step).
   const emit = (intent: Intent) => {
+    const tagged: Intent = stepId ? { ...intent, event: { ...intent.event, stepId } } : intent;
     queue.current = queue.current.then(async () => {
-      const r = await postIntent(sessionId, intent);
+      const r = await postIntent(sessionId, tagged);
       if (r.ok) setState(r.state);
       else if (r.error.message) setNotice(r.error.message);
     });
@@ -194,6 +196,7 @@ export function SandboxApp(props: SandboxProps) {
   const chat = (
     <ChatPanel
       sessionId={sessionId}
+      stepId={stepId}
       turns={turns}
       setTurns={setTurns}
       conversationId={conversationId}
@@ -258,8 +261,12 @@ export function SandboxApp(props: SandboxProps) {
 
   return (
     <div
-      className="flex h-[calc(100dvh-3.5rem)] min-h-[560px] flex-col overflow-hidden bg-bg lg:h-[calc(100dvh-5rem)] lg:rounded-b-xl"
+      className={cx(
+        "flex flex-col overflow-hidden bg-bg",
+        variant === "task" ? "h-[min(44rem,calc(100dvh-8rem))] min-h-[520px] rounded-xl border border-line" : "h-[calc(100dvh-3.5rem)] min-h-[560px] lg:h-[calc(100dvh-5rem)] lg:rounded-b-xl",
+      )}
       data-shell={skin.shell}
+      data-variant={variant}
       data-accent={skin.tokens.accentSlot}
     >
       <DisclaimerBar />
@@ -272,7 +279,7 @@ export function SandboxApp(props: SandboxProps) {
       )}
       <header className="hidden h-12 shrink-0 items-center justify-start border-b border-line bg-surface px-4 sm:px-6 lg:flex lg:h-14 lg:gap-6">
         <div className="flex min-w-0 items-center gap-3">
-          <h1 className="sr-only">{t.title}</h1>
+          {variant === "task" ? <h3 className="sr-only">{t.title}</h3> : <h1 className="sr-only">{t.title}</h1>}
           <p className="hidden truncate text-caption text-ink-muted lg:block">
             {t.company} · {t.youAre}
           </p>

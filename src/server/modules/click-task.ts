@@ -33,7 +33,7 @@ const MAX_EVENTS_PER_SESSION = 5000;
 
 /**
  * Passes only when the predicate holds on events that the server stored for a SandboxSession bound to THIS
- * attempt and tagged with this step (SandboxEvent.stepId), sorted by seq.
+ * attempt, tagged with this step (SandboxEvent.stepId) and made after the session's latest reset, sorted by seq.
  */
 export function createSandboxClickTaskEvaluator(db: PrismaClient, evaluatePredicate: EvaluatePredicate): EvaluateClickTask {
   return async (attemptId, step) => {
@@ -44,8 +44,10 @@ export function createSandboxClickTaskEvaluator(db: PrismaClient, evaluatePredic
     });
     if (sessions.length === 0) return { status: "UNAVAILABLE" };
     for (const session of sessions) {
+      // docs/04 § 12: assertions only count events after the latest SESSION_RESET (step retry, new scene, "Nulstil").
+      const reset = await db.sandboxEvent.findFirst({ where: { sessionId: session.id, type: "SESSION_RESET" }, orderBy: { seq: "desc" }, select: { seq: true } });
       const events = await db.sandboxEvent.findMany({
-        where: { sessionId: session.id, stepId: step.id },
+        where: { sessionId: session.id, stepId: step.id, seq: { gt: reset?.seq ?? 0 } },
         orderBy: { seq: "asc" },
         take: MAX_EVENTS_PER_SESSION,
         select: { id: true, seq: true, type: true, target: true, payload: true },

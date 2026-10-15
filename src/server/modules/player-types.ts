@@ -1,6 +1,7 @@
 // Client-facing shapes of the module player. Only `import type` these from client components.
 // Built exclusively by ./sanitize.ts, which decides what may leave the server (docs/05 § 7).
 
+import type { SandboxProps } from "@/components/sandbox/types";
 import type { StepStatus } from "./attempt-rules";
 
 export interface PlayerHint {
@@ -109,3 +110,6 @@ export interface PlayerState {
 export type PlayerActionResult =
   | { ok: true; state: PlayerState; notice?: "PII_REJECTED" | "GRADING_ERROR" | "GRADING_PENDING" | "NOT_IMPROVED" | "CLICK_NOT_YET" | "CLICK_UNAVAILABLE" }
   | { ok: false; error: string };
+
+/** Opgavevisning: the attempt-bound sandbox for a CLICK_TASK step (built by src/server/sandbox/projection.ts). */
+export type OpenSandboxResult = { ok: true; sandbox: SandboxProps } | { ok: false; error: string };

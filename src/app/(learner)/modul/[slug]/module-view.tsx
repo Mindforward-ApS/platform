@@ -8,7 +8,7 @@ import { Icon } from "@/components/ui/icons";
 import { Button, Notice } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import type { PlayerState } from "@/server/modules/player-types";
-import { checkClickTaskAction, finishAttemptAction, skipClickTaskAction, startAttemptAction, submitAnswerAction, takeHintAction } from "./actions";
+import { checkClickTaskAction, finishAttemptAction, openStepSandboxAction, skipClickTaskAction, startAttemptAction, submitAnswerAction, takeHintAction } from "./actions";
 
 const t = getMessages().player;
 
@@ -18,6 +18,7 @@ const actions: PlayerServerActions = {
   hint: takeHintAction,
   checkClick: checkClickTaskAction,
   skipClick: skipClickTaskAction,
+  openSandbox: openStepSandboxAction,
   finish: finishAttemptAction,
 };
 

@@ -72,6 +72,10 @@ export interface PracticeView {
 
 export interface SandboxProps {
   sessionId: string;
+  /** Opgavevisning: the module step this sandbox is opened for. Every event is tagged with it (validated server-side). */
+  stepId?: string;
+  /** "page" = full-height free play (/sandkasse); "task" = embedded next to a task in the module player. */
+  variant?: "page" | "task";
   practice?: PracticeView | null;
   tracks?: TrackLink[];
   skin: SkinConfig;
@@ -87,4 +91,4 @@ export interface SandboxProps {
   };
 }
 
-export type Intent = { event: { type: string; target?: string; payload: Record<string, unknown> }; contentText?: string; piiOverride?: boolean };
+export type Intent = { event: { type: string; target?: string; stepId?: string; payload: Record<string, unknown> }; contentText?: string; piiOverride?: boolean };

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Badge, Button, cx, Notice } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import { detectPii, type PiiKind } from "@/lib/pii";
-import { postIntent, streamChat } from "./api";
+import { newOverlayId, streamChat } from "./api";
 import { SbIcon } from "./sandbox-icons";
 import type { ChatTurnView, FileItem, Intent } from "./types";
 
@@ -30,6 +30,8 @@ function clientGreeting(): string {
 
 interface Props {
   sessionId: string;
+  /** Opgavevisning: the module step the chat events belong to (validated server-side). */
+  stepId?: string;
   turns: ChatTurnView[];
   setTurns: (fn: (prev: ChatTurnView[]) => ChatTurnView[]) => void;
   conversationId: string | null;
@@ -49,7 +51,7 @@ interface Props {
   onOpenConnectors?: () => void;
 }
 
-export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined }: Props) {
+export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined }: Props) {
   const [text, setText] = useState("");
   const [attachments, setAttachments] = useState<string[]>([]);
   const [picker, setPicker] = useState(false);
@@ -85,7 +87,7 @@ export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConve
     setAttachments([]);
     const failure = await streamChat(
       sessionId,
-      { message, conversationId: conversationId ?? undefined, attachmentFileIds: sentAttachments, clientPiiOverride: override },
+      { message, conversationId: conversationId ?? undefined, attachmentFileIds: sentAttachments, clientPiiOverride: override, ...(stepId ? { stepId } : {}) },
       {
         onStart: (id) => setConversationId(id),
         onDelta: (d) => setTurns((prev) => prev.map((x) => (x.seq === replyTurn.seq ? { ...x, text: x.text + d } : x))),
@@ -119,7 +121,14 @@ export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConve
     setPicker(false);
     if (attachments.includes(fileId)) return;
     setAttachments((a) => [...a, fileId]);
-    if (conversationId) void postIntent(sessionId, { event: { type: "CHAT_FILE_ATTACHED", payload: { conversationId, fileId } } });
+    // A file attached before the first message starts the conversation, so the attachment is recorded right away.
+    let id = conversationId;
+    if (!id) {
+      id = newOverlayId("conv");
+      setConversationId(id);
+      emit({ event: { type: "CHAT_CONVERSATION_STARTED", payload: { conversationId: id } } });
+    }
+    emit({ event: { type: "CHAT_FILE_ATTACHED", payload: { conversationId: id, fileId } } });
   }
 
   const fileName = (id: string) => files.find((f) => f.id === id)?.name ?? id;
@@ -174,7 +183,7 @@ export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConve
     >
       {menu}
       {picker && (
-        <div role="dialog" aria-label={t.chat.attachTitle} className="absolute inset-x-0 bottom-full z-10 mb-2 flex flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-lg">
+        <div role="dialog" aria-label={t.chat.attachTitle} className={cx("absolute inset-x-0 z-10 flex flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-lg", turns.length === 0 && variant !== "panel" ? "top-full mt-2" : "bottom-full mb-2")}>
           <div className="flex flex-col gap-0.5 border-b border-line px-4 py-3">
             <p className="text-label text-ink">{t.chat.attachTitle}</p>
             <p className="text-caption text-ink-muted">{t.chat.attachHint}</p>

@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { PrismaClient, SandboxSession } from "@/generated/prisma/client";
 import { parseSandboxEvent, SANDBOX_EVENT_TYPES, type SandboxEventInput, type SandboxEventType, type Surface } from "./events";
 import { piiGate } from "./pii";
+import { verifySessionStep } from "./attempt-session";
 import { appendEvents, resetSession, sessionState, SandboxError, type Owner } from "./service";
 import { loadWorld } from "./world";
 
@@ -66,11 +67,14 @@ function checkReferences(event: SandboxEventInput, session: SandboxSession) {
 export async function applyIntent(db: PrismaClient, owner: Owner, session: SandboxSession, body: IntentBody) {
   const type = body.event.type;
   if (SERVER_ONLY.includes(type)) throw new IntentError("FORBIDDEN_TYPE");
+  // A step id is only accepted for a sandbox step of the session's own attempt (never trusted from the client).
+  const stepId = await verifySessionStep(db, owner, session, body.event.stepId);
 
   if (type === "SESSION_RESET") {
     const reason = body.event.payload.reason;
     if (reason !== undefined && reason !== "USER") throw new IntentError("FORBIDDEN_TYPE");
-    return resetSession(db, owner, session.id, "USER");
+    // "Nulstil øvemiljø" inside a task = a new try at that step (docs/04 § 12: SESSION_RESET{STEP_RETRY}).
+    return stepId ? resetSession(db, owner, session.id, "STEP_RETRY", new Date(), stepId) : resetSession(db, owner, session.id, "USER");
   }
 
   const text = TEXT_INTENTS[type];
@@ -80,7 +84,7 @@ export async function applyIntent(db: PrismaClient, owner: Owner, session: Sandb
     const gate = piiGate(body.contentText, body.piiOverride === true);
     const surface: Surface = text?.surface ?? "mail_draft";
     if (gate.outcome === "BLOCK") {
-      await appendEvents(db, owner, session.id, [{ event: { type: "PII_BLOCKED", actor: "SYSTEM", payload: { surface, kinds: gate.kinds } } }]);
+      await appendEvents(db, owner, session.id, [{ event: { type: "PII_BLOCKED", actor: "SYSTEM", ...(stepId ? { stepId } : {}), payload: { surface, kinds: gate.kinds } } }]);
       throw new IntentError("PII_BLOCKED", gate.kinds);
     }
     if (gate.outcome === "WARN") throw new IntentError("PII_WARNING", gate.kinds);
@@ -91,7 +95,7 @@ export async function applyIntent(db: PrismaClient, owner: Owner, session: Sandb
 
   let event: SandboxEventInput;
   try {
-    event = parseSandboxEvent({ type, actor: "USER", ...(body.event.target ? { target: body.event.target } : {}), ...(body.event.stepId ? { stepId: body.event.stepId } : {}), payload });
+    event = parseSandboxEvent({ type, actor: "USER", ...(body.event.target ? { target: body.event.target } : {}), ...(stepId ? { stepId } : {}), payload });
   } catch {
     throw new SandboxError("INVALID_EVENT", 400);
   }

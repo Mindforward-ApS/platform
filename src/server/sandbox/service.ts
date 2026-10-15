@@ -13,7 +13,16 @@ export const SESSION_IDLE_DAYS = 7;
 export const MAX_SESSION_EVENTS = 5000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-export type SandboxErrorCode = "TRACK_NOT_FOUND" | "SESSION_NOT_FOUND" | "SESSION_CLOSED" | "SESSION_EXPIRED" | "SESSION_FULL" | "INVALID_EVENT";
+export type SandboxErrorCode =
+  | "TRACK_NOT_FOUND"
+  | "SESSION_NOT_FOUND"
+  | "SESSION_CLOSED"
+  | "SESSION_EXPIRED"
+  | "SESSION_FULL"
+  | "INVALID_EVENT"
+  | "INVALID_STEP"
+  | "ATTEMPT_NOT_FOUND"
+  | "ATTEMPT_CLOSED";
 
 export class SandboxError extends Error {
   constructor(
@@ -158,8 +167,8 @@ export async function appendEvents(db: PrismaClient, owner: Owner, sessionId: st
 }
 
 /** "Nulstil øvemiljø": state back to seed; old events are kept as evidence (docs/04 § 12). */
-export async function resetSession(db: PrismaClient, owner: Owner, sessionId: string, reason: "USER" | "MODULE_START" | "STEP_RETRY" = "USER", now = new Date()) {
-  return appendEvents(db, owner, sessionId, [{ event: { type: "SESSION_RESET", actor: reason === "USER" ? "USER" : "SYSTEM", payload: { reason } } }], now);
+export async function resetSession(db: PrismaClient, owner: Owner, sessionId: string, reason: "USER" | "MODULE_START" | "STEP_RETRY" = "USER", now = new Date(), stepId?: string) {
+  return appendEvents(db, owner, sessionId, [{ event: { type: "SESSION_RESET", actor: reason === "USER" ? "USER" : "SYSTEM", ...(stepId ? { stepId } : {}), payload: { reason } } }], now);
 }
 
 export interface ChatTurn {

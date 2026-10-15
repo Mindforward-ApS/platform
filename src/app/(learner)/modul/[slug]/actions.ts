@@ -17,7 +17,10 @@ import {
 } from "@/server/modules/attempts";
 import { requestCertificateCheck } from "@/server/jobs/org-admin";
 import { playableOptions, playerDeps } from "@/server/modules/deps";
-import type { PlayerActionResult } from "@/server/modules/player-types";
+import type { OpenSandboxResult, PlayerActionResult } from "@/server/modules/player-types";
+import { getOrCreateAttemptSession } from "@/server/sandbox/attempt-session";
+import { buildSandboxProps } from "@/server/sandbox/projection";
+import { SandboxError } from "@/server/sandbox/service";
 
 // Module player actions (docs/02 § 4.2). Each one authenticates first, then the attempts service checks that
 // the attempt belongs to this user in the active organization. Results are always the sanitized player state.
@@ -101,5 +104,19 @@ export async function finishAttemptAction(attemptId: string): Promise<PlayerActi
     return await stateResult(actor, attemptId);
   } catch (err) {
     return failure(err);
+  }
+}
+
+/** Opgavevisning: the attempt-bound sandbox for one CLICK_TASK step (docs/01 § 4.1.7, docs/04 § 12). */
+export async function openStepSandboxAction(attemptId: string, stepId: string): Promise<OpenSandboxResult> {
+  try {
+    const actor = await currentActor();
+    const session = await getOrCreateAttemptSession(db(), actor, id.parse(attemptId), id.parse(stepId));
+    return { ok: true, sandbox: await buildSandboxProps(db(), actor, session) };
+  } catch (err) {
+    if (err instanceof SandboxError) return { ok: false, error: err.code };
+    if (err instanceof AuthzError) return { ok: false, error: err.code };
+    if (err instanceof z.ZodError) return { ok: false, error: "INVALID_STEP" };
+    throw err;
   }
 }

@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useEffectEvent, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Icon } from "@/components/ui/icons";
 import { Badge, Button, cx, Notice } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
-import type { PlayerActionResult, PlayerStep } from "@/server/modules/player-types";
+import type { OpenSandboxResult, PlayerActionResult, PlayerStep } from "@/server/modules/player-types";
 import { ChoiceCard, ContextPanel, MarkRow, num, PassBadge, ScoreBar, type ChoiceState } from "./kit";
 import { Markdown } from "./markdown";
 
@@ -18,6 +19,7 @@ export interface StepActions {
   answer: (stepId: string, answer: unknown) => () => Promise<PlayerActionResult>;
   checkClick: (stepId: string) => () => Promise<PlayerActionResult>;
   skipClick: (stepId: string) => () => Promise<PlayerActionResult>;
+  openSandbox: (stepId: string) => Promise<OpenSandboxResult>;
 }
 
 interface Props<T extends PlayerStep["type"]> {
@@ -101,37 +103,98 @@ function Demo({ step }: Props<"DEMO">) {
   );
 }
 
+// Opgavevisning (docs/01 § 4.1.7 + L4): the sandbox is desktop-first (≥ 1024 px, docs/01 § 6) and only loaded there.
+const DESKTOP_QUERY = "(min-width: 1024px)";
+const subscribeDesktop = (onChange: () => void) => {
+  const mq = window.matchMedia(DESKTOP_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+};
+const isDesktop = () => window.matchMedia(DESKTOP_QUERY).matches;
+
+const SandboxApp = dynamic(() => import("@/components/sandbox/sandbox-app").then((m) => m.SandboxApp), {
+  ssr: false,
+  loading: () => <SandboxStatus text={t.click.sandboxLoading} />,
+});
+
+function SandboxStatus({ text, tone = "muted" }: { text: string; tone?: "muted" | "error" }) {
+  return (
+    <div className="flex h-[min(44rem,calc(100dvh-8rem))] min-h-[520px] flex-col items-center justify-center gap-3 rounded-xl border border-line bg-sunken px-6 text-center" role="status">
+      <span className="grid size-10 place-items-center rounded-md border border-line bg-surface text-ink-muted">
+        <Icon name="sandbox" size={20} />
+      </span>
+      <p className={cx("max-w-sm text-body-sm", tone === "error" ? "text-ink" : "text-ink-muted")}>{text}</p>
+    </div>
+  );
+}
+
+/** The attempt-bound sandbox for this step, opened through the player's server action (session + props server-side). */
+function StepSandbox({ stepId, open }: { stepId: string; open: StepActions["openSandbox"] }) {
+  const desktop = useSyncExternalStore(subscribeDesktop, isDesktop, () => false);
+  const [result, setResult] = useState<OpenSandboxResult | null>(null);
+  const load = useEffectEvent(() => open(stepId));
+
+  useEffect(() => {
+    if (!desktop) return;
+    let cancelled = false;
+    load().then(
+      (r) => !cancelled && setResult(r),
+      () => !cancelled && setResult({ ok: false, error: "generic" }),
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [desktop, stepId]);
+
+  if (!desktop) return null;
+  if (!result) return <SandboxStatus text={t.click.sandboxLoading} />;
+  if (!result.ok) return <SandboxStatus text={t.click.sandboxError} tone="error" />;
+  return <SandboxApp key={result.sandbox.sessionId} {...result.sandbox} stepId={stepId} variant="task" />;
+}
+
 function ClickTask({ step, run, pending, actions, readOnly, notice }: Props<"CLICK_TASK">) {
   const open = step.status === "open" && !readOnly;
   const skipped = (step.result?.answer as { skipped?: boolean } | null)?.skipped === true;
   return (
-    <div className="flex flex-col gap-6">
-      <p className="text-body-lg text-ink">{step.instruction}</p>
-      <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-line-strong bg-sunken px-6 py-10 text-center" data-testid="sandbox-placeholder">
-        <span className="grid size-10 place-items-center rounded-md border border-line bg-surface text-ink-muted">
-          <Icon name="sandbox" size={20} />
-        </span>
-        <p className="text-label text-ink">{t.click.sandboxTitle}</p>
-        <p className="max-w-sm text-body-sm text-ink-muted">{t.click.sandboxPlaceholder}</p>
+    <div className={cx("flex flex-col gap-6", open && "lg:grid lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:items-start lg:gap-8")}>
+      <div className={cx("flex flex-col gap-6", open && "lg:sticky lg:top-6")} aria-label={open ? t.click.taskLabel : undefined} role={open ? "region" : undefined}>
+        <p className="text-body-lg text-ink">{step.instruction}</p>
+        {open && (
+          <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-line-strong bg-sunken px-6 py-10 text-center lg:hidden" data-testid="sandbox-desktop-only">
+            <span className="grid size-10 place-items-center rounded-md border border-line bg-surface text-ink-muted">
+              <Icon name="sandbox" size={20} />
+            </span>
+            <p className="text-label text-ink">{t.click.desktopTitle}</p>
+            <p className="max-w-sm text-body-sm text-ink-muted">{t.click.desktopBody}</p>
+          </div>
+        )}
+        {notice}
+        {open && (
+          <SubmitRow>
+            {/* "Tjek" needs the sandbox, which only opens on desktop; skipping works everywhere. */}
+            <span className="hidden lg:contents">
+              <Button type="button" disabled={pending} onClick={() => run(actions.checkClick(step.id))}>
+                {t.click.check}
+              </Button>
+            </span>
+            <Button type="button" variant="ghost" disabled={pending} onClick={() => run(actions.skipClick(step.id))}>
+              {t.click.skip}
+            </Button>
+          </SubmitRow>
+        )}
+        {step.successMessage && (
+          <Notice tone="success" title={t.click.passed}>
+            {step.successMessage}
+          </Notice>
+        )}
+        {skipped && <Notice tone="info">{t.click.skipped}</Notice>}
+        <ResultLine step={step} />
       </div>
-      {notice}
       {open && (
-        <SubmitRow>
-          <Button type="button" disabled={pending} onClick={() => run(actions.checkClick(step.id))}>
-            {t.click.check}
-          </Button>
-          <Button type="button" variant="ghost" disabled={pending} onClick={() => run(actions.skipClick(step.id))}>
-            {t.click.skip}
-          </Button>
-        </SubmitRow>
+        <section aria-label={t.click.sandboxLabel} className="hidden min-w-0 lg:block" data-testid="step-sandbox">
+          <StepSandbox stepId={step.id} open={actions.openSandbox} />
+        </section>
       )}
-      {step.successMessage && (
-        <Notice tone="success" title={t.click.passed}>
-          {step.successMessage}
-        </Notice>
-      )}
-      {skipped && <Notice tone="info">{t.click.skipped}</Notice>}
-      <ResultLine step={step} />
     </div>
   );
 }

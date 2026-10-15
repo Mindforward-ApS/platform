@@ -200,3 +200,10 @@
 
 ## Øvemiljø tæt på desktop-apps (15. okt. 2026)
 - [ ] **[JURA] Trade dress:** øvemiljøet efterligner nu opbygning og arbejdsgang i ChatGPT, Claude og Microsoft 365 Copilot tæt (ikke farver, skrift, ikoner, logoer eller navne). Spørgsmål til advokat: er opbygning + generiske menubegreber + disclaimer nok til at undgå forveksling/snyltning efter markedsføringsloven og varemærkeretten? Blokerer: launch.
+
+## Opgavevisning: CLICK_TASK i øvemiljøet (15. okt. 2026)
+- [ ] **Scener findes ikke endnu** (`content/sandbox-world/scenes/` mangler). Sessionen pr. forsøg gemmer trinnets `scene` (`SandboxSession.sceneId`, `SESSION_STARTED.sceneId`), og et trin med en anden scene giver `SESSION_RESET{MODULE_START}` — men verdenen starter altid fra seed; scenens SYSTEM-events og "tilladte event-typer" (anti-snyd, 05 § 7) er ikke bygget. · Blokerer: moduler, hvis CLICK_TASK kræver en forudsat tilstand.
+- [ ] **"Nyt forsøg på et CLICK_TASK" (04 § 12) er tolket som "Nulstil øvemiljø" inde i opgaven** → `SESSION_RESET{STEP_RETRY}` mærket med trinnet; evaluatoren tæller kun events efter seneste reset. Et nyt `Attempt` får altid en ny session. · Forslag: behold. · Blokerer: intet.
+- [ ] **Spor for sessionen:** brugerens aktive `TrackEnrollment`, hvis modulet kører på det spor; ellers modulets første aktive spor (sortOrder). `Attempt` har intet spor. · Blokerer: intet.
+- [ ] **core-prompt-01 / `ny-samtale` kan ikke løses på Copilot-sporet:** assertion kræver `UI_CLICKED nav.new-chat`, men Copilot-skinnet har ingen "Ny chat" i navigationen. · Forslag: sporspecifik assertion (`any`) eller en "Ny chat"-knap i Copilot-chatpanelet med samme target. · Blokerer: Copilot-brugere på det trin (kan springe over).
+- [ ] **PROMPT_TASK "med sandkasse" og DEMO i sandkassen** (01 L4) har intet felt i modulskemaet; kun CLICK_TASK åbner øvemiljøet. "Send link til dig selv" på mobil (01 § 6) er ikke bygget — mobil viser "Fortsæt på computer" og "Spring over". · Blokerer: intet.

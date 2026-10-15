@@ -32,7 +32,7 @@ export interface ChatHandlers {
 /** Sends a chat message and reads the SSE stream. Returns an ApiError for gating failures (JSON responses). */
 export async function streamChat(
   sessionId: string,
-  body: { message: string; conversationId?: string; attachmentFileIds: string[]; clientPiiOverride: boolean },
+  body: { message: string; conversationId?: string; attachmentFileIds: string[]; clientPiiOverride: boolean; stepId?: string },
   handlers: ChatHandlers,
 ): Promise<ApiError | null> {
   let res: Response;
