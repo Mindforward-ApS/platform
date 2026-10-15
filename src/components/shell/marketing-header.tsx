@@ -23,14 +23,14 @@ export function MarketingHeader({ tone = "default" }: { tone?: "default" | "nigh
             {m.help}
           </NavLink>
         </nav>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
           <Link
             href="/log-ind"
-            className={`flex h-9 items-center whitespace-nowrap rounded-sm px-3 text-label transition-colors ${night ? "text-on-night-muted hover:text-on-night" : "text-ink-muted hover:bg-sunken hover:text-ink"}`}
+            className={`flex h-9 items-center whitespace-nowrap rounded-sm px-2 text-label sm:px-3 transition-colors ${night ? "text-on-night-muted hover:text-on-night" : "text-ink-muted hover:bg-sunken hover:text-ink"}`}
           >
             {m.login}
           </Link>
-          <ButtonLink href="/opret" size="sm" trailingIcon="arrowRight" className={night ? "bg-night-accent text-night! hover:bg-on-night" : ""}>
+          <ButtonLink href="/opret" size="sm" trailingIcon="arrowRight" className={`max-sm:px-3 max-sm:[&_svg]:hidden ${night ? "bg-night-accent text-night! hover:bg-on-night" : ""}`}>
             {m.signup}
           </ButtonLink>
         </div>

@@ -98,7 +98,7 @@ export function SandboxApp(props: SandboxProps) {
             onClick={() => navigate(n.id, n.concept)}
           >
             <SbIcon name={n.id === "new-chat" ? "plus" : CONCEPT_ICON[n.concept]} size={20} />
-            <span className="w-full truncate text-center">{t.terms[n.labelKey]}</span>
+            <span className="line-clamp-3 w-full text-center break-words hyphens-auto">{t.terms[n.labelKey]}</span>
           </button>
         );
       })}
