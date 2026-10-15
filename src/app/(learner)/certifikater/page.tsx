@@ -1,7 +1,9 @@
 import { Suspense } from "react";
+import { SharePanel } from "@/components/certificate/share-panel";
+import { TransferOffers } from "@/components/certificate/transfer-offer";
 import { SupportLauncher } from "@/components/support/support-widget";
 import { AppIcon, Icon } from "@/components/ui/icons";
-import { ButtonLink, EmptyState, Page, buttonClass } from "@/components/ui/primitives";
+import { ButtonLink, EmptyState, Page } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { serverEnv } from "@/lib/env";
 import { formatDateDa } from "@/lib/format-date";
@@ -20,8 +22,11 @@ async function Content() {
   const t = m.orgAdmin.certificates;
   const a = m.account.certificates;
   const certs = await listMyCertificates(db(), ctx.user.id);
+  const offers = ctx.session.activeOrganizationId ? <TransferOffers userId={ctx.user.id} organizationId={ctx.session.activeOrganizationId} /> : null;
   if (certs.length === 0) {
     return (
+      <>
+      {offers}
       <EmptyState
         icon="award"
         title={a.emptyTitle}
@@ -33,9 +38,12 @@ async function Content() {
       >
         {t.empty}
       </EmptyState>
+      </>
     );
   }
   return (
+    <>
+    {offers}
     <ul className="grid gap-6 lg:grid-cols-2" data-testid="certificates">
       {certs.map((c) => {
         const publicHref = `/certifikat/${c.verificationCode}`;
@@ -87,15 +95,25 @@ async function Content() {
                 <input type="hidden" name="enabled" value={c.publicVerificationEnabled ? "0" : "1"} />
                 <SubmitButton variant="secondary">{c.publicVerificationEnabled ? t.disablePublic : t.enablePublic}</SubmitButton>
               </form>
-              <a className={buttonClass("secondary")} href={`/api/certifikater/${c.id}/pdf`}>
-                <Icon name="download" />
-                {t.download}
-              </a>
+            </div>
+
+            <div className="border-t border-line px-6 py-5">
+              <SharePanel
+                certificateId={c.id}
+                isPublic={c.publicVerificationEnabled}
+                levelLabel={c.levelLabel}
+                trackName={c.track.displayName}
+                issuedAt={c.issuedAt.toISOString()}
+                verificationCode={c.verificationCode}
+                verifyUrl={`${serverEnv().APP_URL}${publicHref}`}
+                t={a.share}
+              />
             </div>
           </li>
         );
       })}
     </ul>
+    </>
   );
 }
 

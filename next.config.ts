@@ -32,6 +32,9 @@ const nextConfig: NextConfig = {
     "/api/support/**": ["./content/help/**"],
     "/hjaelp/**": ["./content/help/**"],
     "/hjaelp": ["./content/help/**"],
+    // Certificate PDF, badge and link preview read raster colors from tokens.css (src/server/brand/raster-tokens.ts).
+    "/api/certifikater/**": ["./src/styles/tokens.css"],
+    "/certifikat/**": ["./src/styles/tokens.css"],
   },
   // M7: pdfkit reads its built-in font metrics (AFM files) from its package directory at runtime.
   serverExternalPackages: ["pdfkit"],

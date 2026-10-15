@@ -53,6 +53,10 @@ const MAP = {
   trophy: "trophy",
   building: "buildings",
   robot: "robot",
+  share: "share-network",
+  link: "link-simple",
+  copy: "copy",
+  idCard: "identification-card",
 } as const satisfies Record<string, PhosphorName>;
 
 export type IconName = keyof typeof MAP;

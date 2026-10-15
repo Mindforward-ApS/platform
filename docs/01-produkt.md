@@ -74,6 +74,7 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 - **B2C:** `/konto/abonnement` → "Opsig abonnement" → én bekræftelsesside ("Dit abonnement stopper [dato]. Du har adgang indtil da.") → "Bekræft opsigelse" → kvittering på mail. Ikke flere trin end tilmelding. Ingen fastholdelsestilbud. Fremskridt og certifikater bevares; kontoen falder tilbage til gratis niveau.
 - **B2B (OWNER/ADMIN):** `/virksomhed/abonnement` → samme mønster, virkning ved periodens udløb. Derefter `READ_ONLY` i 90 dage (eksport af rapport/certifikater), herefter sletning efter databehandleraftalen (docs/10).
 - **Medarbejder der forlader virksomheden:** admin fjerner → seat frigives; personens certifikater kan overføres til en personlig konto, hvis personen selv vælger det (link i SERVICE-mail).
+- **Tag resultater med mellem egne konti (Marco 15. okt. 2026):** har brugeren beståede moduler eller certifikater i en anden af sine konti (typisk privat → virksomhed ved invitation, eller tidligere virksomhed → privat), vises kortet "Tag dine resultater med" på `/hjem` og `/certifikater` i den aktive konto. Ét samlet ja/nej pr. par af konti, ingen forudafkrydsning. Ja: beståede moduler tæller med oprindelig dato (`Assignment.source = CARRIED_OVER`, ingen forsøg/prompts kopieres), og certifikatet vises via `CertificateShare` — det udstedes ikke igen. Nej: intet deles. Virksomheden ser kun det, brugeren har sagt ja til. Valget logges (`CredentialTransfer` + `AuditLog`).
 - **Slet konto** (`/konto/data`): eksport (JSON/PDF) og sletning (GDPR, docs/10).
 
 ## 5. Skærmoversigt (funktion — ikke design)
@@ -108,7 +109,7 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 | L4 | Opgavevisning m. sandkasse | CLICK_TASK/PROMPT_TASK/DEMO | Opgavepanel (instruktion, scenarie, hints, kriterier efter forsøg) + sandkasse (skin pr. spor, disclaimer, "Øvemodel"-mærke), tegntæller, indsend, PII-advarsel |
 | L5 | Resultat | Score og læring | %, bestået, trin-oversigt, must-pass-forklaring, prøv igen, næste modul, certifikat-besked |
 | L6 | Sandkasse frit spil `/sandkasse` | Øve uden opgave | Samme sandkasse, Nordlys-data, token-loft-besked |
-| L7 | Mine certifikater `/certifikater` | Bevis | Liste, PDF-download, offentlig side til/fra |
+| L7 | Mine certifikater `/certifikater` | Bevis | Liste, offentlig side til/fra; når den er slået til: "Tilføj til LinkedIn-profil" (LinkedIns egen formular, udfyldt), del opslag på LinkedIn, kopiér link, mail, telefonens delemenu; til CV: kopiér CV-linje, PDF (A4 liggende med QR til verifikation), badge (PNG). Kort til at tage resultater med fra anden konto |
 | L8 | Månedspakke `/maaned/[yyyy-mm]` | Månedens træning | NEWS-moduler + genopfriskning, fremdrift |
 | L9 | Konto `/konto/indstillinger` | Profil og præferencer | Navn, email, spor, rolle, påmindelser til/fra, marketingsamtykke til/fra (afmeld), sprog (senere) |
 | L10 | Mine data `/konto/data` | GDPR | Eksport, slet konto, info om 30-dages sletning af prompt-tekster |
