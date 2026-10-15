@@ -12,6 +12,7 @@ export function SiteFooter({ variant = "full" }: { variant?: "full" | "compact" 
     ["/cookies", t.cookies],
     ["/handelsbetingelser", t.terms],
     ["/tilgaengelighed", t.accessibility],
+    ["/underdatabehandlere", t.subprocessors],
   ] as const;
   const nav = (
     <nav aria-label={t.navLabel} className="flex flex-wrap gap-x-5 gap-y-2 text-body-sm text-ink-muted">

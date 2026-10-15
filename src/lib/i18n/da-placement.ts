@@ -121,6 +121,7 @@ export const daPlacement = {
     cookies: "Cookies",
     terms: "Handelsbetingelser",
     accessibility: "Tilgængelighed",
+    subprocessors: "Underdatabehandlere",
     cookieSettings: "Cookieindstillinger",
     disclaimer: "Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google.",
   },
@@ -147,6 +148,16 @@ export const daPlacement = {
     draftBanner: DRAFT,
     versionLine: "Version {version} · Senest opdateret {date}",
     placeholderNote: "Felter i [klammer] udfyldes, når virksomhedsoplysningerne er på plads.",
+    subprocessors: {
+      title: "Underdatabehandlere",
+      lead: "De leverandører, der behandler persondata for os, når du bruger Mindforward. Vi har en databehandleraftale med hver af dem.",
+      tableCaption: "Underdatabehandlere med formål, data, placering og overførselsgrundlag",
+      columns: { name: "Leverandør", purpose: "Formål", data: "Data", location: "Placering", transfer: "Overførselsgrundlag", status: "Status" },
+      verified: "Bekræftet",
+      unverified: "Under verificering",
+      unverifiedNote: "Rækker mærket \"Under verificering\" bliver gennemgået i leverandørens konsol og aftale før lancering.",
+      changes: "Vi opdaterer listen, før vi tager en ny underdatabehandler i brug. Virksomhedskunder får besked efter databehandleraftalen.",
+    },
     pages: {
       privacy: {
         title: "Privatlivspolitik",

@@ -5,7 +5,7 @@ import { waitForLink } from "./outbox";
 
 // Launch gate P9: no serious or critical WCAG 2.1 AA violations on the public pages and the main learner screens.
 
-const PUBLIC = ["/", "/niveautest", "/niveautest/chatgpt", "/hjaelp", "/privatliv", "/cookies", "/handelsbetingelser", "/tilgaengelighed", "/log-ind", "/opret", "/fortryd-aftale"];
+const PUBLIC = ["/", "/niveautest", "/niveautest/chatgpt", "/hjaelp", "/privatliv", "/cookies", "/handelsbetingelser", "/tilgaengelighed", "/underdatabehandlere", "/log-ind", "/opret", "/fortryd-aftale"];
 const LEARNER = ["/hjem", "/moduler", "/plan", "/certifikater", "/konto", "/konto/data", "/sandkasse/chatgpt", "/sandkasse/claude", "/sandkasse/copilot", "/profil/virksomhed", "/profil/branche"];
 
 async function audit(page: Page, path: string) {
