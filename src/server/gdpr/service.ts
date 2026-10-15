@@ -31,7 +31,7 @@ export async function exportUserData(db: PrismaClient, userId: string, opts: { s
     where: { id: userId },
     select: { id: true, name: true, email: true, emailVerified: true, locale: true, trainingRemindersEnabled: true, createdAt: true, lastActiveAt: true },
   });
-  const [memberships, trackEnrollments, placementResults, assignments, attempts, certificates, consentRecords, emailMessages, supportConversations, sandboxSessions] = await Promise.all([
+  const [memberships, trackEnrollments, placementResults, assignments, attempts, certificates, consentRecords, emailMessages, supportConversations, sandboxSessions, workProfiles, connectorDemoRuns, certificateShares, credentialTransfers] = await Promise.all([
     db.membership.findMany({ where: { userId }, select: { role: true, jobRole: true, createdAt: true, deactivatedAt: true, organization: { select: { name: true, type: true } } } }),
     db.trackEnrollment.findMany({ where: { userId }, select: { licenseTier: true, level: true, active: true, createdAt: true, track: { select: { displayName: true } } } }),
     db.placementResult.findMany({ where: { userId }, select: { testVersion: true, answers: true, scorePct: true, level: true, licenseTier: true, jobRole: true, createdAt: true, track: { select: { displayName: true } } } }),
@@ -49,6 +49,10 @@ export async function exportUserData(db: PrismaClient, userId: string, opts: { s
     db.emailMessage.findMany({ where: { userId }, select: { category: true, template: true, subject: true, status: true, sentAt: true, createdAt: true } }),
     db.supportConversation.findMany({ where: { userId }, select: { status: true, createdAt: true, messages: { select: { role: true, content: true, createdAt: true } } } }),
     db.sandboxSession.findMany({ where: { userId }, select: { status: true, createdAt: true, events: { where: { userId }, select: { type: true, target: true, contentText: true, createdAt: true } } } }),
+    db.workProfile.findMany({ where: { userId }, select: { cvr: true, companyName: true, industryCode: true, industryCodeSystem: true, selectedSystemIds: true, completedAt: true, skippedAt: true, createdAt: true, industry: { select: { name: true } }, organization: { select: { name: true } } } }),
+    db.connectorDemoRun.findMany({ where: { userId }, select: { connectorId: true, platform: true, promptEdited: true, status: true, createdAt: true } }),
+    db.certificateShare.findMany({ where: { userId }, select: { createdAt: true, certificate: { select: { verificationCode: true } }, organization: { select: { name: true } } } }),
+    db.credentialTransfer.findMany({ where: { userId }, select: { fromOrganizationId: true, decision: true, modulesCarried: true, certificatesShared: true, decidedAt: true, toOrganization: { select: { name: true } } } }),
   ]);
   await writeAudit(db, { action: "USER_DATA_EXPORTED", actorUserId: userId, targetType: "user", targetId: userId });
   return {
@@ -65,6 +69,10 @@ export async function exportUserData(db: PrismaClient, userId: string, opts: { s
     emailMessages,
     supportConversations,
     sandboxSessions,
+    workProfiles,
+    connectorDemoRuns,
+    certificateShares,
+    credentialTransfers,
   };
 }
 

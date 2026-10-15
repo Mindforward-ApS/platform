@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { RealConnectorsStrip } from "@/components/profile/real-connectors-strip";
 import { SandboxApp } from "@/components/sandbox/sandbox-app";
@@ -7,7 +7,7 @@ import { canRunDemo } from "@/server/connectors/demo";
 import { practiceConnectorsFor } from "@/server/connectors/practice";
 import { PLATFORM_BY_TRACK, recommendationsFor } from "@/server/connectors/service";
 import type { TrackKey } from "@/generated/prisma/client";
-import { requireUser } from "@/server/auth/authz";
+import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
 import { db } from "@/server/db";
 import { buildSandboxProps } from "@/server/sandbox/projection";
@@ -20,9 +20,8 @@ async function Sandbox({ params }: { params: Promise<{ track: string }> }) {
   const { track } = await params;
   const trackKey = TRACK_KEYS[track];
   if (!trackKey) notFound();
-  const ctx = await guardPage(() => requireUser(), `/sandkasse/${track}`);
-  const organizationId = ctx.session.activeOrganizationId;
-  if (!organizationId) redirect("/konto");
+  const ctx = await guardPage(() => requireActiveMembership(["OWNER", "ADMIN", "LEARNER"]), `/sandkasse/${track}`);
+  const organizationId = ctx.membership.organizationId;
   const owner = { userId: ctx.user.id, organizationId };
   let session;
   try {

@@ -1,6 +1,8 @@
 import "server-only";
 import { getMessages } from "@/lib/i18n";
 import { AuthzError, type AuthContext } from "@/server/auth/authz";
+import { assertMembership } from "@/server/auth/authz-core";
+import { db } from "@/server/db";
 import { GatewayError } from "@/server/ai/gateway";
 import { logger } from "@/server/observability/logger";
 import { ChatInputError } from "./chat";
@@ -16,9 +18,12 @@ export function json(body: unknown, status = 200, headers: Record<string, string
 }
 
 /** The sandbox runs in the session's active organization; no active org → 403. */
-export function ownerOf(ctx: AuthContext): Owner {
+/** The sandbox runs in the session's active organization — only while the caller is an ACTIVE member of it
+ *  (a deactivated member must not keep using the company's sandbox, AI budget or entitlements). */
+export async function ownerOf(ctx: AuthContext): Promise<Owner> {
   const organizationId = ctx.session.activeOrganizationId;
   if (!organizationId) throw new AuthzError(403, "FORBIDDEN");
+  await assertMembership(db(), ctx.user.id, organizationId, ["OWNER", "ADMIN", "LEARNER"]);
   return { userId: ctx.user.id, organizationId };
 }
 

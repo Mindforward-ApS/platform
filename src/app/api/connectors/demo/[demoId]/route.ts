@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { getMessages } from "@/lib/i18n";
 import { gateway, GatewayError } from "@/server/ai/gateway";
-import { AuthzError, requireUser } from "@/server/auth/authz";
+import { AuthzError, requireActiveMembership } from "@/server/auth/authz";
 import { DemoError, prepareDemoRun } from "@/server/connectors/demo";
 import { demoTestRunner } from "@/server/connectors/test-runner";
 import { db } from "@/server/db";
@@ -21,9 +21,9 @@ const json = (body: unknown, status: number, headers: Record<string, string> = {
 export async function POST(req: Request, ctx: RouteContext<"/api/connectors/demo/[demoId]">) {
   const t = getMessages().profile.demo.errors;
   try {
-    const auth = await requireUser();
-    const organizationId = auth.session.activeOrganizationId;
-    if (!organizationId) return json({ error: "FORBIDDEN", message: t.FORBIDDEN }, 403);
+    // Active membership of the session's org (deactivated members are refused).
+    const auth = await requireActiveMembership(["OWNER", "ADMIN", "LEARNER"]);
+    const organizationId = auth.membership.organizationId;
     const { demoId } = await ctx.params;
     const parsed = bodySchema.safeParse(await req.json().catch(() => null));
     if (!parsed.success) return json({ error: "INVALID_INPUT", message: t.INVALID_INPUT }, 400);

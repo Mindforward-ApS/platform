@@ -8,7 +8,7 @@ import { loadOwnSession } from "@/server/sandbox/service";
 export async function POST(req: Request, ctx: RouteContext<"/api/sandbox/[sessionId]/actions">) {
   try {
     const auth = await requireUser();
-    const owner = ownerOf(auth);
+    const owner = await ownerOf(auth);
     const { sessionId } = await ctx.params;
     const session = await loadOwnSession(db(), owner, sessionId);
     const parsed = intentBodySchema.safeParse(await req.json().catch(() => null));

@@ -35,3 +35,13 @@ describe("content/connectors", () => {
     expect(FIXTURE_COMPANIES.map((f) => matchIndustryCode(f.industryCode, f.codeSystem, rows)?.industryId)).toEqual(["landbrug", "haandvaerk", "revision", "webshop", "raadgivning"]);
   });
 });
+
+describe("connector source URLs", () => {
+  it("only https sources are accepted (no javascript: or data: hrefs)", () => {
+    const c = loadConnectorContent();
+    for (const bad of ["javascript:alert(1)", "data:text/html,x", "http://example.com"]) {
+      const raw = { ...c, availability: [{ connector: "gmail", platform: "CLAUDE", status: "OFFICIAL", sourceUrl: bad, lastVerifiedAt: "2026-10-15" }] };
+      expect(() => parseConnectorContent(raw as never), bad).toThrow();
+    }
+  });
+});

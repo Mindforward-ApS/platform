@@ -25,7 +25,7 @@ const sse = (event: string, data: unknown) => `event: ${event}\ndata: ${JSON.str
 export async function POST(req: Request, ctx: RouteContext<"/api/sandbox/[sessionId]/chat">) {
   try {
     const auth = await requireUser();
-    const owner = ownerOf(auth);
+    const owner = await ownerOf(auth);
     const { sessionId } = await ctx.params;
     const session = await loadOwnSession(db(), owner, sessionId);
     const parsed = bodySchema.safeParse(await req.json().catch(() => null));

@@ -94,7 +94,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ v?: string; f
   const t = getMessages().profile;
   const profile = sp.bekraeft ? await getWorkProfile(db(), { userId: ctx.user.id, organizationId: ctx.membership.organizationId }) : null;
   const confirm = profile?.industry && profile.companyName && profile.cvr ? <Confirm name={profile.companyName} cvr={profile.cvr} industry={profile.industry.name} /> : null;
-  const error = sp.fejl && sp.fejl in t.company.errors ? t.company.errors[sp.fejl as ErrorKey] : undefined;
+  const error = sp.fejl && Object.hasOwn(t.company.errors, sp.fejl) ? t.company.errors[sp.fejl as ErrorKey] : undefined;
   const cvr = (sp.cvr ?? "").slice(0, 12);
   const pickInstead = (
     <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-body-sm text-ink-muted">

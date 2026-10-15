@@ -13,7 +13,16 @@ export const alt = getMessages().account.certificates.imageAlt;
 
 export default async function Image({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
-  const normalized = decodeURIComponent(code).slice(0, 32).trim().toUpperCase();
+  const normalized = safeDecode(code).slice(0, 32).trim().toUpperCase();
   const cert = await findPublicCertificate(db(), normalized);
   return previewImage(cert ? { holderName: cert.holderName, levelLabel: cert.levelLabel, trackName: cert.trackName, issuedLabel: format(getMessages().account.certificates.issuedOn, { date: formatDateDa(cert.issuedAt) }), verificationCode: normalized } : null);
+}
+
+/** Malformed %-sequences must not 500 — treat them as an unknown code. */
+function safeDecode(raw: string): string {
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return "";
+  }
 }

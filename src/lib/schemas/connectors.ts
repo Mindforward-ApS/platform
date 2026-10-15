@@ -15,7 +15,7 @@ export const industriesFileSchema = z.array(
     slug,
     name: z.string().min(2).max(60),
     codes: z.strictObject({ DB25: z.array(digits), DB07: z.array(digits) }),
-    source: z.url().optional(),
+    source: z.url({ protocol: /^https$/ }).optional(),
     note: z.string().max(400).optional(),
   }),
 );
@@ -42,7 +42,7 @@ export const availabilityFileSchema = z.array(
       connector: slug,
       platform: z.enum(PLATFORMS),
       status: z.enum(AVAILABILITY),
-      sourceUrl: z.url().nullable(),
+      sourceUrl: z.url({ protocol: /^https$/ }).nullable(),
       lastVerifiedAt: z.iso.date().nullable(),
       note: z.string().max(400).optional(),
     })

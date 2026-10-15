@@ -31,7 +31,7 @@ async function Content({ params }: { params: Promise<{ code: string }> }) {
   const m = getMessages();
   const t = m.orgAdmin.certificatePublic;
   const v = m.certificateVerify;
-  const lookup = decodeURIComponent(code).slice(0, 32);
+  const lookup = safeDecode(code).slice(0, 32);
   const cert = await findPublicCertificate(db(), lookup);
   if (!cert) {
     return (
@@ -105,4 +105,13 @@ export default function PublicCertificatePage(props: PageProps<"/certifikat/[cod
       </div>
     </>
   );
+}
+
+/** Malformed %-sequences must not 500 — treat them as an unknown code. */
+function safeDecode(raw: string): string {
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return "";
+  }
 }

@@ -38,14 +38,12 @@ export async function prepareDemoRun(
   const log = (status: string) =>
     db.connectorDemoRun.create({ data: { demoId: demo.id, connectorId: demo.connectorId, ...scope, platform: input.platform, promptEdited: input.prompt.trim() !== demo.prompt.trim(), status } });
 
+  // Rate limit first, so refused requests cannot grow the log table without bound.
+  const rl = await consumeRateLimit(db, `connector-demo:user:${scope.userId}`, DEMO_RATE_LIMIT);
+  if (!rl.allowed) throw new DemoError("RATE_LIMITED", 429, rl.retryAfter);
   if (!(await canRunDemo(db, scope.organizationId))) {
     await log("BLOCKED_NOT_ENTITLED");
     throw new DemoError("NOT_ENTITLED", 403);
-  }
-  const rl = await consumeRateLimit(db, `connector-demo:user:${scope.userId}`, DEMO_RATE_LIMIT);
-  if (!rl.allowed) {
-    await log("BLOCKED_RATE_LIMIT");
-    throw new DemoError("RATE_LIMITED", 429, rl.retryAfter);
   }
   const prompt = input.prompt.trim();
   if (!prompt || prompt.length > DEMO_PROMPT_MAX) throw new DemoError("PROMPT_TOO_LONG", 400);

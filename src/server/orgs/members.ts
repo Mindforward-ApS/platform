@@ -100,6 +100,11 @@ export async function eraseMemberFromOrg(db: PrismaClient, scope: Scope, memberI
     await tx.assignment.deleteMany({ where });
     await tx.trackEnrollment.deleteMany({ where });
     await tx.placementResult.deleteMany({ where });
+    // Work profile, connector demo log and results the person brought along into this org.
+    await tx.workProfile.deleteMany({ where });
+    await tx.connectorDemoRun.deleteMany({ where });
+    await tx.certificateShare.deleteMany({ where });
+    await tx.credentialTransfer.deleteMany({ where: { userId: member.userId, OR: [{ toOrganizationId: scope.organizationId }, { fromOrganizationId: scope.organizationId }] } });
     await tx.session.updateMany({ where: { userId: member.userId, activeOrganizationId: scope.organizationId }, data: { activeOrganizationId: null } });
     await tx.membership.delete({ where: { id: member.id } });
     await writeAudit(tx, { action: "MEMBER_DATA_ERASED", actorUserId: scope.actorUserId, organizationId: scope.organizationId, targetType: "membership", targetId: member.id });

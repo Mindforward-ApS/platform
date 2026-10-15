@@ -92,3 +92,22 @@ describe("practice connectors in the øvemiljø", () => {
     expect(JSON.stringify(p)).not.toMatch(/chatgpt|openai|copilot|microsoft|claude|anthropic|gemini|google|shopify|hubspot|e-conomic/i);
   });
 });
+
+describe("GDPR erase in an org", () => {
+  it("removes the work profile, demo runs, shared certificates and transfer decisions for that org", async () => {
+    const { eraseMemberFromOrg } = await import("@/server/orgs/members");
+    const [org, owner, learner] = await Promise.all([makeOrg("BUSINESS"), makeUser(), makeUser()]);
+    await addMember(org.id, owner.id, "OWNER");
+    const m = await addMember(org.id, learner.id, "LEARNER");
+    const s = { userId: learner.id, organizationId: org.id };
+    const revision = await testDb().industry.findUniqueOrThrow({ where: { slug: "revision" } });
+    await saveIndustry(testDb(), s, { industryId: revision.id });
+    const demo = await testDb().connectorDemo.findFirstOrThrow();
+    await testDb().connectorDemoRun.create({ data: { demoId: demo.id, connectorId: demo.connectorId, ...s, platform: "CLAUDE", status: "OK" } });
+    await testDb().credentialTransfer.create({ data: { userId: learner.id, fromOrganizationId: "elsewhere", toOrganizationId: org.id, decision: "DECLINED" } });
+    await eraseMemberFromOrg(testDb(), { organizationId: org.id, actorUserId: owner.id }, m.id);
+    expect(await testDb().workProfile.count({ where: s })).toBe(0);
+    expect(await testDb().connectorDemoRun.count({ where: s })).toBe(0);
+    expect(await testDb().credentialTransfer.count({ where: { userId: learner.id } })).toBe(0);
+  });
+});

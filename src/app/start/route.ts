@@ -3,6 +3,7 @@ import { AuthzError, requireUser } from "@/server/auth/authz";
 import { db } from "@/server/db";
 import { logger } from "@/server/observability/logger";
 import { serverEnv } from "@/lib/env";
+import { safeNextPath } from "@/lib/safe-next";
 import { getWorkProfile } from "@/server/connectors/service";
 import { runStart } from "@/server/orgs/service";
 import { needsProfile } from "@/server/orgs/start";
@@ -15,8 +16,8 @@ export async function GET(request: Request) {
   try {
     const ctx = await requireUser();
     const { redirectTo, organizationId } = await runStart(db(), { user: ctx.user, sessionId: ctx.session.id, activeOrganizationId: ctx.session.activeOrganizationId });
-    const next = new URL(request.url).searchParams.get("next");
-    let target = redirectTo === "/konto" && next?.startsWith("/") && !next.startsWith("//") ? next : redirectTo;
+    const next = safeNextPath(new URL(request.url).searchParams.get("next"));
+    let target = redirectTo === "/konto" && next ? next : redirectTo;
 
     const placementToken = request.headers
       .get("cookie")

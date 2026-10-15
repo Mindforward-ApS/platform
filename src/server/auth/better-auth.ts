@@ -89,6 +89,17 @@ export function buildAuthOptions(deps: { db: PrismaClient; env: ServerEnv }) {
       },
       customStorage: { consume: (key: string, rule: { window: number; max: number }) => consumeRateLimit(prisma, `ba:${key}`, rule) },
     },
+    // The app switches and lists organizations through its own server helpers (which check ACTIVE membership).
+    // These plugin endpoints only check that a membership row exists, so a deactivated member could re-activate the
+    // org or read colleagues' emails — closed (security review 15 Oct 2026).
+    disabledPaths: [
+      "/organization/set-active",
+      "/organization/get-full-organization",
+      "/organization/list-members",
+      "/organization/list-invitations",
+      "/organization/get-active-member",
+      "/organization/list",
+    ],
     advanced: {
       cookiePrefix: "greb",
       ipAddress: { ipAddressHeaders: ["x-vercel-forwarded-for", "x-real-ip", "x-forwarded-for"] },

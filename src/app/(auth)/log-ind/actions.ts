@@ -6,14 +6,15 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getAuth } from "@/server/auth/better-auth";
 import { PENDING_EMAIL_COOKIE } from "@/lib/auth-cookies";
+import { safeNextPath } from "@/lib/safe-next";
 import { logger } from "@/server/observability/logger";
 
 // Public (pre-login) actions — allowlisted in tests/unit/authz-scan.test.ts. Rate-limited per email and IP.
 
 const nextPath = z
   .string()
-  .regex(/^\/(?!\/)[\w\-/]*$/)
   .optional()
+  .transform((v) => safeNextPath(v) ?? undefined)
   .catch(undefined);
 
 function callbackFor(next: string | undefined): string {
