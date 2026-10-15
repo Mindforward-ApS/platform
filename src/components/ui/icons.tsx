@@ -79,6 +79,7 @@ export function Icon({
   className = "",
   // Kept for call sites from the stroke-based set; Phosphor glyphs are filled.
   strokeWidth: _strokeWidth,
+  style,
   ...props
 }: { name: IconName; size?: number; weight?: IconWeight } & Omit<SVGProps<SVGSVGElement>, "name">) {
   return (
@@ -86,6 +87,8 @@ export function Icon({
       viewBox="0 0 256 256"
       width={size}
       height={size}
+      // rem, so icons grow with the root font size on large screens (tokens.css)
+      style={{ width: `${size / 16}rem`, height: `${size / 16}rem`, ...style }}
       fill="currentColor"
       aria-hidden="true"
       focusable="false"

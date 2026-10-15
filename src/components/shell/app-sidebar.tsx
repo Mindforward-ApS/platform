@@ -185,7 +185,7 @@ function SidebarContent({ groups }: { groups: SidebarGroup[] }) {
 export function AppFrame({ groups = learnerGroups(), children }: { groups?: SidebarGroup[]; children: ReactNode }) {
   const t = getMessages();
   return (
-    <div className="flex flex-1 flex-col bg-bg lg:grid lg:grid-cols-[264px_minmax(0,1fr)]">
+    <div className="flex flex-1 flex-col bg-bg lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)]">
       <a href="#indhold" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-sm focus:bg-surface focus:px-3 focus:py-2 focus:shadow-md">
         {t.shell.skipToContent}
       </a>

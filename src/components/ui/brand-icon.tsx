@@ -19,6 +19,7 @@ export function BrandIcon({ brand, size = 28, className = "" }: { brand: BrandKe
       aria-hidden="true"
       width={size}
       height={size}
+      style={{ width: `${size / 16}rem`, height: `${size / 16}rem` }}
       draggable={false}
       className={`shrink-0 object-contain select-none ${ROUNDED[brand]} ${className}`}
     />

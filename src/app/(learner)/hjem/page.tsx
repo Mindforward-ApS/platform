@@ -29,7 +29,7 @@ const t = getMessages().player;
 function NextModulePhoto({ entry, number, photo }: { entry: CatalogEntry; number: number; photo: string }) {
   const started = entry.status === "IN_PROGRESS";
   return (
-    <section className="grid overflow-hidden rounded-2xl border border-line bg-surface shadow-xs md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+    <section className="grid overflow-hidden rounded-2xl border border-line bg-surface shadow-sm md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
       <div className="relative min-h-48 bg-sunken md:min-h-full">
         {/* eslint-disable-next-line @next/next/no-img-element -- static, pre-optimized WebP from /public */}
         <img src={photo} alt="" aria-hidden="true" className="absolute inset-0 size-full object-cover object-[72%_55%]" />
@@ -109,12 +109,12 @@ function NextModule({ entry, number }: { entry: CatalogEntry; number: number }) 
 
 function Kpi({ icon, label, value, hint, children }: { icon: IconName; label: string; value: string; hint?: string; children?: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-4 shadow-xs sm:p-5">
+    <div data-spot className="flex flex-col gap-3 overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-6">
       <div className="flex items-center gap-2.5 sm:gap-3">
         <AppIcon name={icon} size="sm" />
         <p className="text-label leading-tight text-ink-muted">{label}</p>
       </div>
-      <p className="text-title-2 text-ink sm:text-title-1">{value}</p>
+      <p className="text-title-2 text-ink tabular-nums sm:text-title-1">{value}</p>
       {children}
       {hint && <p className="hidden text-caption text-ink-subtle sm:block">{hint}</p>}
     </div>
@@ -149,7 +149,7 @@ function ModuleThumb({ slug }: { slug: string }) {
 
 function ModuleList({ items }: { items: { m: CatalogEntry; n: number }[] }) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-line bg-surface shadow-xs">
+    <section className="overflow-hidden rounded-2xl border border-line bg-surface shadow-sm">
       <header className="flex flex-wrap items-end justify-between gap-4 border-b border-line px-6 py-5">
         <div className="flex flex-col gap-1">
           <h2 className="text-title-3 text-ink">{t.home.modulesTitle}</h2>
@@ -159,7 +159,7 @@ function ModuleList({ items }: { items: { m: CatalogEntry; n: number }[] }) {
           {t.home.seeAll}
         </TextLink>
       </header>
-      <div className="hidden grid-cols-[minmax(0,1fr)_140px_160px_24px] gap-6 border-b border-line bg-sunken px-6 py-2.5 text-caption font-semibold text-ink-muted md:grid">
+      <div className="hidden grid-cols-[minmax(0,26rem)_9rem_11rem_1fr] gap-6 border-b border-line bg-sunken px-6 py-2.5 text-caption font-semibold text-ink-muted md:grid">
         <span>{t.home.colModule}</span>
         <span>{t.home.colStatus}</span>
         <span>{t.home.colScore}</span>
@@ -170,7 +170,7 @@ function ModuleList({ items }: { items: { m: CatalogEntry; n: number }[] }) {
           <li key={m.slug}>
             <Link
               href={`/modul/${m.slug}`}
-              className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 px-6 py-3.5 transition-colors hover:bg-sunken/60 md:grid-cols-[minmax(0,1fr)_140px_160px_24px]"
+              className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 px-6 py-3.5 transition-colors hover:bg-sunken/60 md:grid-cols-[minmax(0,26rem)_9rem_11rem_1fr]"
             >
               <span className="flex min-w-0 items-center gap-4">
                 <ModuleThumb slug={m.slug} />
@@ -196,7 +196,7 @@ function ModuleList({ items }: { items: { m: CatalogEntry; n: number }[] }) {
                   <span className="text-body-sm text-ink-subtle">{t.home.none}</span>
                 )}
               </span>
-              <Icon name="chevronRight" className="hidden text-ink-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-ink md:block" />
+              <Icon name="chevronRight" className="hidden justify-self-end text-ink-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-ink md:block" />
             </Link>
           </li>
         ))}
@@ -207,7 +207,7 @@ function ModuleList({ items }: { items: { m: CatalogEntry; n: number }[] }) {
 
 function HelpCard() {
   return (
-    <section className="flex items-start gap-4 rounded-2xl border border-line bg-surface p-5 shadow-xs">
+    <section className="flex items-start gap-4 rounded-2xl border border-line bg-surface p-6 shadow-sm">
       <AppIcon name="help" size="md" />
       <div className="flex flex-col gap-1">
         <h2 className="text-label text-ink">{t.home.helpTitle}</h2>
@@ -228,7 +228,7 @@ function Practice() {
     ["/sandkasse/claude", s.tracks.claude, "claude"],
   ] as const;
   return (
-    <section className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-6 pt-0 shadow-xs">
+    <section className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-6 pt-0 shadow-sm">
       {/* eslint-disable-next-line @next/next/no-img-element -- static, pre-optimized WebP from /public */}
       <img src="/heroes/hero-sandbox.webp" alt="" aria-hidden="true" loading="lazy" className="-mx-6 aspect-[16/9] w-[calc(100%+3rem)] max-w-none object-cover object-[75%_50%]" />
       <div className="flex flex-col gap-1">
@@ -309,7 +309,7 @@ async function Content() {
 
 export default function HomePage() {
   return (
-    <main className="flex w-full flex-1 flex-col gap-6 px-4 pt-8 pb-16 sm:px-6 lg:px-10">
+    <main className="mf-spots mf-stagger flex w-full max-w-wide flex-1 flex-col gap-8 px-4 pt-10 pb-16 sm:px-6 lg:px-12">
       <Suspense>
         <Content />
       </Suspense>

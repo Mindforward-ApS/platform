@@ -4,6 +4,14 @@
  * https://claude.ai/artifact/XQwYFamA9HLSbaAbYRhMyf). Change values there and here together.
  */
 
+/* Geist (Vercel, SIL OFL 1.1): same face as the marketing site (Marco 15 Oct 2026, "same design as the website"). */
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: "Schibsted Grotesk";
   src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2");
@@ -96,10 +104,13 @@
   --mf-tile-ink-to: #0b1b2b;
   --mf-shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.12), 0 2px 6px -1px rgba(11, 27, 43, 0.25);
 
-  --mf-shadow-xs: 0 1px 2px rgba(11, 27, 43, 0.06);
-  --mf-shadow-sm: 0 1px 3px rgba(11, 27, 43, 0.08), 0 1px 2px -1px rgba(11, 27, 43, 0.06);
-  --mf-shadow-md: 0 8px 20px -6px rgba(11, 27, 43, 0.14), 0 2px 6px -2px rgba(11, 27, 43, 0.08);
-  --mf-shadow-lg: 0 24px 48px -12px rgba(11, 27, 43, 0.22), 0 8px 16px -8px rgba(11, 27, 43, 0.1);
+  --mf-shadow-xs: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --mf-shadow-sm: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --mf-shadow-md: 0 1px 2px rgba(11, 27, 43, 0.05), 0 4px 8px rgba(11, 27, 43, 0.05), 0 12px 24px -8px rgba(11, 27, 43, 0.1);
+  --mf-shadow-lg: 0 1px 2px rgba(11, 27, 43, 0.05), 0 8px 16px -4px rgba(11, 27, 43, 0.08), 0 32px 64px -16px rgba(11, 27, 43, 0.22);
+  /* Soft accent light behind page headers (website hero "spots"). */
+  --mf-spot: rgba(36, 71, 204, 0.08);
+  --mf-spot-2: rgba(76, 183, 232, 0.08);
   --mf-ring: 0 0 0 1px var(--mf-accent), 0 0 0 4px var(--mf-accent-soft);
   --mf-object-shadow: 0 18px 22px rgba(11, 27, 43, 0.16);
 }
@@ -147,6 +158,8 @@
     --mf-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
     --mf-shadow-md: 0 8px 20px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
     --mf-shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --mf-spot: rgba(134, 160, 255, 0.10);
+    --mf-spot-2: rgba(92, 194, 234, 0.06);
   }
 }
 
@@ -173,6 +186,8 @@
   --color-hint-soft: var(--mf-hint-soft);
   --color-success: var(--mf-success);
   --color-success-soft: var(--mf-success-soft);
+  --color-spot: var(--mf-spot);
+  --color-spot-2: var(--mf-spot-2);
   --color-danger: var(--mf-danger);
   --color-danger-soft: var(--mf-danger-soft);
   --color-night: var(--mf-night);
@@ -211,56 +226,57 @@
   --color-border: var(--mf-line);
   --color-accent-fg: var(--mf-on-accent);
 
-  --font-sans: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 
   /* Type scale → text-display-xl, text-title-1 … (size, leading, tracking, weight in one class) */
-  --text-display-xl: 4rem;
-  --text-display-xl--line-height: 1.0625;
-  --text-display-xl--letter-spacing: -0.035em;
-  --text-display-xl--font-weight: 600;
-  --text-display: 2.75rem;
-  --text-display--line-height: 1.136;
-  --text-display--letter-spacing: -0.03em;
-  --text-display--font-weight: 600;
-  --text-title-1: 2rem;
-  --text-title-1--line-height: 1.1875;
-  --text-title-1--letter-spacing: -0.025em;
-  --text-title-1--font-weight: 600;
-  --text-title-2: 1.5rem;
-  --text-title-2--line-height: 1.25;
-  --text-title-2--letter-spacing: -0.02em;
-  --text-title-2--font-weight: 600;
-  --text-title-3: 1.125rem;
-  --text-title-3--line-height: 1.444;
-  --text-title-3--letter-spacing: -0.012em;
-  --text-title-3--font-weight: 600;
-  --text-body-lg: 1.125rem;
-  --text-body-lg--line-height: 1.556;
-  --text-body: 1rem;
-  --text-body--line-height: 1.5;
-  --text-body-sm: 0.875rem;
-  --text-body-sm--line-height: 1.43;
-  --text-label: 0.875rem;
-  --text-label--line-height: 1.43;
-  --text-label--font-weight: 550;
+  --text-display-xl: clamp(3rem, 7vw, 6rem);
+  --text-display-xl--line-height: 0.98;
+  --text-display-xl--letter-spacing: -0.04em;
+  --text-display-xl--font-weight: 500;
+  --text-display: clamp(2.5rem, 4.5vw, 4rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 500;
+  --text-title-1: clamp(2rem, 3vw, 2.75rem);
+  --text-title-1--line-height: 1.06;
+  --text-title-1--letter-spacing: -0.032em;
+  --text-title-1--font-weight: 500;
+  --text-title-2: clamp(1.5rem, 2vw, 1.75rem);
+  --text-title-2--line-height: 1.15;
+  --text-title-2--letter-spacing: -0.025em;
+  --text-title-2--font-weight: 500;
+  --text-title-3: 1.1875rem;
+  --text-title-3--line-height: 1.35;
+  --text-title-3--letter-spacing: -0.015em;
+  --text-title-3--font-weight: 500;
+  --text-body-lg: 1.25rem;
+  --text-body-lg--line-height: 1.5;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.55;
+  --text-body-sm: 0.9375rem;
+  --text-body-sm--line-height: 1.5;
+  --text-label: 0.9375rem;
+  --text-label--line-height: 1.4;
+  --text-label--font-weight: 500;
   --text-caption: 0.75rem;
   --text-caption--line-height: 1.333;
   --text-caption--letter-spacing: 0.01em;
   --text-caption--font-weight: 500;
   --text-overline: 0.75rem;
   --text-overline--line-height: 1.333;
-  --text-overline--letter-spacing: 0.08em;
-  --text-overline--font-weight: 600;
+  --text-overline--letter-spacing: 0.06em;
+  --text-overline--font-weight: 500;
   --text-mono: 0.8125rem;
   --text-mono--line-height: 1.538;
   --text-mono--font-weight: 500;
 
   --radius-xs: 4px;
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
 
   --shadow-xs: var(--mf-shadow-xs);
   --shadow-sm: var(--mf-shadow-sm);
@@ -270,15 +286,28 @@
   --drop-shadow-object: var(--mf-object-shadow);
   --shadow-tile: var(--mf-shadow-tile);
 
-  --container-read: 680px;
-  --container-app: 1200px;
+  --container-read: 42.5rem;
+  --container-app: 80rem;
+  --container-wide: 100rem;
 
   --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
   --spacing: 0.25rem;
 }
 
 @layer base {
+  /* Large screens (external monitors, 1440p, 4K, ultrawide): everything is in rem, so the whole app scales up in
+     steps via the root font size, like the website. Nothing changes below 1800px. Height counts too. */
+  @media (min-width: 1800px) and (min-height: 900px) {
+    html { font-size: 112.5%; }
+  }
+  @media (min-width: 2200px) and (min-height: 1100px) {
+    html { font-size: 125%; }
+  }
+  @media (min-width: 2500px) and (min-height: 1300px) {
+    html { font-size: 133.333%; }
+  }
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

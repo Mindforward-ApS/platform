@@ -29,25 +29,36 @@ async function Content({ params, searchParams }: { params: Promise<{ track: stri
   const tracks = getMessages().placement.tracks;
   return (
     <>
-      <header className="flex flex-col gap-3">
-        <p className="text-overline text-accent uppercase">{format(t.eyebrow, { track: tracks[track] })}</p>
-        <h1 className="text-title-1 text-ink">{test.title}</h1>
-        <p className="text-body-lg text-pretty text-ink-muted">{test.intro}</p>
-        <p className="flex items-center gap-1.5 text-body-sm text-ink-muted">
-          <Icon name="clock" />
-          {t.noTimeLimit}
-        </p>
-      </header>
-      {ctx && <Notice>{t.loggedInNote}</Notice>}
-      {errorKey && <Notice tone="error">{t.errors[errorKey]}</Notice>}
-      <PlacementForm test={clientTest} t={t} action={submitPlacementTest} slug={slug} startToken={issueStartToken(track, serverEnv().BETTER_AUTH_SECRET)} />
+      {/* Two columns from 1024px: the intro stays in view on the left while the questions scroll on the right. */}
+      <div className="flex flex-col gap-6 lg:sticky lg:top-28 lg:self-start">
+        <header className="flex animate-rise flex-col gap-4">
+          <p className="text-overline text-accent uppercase">{format(t.eyebrow, { track: tracks[track] })}</p>
+          <h1 className="text-title-1 text-ink">{test.title}</h1>
+          <p className="text-body-lg text-pretty text-ink-muted">{test.intro}</p>
+          <p className="flex items-center gap-1.5 text-body-sm text-ink-muted">
+            <Icon name="clock" />
+            {t.noTimeLimit}
+          </p>
+        </header>
+        {ctx && <Notice>{t.loggedInNote}</Notice>}
+        {errorKey && <Notice tone="error">{t.errors[errorKey]}</Notice>}
+      </div>
+      <div className="min-w-0 animate-rise [animation-delay:120ms]">
+        <PlacementForm
+          test={clientTest}
+          t={t}
+          action={submitPlacementTest}
+          slug={slug}
+          startToken={issueStartToken(track, serverEnv().BETTER_AUTH_SECRET)}
+        />
+      </div>
     </>
   );
 }
 
 export default function PlacementTestPage(props: PageProps<"/niveautest/[track]">) {
   return (
-    <main className="mx-auto flex w-full max-w-read flex-1 flex-col gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-14">
+    <main className="mf-spots mx-auto grid w-full max-w-app flex-1 grid-cols-1 content-start gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-16 lg:px-10">
       <Suspense>
         <Content params={props.params} searchParams={props.searchParams as Promise<{ fejl?: string }>} />
       </Suspense>

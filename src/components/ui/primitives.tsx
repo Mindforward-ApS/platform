@@ -1,3 +1,4 @@
+import { CountUp } from "@/components/motion/count-up";
 import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { AppIcon, Icon, type IconName } from "./icons";
@@ -30,26 +31,27 @@ export function Page({
   const max = width === "app" ? "max-w-app" : width === "narrow" ? "max-w-[440px]" : "max-w-read";
   // Inside the signed-in app panel the page runs full width and left-aligned (dashboard layout, Marco 14 Oct 2026);
   // reading-width pages keep a comfortable measure for their content. Elsewhere (marketing, checkout) it stays centered.
-  const inner = width === "app" ? "in-[.app-panel]:max-w-none" : width === "narrow" ? "in-[.app-panel]:max-w-[440px]" : "in-[.app-panel]:max-w-3xl";
+  const inner = width === "app" ? "in-[.app-panel]:max-w-none" : width === "narrow" ? "in-[.app-panel]:max-w-[440px]" : "in-[.app-panel]:max-w-4xl";
   return (
     <main
       className={cx(
-        "mx-auto flex w-full flex-1 flex-col gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-14",
+        "mf-spots mx-auto flex w-full flex-1 flex-col gap-10 px-4 pt-10 pb-20 sm:px-6 sm:pt-16",
         max,
-        "in-[.app-panel]:mx-0 in-[.app-panel]:max-w-none in-[.app-panel]:gap-6 in-[.app-panel]:pt-8 in-[.app-panel]:pb-16 lg:in-[.app-panel]:px-10",
+        // Inside the app: left-aligned, but capped on wide monitors so rows never stretch into empty space.
+        "in-[.app-panel]:mx-0 in-[.app-panel]:max-w-wide in-[.app-panel]:gap-8 in-[.app-panel]:pt-10 in-[.app-panel]:pb-16 lg:in-[.app-panel]:px-12",
       )}
     >
       <PageHeader title={title} lead={lead} eyebrow={eyebrow} actions={actions} />
-      <div className={cx("flex flex-col gap-6", inner)}>{children}</div>
+      <div className={cx("mf-stagger flex flex-col gap-6", inner)}>{children}</div>
     </main>
   );
 }
 
 export function PageHeader({ title, lead, eyebrow, actions }: { title: string; lead?: ReactNode; eyebrow?: ReactNode; actions?: ReactNode }) {
   return (
-    <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
-      <div className="flex min-w-0 flex-col gap-2">
-        {eyebrow && <p className="text-overline text-ink-muted uppercase">{eyebrow}</p>}
+    <header className="flex animate-rise flex-wrap items-end justify-between gap-x-6 gap-y-4">
+      <div className="flex min-w-0 flex-col gap-3">
+        {eyebrow && <p className="text-overline text-ink-subtle uppercase">{eyebrow}</p>}
         <h1 className="text-title-1 text-ink">{title}</h1>
         {lead && <p className="max-w-read text-body-lg text-ink-muted">{lead}</p>}
       </div>
@@ -79,7 +81,7 @@ export function Card({
   "data-testid"?: string;
 }) {
   return (
-    <section className={cx("overflow-hidden rounded-lg border border-line bg-surface", className)} {...rest}>
+    <section className={cx("overflow-hidden rounded-xl border border-line bg-surface shadow-sm", className)} {...rest}>
       {(title || actions) && (
         <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line px-6 py-4">
           <div className="flex min-w-0 flex-col gap-1">
@@ -98,12 +100,12 @@ export function Card({
 /** Small figure tile for dashboards. */
 export function Stat({ label, value, hint, icon }: { label: ReactNode; value: ReactNode; hint?: ReactNode; icon?: IconName }) {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-5">
+    <div data-spot className="flex flex-col gap-3 overflow-hidden rounded-xl border border-line bg-surface p-6 shadow-sm">
       <p className="flex items-center gap-2.5 text-label text-ink-muted">
         {icon && <AppIcon name={icon} size="xs" />}
         {label}
       </p>
-      <p className="text-title-1 text-ink">{value}</p>
+      <p className="text-title-1 text-ink tabular-nums">{typeof value === "number" ? <CountUp value={value} /> : value}</p>
       {hint && <p className="text-body-sm text-ink-muted">{hint}</p>}
     </div>
   );
@@ -111,10 +113,10 @@ export function Stat({ label, value, hint, icon }: { label: ReactNode; value: Re
 
 export function EmptyState({ icon = "sparkle", title, children, action }: { icon?: IconName; title: ReactNode; children?: ReactNode; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-lg border border-dashed border-line bg-surface px-6 py-12 text-center">
-      <AppIcon name={icon} size="lg" />
-      <p className="text-title-3 text-ink">{title}</p>
-      {children && <div className="max-w-sm text-body-sm text-ink-muted">{children}</div>}
+    <div className="flex w-full flex-col items-center gap-4 rounded-xl border border-dashed border-line-strong/40 bg-surface px-6 py-16 text-center sm:py-20">
+      <AppIcon name={icon} size="xl" />
+      <p className="text-title-2 text-ink">{title}</p>
+      {children && <div className="max-w-md text-body text-ink-muted">{children}</div>}
       {action && <div className="mt-2">{action}</div>}
     </div>
   );
@@ -148,8 +150,8 @@ export function DescriptionList({ items }: { items: [ReactNode, ReactNode][] }) 
 /** Table wrapper: horizontal scroll on phones, consistent cell styles via descendant selectors. */
 export function Table({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cx("overflow-x-auto rounded-lg border border-line bg-surface", className)}>
-      <table className="w-full border-collapse text-left text-body-sm [&_tbody_tr]:border-t [&_tbody_tr]:border-line [&_tbody_tr:hover]:bg-sunken/60 [&_td]:px-4 [&_td]:py-3 [&_td]:align-middle [&_td]:text-ink [&_th]:bg-sunken [&_th]:px-4 [&_th]:py-2.5 [&_th]:text-caption [&_th]:font-semibold [&_th]:tracking-[0.02em] [&_th]:text-ink-muted">
+    <div className={cx("overflow-x-auto rounded-xl border border-line bg-surface shadow-sm", className)}>
+      <table className="w-full border-collapse text-left text-body-sm [&_tbody_tr]:border-t [&_tbody_tr]:border-line [&_tbody_tr:hover]:bg-sunken/60 [&_td]:px-5 [&_td]:py-3.5 [&_td]:align-middle [&_td]:text-ink [&_th]:bg-sunken [&_th]:px-5 [&_th]:py-3 [&_th]:text-caption [&_th]:font-semibold [&_th]:tracking-[0.02em] [&_th]:text-ink-muted">
         {children}
       </table>
     </div>
@@ -163,8 +165,8 @@ type Size = "sm" | "md" | "lg";
 
 export function buttonClass(variant: Variant = "primary", size: Size = "md", className = "") {
   const base =
-    "group/btn inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-sm border text-label transition-[background-color,box-shadow,color,border-color] duration-[120ms] ease-out select-none disabled:cursor-not-allowed aria-disabled:cursor-not-allowed";
-  const sizes: Record<Size, string> = { sm: "h-8 px-3", md: "h-10 px-4", lg: "h-12 px-[22px] text-body font-[550]" };
+    "group/btn inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border text-label transition-[background-color,box-shadow,color,border-color] duration-[120ms] ease-out select-none disabled:cursor-not-allowed aria-disabled:cursor-not-allowed";
+  const sizes: Record<Size, string> = { sm: "h-9 px-3.5", md: "h-11 px-5", lg: "h-13 px-6 text-body font-medium" };
   const looks: Record<Variant, string> = {
     primary:
       "border-transparent bg-accent text-on-accent shadow-xs hover:bg-accent-hover disabled:border-line disabled:bg-sunken disabled:text-ink-subtle disabled:shadow-none",
