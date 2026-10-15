@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, useState } from "react";
 import { cx, Notice } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
@@ -11,7 +10,7 @@ import { LogoMark } from "@/components/ui/brand";
 import { postIntent } from "./api";
 import { ChatPanel } from "./chat-panel";
 import { CONCEPT_ICON, MODEL_CONCEPTS, SbIcon } from "./sandbox-icons";
-import type { ChatTurnView, Intent, SandboxProps, TrackLink } from "./types";
+import type { ChatTurnView, Intent, SandboxProps } from "./types";
 import { AssistantsView, AutomationsView, CalendarView, ConnectorsView, CrmView, FilesView, MailView, SheetView, StubView } from "./views";
 
 // Sandbox shell. The skin (data) decides the shell, regions and nav order; look and feel always comes from
@@ -32,7 +31,7 @@ export function DisclaimerBar() {
 type Pane = "nav" | "content" | "chat";
 
 export function SandboxApp(props: SandboxProps) {
-  const { skin, sessionId, world, tracks = [] } = props;
+  const { skin, sessionId, world } = props;
   const [state, setState] = useState<SandboxState>(props.initialState);
   const [concept, setConcept] = useState<Concept>(skin.shell === "APP_RAIL_SIDE_PANEL" ? "MAIL" : "CHAT");
   const [turns, setTurns] = useState<ChatTurnView[]>(props.turns);
@@ -276,7 +275,7 @@ export function SandboxApp(props: SandboxProps) {
           <span className="ml-auto grid size-7 place-items-center rounded-full bg-mark-dot text-caption font-semibold text-night">{t.frame.userInitials}</span>
         </div>
       )}
-      <header className={cx("h-12 shrink-0 items-center justify-start border-b border-line bg-surface px-4 sm:px-6 lg:flex lg:h-14 lg:justify-between lg:gap-6", tracks.length < 2 ? "hidden" : "flex")}>
+      <header className="hidden h-12 shrink-0 items-center justify-start border-b border-line bg-surface px-4 sm:px-6 lg:flex lg:h-14 lg:gap-6">
         <div className="flex min-w-0 items-center gap-3">
           <span className="hidden size-8 shrink-0 place-items-center rounded-sm bg-accent-soft text-accent-ink lg:grid">
             <SbIcon name="sandbox" />
@@ -286,7 +285,6 @@ export function SandboxApp(props: SandboxProps) {
             {t.company} · {t.youAre}
           </p>
         </div>
-        <TrackSwitcher tracks={tracks} />
       </header>
 
       {tabs.length > 1 && (
@@ -358,31 +356,5 @@ export function SandboxApp(props: SandboxProps) {
         )}
       </div>
     </div>
-  );
-}
-
-/** Track switcher: plain text links to /sandkasse/<track>. Names come from Track data (descriptive use only). */
-function TrackSwitcher({ tracks }: { tracks: TrackLink[] }) {
-  if (tracks.length < 2) return null;
-  return (
-    <nav aria-label={t.frame.tracks} className="flex min-w-0 items-center gap-3">
-      <span className="hidden text-caption text-ink-subtle xl:inline">{t.frame.tracks}</span>
-      <ul className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-sm bg-sunken p-0.5 ring-1 ring-line ring-inset">
-        {tracks.map((tr) => (
-          <li key={tr.href} className="shrink-0">
-            <Link
-              href={tr.href}
-              aria-current={tr.current ? "page" : undefined}
-              className={cx(
-                "flex h-7 items-center rounded-xs px-2.5 text-caption whitespace-nowrap transition-colors",
-                tr.current ? "bg-surface text-ink shadow-xs" : "text-ink-muted hover:text-ink",
-              )}
-            >
-              {tr.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
   );
 }
