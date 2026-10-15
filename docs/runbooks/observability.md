@@ -73,4 +73,4 @@ support i går, betaling, indholdsmotor (når M9 skriver `PipelineRun`), fejl (A
 ## 6. Hændelser
 - DB nede (U2 503): tjek Neon status → Vercel logs (`health.db_failed`).
 - AI-fejlrate: Vercel logs `ai.failed`/`ai.retry`; slå `AI_ENABLED` FeatureFlag fra ved vedvarende fejl.
-- Persondatabrud: `docs/legal/incident-runbook.md` (åben — se launch gate).
+- Persondatabrud: `docs/legal/incident-runbook.md` (udkast, afventer advokat — launch gate D6).
