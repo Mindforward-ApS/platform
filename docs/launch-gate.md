@@ -14,7 +14,7 @@
 | J3 | Alle `[JURA: verificeres]` i docs 06–10 afklaret eller bevidst udskudt i OPEN-QUESTIONS | ⬜ | grep `JURA:` i docs/ | Marco + Advokat |
 | J4 | Varemærke-/domænetjek af produktnavnet (Mindforward; .com/.eu bruges af andre) — DKPTO/EUIPO | ⬜ | 00 § 10b; domæne mindforward.dk købt | Marco |
 | J5 | Databehandleraftale-skabelon (Datatilsynets skabelon) til B2B, privatlivspolitik, cookiepolitik offentliggjort | 🟡 | sider findes som markerede udkast (M5: `/privatliv`, `/cookies`, `/handelsbetingelser`); DPA-tekst + accept-flow i M7 | Advokat (tekst) · Kode M7 (flow) |
-| J6 | Underdatabehandlere listet med region (tabel nedenfor) + overførselsgrundlag verificeret pr. leverandør | 🟡 | liste i § D herunder; offentlig `/underdatabehandlere` fra `content/legal/subprocessors.json` mangler | Marco (verificér DPF/SCC + regioner) · Kode (side) |
+| J6 | Underdatabehandlere listet med region (tabel nedenfor) + overførselsgrundlag verificeret pr. leverandør | 🟡 | offentlig `/underdatabehandlere` bygget fra `content/legal/subprocessors.json` (test `tests/unit/subprocessors.test.ts`, axe-dækket); alle rækker står "Under verificering" indtil regioner/DPF/SCC er tjekket i hver konsol → sæt `verified: true` | Marco (verificér DPF/SCC + regioner) · Kode (side) |
 | J7 | Ingen "AI Act-certificering"/"lovkrav"/bødetrusler i UI, mails, landingsside, rapporter (tekstgennemgang) | 🟡 | tests: `tests/unit/support-help.test.ts` (hjælpeartikler), `tests/unit/email.test.ts` (SERVICE-scan), support-output-guard `src/server/support/guard.ts`; fuld manuel gennemgang af landingsside/rapport mangler | Marco |
 | J8 | Juridiske sider (§ 8) publiceret med version og dato | 🟡 | M5-udkast med version/dato og udkast-banner; endelig tekst afventer J1/J2 | Advokat + Marco |
 
@@ -29,7 +29,7 @@
 | P6 | PII-filter verificeret i produktion | 🟡 | sandkasse (M3) + support-maskering `src/server/support/pii-mask.ts`, eval `cpr-shared`; verificér på prod | Marco |
 | P7 | Eksport og sletning virker end-to-end | ⬜ | M7 (`gdpr.erase-user`, `/api/me/export`) | Kode M7 |
 | P8 | Disclaimer + "Øvemodel" i alle skins; ingen leverandør-assets i repo | ✅ | `tests/unit/sandbox-compliance.test.ts`, `tests/e2e/sandbox.spec.ts` | Kode |
-| P9 | axe: 0 serious/critical | ⬜ | `@axe-core/playwright` er ikke installeret endnu | Kode |
+| P9 | axe: 0 serious/critical | ✅ | `tests/e2e/accessibility.spec.ts` (axe WCAG 2.1 AA): 12 offentlige + 11 indloggede skærme, 0 serious/critical (2026-10-15) | Kode |
 | P10 | 2FA på alle interne admin-konti | 🟡 | `requirePlatformAdmin` kræver TOTP (M1, `tests/integration/two-factor.test.ts`); Marcos konto skal enrolles i prod | Marco |
 | P11 | Secrets roteret fra udvikling; backups testet | ⬜ | se D3 | Marco |
 | P12 | Support-evals ≥ 90 %, 100 % på kritiske | 🟡 | 36/36 grønne med mocket (adversarielt) model: `tests/integration/support-evals.test.ts`; kørsel mod rigtig model (`pnpm eval:support`, budget 20 kr) er ikke bygget | Kode + Marco (API-nøgle) |
@@ -40,6 +40,7 @@
 | P17 | Sentry-alarm ved fejlrate-spike; uptime-check på kritiske routes | 🟡 | koden sender; regler + uptime-checks skal oprettes jf. `docs/runbooks/observability.md` | Marco |
 | P18 | Neon backup/restore testet; Sentry + digest modtages | ⬜ | restore-øvelse; sæt `OWNER_DIGEST_EMAIL`, `SENTRY_DSN` i prod | Marco |
 | P19 | Marco har godkendt endeligt design for alle offentlige skærme | ⬜ | 00 § 10c: designsessioner efter første gennemkørsel | Marco |
+| P20 | Sikkerhedsgennemgang af koden + ekstern pentest før første betalende kunde | 🟡 | intern gennemgang 2026-10-15 (commit 05dcc44): open redirect via `?next=` lukket (`src/lib/safe-next.ts`), sandbox-ejer kræver aktivt medlemskab, Better Auth org-endpoints slået fra, GDPR-eksport/sletning dækker connector-, deling- og overførselsdata; ekstern pentest mangler | Kode ✅ · Marco (pentest) |
 
 ## C. Drift / bogføring
 | # | Punkt | Status | Note | Ejer |
@@ -49,7 +50,7 @@
 | D3 | Stripe live-mode, kvitteringer, Customer Portal og "Fortryd aftale" testet med rigtigt kort og refunderet | ⬜ | | Marco |
 | D4 | SPF/DKIM/DMARC på `mail.` og `news.`; `List-Unsubscribe` testet | ⬜ | Resend-domæner (eu-west-1) | Marco |
 | D5 | Underdatabehandler-liste og overførselsgrundlag verificeret | ⬜ | = J6 | Marco |
-| D6 | Hændelsesplan `docs/legal/incident-runbook.md` (72 t til Datatilsynet) + DPIA-note | ⬜ | ikke skrevet | Marco + Advokat |
+| D6 | Hændelsesplan `docs/legal/incident-runbook.md` (72 t til Datatilsynet) + DPIA-note | 🟡 | udkast skrevet: `docs/legal/incident-runbook.md` (forløb 0–72 t, roller, kundebesked, brudlog); `[JURA]`-punkter + DPIA-note mangler | Marco + Advokat |
 
 ## D. Underdatabehandlere (til `/underdatabehandlere`; regioner skal verificeres af Marco i hver konsol)
 | Leverandør | Formål | Data | Region / lokation | Overførselsgrundlag | Status |
