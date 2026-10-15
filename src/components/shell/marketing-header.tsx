@@ -30,7 +30,7 @@ export function MarketingHeader({ tone = "default" }: { tone?: "default" | "nigh
           >
             {m.login}
           </Link>
-          <ButtonLink href="/opret" size="sm" trailingIcon="arrowRight" className={night ? "bg-night-accent text-night hover:bg-on-night" : ""}>
+          <ButtonLink href="/opret" size="sm" trailingIcon="arrowRight" className={night ? "bg-night-accent text-night! hover:bg-on-night" : ""}>
             {m.signup}
           </ButtonLink>
         </div>

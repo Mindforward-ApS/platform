@@ -58,11 +58,11 @@ export function SettingsRow({
   return (
     <li>
       {external ? (
-        <a href={href} className={className} aria-labelledby={labelId} aria-describedby={hintId}>
+        <a href={href} className={className}>
           {inner}
         </a>
       ) : (
-        <Link href={href} className={className} aria-labelledby={labelId} aria-describedby={hintId}>
+        <Link href={href} className={className}>
           {inner}
         </Link>
       )}

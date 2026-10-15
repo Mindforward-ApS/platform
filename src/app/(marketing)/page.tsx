@@ -258,7 +258,7 @@ function Closing() {
       <div className="flex flex-col items-center gap-8 text-center">
         <SectionHeading tone="night" align="center" title={t.title} lead={t.body} />
         <div className="flex flex-col items-center gap-5">
-          <ButtonLink href="/niveautest" size="lg" trailingIcon="arrowRight" className="bg-night-accent text-night hover:bg-on-night">
+          <ButtonLink href="/niveautest" size="lg" trailingIcon="arrowRight" className="bg-night-accent text-night! hover:bg-on-night">
             {t.primary}
           </ButtonLink>
           <Link href="/virksomhed/opret" className="text-label text-on-night-muted underline decoration-night-line underline-offset-[3px] transition-colors hover:text-on-night">

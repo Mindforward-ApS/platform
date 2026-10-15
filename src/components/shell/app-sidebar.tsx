@@ -77,8 +77,9 @@ async function Avatar() {
   const ctx = await getAuthContext().catch(() => null);
   if (!ctx) return null;
   return (
-    <Link href="/konto" aria-label={getMessages().shell.learner.account} className="grid size-9 place-items-center rounded-full bg-accent-soft text-caption font-semibold text-accent-ink ring-2 ring-surface transition-shadow hover:shadow-ring">
-      {initials(ctx.user.name, ctx.user.email)}
+    <Link href="/konto" className="grid size-9 place-items-center rounded-full bg-accent-soft text-caption font-semibold text-accent-ink ring-2 ring-surface transition-shadow hover:shadow-ring">
+      <span aria-hidden="true">{initials(ctx.user.name, ctx.user.email)}</span>
+      <span className="sr-only">{getMessages().shell.learner.account}</span>
     </Link>
   );
 }
