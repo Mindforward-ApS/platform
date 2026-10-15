@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { LogoMark } from "@/components/ui/brand";
 import { Badge, Button, cx, Notice } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import { detectPii, type PiiKind } from "@/lib/pii";
@@ -13,6 +12,15 @@ const t = getMessages().sandbox;
 const MAX_CHARS = 4000;
 const nf = new Intl.NumberFormat("da-DK");
 const noSubscribe = () => () => undefined;
+
+/** Neutral avatar for Øvemodel's answers (no brand mark inside the øvemiljø). */
+function ModelAvatar({ size }: { size: "sm" | "md" }) {
+  return (
+    <span aria-hidden="true" className={cx("grid place-items-center rounded-full bg-accent-soft text-accent", size === "sm" ? "size-5" : "size-7")}>
+      <SbIcon name="sparkle" size={size === "sm" ? 12 : 15} />
+    </span>
+  );
+}
 /** Time-of-day greeting (client only; the server renders the neutral one). */
 function clientGreeting(): string {
   const h = new Date().getHours();
@@ -294,7 +302,6 @@ export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConve
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-7 overflow-y-auto px-4 py-8 sm:px-6">
           {variant === "center" ? (
             <h2 className="flex items-center gap-3 text-center text-title-1 text-ink">
-              <LogoMark size={34} />
               {greeting}
             </h2>
           ) : (
@@ -320,7 +327,6 @@ export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConve
               {empty && (
                 <li className="flex flex-col gap-6">
                   <div className="flex flex-col items-start gap-3">
-                    <LogoMark size={32} />
                     <div className="flex flex-col gap-1">
                       <h2 className="text-title-3 text-ink">{t.chat.emptyTitle}</h2>
                       <p className="text-body-sm text-ink-muted">{t.chat.empty}</p>
@@ -359,7 +365,7 @@ export function ChatPanel({ sessionId, turns, setTurns, conversationId, setConve
                 ) : (
                   <li key={turn.seq} className={cx("flex gap-3", variant === "panel" && "flex-col gap-2 rounded-xl border border-line bg-surface p-4")}>
                     <span className="shrink-0 pt-0.5">
-                      <LogoMark size={variant === "panel" ? 18 : 24} />
+                      <ModelAvatar size={variant === "panel" ? "sm" : "md"} />
                     </span>
                     <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                       <span className="sr-only" data-testid="model-label">

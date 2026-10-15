@@ -6,7 +6,6 @@ import { format, getMessages } from "@/lib/i18n";
 import type { Concept } from "@/server/sandbox/events";
 import type { SandboxState } from "@/server/sandbox/reducer";
 import type { NavId } from "@/server/sandbox/skin-schema";
-import { LogoMark } from "@/components/ui/brand";
 import { postIntent } from "./api";
 import { ChatPanel } from "./chat-panel";
 import { CONCEPT_ICON, MODEL_CONCEPTS, SbIcon } from "./sandbox-icons";
@@ -171,10 +170,6 @@ export function SandboxApp(props: SandboxProps) {
     </div>
   ) : (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="hidden items-center gap-2.5 px-5 pt-4 lg:flex">
-        <LogoMark size={26} />
-        {shell === "SIDEBAR_CHAT_WORKPANE" && <span className="text-label font-semibold text-ink">{t.modelLabel}</span>}
-      </div>
       <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-3 py-4">
         <div className="flex flex-col gap-0.5 rounded-md border border-line bg-sunken px-3 py-2.5 lg:hidden">
           <p className="text-label text-ink">{t.company}</p>
@@ -277,10 +272,7 @@ export function SandboxApp(props: SandboxProps) {
       )}
       <header className="hidden h-12 shrink-0 items-center justify-start border-b border-line bg-surface px-4 sm:px-6 lg:flex lg:h-14 lg:gap-6">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="hidden size-8 shrink-0 place-items-center rounded-sm bg-accent-soft text-accent-ink lg:grid">
-            <SbIcon name="sandbox" />
-          </span>
-          <h1 className="sr-only text-label whitespace-nowrap text-ink lg:not-sr-only">{t.title}</h1>
+          <h1 className="sr-only">{t.title}</h1>
           <p className="hidden truncate text-caption text-ink-muted lg:block">
             {t.company} · {t.youAre}
           </p>
