@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { LicenseTier, Prisma, PrismaClient, TrackKey } from "@/generated/prisma/client";
 import { paidPlans } from "@/lib/config/plans";
 import { sourceConfigs, type SourceConfig } from "@/server/content-engine/sources";
+import { seedConnectors } from "@/server/connectors/seed";
 import { loadModules } from "./load-modules";
 
 export const TRACKS: { key: TrackKey; displayName: string; vendorName: string; skinKey: string; isActive: boolean; sortOrder: number; licenseTiers: LicenseTier[] }[] = [
@@ -121,5 +122,6 @@ export async function seedAll(db: PrismaClient) {
   await seedPlans(db);
   const modules = await seedModules(db);
   const contentSources = await seedContentSources(db);
-  return { tracks: TRACKS.length, plans: await db.plan.count({ where: { active: true } }), modules, contentSources };
+  await seedConnectors(db);
+  return { tracks: TRACKS.length, plans: await db.plan.count({ where: { active: true } }), modules, contentSources, industries: await db.industry.count({ where: { isActive: true } }) };
 }

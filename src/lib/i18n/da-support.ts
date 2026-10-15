@@ -192,6 +192,7 @@ export const daSupport = {
     CONTENT_CLASSIFY: "Indhold: klassificering",
     CONTENT_DRAFT: "Indhold: udkast",
     CONTENT_VERIFY: "Indhold: verifikation",
+      CONNECTOR_DEMO: "Connector-demo",
   },
   reasons: {
     REFUND_OR_BILLING_DISPUTE: "Refusion/betaling",

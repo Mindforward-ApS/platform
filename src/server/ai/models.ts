@@ -19,6 +19,9 @@ export type ModelEnv = Pick<ServerEnv, "AI_MODEL_DEFAULT" | "AI_MODEL_FALLBACK" 
 /** Degraded mode (≥ 95 % of the global budget): shorter answers, shorter history (docs/02 § 6). */
 export const DEGRADED_MAX_TOKENS = 400;
 
+/** Hard output ceiling for one connector demo run. */
+export const CONNECTOR_DEMO_MAX_TOKENS = 700;
+
 export function modelConfig(feature: AiFeature, env: ModelEnv, opts: { degraded?: boolean } = {}): ModelConfig {
   const small = env.AI_MODEL_DEFAULT;
   const fallback = env.AI_MODEL_FALLBACK && env.AI_MODEL_FALLBACK !== small ? env.AI_MODEL_FALLBACK : undefined;
@@ -45,6 +48,9 @@ export function modelConfig(feature: AiFeature, env: ModelEnv, opts: { degraded?
       return { model: env.CONTENT_DRAFT_MODEL ?? small, maxTokens: 3000, temperature: 0, timeoutMs: 90_000 };
     case "CONTENT_VERIFY":
       return { model: env.CONTENT_VERIFY_MODEL ?? small, maxTokens: 3000, temperature: 0, timeoutMs: 120_000 };
+    // "Prøv den" connector demo: short answers on fictional data — the hard token ceiling per run.
+    case "CONNECTOR_DEMO":
+      return chat(CONNECTOR_DEMO_MAX_TOKENS);
   }
 }
 

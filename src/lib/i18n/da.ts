@@ -4,6 +4,7 @@ import { daContent } from "./da-content";
 import { daMarketing } from "./da-marketing";
 import { daMonthly } from "./da-monthly";
 import { daPlacement } from "./da-placement";
+import { daProfile } from "./da-profile";
 import { daPlayer } from "./da-player";
 import { daSandbox } from "./da-sandbox";
 import { daSupport } from "./da-support";
@@ -17,6 +18,7 @@ export const da = {
   sandbox: daSandbox,
   player: daPlayer,
   placement: daPlacement,
+  profile: daProfile,
   billing: daBilling,
   contentEngine: daContent,
   orgAdmin: orgAdminMessages,

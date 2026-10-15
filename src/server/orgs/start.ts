@@ -24,3 +24,8 @@ export function decideStart(input: StartInput): StartDecision {
   if (invitation) return { kind: "open-invitation", invitationId: invitation };
   return { kind: "create-personal-org" };
 }
+
+/** After login: show the work-profile step (industry → connector recommendations) once, unless done or skipped. */
+export function needsProfile(profile: { completedAt: Date | null; skippedAt: Date | null } | null): boolean {
+  return !profile || (!profile.completedAt && !profile.skippedAt);
+}

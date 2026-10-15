@@ -109,6 +109,11 @@ export const serverEnvSchema = z
     AI_BUDGET_ALERT_PCT: z.preprocess((v) => (v === "" ? undefined : v), z.coerce.number().gt(0).lt(1).default(0.8)),
     POSTHOG_API_KEY: z.preprocess((v) => (v === "" || v === "phc_" ? undefined : v), z.string().optional()),
     POSTHOG_HOST: z.preprocess((v) => (v === "" ? undefined : v), z.url().default("https://eu.i.posthog.com")),
+    // Connector recommendations — CVR lookup behind CompanyLookupProvider. "fixture" = fictional CVR numbers (dev/test),
+    // "erst" = Erhvervsstyrelsen system-til-system (needs the agreement + credentials), "none" = industry picker only.
+    CVR_PROVIDER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["fixture", "erst", "none"]).default("none")),
+    CVR_ERST_USER: optionalString,
+    CVR_ERST_PASSWORD: optionalString,
   })
   .superRefine((env, ctx) => {
     const pairs = [
@@ -135,6 +140,8 @@ export const serverEnvSchema = z
       if (!env[key]) ctx.addIssue({ code: "custom", path: [key], message: "påkrævet i produktion" });
     }
     if (env.AI_MOCK) ctx.addIssue({ code: "custom", path: ["AI_MOCK"], message: "må ikke være slået til i produktion" });
+    if (env.CVR_PROVIDER === "fixture") ctx.addIssue({ code: "custom", path: ["CVR_PROVIDER"], message: "fixture (fiktive CVR-numre) må ikke bruges i produktion" });
+    if (env.CVR_PROVIDER === "erst" && !(env.CVR_ERST_USER && env.CVR_ERST_PASSWORD)) ctx.addIssue({ code: "custom", path: ["CVR_ERST_USER"], message: "påkrævet når CVR_PROVIDER=erst" });
     if (env.AI_ENABLED && !env.ANTHROPIC_API_KEY) ctx.addIssue({ code: "custom", path: ["ANTHROPIC_API_KEY"], message: "påkrævet i produktion (eller sæt AI_ENABLED=0)" });
     if (env.ENABLE_DEBUG_ROUTES) {
       ctx.addIssue({ code: "custom", path: ["ENABLE_DEBUG_ROUTES"], message: "må ikke være slået til i produktion" });

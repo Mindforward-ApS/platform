@@ -1,0 +1,19 @@
+[
+  { "slug": "mail", "name": "Mails og korrespondance" },
+  { "slug": "kalender", "name": "Møder og kalender" },
+  { "slug": "moedenoter", "name": "Mødenoter og referater" },
+  { "slug": "dokumenter", "name": "Dokumenter og filer" },
+  { "slug": "intern-kommunikation", "name": "Intern kommunikation" },
+  { "slug": "tilbud", "name": "Tilbud og prisberegning" },
+  { "slug": "timer", "name": "Timer og sagsregistrering" },
+  { "slug": "projekter", "name": "Projekter og opgavestyring" },
+  { "slug": "fakturering", "name": "Fakturering" },
+  { "slug": "bogfoering", "name": "Bogføring og bilag" },
+  { "slug": "betalinger", "name": "Betalinger" },
+  { "slug": "kunder", "name": "Kundeoversigt og opfølgning" },
+  { "slug": "produkter", "name": "Produkter og varetekster" },
+  { "slug": "ordrer", "name": "Ordrer og kundeservice" },
+  { "slug": "markedsfoering", "name": "Markedsføring og nyhedsbreve" },
+  { "slug": "rapportering", "name": "Rapporter og nøgletal" },
+  { "slug": "regler", "name": "Regler, krav og dokumentation" }
+]

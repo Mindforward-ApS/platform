@@ -65,12 +65,14 @@ export const AI_RATE_LIMITS: Record<string, RateLimitRule[]> = {
   SANDBOX_AGENT: [{ window: 60, max: 10 }, { window: 24 * 60 * 60, max: 200 }],
   GRADE_PROMPT_TASK: [{ window: 60, max: 20 }],
   SUPPORT_AGENT: [{ window: 60, max: 6 }, { window: 24 * 60 * 60, max: 60 }],
+  // "Prøv den": 10 runs per user per hour (the route also checks before opening the stream).
+  CONNECTOR_DEMO: [{ window: 60 * 60, max: 10 }],
 };
 export const MAX_TOOL_ROUNDS = 6;
 const RETRIES = 2;
 const BACKOFF_MS = [500, 2000];
 const MAX_RETRY_AFTER_MS = 10_000;
-const PII_FEATURES: AiFeature[] = ["SANDBOX_CHAT", "SANDBOX_AGENT", "GRADE_PROMPT_TASK", "SUPPORT_AGENT"];
+const PII_FEATURES: AiFeature[] = ["SANDBOX_CHAT", "SANDBOX_AGENT", "GRADE_PROMPT_TASK", "SUPPORT_AGENT", "CONNECTOR_DEMO"];
 
 export type GatewayEnv = Pick<
   ServerEnv,
@@ -98,7 +100,7 @@ export interface GatewayDeps {
 }
 
 const baseInput = z.object({
-  feature: z.enum(["SANDBOX_CHAT", "SANDBOX_AGENT", "GRADE_PROMPT_TASK", "SUPPORT_AGENT", "CONTENT_CLASSIFY", "CONTENT_DRAFT", "CONTENT_VERIFY"]),
+  feature: z.enum(["SANDBOX_CHAT", "SANDBOX_AGENT", "GRADE_PROMPT_TASK", "SUPPORT_AGENT", "CONTENT_CLASSIFY", "CONTENT_DRAFT", "CONTENT_VERIFY", "CONNECTOR_DEMO"]),
   promptKey: z.string().regex(/^[a-z0-9-]+$/),
   userId: z.string().min(1).nullable(),
   organizationId: z.string().min(1).nullable(),

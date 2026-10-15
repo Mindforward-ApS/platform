@@ -30,3 +30,13 @@ describe("decideStart", () => {
     });
   });
 });
+
+describe("needsProfile (connector recommendations step after login)", () => {
+  it("asks once: only when there is no profile and it was not skipped", async () => {
+    const { needsProfile } = await import("@/server/orgs/start");
+    expect(needsProfile(null)).toBe(true);
+    expect(needsProfile({ completedAt: null, skippedAt: null })).toBe(true);
+    expect(needsProfile({ completedAt: new Date(), skippedAt: null })).toBe(false);
+    expect(needsProfile({ completedAt: null, skippedAt: new Date() })).toBe(false);
+  });
+});

@@ -391,6 +391,7 @@ enum AiFeature {
   CONTENT_CLASSIFY
   CONTENT_DRAFT
   CONTENT_VERIFY
+  CONNECTOR_DEMO // "Prøv den": live demo of a connector on fictional data
 }
 
 enum AiCallStatus {
@@ -468,6 +469,8 @@ model User {
   trackEnrollments     TrackEnrollment[]
   credentialTransfers  CredentialTransfer[]
   certificateShares    CertificateShare[]
+  workProfiles         WorkProfile[]
+  connectorDemoRuns    ConnectorDemoRun[]
 
   @@map("user")
 }
@@ -599,6 +602,8 @@ model Organization {
   trackEnrollments      TrackEnrollment[]
   credentialTransfersIn CredentialTransfer[]
   certificateShares     CertificateShare[]
+  workProfiles          WorkProfile[]
+  connectorDemoRuns     ConnectorDemoRun[]
 
   @@index([type])
   @@map("organization")
@@ -1523,4 +1528,241 @@ model CertificateShare {
   @@unique([certificateId, organizationId])
   @@index([organizationId])
   @@map("certificate_share")
+}
+
+// ───────────────────────── Connector recommendations (branche → opgaver → systemer → connectors) ─────────────────────────
+// All mapping is data (content/connectors/*.json, seeded); the scoring in src/server/connectors/scoring.ts is pure.
+
+enum IndustryCodeSystem {
+  DB25 // Dansk Branchekode 2025 (CVR since 1 Jan 2025)
+  DB07
+}
+
+enum ConnectorPlatform {
+  CLAUDE
+  CHATGPT
+  COPILOT
+}
+
+enum AvailabilityStatus {
+  OFFICIAL
+  THIRD_PARTY
+  NONE
+  UNVERIFIED // never shown as a recommendation
+}
+
+/// User-friendly industry ("Revision & regnskab"). Raw codes never reach the UI.
+model Industry {
+  id        String  @id @default(cuid())
+  slug      String  @unique
+  name      String
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  codes        IndustryCode[]
+  tasks        IndustryTask[]
+  systems      IndustrySystem[]
+  useCases     IndustryConnectorUseCase[]
+  demos        ConnectorDemo[]
+  workProfiles WorkProfile[]
+
+  @@map("industry")
+}
+
+/// Official code prefix → Industry. Longest prefix wins (src/server/connectors/industry-match.ts).
+model IndustryCode {
+  id         String             @id @default(cuid())
+  system     IndustryCodeSystem
+  prefix     String // digits only
+  industryId String
+  industry   Industry           @relation(fields: [industryId], references: [id], onDelete: Cascade)
+
+  @@unique([system, prefix])
+  @@map("industry_code")
+}
+
+model Task {
+  id         String          @id @default(cuid())
+  slug       String          @unique
+  name       String
+  industries IndustryTask[]
+  connectors ConnectorTask[]
+
+  @@map("task")
+}
+
+model IndustryTask {
+  industryId String
+  industry   Industry @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  taskId     String
+  task       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  weight     Int // 1–5
+
+  @@id([industryId, taskId])
+  @@map("industry_task")
+}
+
+model SystemCategory {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  sortOrder Int      @default(0)
+  systems   System[]
+
+  @@map("system_category")
+}
+
+/// A business system people use (e-conomic, Microsoft 365, Shopify …).
+model System {
+  id         String            @id @default(cuid())
+  slug       String            @unique
+  name       String
+  categoryId String
+  category   SystemCategory    @relation(fields: [categoryId], references: [id])
+  industries IndustrySystem[]
+  connectors ConnectorSystem[]
+
+  @@map("system")
+}
+
+model IndustrySystem {
+  industryId  String
+  industry    Industry @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  systemId    String
+  system      System   @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  preselected Boolean  @default(false)
+
+  @@id([industryId, systemId])
+  @@map("industry_system")
+}
+
+model Connector {
+  id           String                     @id @default(cuid())
+  slug         String                     @unique
+  name         String
+  category     String
+  systems      ConnectorSystem[]
+  tasks        ConnectorTask[]
+  availability ConnectorAvailability[]
+  useCases     IndustryConnectorUseCase[]
+  demos        ConnectorDemo[]
+
+  @@map("connector")
+}
+
+model ConnectorSystem {
+  connectorId String
+  connector   Connector @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  systemId    String
+  system      System    @relation(fields: [systemId], references: [id], onDelete: Cascade)
+
+  @@id([connectorId, systemId])
+  @@map("connector_system")
+}
+
+model ConnectorTask {
+  connectorId String
+  connector   Connector @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  taskId      String
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@id([connectorId, taskId])
+  @@map("connector_task")
+}
+
+/// Connector × platform. OFFICIAL/THIRD_PARTY only with a source URL from the vendor's own catalogue.
+model ConnectorAvailability {
+  id             String             @id @default(cuid())
+  connectorId    String
+  connector      Connector          @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  platform       ConnectorPlatform
+  status         AvailabilityStatus
+  sourceUrl      String?
+  lastVerifiedAt DateTime?
+  note           String?
+
+  @@unique([connectorId, platform])
+  @@map("connector_availability")
+}
+
+model IndustryConnectorUseCase {
+  industryId  String
+  industry    Industry  @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  connectorId String
+  connector   Connector @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  text        String
+
+  @@id([industryId, connectorId])
+  @@map("industry_connector_use_case")
+}
+
+/// "Prøv den": fictional input data + Danish example prompt. industryId null = generic demo.
+model ConnectorDemo {
+  id          String             @id @default(cuid())
+  slug        String             @unique
+  connectorId String
+  connector   Connector          @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  industryId  String?
+  industry    Industry?          @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  title       String
+  data        Json // fictional mails, invoices, calendar … shown to the user and sent to the model
+  prompt      String
+  outputKind  String
+  runs        ConnectorDemoRun[]
+
+  @@index([connectorId, industryId])
+  @@map("connector_demo")
+}
+
+/// One demo run (which connectors get tried most). The prompt text is not stored; tokens/cost live in AiCall.
+model ConnectorDemoRun {
+  id             String            @id @default(cuid())
+  demoId         String
+  demo           ConnectorDemo     @relation(fields: [demoId], references: [id], onDelete: Cascade)
+  connectorId    String
+  userId         String
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  platform       ConnectorPlatform
+  promptEdited   Boolean           @default(false)
+  status         String // OK | BLOCKED_* | ERROR
+  createdAt      DateTime          @default(now())
+
+  @@index([connectorId, createdAt])
+  @@map("connector_demo_run")
+}
+
+/// The learner's work profile in one organization: industry, optional CVR and the systems they use.
+model WorkProfile {
+  id                 String              @id @default(cuid())
+  organizationId     String
+  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  industryId         String?
+  industry           Industry?           @relation(fields: [industryId], references: [id], onDelete: SetNull)
+  cvr                String?
+  companyName        String?
+  industryCode       String?
+  industryCodeSystem IndustryCodeSystem?
+  selectedSystemIds  String[]            @default([])
+  completedAt        DateTime?
+  skippedAt          DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@unique([organizationId, userId])
+  @@map("work_profile")
+}
+
+/// CVR lookups (only name + main industry code), 30-day TTL. Provider behind CompanyLookupProvider.
+model CompanyLookupCache {
+  id        String   @id @default(cuid())
+  cvr       String   @unique
+  provider  String
+  payload   Json
+  fetchedAt DateTime @default(now())
+
+  @@map("company_lookup_cache")
 }

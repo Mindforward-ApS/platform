@@ -1,0 +1,114 @@
+[
+  {
+    "industry": "landbrug",
+    "tasks": [
+      { "task": "regler", "weight": 5 }, { "task": "bogfoering", "weight": 4 }, { "task": "rapportering", "weight": 3 },
+      { "task": "mail", "weight": 3 }, { "task": "dokumenter", "weight": 3 }, { "task": "kalender", "weight": 2 }, { "task": "fakturering", "weight": 2 }
+    ],
+    "systems": [
+      { "system": "microsoft-365", "preselected": true }, { "system": "google-workspace", "preselected": false },
+      { "system": "e-conomic", "preselected": true }, { "system": "dinero", "preselected": false }, { "system": "dropbox", "preselected": false }
+    ],
+    "useCases": [
+      { "connector": "microsoft-365", "text": "Find mails fra konsulenten, maskinstationen og kommunen, og få dem samlet til en kort liste over frister og svar, der mangler." },
+      { "connector": "google-drive", "text": "Slå op i markplaner, gødningsplaner og kontrakter, og få dem opsummeret før et møde med konsulenten." },
+      { "connector": "gmail", "text": "Gennemgå indbakken for bestillinger og afregninger, og få kladder til svar på de vigtigste." },
+      { "connector": "google-calendar", "text": "Få overblik over frister, høst og møder i en travl uge." },
+      { "connector": "e-conomic", "text": "Find bilag, der mangler, og få forklaret, hvad der driver udgifterne i kvartalet." },
+      { "connector": "dinero", "text": "Få overblik over fakturaer og bilag uden at åbne regnskabsprogrammet." },
+      { "connector": "dropbox", "text": "Find den rigtige version af kontrakter og dokumentation til kontrol." }
+    ]
+  },
+  {
+    "industry": "haandvaerk",
+    "tasks": [
+      { "task": "tilbud", "weight": 5 }, { "task": "timer", "weight": 5 }, { "task": "projekter", "weight": 4 }, { "task": "fakturering", "weight": 4 },
+      { "task": "mail", "weight": 3 }, { "task": "kalender", "weight": 3 }, { "task": "kunder", "weight": 2 }, { "task": "dokumenter", "weight": 2 }
+    ],
+    "systems": [
+      { "system": "ordrestyring", "preselected": true }, { "system": "minuba", "preselected": false }, { "system": "apacta", "preselected": false },
+      { "system": "e-conomic", "preselected": true }, { "system": "dinero", "preselected": false }, { "system": "billy", "preselected": false },
+      { "system": "microsoft-365", "preselected": true }, { "system": "google-workspace", "preselected": false }
+    ],
+    "useCases": [
+      { "connector": "microsoft-365", "text": "Saml kundens mails og billeder om en opgave, og få et udkast til et tilbud med de mål og ønsker, kunden har skrevet." },
+      { "connector": "gmail", "text": "Find nye forespørgsler i indbakken, og få kladder til svar med forslag til besigtigelse." },
+      { "connector": "google-calendar", "text": "Planlæg ugens besigtigelser og opgaver, så kørslen hænger sammen." },
+      { "connector": "google-drive", "text": "Slå op i tidligere tilbud og prislister, så nye tilbud bliver ens og hurtige." },
+      { "connector": "e-conomic", "text": "Find ubetalte fakturaer, og få en venlig rykker skrevet til hver kunde." },
+      { "connector": "dinero", "text": "Tjek, hvilke sager der mangler at blive faktureret." },
+      { "connector": "billy", "text": "Få overblik over udestående fakturaer og bilag." },
+      { "connector": "ordrestyring", "text": "Saml timer og materialer på en sag, og få en klar status til kunden." },
+      { "connector": "minuba", "text": "Gør sagsnoter og timer til en kort opsummering til kunden." },
+      { "connector": "apacta", "text": "Få overblik over timer og fotodokumentation på ugens sager." }
+    ]
+  },
+  {
+    "industry": "revision",
+    "tasks": [
+      { "task": "bogfoering", "weight": 5 }, { "task": "dokumenter", "weight": 5 }, { "task": "mail", "weight": 4 }, { "task": "moedenoter", "weight": 4 },
+      { "task": "rapportering", "weight": 4 }, { "task": "kalender", "weight": 3 }, { "task": "kunder", "weight": 3 }, { "task": "regler", "weight": 3 }
+    ],
+    "systems": [
+      { "system": "microsoft-365", "preselected": true }, { "system": "e-conomic", "preselected": true }, { "system": "dinero", "preselected": false },
+      { "system": "billy", "preselected": false }, { "system": "business-central", "preselected": false }, { "system": "dropbox", "preselected": false },
+      { "system": "box", "preselected": false }, { "system": "hubspot", "preselected": false }
+    ],
+    "useCases": [
+      { "connector": "microsoft-365", "text": "Find alle mails fra en klient om årsregnskabet, og få en liste over de bilag og svar, der stadig mangler." },
+      { "connector": "google-drive", "text": "Søg i klientmapper efter aftaler og tidligere års noter, og få dem opsummeret før et møde." },
+      { "connector": "e-conomic", "text": "Gennemgå bogføringen for usædvanlige posteringer, og få spørgsmål til klienten formuleret." },
+      { "connector": "business-central", "text": "Få forklaret afvigelser mellem perioder i et kort notat til klienten." },
+      { "connector": "dinero", "text": "Find manglende bilag hos mindre klienter." },
+      { "connector": "billy", "text": "Få overblik over klientens udestående poster." },
+      { "connector": "dropbox", "text": "Find den rigtige version af underskrevne dokumenter." },
+      { "connector": "box", "text": "Søg i klientdokumenter med rettigheder styret centralt." },
+      { "connector": "hubspot", "text": "Se klientens historik og næste frist, før du ringer." }
+    ]
+  },
+  {
+    "industry": "webshop",
+    "tasks": [
+      { "task": "produkter", "weight": 5 }, { "task": "ordrer", "weight": 5 }, { "task": "markedsfoering", "weight": 4 }, { "task": "kunder", "weight": 4 },
+      { "task": "betalinger", "weight": 3 }, { "task": "bogfoering", "weight": 3 }, { "task": "rapportering", "weight": 3 }, { "task": "mail", "weight": 2 }
+    ],
+    "systems": [
+      { "system": "shopify", "preselected": true }, { "system": "stripe", "preselected": true }, { "system": "e-conomic", "preselected": true },
+      { "system": "dinero", "preselected": false }, { "system": "billy", "preselected": false }, { "system": "google-workspace", "preselected": true },
+      { "system": "hubspot", "preselected": false }, { "system": "canva", "preselected": false }, { "system": "slack", "preselected": false }
+    ],
+    "useCases": [
+      { "connector": "shopify", "text": "Find ordrer med forsinket levering, og få personlige svar til kunderne. Skriv nye varetekster ud fra produktdata." },
+      { "connector": "gmail", "text": "Sortér kundeservice-mails efter emne, og få kladder til de mest almindelige spørgsmål." },
+      { "connector": "stripe", "text": "Find mislykkede betalinger og refusioner fra ugen, og få en kort oversigt." },
+      { "connector": "hubspot", "text": "Find kunder, der ikke har købt i et halvt år, og få et udkast til et nyhedsbrev til dem." },
+      { "connector": "canva", "text": "Lav udkast til grafik til en kampagne ud fra et kort oplæg." },
+      { "connector": "google-drive", "text": "Saml salgstal fra regneark, og få en kort status til ugens møde." },
+      { "connector": "e-conomic", "text": "Afstem salg og gebyrer, og find poster, der ikke passer." },
+      { "connector": "slack", "text": "Få et dagligt resumé af kanalen med kundeservice og lager." }
+    ]
+  },
+  {
+    "industry": "raadgivning",
+    "tasks": [
+      { "task": "mail", "weight": 5 }, { "task": "moedenoter", "weight": 5 }, { "task": "dokumenter", "weight": 4 }, { "task": "projekter", "weight": 4 },
+      { "task": "kunder", "weight": 4 }, { "task": "kalender", "weight": 3 }, { "task": "tilbud", "weight": 3 }, { "task": "timer", "weight": 3 }, { "task": "fakturering", "weight": 2 }
+    ],
+    "systems": [
+      { "system": "microsoft-365", "preselected": true }, { "system": "google-workspace", "preselected": false }, { "system": "hubspot", "preselected": true },
+      { "system": "salesforce", "preselected": false }, { "system": "notion", "preselected": false }, { "system": "asana", "preselected": false },
+      { "system": "monday", "preselected": false }, { "system": "slack", "preselected": false }, { "system": "dinero", "preselected": false }, { "system": "e-conomic", "preselected": false }
+    ],
+    "useCases": [
+      { "connector": "microsoft-365", "text": "Gør mødenoter og mails fra et kundeforløb til et kort referat med aftaler, ansvarlige og frister." },
+      { "connector": "hubspot", "text": "Få et overblik over pipeline og de kunder, der venter på svar, før ugens salgsmøde." },
+      { "connector": "notion", "text": "Saml projektnoter og beslutninger, og få et udkast til statusrapport til kunden." },
+      { "connector": "salesforce", "text": "Find muligheder, der er gået i stå, og få forslag til næste skridt." },
+      { "connector": "asana", "text": "Få status på projektets opgaver, og find det, der er forsinket." },
+      { "connector": "monday", "text": "Gør tavlens opgaver til en kort ugestatus til kunden." },
+      { "connector": "google-drive", "text": "Find tidligere oplæg og tilbud, og genbrug strukturen i et nyt." },
+      { "connector": "gmail", "text": "Find mails, der venter på dit svar, og få kladder." },
+      { "connector": "slack", "text": "Få et resumé af projektkanalen, når du har været væk." }
+    ]
+  }
+]
