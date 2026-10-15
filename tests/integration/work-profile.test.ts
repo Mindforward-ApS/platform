@@ -59,3 +59,19 @@ describe("work profile → connector recommendations", () => {
     expect(await getWorkProfile(testDb(), { userId: s.userId, organizationId: other.organizationId })).toBeNull();
   });
 });
+
+describe("relevance", () => {
+  it("only shows connectors with a use case for the industry or a system the learner uses", async () => {
+    const [org, user] = await Promise.all([makeOrg("PERSONAL"), makeUser()]);
+    await addMember(org.id, user.id, "OWNER");
+    const s = { userId: user.id, organizationId: org.id };
+    const revision = await testDb().industry.findUniqueOrThrow({ where: { slug: "revision" } });
+    await saveIndustry(testDb(), s, { industryId: revision.id });
+    await saveSystems(testDb(), s, []);
+    const r = await recommendationsFor(testDb(), s, "CHATGPT");
+    expect(r?.recommended.map((x) => x.name)).not.toContain("Shopify");
+    const shopify = await testDb().system.findUniqueOrThrow({ where: { slug: "shopify" } });
+    await saveSystems(testDb(), s, [shopify.id]);
+    expect((await recommendationsFor(testDb(), s, "CHATGPT"))?.recommended.map((x) => x.name)).toContain("Shopify");
+  });
+});

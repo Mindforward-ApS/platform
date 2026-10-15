@@ -143,7 +143,9 @@ export async function recommendationsFor(db: PrismaClient, s: Scope, platform: C
   // Industry demo first, generic demo as fallback.
   const demoFor = (connectorId: string) => demos.find((d) => d.connectorId === connectorId && d.industryId === industryId)?.id ?? demos.find((d) => d.connectorId === connectorId && !d.industryId)?.id ?? null;
   const enrich = (c: ScoredConnector): Recommendation => ({ ...c, useCase: useCase.get(c.id) ?? null, coveredTasks: c.coveredTaskIds.map((t) => taskName.get(t) ?? t), demoId: demoFor(c.id) });
-  return { profile, recommended: scored.recommended.map(enrich), unavailable: scored.unavailable.map(enrich) };
+  // Only connectors that make sense here: written for this industry (use case) or one of the learner's own systems.
+  const relevant = (c: ScoredConnector) => useCase.has(c.id) || c.matchedSystemIds.length > 0;
+  return { profile, recommended: scored.recommended.filter(relevant).map(enrich), unavailable: scored.unavailable.filter(relevant).map(enrich) };
 }
 
 export function toPlatformEnum(p: ConnectorPlatformKey): ConnectorPlatform {

@@ -111,6 +111,8 @@ export const serverEnvSchema = z
     POSTHOG_HOST: z.preprocess((v) => (v === "" ? undefined : v), z.url().default("https://eu.i.posthog.com")),
     // Connector recommendations — CVR lookup behind CompanyLookupProvider. "fixture" = fictional CVR numbers (dev/test),
     // "erst" = Erhvervsstyrelsen system-til-system (needs the agreement + credentials), "none" = industry picker only.
+    // Send learners without a work profile to /profil/virksomhed after login (off until Marco turns it on).
+    PROFILE_STEP_AFTER_LOGIN: boolFlag,
     CVR_PROVIDER: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["fixture", "erst", "none"]).default("none")),
     CVR_ERST_USER: optionalString,
     CVR_ERST_PASSWORD: optionalString,

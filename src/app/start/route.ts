@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { AuthzError, requireUser } from "@/server/auth/authz";
 import { db } from "@/server/db";
 import { logger } from "@/server/observability/logger";
+import { serverEnv } from "@/lib/env";
+import { getWorkProfile } from "@/server/connectors/service";
 import { runStart } from "@/server/orgs/service";
+import { needsProfile } from "@/server/orgs/start";
 import { claimPlacement } from "@/server/placement/service";
 import { PLACEMENT_COOKIE } from "@/server/placement/tokens";
 
@@ -32,6 +35,10 @@ export async function GET(request: Request) {
     }
     // Signed-in home is /hjem (Marco 14 Oct 2026); runStart keeps "/konto" as its generic "you're in" target.
     if (target === "/konto") target = "/hjem";
+    // Work profile (industry → connector recommendations): once, skippable, behind PROFILE_STEP_AFTER_LOGIN.
+    if (target === "/hjem" && organizationId && serverEnv().PROFILE_STEP_AFTER_LOGIN) {
+      if (needsProfile(await getWorkProfile(db(), { userId: ctx.user.id, organizationId }))) target = "/profil/virksomhed";
+    }
 
     const response = NextResponse.redirect(new URL(target, request.url));
     if (placementToken && organizationId) response.cookies.delete(PLACEMENT_COOKIE);
