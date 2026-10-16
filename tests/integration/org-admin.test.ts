@@ -4,7 +4,7 @@ import { testUtils } from "better-auth/plugins";
 import { beforeAll, describe, expect, it } from "vitest";
 import { parseServerEnv } from "@/lib/env.schema";
 import { findForbiddenKeys } from "@/server/admin/allowed-fields";
-import { employeeDetail, listEmployees, orgOverview } from "@/server/admin/queries";
+import { employeeDetail, listEmployees, orgOverview, orgPassedPerWeek, orgResponsibles } from "@/server/admin/queries";
 import { buildAuthOptions } from "@/server/auth/better-auth";
 import { seedModules, seedTracks } from "@/server/content/seed";
 import { acceptDpa, DpaError } from "@/server/orgs/dpa";
@@ -272,6 +272,33 @@ describe("admin queries: org-scoped, never free text (roadmap M7)", () => {
     }
     expect(csv).not.toContain(SECRET_PROMPT);
     expect(csv).toContain(learnerA.email);
+  });
+
+  it("passed per week and responsibles: org-scoped aggregates, active members only", async () => {
+    const a = await business();
+    const b = await business();
+    const [learner, leaver, admin, other] = await Promise.all([makeUser(), makeUser(), makeUser(), makeUser()]);
+    await addMember(a.org.id, learner.id, "LEARNER");
+    const leaverMember = await addMember(a.org.id, leaver.id, "LEARNER");
+    await addMember(a.org.id, admin.id, "ADMIN");
+    await addMember(b.org.id, other.id, "LEARNER");
+    await passModule(a.org.id, learner.id, "core-prompt-01", { score: 80 });
+    await passModule(a.org.id, learner.id, "core-llm-01", { score: 90 });
+    await passModule(a.org.id, leaver.id, "core-prompt-01", { score: 50 });
+    await passModule(b.org.id, other.id, "core-prompt-01", { score: 10 });
+    await testDb().membership.update({ where: { id: leaverMember.id }, data: { deactivatedAt: new Date() } });
+
+    const weekly = await orgPassedPerWeek(testDb(), a.org.id, new Date(), 12);
+    expect(weekly.weeks).toHaveLength(12);
+    expect(weekly.weeks.at(-1)).toMatchObject({ passed: 2, avgScorePct: 85 });
+    expect(weekly).toMatchObject({ passedInWindow: 2, avgBestScorePct: 85 });
+    expect(findForbiddenKeys(weekly)).toEqual([]);
+
+    const people = await orgResponsibles(testDb(), a.org.id);
+    expect(people.map((p) => [p.email, p.role])).toEqual([
+      [a.owner.email, "OWNER"],
+      [admin.email, "ADMIN"],
+    ]);
   });
 
   it("paginates with a cursor and filters by track and job role", async () => {

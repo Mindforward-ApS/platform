@@ -2,6 +2,7 @@ import "server-only";
 import type { JobRole, MembershipRole, PrismaClient } from "@/generated/prisma/client";
 import { assertAdminSafe } from "./allowed-fields";
 import { certificatesVisibleIn } from "@/server/certificates/transfer";
+import { bucketPassesByWeek, type WeekPasses } from "@/lib/weeks";
 
 // The ONLY data source for company-admin screens, exports and the learner's "what my admin sees" page
 // (docs/03 § 5, docs/10 § 1.6). Every query is scoped by organizationId and selects explicit, allow-listed
@@ -207,4 +208,53 @@ export async function orgOverview(db: PrismaClient, organizationId: string, acto
     anyInvitationSent: invitationsEver > 0 || active > 1,
     actorTriedModule: actorAttempts > 0,
   });
+}
+
+export interface OrgWeeklyPasses {
+  weeks: WeekPasses[];
+  /** Average best score over every passed module of active members (all time), or null. */
+  avgBestScorePct: number | null;
+  /** Passed modules inside the window. */
+  passedInWindow: number;
+}
+
+/** Modules passed per ISO week by the org's active members (aggregates only — no per-person data). */
+export async function orgPassedPerWeek(db: PrismaClient, organizationId: string, now = new Date(), weeks = 12): Promise<OrgWeeklyPasses> {
+  const activeMember = { user: { memberships: { some: { organizationId, deactivatedAt: null } } } };
+  const since = new Date(now.getTime() - (weeks + 1) * 7 * 86_400_000);
+  const [passes, avg] = await Promise.all([
+    db.assignment.findMany({
+      where: { organizationId, status: "PASSED", passedAt: { gte: since }, ...activeMember },
+      select: { passedAt: true, bestScorePct: true },
+    }),
+    db.assignment.aggregate({ where: { organizationId, status: "PASSED", bestScorePct: { not: null }, ...activeMember }, _avg: { bestScorePct: true } }),
+  ]);
+  const buckets = bucketPassesByWeek(
+    passes.flatMap((p) => (p.passedAt ? [{ passedAt: p.passedAt, scorePct: p.bestScorePct === null ? null : Number(p.bestScorePct) }] : [])),
+    now,
+    weeks,
+  );
+  return assertAdminSafe({
+    weeks: buckets,
+    avgBestScorePct: avg._avg.bestScorePct === null ? null : Math.round(Number(avg._avg.bestScorePct)),
+    passedInWindow: buckets.reduce((sum, w) => sum + w.passed, 0),
+  });
+}
+
+export interface ResponsiblePerson {
+  memberId: string;
+  name: string;
+  email: string;
+  role: MembershipRole;
+  jobRole: JobRole | null;
+}
+
+/** The org's active owners and admins ("Ansvarlige i virksomheden"). */
+export async function orgResponsibles(db: PrismaClient, organizationId: string): Promise<ResponsiblePerson[]> {
+  const rows = await db.membership.findMany({
+    where: { organizationId, deactivatedAt: null, role: { in: ["OWNER", "ADMIN"] } },
+    orderBy: [{ role: "asc" }, { createdAt: "asc" }],
+    select: { id: true, role: true, jobRole: true, user: { select: { name: true, email: true } } },
+  });
+  return assertAdminSafe(rows.map((r) => ({ memberId: r.id, name: r.user.name, email: r.user.email, role: r.role, jobRole: r.jobRole })));
 }
