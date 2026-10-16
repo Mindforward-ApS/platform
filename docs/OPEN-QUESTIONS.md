@@ -207,3 +207,8 @@
 - [ ] **Spor for sessionen:** brugerens aktive `TrackEnrollment`, hvis modulet kører på det spor; ellers modulets første aktive spor (sortOrder). `Attempt` har intet spor. · Blokerer: intet.
 - [ ] **core-prompt-01 / `ny-samtale` kan ikke løses på Copilot-sporet:** assertion kræver `UI_CLICKED nav.new-chat`, men Copilot-skinnet har ingen "Ny chat" i navigationen. · Forslag: sporspecifik assertion (`any`) eller en "Ny chat"-knap i Copilot-chatpanelet med samme target. · Blokerer: Copilot-brugere på det trin (kan springe over).
 - [ ] **PROMPT_TASK "med sandkasse" og DEMO i sandkassen** (01 L4) har intet felt i modulskemaet; kun CLICK_TASK åbner øvemiljøet. "Send link til dig selv" på mobil (01 § 6) er ikke bygget — mobil viser "Fortsæt på computer" og "Spring over". · Blokerer: intet.
+
+## Platform-design v3 (16. okt. 2026, branch `design-v3-platform`)
+- [ ] **Gradienter uden for `AppIcon`:** CLAUDE.md siger "Gradienter kun i app-ikonfelter". v3 (godkendt af Marco, `mindforward-preview/platform-preview.html`) har et blåt gradient-"hero"-kort pr. skærm (`mf-hero` i tokens.css). · Forslag: opdatér designreglen i CLAUDE.md/00 § 10d til "gradienter kun i AppIcon og ét hero-kort pr. skærm". · Blokerer: intet (bygget efter godkendt mock).
+- [ ] **Brandlogoer i sidebjælken:** mocken viser neutrale linjeikoner ved ChatGPT/Copilot/Claude; appen beholder `BrandIcon` (Marcos undtagelse 14. okt.) i en cirkel. · Forslag: behold, eller skift til neutrale ikoner hvis Marco foretrækker mocken 1:1. · Blokerer: intet.
+- [ ] **"Tildel modulet", "Forbindelser"-gruppen (Slack, Asana …) og "Del"/⋮-knapperne** fra mocken findes ikke som funktioner i appen og er ikke bygget (ingen falske knapper/data). · Blokerer: intet; kræver egne features.
