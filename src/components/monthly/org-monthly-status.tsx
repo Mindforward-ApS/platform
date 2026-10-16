@@ -1,3 +1,4 @@
+import { Avatar } from "@/components/ui/cards";
 import { Icon } from "@/components/ui/icons";
 import { Badge, Card, ProgressBar, Table, type Tone } from "@/components/ui/primitives";
 import type { IconName } from "@/components/ui/icons";
@@ -58,7 +59,12 @@ export async function OrgMonthlyStatus({ organizationId, month }: { organization
           <tbody>
             {status.rows.map((r) => (
               <tr key={r.userId} data-status={r.status}>
-                <td className="font-medium">{r.name}</td>
+                <td className="font-medium">
+                  <span className="flex items-center gap-3">
+                    <Avatar name={r.name} email={r.name} size="sm" />
+                    {r.name}
+                  </span>
+                </td>
                 <td>
                   <Badge tone={statusLook[r.status].tone} icon={statusLook[r.status].icon}>
                     {t.status[r.status]}

@@ -110,13 +110,13 @@ async function Content() {
       </div>
 
       {next ? (
-        <section aria-labelledby="next-title" className="flex flex-col gap-5 rounded-card border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-          <div className="flex min-w-0 flex-1 flex-col gap-2">
-            <p className="text-overline text-accent uppercase">{v.next}</p>
-            <h2 id="next-title" className="text-title-2 text-ink">
+        <section aria-labelledby="next-title" className="mf-hero flex flex-col gap-5 rounded-card p-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8 sm:px-7.5 sm:py-7">
+          <div className="flex min-w-0 flex-1 flex-col gap-3">
+            <p className="self-start rounded-full border border-hero-chip-line px-3 py-1 text-[0.8125rem] text-on-hero">{v.next}</p>
+            <h2 id="next-title" className="text-title-2 font-bold text-on-hero">
               {next.title}
             </h2>
-            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-body-sm text-ink-muted">
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-body-sm text-on-hero">
               <span className="inline-flex items-center gap-1.5 font-mono text-mono tabular-nums">
                 <Icon name="clock" size={14} />
                 {format(t.result.minutes, { minutes: num(next.minutes) })}
@@ -124,7 +124,7 @@ async function Content() {
               <span>{t.plan.groups[next.group]}</span>
             </p>
           </div>
-          <ButtonLink href={`/modul/${next.moduleId}`} size="lg" trailingIcon="arrowRight" className="shrink-0">
+          <ButtonLink href={`/modul/${next.moduleId}`} variant="secondary" size="lg" trailingIcon="arrowRight" className="shrink-0 border-transparent bg-surface">
             {nextStatus === "IN_PROGRESS" ? v.resume : v.start}
           </ButtonLink>
         </section>

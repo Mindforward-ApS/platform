@@ -99,13 +99,13 @@ export function HeroPills({ items, label }: { items: ReactNode[]; label: string 
 }
 
 /** Round avatar with initials (we keep no profile photos). */
-export function Avatar({ name, email, size = "md" }: { name?: string | null; email: string; size?: "sm" | "md" | "lg" }) {
+export function Avatar({ name, email, size = "md", onHero = false }: { name?: string | null; email: string; size?: "sm" | "md" | "lg"; onHero?: boolean }) {
   const source = name?.trim() || email.split("@")[0] || "";
   const parts = source.split(/[\s._-]+/).filter(Boolean);
   const initials = ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "?";
   const box = size === "lg" ? "size-12.5 text-label" : size === "sm" ? "size-8 text-caption" : "size-11 text-caption";
   return (
-    <span aria-hidden="true" className={cx("grid shrink-0 place-items-center rounded-full bg-tint font-semibold text-tint-ink ring-1 ring-line", box)}>
+    <span aria-hidden="true" className={cx("grid shrink-0 place-items-center rounded-full font-semibold text-tint-ink", onHero ? "bg-surface" : "bg-tint ring-1 ring-line", box)}>
       {initials}
     </span>
   );

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AdminShell, Section } from "@/components/admin/admin-shell";
 import { StatusBadge } from "@/components/admin/admin-ui";
+import { Avatar, HeroCard, HeroChips, HeroMeta, HeroTitle } from "@/components/ui/cards";
 import { Icon } from "@/components/ui/icons";
 import { Badge, EmptyState, Notice, Stat, Table, TextLink, type Tone } from "@/components/ui/primitives";
 import { formatDateDa } from "@/lib/format-date";
@@ -47,27 +48,26 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         {t.detail.back}
       </TextLink>
 
-      <div className="flex flex-col gap-4 rounded-card border border-line bg-surface p-6 sm:flex-row sm:items-start sm:justify-between">
+      <HeroCard
+        aside={
+          <div className="self-start">
+            <span className="inline-flex rounded-full bg-surface">
+              <StatusBadge tone={look.tone} icon={look.icon}>
+                {t.members.status[row.status]}
+              </StatusBadge>
+            </span>
+          </div>
+        }
+      >
         <div className="flex min-w-0 items-start gap-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-full bg-sunken text-ink-muted ring-1 ring-inset ring-line">
-            <Icon name="user" size={20} />
-          </span>
-          <div className="flex min-w-0 flex-col gap-1">
-            <h2 className="text-title-2 text-ink">{format(t.detail.title, { name: row.name || row.email })}</h2>
-            <p className="truncate text-body-sm text-ink-muted">{row.email}</p>
-            <p className="text-body-sm text-ink-muted">
-              {t.roles[row.role]}
-              {row.jobRole ? ` · ${t.jobRoles[row.jobRole]}` : ""}
-              {row.tracks.length > 0 ? ` · ${row.tracks.map((x) => x.name).join(", ")}` : ""}
-            </p>
+          <Avatar name={row.name} email={row.email} size="lg" onHero />
+          <div className="flex min-w-0 flex-col">
+            <HeroTitle as="h2">{format(t.detail.title, { name: row.name || row.email })}</HeroTitle>
+            <HeroChips items={[t.roles[row.role], ...(row.jobRole ? [t.jobRoles[row.jobRole]] : []), ...row.tracks.map((x) => x.name)]} />
           </div>
         </div>
-        <div className="self-start">
-          <StatusBadge tone={look.tone} icon={look.icon}>
-            {t.members.status[row.status]}
-          </StatusBadge>
-        </div>
-      </div>
+        <HeroMeta items={[{ icon: "mail", text: row.email }]} />
+      </HeroCard>
 
       <section aria-label={t.detail.summaryTitle} className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat label={c.score} value={row.avgBestScorePct === null ? t.members.none : `${row.avgBestScorePct} %`} />
