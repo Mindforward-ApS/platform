@@ -21,7 +21,7 @@ interface Strings {
 }
 
 const OPTION =
-  "flex cursor-pointer items-start gap-3 rounded-md border border-line bg-surface px-4 py-3 text-body text-ink transition-[background-color,border-color] duration-[120ms] hover:border-line-strong has-checked:border-accent has-checked:bg-accent-soft has-focus-visible:shadow-ring";
+  "flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-3 text-body text-ink transition-[background-color,border-color] duration-[120ms] hover:border-line-strong has-checked:border-accent has-checked:bg-accent-soft has-focus-visible:shadow-ring";
 const RADIO = "mt-1 size-4 shrink-0 cursor-pointer accent-accent";
 
 const fill = (s: string, vars: Record<string, number>) => s.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m));

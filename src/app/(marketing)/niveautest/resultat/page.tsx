@@ -30,7 +30,7 @@ function ResultBody({ view, save }: { view: ResultView; save: ReactNode }) {
   const more = view.plan.items.length - preview.length;
   return (
     <>
-      <section className="flex flex-col gap-5 rounded-lg border border-line bg-surface p-6" data-testid="result-overall">
+      <section className="flex flex-col gap-5 rounded-card border border-line bg-surface p-6 sm:px-7" data-testid="result-overall">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-title-2 text-ink">{format(t.overall, { level: score.level, label: t.levelLabels[score.level] })}</p>
           <span className="flex items-center gap-1" aria-hidden="true">
@@ -126,7 +126,7 @@ function ConsentForm({ status, email }: { status?: string; email?: string }) {
   const t = getMessages().placement.consent;
   const errorKey = status && status in CONSENT_ERRORS ? CONSENT_ERRORS[status as keyof typeof CONSENT_ERRORS] : undefined;
   return (
-    <section id="samtykke" className="flex scroll-mt-20 flex-col gap-4 rounded-lg border border-line bg-surface p-6">
+    <section id="samtykke" className="flex scroll-mt-20 flex-col gap-4 rounded-card border border-line bg-surface p-6 sm:px-7">
       <div className="flex flex-col gap-1">
         <h2 className="text-title-3 text-ink">{t.title}</h2>
         <p className="text-body-sm text-ink-muted">{t.intro}</p>
@@ -155,7 +155,7 @@ function ConsentForm({ status, email }: { status?: string; email?: string }) {
 function SaveCard({ saved, className }: { saved: boolean; className: string }) {
   const t = getMessages().placement.result;
   return (
-    <section className={cx("flex-col gap-4 rounded-lg border border-accent bg-surface p-6 shadow-ring", className)}>
+    <section className={cx("flex-col gap-4 rounded-card border border-accent bg-surface p-6 shadow-ring sm:px-7", className)}>
       {saved ? (
         <>
           <div className="flex flex-col gap-1">
@@ -215,7 +215,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ samtykke?: st
 
 export default function PlacementResultPage(props: PageProps<"/niveautest/resultat">) {
   return (
-    <main className="mx-auto flex w-full max-w-app flex-1 flex-col gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-14">
+    <main className="mf-v3 mx-auto flex w-full max-w-app flex-1 flex-col gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-14">
       <header className="flex flex-col gap-2">
         <p className="text-overline text-accent uppercase">{getMessages().placement.pick.eyebrow}</p>
         <h1 className="text-title-1 text-ink">{getMessages().placement.result.title}</h1>

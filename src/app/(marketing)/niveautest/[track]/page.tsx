@@ -58,7 +58,7 @@ async function Content({ params, searchParams }: { params: Promise<{ track: stri
 
 export default function PlacementTestPage(props: PageProps<"/niveautest/[track]">) {
   return (
-    <main className="mf-spots mx-auto grid w-full max-w-app flex-1 grid-cols-1 content-start gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-16 lg:px-10">
+    <main className="mf-v3 mf-spots mx-auto grid w-full max-w-app flex-1 grid-cols-1 content-start gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-16 lg:px-10">
       <Suspense>
         <Content params={props.params} searchParams={props.searchParams as Promise<{ fejl?: string }>} />
       </Suspense>

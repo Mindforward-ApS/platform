@@ -9,16 +9,18 @@ import { getMessages } from "@/lib/i18n";
 /** A whole-card link whose accessible name is only the title; the help text is linked via aria-describedby. */
 function TrackCard({ href, title, help, id }: { href: string; title: string; help: ReactNode; id: string }) {
   return (
-    <li className="group relative flex items-center gap-4 rounded-lg border border-line bg-surface p-5 transition-[box-shadow,border-color] duration-[120ms] hover:border-line-strong hover:shadow-sm sm:p-6">
+    <li className="group relative flex items-center gap-4 rounded-card border border-line bg-surface p-5 transition-[background-color,border-color] duration-[120ms] hover:border-line-strong hover:bg-sunken/50 sm:px-7 sm:py-6">
       <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <Link href={href} aria-describedby={id} className="text-title-3 text-ink after:absolute after:inset-0 after:rounded-lg focus-visible:outline-none focus-visible:after:shadow-ring">
+        <Link href={href} aria-describedby={id} className="text-title-3 text-ink after:absolute after:inset-0 after:rounded-card focus-visible:outline-none focus-visible:after:shadow-ring">
           {title}
         </Link>
         <p id={id} className="text-body-sm text-ink-muted">
           {help}
         </p>
       </div>
-      <Icon name="arrowRight" size={18} className="shrink-0 text-ink-subtle transition-[color,transform] duration-[120ms] group-hover:translate-x-0.5 group-hover:text-accent" />
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-tint text-tint-ink transition-transform duration-[120ms] group-hover:translate-x-0.5" aria-hidden="true">
+        <Icon name="arrowRight" size={18} />
+      </span>
     </li>
   );
 }
@@ -26,15 +28,15 @@ function TrackCard({ href, title, help, id }: { href: string; title: string; hel
 export default function PlacementPickPage() {
   const t = getMessages().placement;
   return (
-    <main className="mx-auto flex w-full max-w-read flex-1 flex-col gap-10 px-4 pt-10 pb-20 sm:px-6 sm:pt-16">
-      <header className="flex flex-col gap-4">
-        <p className="text-overline text-accent uppercase">{t.pick.eyebrow}</p>
-        <h1 className="text-title-1 text-ink sm:text-display">{t.pick.title}</h1>
-        <p className="text-body-lg text-pretty text-ink-muted">{t.pick.intro}</p>
-        <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-1 text-body-sm text-ink-muted">
+    <main className="mf-v3 mx-auto flex w-full max-w-read flex-1 flex-col gap-10 px-4 pt-10 pb-20 sm:px-6 sm:pt-16">
+      <header className="mf-hero flex flex-col gap-4 rounded-card p-6 sm:px-8 sm:py-8">
+        <p className="self-start rounded-full border border-hero-chip-line px-3 py-1 text-[0.8125rem] text-on-hero">{t.pick.eyebrow}</p>
+        <h1 className="text-title-1 font-bold text-on-hero">{t.pick.title}</h1>
+        <p className="text-body-lg text-pretty text-on-hero">{t.pick.intro}</p>
+        <ul className="flex flex-wrap gap-2 pt-1 text-body-sm text-on-hero">
           {t.pick.facts.map((f) => (
-            <li key={f} className="flex items-center gap-1.5">
-              <Icon name="check" className="text-success" />
+            <li key={f} className="flex items-center gap-1.5 rounded-full border border-hero-pill-line bg-hero-pill px-3 py-1">
+              <Icon name="check" />
               {f}
             </li>
           ))}

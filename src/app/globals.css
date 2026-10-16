@@ -6,8 +6,8 @@
    prefers-reduced-motion (tokens.css @layer base). */
 
 /* Design v3 inside the signed-in app panel, except inside the sandbox (which mimics the vendor apps and keeps its
-   own look). Used by the UI kit as `app:` — e.g. `app:rounded-full` turns buttons into pills only in the app. */
-@custom-variant app (&:where(.app-panel *):not(:where(.mf-sandbox, .mf-sandbox *)));
+   own look). `.mf-v3` opts other areas in (auth, niveautest). Used by the UI kit as `app:` — e.g. `app:rounded-full` turns buttons into pills only in the app. */
+@custom-variant app (&:where(.app-panel *, .mf-v3 *):not(:where(.mf-sandbox, .mf-sandbox *)));
 
 @theme {
   --animate-rise: mf-rise 0.6s var(--ease-out-expo) both;
