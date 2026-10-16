@@ -4,6 +4,7 @@ import { getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
 import { db } from "@/server/db";
+import { maxSubmissionsOf } from "@/server/modules/attempt-rules";
 import { findPlayableVersion, getPlayerState, latestAttemptId } from "@/server/modules/attempts";
 import { playableOptions } from "@/server/modules/deps";
 import { ModuleView, type ModuleIntro } from "./module-view";
@@ -33,6 +34,8 @@ async function Content({ params }: { params: Promise<{ slug: string }> }) {
   }
   const state = attemptId ? await getPlayerState(db(), actor, attemptId) : null;
   const content = playable?.content;
+  const prompts = content ? content.steps.flatMap((s) => (s.type === "PROMPT_TASK" ? [s] : [])) : [];
+  // Everything on the intro comes from the module content; nothing is invented for the hero.
   const intro: ModuleIntro | null = content
     ? {
         title: content.title,
@@ -41,6 +44,12 @@ async function Content({ params }: { params: Promise<{ slug: string }> }) {
         minutes: content.minutes,
         steps: content.steps.length,
         passPct: Math.round(content.passThreshold * 100),
+        level: content.level,
+        locale: content.locale,
+        stepList: content.steps.map((s) => ({ id: s.id, title: s.title, type: s.type })),
+        promptTasks: prompts.length,
+        maxSubmissions: prompts.length ? Math.max(...prompts.map(maxSubmissionsOf)) : null,
+        mustPass: content.steps.filter((s) => "mustPass" in s && s.mustPass === true).length,
       }
     : null;
 
