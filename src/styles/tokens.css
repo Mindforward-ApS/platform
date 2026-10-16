@@ -113,6 +113,54 @@
   --mf-spot-2: rgba(76, 183, 232, 0.08);
   --mf-ring: 0 0 0 1px var(--mf-accent), 0 0 0 4px var(--mf-accent-soft);
   --mf-object-shadow: 0 18px 22px rgba(11, 27, 43, 0.16);
+
+  /* ── Platform v3 (Marco 16 Oct 2026, mindforward-preview/platform-preview.html) ── */
+  /* App canvas behind the framed app: bright blue with a white dot grid and two soft white glows. */
+  --mf-canvas-from: #3f86e8;
+  --mf-canvas-mid: #1f6fe0;
+  --mf-canvas-to: #2a7be6;
+  --mf-canvas-dot: rgba(255, 255, 255, 0.35);
+  --mf-canvas-glow: rgba(255, 255, 255, 0.55);
+  --mf-canvas-glow-2: rgba(255, 255, 255, 0.45);
+  --mf-frame-outline: rgba(255, 255, 255, 0.28);
+  --mf-frame-shadow: 0 40px 80px -30px rgba(5, 20, 70, 0.55);
+  /* Sidebar: almost-dark-grey dark blue (Marco 16 Oct 2026: muted slate blue, not saturated navy). Fixed in both themes. */
+  --mf-sidebar: #161c2f;
+  --mf-sidebar-raised: #1e2540;
+  --mf-sidebar-active: rgba(255, 255, 255, 0.08);
+  --mf-sidebar-hover: rgba(255, 255, 255, 0.05);
+  --mf-sidebar-icon: rgba(255, 255, 255, 0.06);
+  --mf-sidebar-line: rgba(255, 255, 255, 0.08);
+  --mf-on-sidebar: #ffffff;
+  --mf-on-sidebar-muted: #c7cfe6; /* 10.9:1 on --mf-sidebar */
+  --mf-on-sidebar-subtle: #9aa5c8; /* 6.9:1 */
+  --mf-on-sidebar-label: #7f8bb0; /* 5.0:1 — group labels */
+  /* Logo mark (head + forward arrow). On the dark sidebar the navy parts turn white. */
+  --mf-logo-navy: #071b60;
+  --mf-logo-blue: #2858c4;
+  /* Hero card for the current entity. White text stays ≥ 5:1 on every stop where text sits. */
+  --mf-hero-from: #1d4fd8;
+  --mf-hero-mid: #2a5fe6;
+  --mf-hero-to: #2565ea;
+  --mf-hero-glow: #3a70ec;
+  --mf-hero-shine: rgba(255, 255, 255, 0.12);
+  --mf-hero-chip-line: rgba(255, 255, 255, 0.5);
+  --mf-hero-pill: rgba(255, 255, 255, 0.1);
+  --mf-hero-pill-line: rgba(255, 255, 255, 0.25);
+  --mf-on-hero: #ffffff;
+  /* Pill tabs and soft tags. */
+  --mf-tint: #e9f0ff;
+  --mf-tint-ink: #2447cc;
+  --mf-tag-learner: #e8f7ef;
+  --mf-tag-learner-ink: #16794a;
+  /* Charts and segmented progress. */
+  --mf-chart-bar: #c9ecd3;
+  --mf-chart-bar-hot: #3fbf6a;
+  --mf-chart-tip: #161c2f;
+  --mf-on-chart-tip: #ffffff;
+  --mf-seg-on: #2f6bff;
+  --mf-seg-off: #e8ecf4;
+  --mf-panel-radius: 28px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -160,6 +208,21 @@
     --mf-shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
     --mf-spot: rgba(134, 160, 255, 0.10);
     --mf-spot-2: rgba(92, 194, 234, 0.06);
+    --mf-tint: #17275a;
+    --mf-tint-ink: #b8c7ff;
+    --mf-tag-learner: #0c2c22;
+    --mf-tag-learner-ink: #4ccf9c;
+    --mf-chart-bar: #1d4a33;
+    --mf-chart-bar-hot: #4ccf9c;
+    --mf-seg-on: #86a0ff;
+    --mf-seg-off: #21324a;
+    --mf-canvas-from: #10306e;
+    --mf-canvas-mid: #0c2558;
+    --mf-canvas-to: #123478;
+    --mf-canvas-dot: rgba(255, 255, 255, 0.12);
+    --mf-canvas-glow: rgba(255, 255, 255, 0.10);
+    --mf-canvas-glow-2: rgba(255, 255, 255, 0.08);
+    --mf-frame-outline: rgba(255, 255, 255, 0.10);
   }
 }
 
@@ -220,6 +283,33 @@
   --color-tile-slate-to: var(--mf-tile-slate-to);
   --color-tile-ink-from: var(--mf-tile-ink-from);
   --color-tile-ink-to: var(--mf-tile-ink-to);
+  --color-sidebar: var(--mf-sidebar);
+  --color-sidebar-raised: var(--mf-sidebar-raised);
+  --color-sidebar-active: var(--mf-sidebar-active);
+  --color-sidebar-hover: var(--mf-sidebar-hover);
+  --color-sidebar-icon: var(--mf-sidebar-icon);
+  --color-sidebar-line: var(--mf-sidebar-line);
+  --color-on-sidebar: var(--mf-on-sidebar);
+  --color-on-sidebar-muted: var(--mf-on-sidebar-muted);
+  --color-on-sidebar-subtle: var(--mf-on-sidebar-subtle);
+  --color-on-sidebar-label: var(--mf-on-sidebar-label);
+  --color-logo-navy: var(--mf-logo-navy);
+  --color-logo-blue: var(--mf-logo-blue);
+  --color-hero-pill: var(--mf-hero-pill);
+  --color-hero-pill-line: var(--mf-hero-pill-line);
+  --color-hero-chip-line: var(--mf-hero-chip-line);
+  --color-on-hero: var(--mf-on-hero);
+  --color-tint: var(--mf-tint);
+  --color-tint-ink: var(--mf-tint-ink);
+  --color-tag-learner: var(--mf-tag-learner);
+  --color-tag-learner-ink: var(--mf-tag-learner-ink);
+  --color-chart-bar: var(--mf-chart-bar);
+  --color-chart-bar-hot: var(--mf-chart-bar-hot);
+  --color-chart-tip: var(--mf-chart-tip);
+  --color-on-chart-tip: var(--mf-on-chart-tip);
+  --color-seg-on: var(--mf-seg-on);
+  --color-seg-off: var(--mf-seg-off);
+  --color-frame-outline: var(--mf-frame-outline);
   /* Legacy aliases from the placeholder era — keep working, prefer the names above in new code. */
   --color-fg: var(--mf-ink);
   --color-muted: var(--mf-ink-muted);
@@ -277,6 +367,8 @@
   --radius-lg: 16px;
   --radius-xl: 20px;
   --radius-2xl: 24px;
+  --radius-card: 22px;
+  --radius-panel: 28px;
 
   --shadow-xs: var(--mf-shadow-xs);
   --shadow-sm: var(--mf-shadow-sm);
@@ -285,6 +377,7 @@
   --shadow-ring: var(--mf-ring);
   --drop-shadow-object: var(--mf-object-shadow);
   --shadow-tile: var(--mf-shadow-tile);
+  --shadow-frame: var(--mf-frame-shadow);
 
   --container-read: 42.5rem;
   --container-app: 80rem;
@@ -337,4 +430,21 @@
       animation-duration: 0.01ms !important;
     }
   }
+}
+
+/* Platform v3 surfaces that need multi-stop backgrounds (kept here: they are made of raw tokens). */
+@utility mf-canvas {
+    background:
+      radial-gradient(var(--mf-canvas-dot) 1.2px, transparent 1.4px) 0 0 / 14px 14px,
+      radial-gradient(900px 500px at 10% 0%, var(--mf-canvas-glow), transparent 60%),
+      radial-gradient(800px 600px at 95% 100%, var(--mf-canvas-glow-2), transparent 60%),
+      linear-gradient(160deg, var(--mf-canvas-from) 0%, var(--mf-canvas-mid) 50%, var(--mf-canvas-to) 100%);
+    background-attachment: fixed;
+}
+@utility mf-hero {
+    color: var(--mf-on-hero);
+    background:
+      radial-gradient(500px 260px at 55% 120%, var(--mf-hero-shine), transparent 60%),
+      radial-gradient(400px 300px at 100% 0%, var(--mf-hero-glow) 0%, transparent 60%),
+      linear-gradient(120deg, var(--mf-hero-from) 0%, var(--mf-hero-mid) 55%, var(--mf-hero-to) 100%);
 }

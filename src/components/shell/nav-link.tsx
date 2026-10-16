@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
 import { cx } from "@/components/ui/primitives";
 
-type Props = { href: string; exact?: boolean; variant?: "bar" | "side" | "sidebar"; tone?: "default" | "night"; children: ReactNode };
+type Props = { href: string; exact?: boolean; variant?: "bar" | "side" | "sidebar" | "rail" | "railSub"; tone?: "default" | "night"; children: ReactNode };
 
 /** Top-bar / sidebar link that marks itself as the current page. `exact` for index routes like /virksomhed.
  *  The pathname is runtime data, so the active state streams in; the prerendered fallback is the same link, inactive. */
@@ -24,6 +24,35 @@ function ActiveNavLink(props: Props) {
 }
 
 function NavLinkView({ href, variant = "bar", tone = "default", children, active }: Props & { active: boolean }) {
+  if (variant === "rail") {
+    // v3 dark sidebar: icon in a circle; the active item is a lighter pill with a white circle.
+    return (
+      <Link
+        href={href}
+        aria-current={active ? "page" : undefined}
+        className={cx(
+          "group/nav flex h-12 items-center gap-3.5 rounded-xl px-2.5 text-[0.96875rem] font-medium transition-colors duration-[120ms] in-data-collapsed:justify-center in-data-collapsed:px-0",
+          active ? "bg-sidebar-active text-on-sidebar" : "text-on-sidebar-muted hover:bg-sidebar-hover hover:text-on-sidebar",
+        )}
+      >
+        {children}
+      </Link>
+    );
+  }
+  if (variant === "railSub") {
+    return (
+      <Link
+        href={href}
+        aria-current={active ? "page" : undefined}
+        className={cx(
+          "flex h-10 items-center rounded-xl pr-2.5 pl-[3.9rem] text-body-sm font-medium transition-colors duration-[120ms]",
+          active ? "text-on-sidebar" : "text-on-sidebar-subtle hover:bg-sidebar-hover hover:text-on-sidebar",
+        )}
+      >
+        {children}
+      </Link>
+    );
+  }
   if (variant === "sidebar") {
     return (
       <Link
