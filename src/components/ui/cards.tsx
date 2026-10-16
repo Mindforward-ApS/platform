@@ -147,14 +147,15 @@ export function FactList({ items, label }: { items: { icon: IconName; text: Reac
 }
 
 /** Row of key figures (big value, small label). `bleed` lets it run edge to edge at the bottom of a Panel. */
-export function KpiRow({ items, bleed = false, ...rest }: { items: { value: ReactNode; label: ReactNode; testId?: string }[]; bleed?: boolean; "data-testid"?: string }) {
+export function KpiRow({ items, bleed = false, ...rest }: { items: { value: ReactNode; label: ReactNode; hint?: ReactNode; testId?: string }[]; bleed?: boolean; "data-testid"?: string }) {
   return (
     <dl
       {...rest}
       className={cx("grid gap-4 border-t border-line pt-5", items.length >= 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3", bleed && "-mx-6 -mb-6 px-6 pb-5 sm:-mx-7 sm:-mb-6.5 sm:px-7")}
     >
       {items.map((k, i) => (
-        <div key={i} className="flex min-w-0 flex-col-reverse gap-0.5">
+        <div key={i} className="flex min-w-0 flex-col-reverse justify-end gap-0.5">
+          {k.hint && <dd className="hidden text-caption font-normal text-ink-subtle sm:block">{k.hint}</dd>}
           <dt className="text-body-sm text-ink-muted">{k.label}</dt>
           <dd className="text-[1.375rem] leading-tight font-bold text-ink tabular-nums" data-testid={k.testId}>
             {k.value}

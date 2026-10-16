@@ -4,12 +4,12 @@ import { Suspense } from "react";
 import { TransferOffers } from "@/components/certificate/transfer-offer";
 import { num } from "@/components/player/kit";
 import { StatusBadge } from "@/components/player/module-card";
-import { AppIcon, Icon, type IconName } from "@/components/ui/icons";
+import { HeroCard, HeroMeta, HeroTitle, KpiRow, Panel, Segments } from "@/components/ui/cards";
+import { Icon } from "@/components/ui/icons";
 import { BrandIcon } from "@/components/ui/brand-icon";
-import { Illustration } from "@/components/ui/illustration";
 import { coverGround } from "@/components/ui/module-cover";
-import { Badge, ButtonLink, cx, EmptyState, ProgressBar, TextLink } from "@/components/ui/primitives";
-import { coverPhoto, illustrationForModule } from "@/lib/config/illustrations";
+import { ButtonLink, cx, EmptyState, ProgressBar, TextLink } from "@/components/ui/primitives";
+import { coverPhoto } from "@/lib/config/illustrations";
 import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
@@ -21,120 +21,67 @@ import type { CatalogEntry } from "@/server/modules/catalog";
 import { listModulesForLearner } from "@/server/modules/catalog";
 import { playableOptions } from "@/server/modules/deps";
 
-// Learner home after login (Marco 14 Oct 2026): next module as a hero, recommendations, progress and free practice.
+// Learner home after login, design v3 (Marco 16 Oct 2026): next module as the blue hero, module list with segmented
+// scores, own progress, free practice and help.
 // Only the learner's own data; no comparison with colleagues (docs/01 § 7).
 
 const t = getMessages().player;
 
-/** Photo variant: compact horizontal card — photo left, text right (dashboard density). */
-function NextModulePhoto({ entry, number, photo }: { entry: CatalogEntry; number: number; photo: string }) {
-  const started = entry.status === "IN_PROGRESS";
-  return (
-    <section className="grid overflow-hidden rounded-2xl border border-line bg-surface shadow-sm md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-      <div className="relative min-h-48 bg-sunken md:min-h-full">
-        {/* eslint-disable-next-line @next/next/no-img-element -- static, pre-optimized WebP from /public */}
-        <img src={photo} alt="" aria-hidden="true" className="absolute inset-0 size-full object-cover object-[72%_55%]" />
-        <span className="absolute top-4 left-4 inline-flex h-7 items-center gap-2 rounded-full bg-on-night/90 px-3 text-caption font-semibold text-night shadow-xs backdrop-blur-sm">
-          <span className="size-1.5 rounded-full bg-rav" />
-          {started ? t.home.continueEyebrow : t.home.startEyebrow}
-        </span>
-      </div>
-      <div className="flex flex-col gap-4 p-6 lg:p-8">
-        <p className="text-overline text-accent uppercase">{format(t.list.moduleNumber, { n: number })}</p>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-title-2 text-ink">{entry.title}</h2>
-          <p className="line-clamp-3 text-body text-ink-muted">{entry.summary}</p>
-        </div>
-        <div className="mt-auto flex flex-wrap items-center justify-between gap-4 pt-2">
-          <p className="flex items-center gap-4 font-mono text-mono text-ink-muted">
-            <span className="inline-flex items-center gap-1.5">
-              <Icon name="clock" size={14} />
-              {format(t.list.minutes, { minutes: num(entry.minutes) })}
-            </span>
-            {entry.steps > 0 && <span>{format(t.list.steps, { count: num(entry.steps) })}</span>}
-          </p>
-          <ButtonLink href={`/modul/${entry.slug}`} trailingIcon="arrowRight">
-            {started ? t.home.continue : t.home.start}
-          </ButtonLink>
-        </div>
-      </div>
-    </section>
-  );
-}
-
+/** The next module as the v3 blue hero: eyebrow chip, title, summary, level/time/steps, one white CTA. */
 function NextModule({ entry, number }: { entry: CatalogEntry; number: number }) {
-  const photo = coverPhoto(entry.slug);
-  if (photo) return <NextModulePhoto entry={entry} number={number} photo={photo} />;
   const started = entry.status === "IN_PROGRESS";
-  const g = coverGround(entry.slug);
+  const level = (t.list.level as Record<number, string>)[entry.level];
   return (
-    <section className={cx("relative isolate grid overflow-hidden rounded-2xl md:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]", g.ground)}>
-      <div className="flex flex-col gap-5 p-7 sm:p-10">
-        <span className="inline-flex h-7 items-center gap-2 self-start rounded-full bg-surface/90 px-3 text-caption font-semibold text-ink shadow-xs">
-          <span className="size-1.5 rounded-full bg-rav" />
-          {started ? t.home.continueEyebrow : t.home.startEyebrow} · {format(t.list.moduleNumber, { n: number })}
-        </span>
-        <div className="flex flex-col gap-3">
-          <h2 className="text-title-1 text-ink">{entry.title}</h2>
-          <p className="max-w-md text-body-lg text-ink-muted">{entry.summary}</p>
-        </div>
-        <p className="flex flex-wrap items-center gap-4 font-mono text-mono text-ink-muted">
-          <span className="inline-flex items-center gap-1.5">
-            <Icon name="clock" size={14} />
-            {format(t.list.minutes, { minutes: num(entry.minutes) })}
-          </span>
-          {entry.steps > 0 && <span>{format(t.list.steps, { count: num(entry.steps) })}</span>}
-          {started && <Badge tone="accent">{t.home.inProgress}</Badge>}
-        </p>
-        <div className="pt-1">
-          <ButtonLink href={`/modul/${entry.slug}`} size="lg" trailingIcon="arrowRight">
+    <HeroCard
+      aside={
+        <div className="flex items-end md:pl-2">
+          <ButtonLink href={`/modul/${entry.slug}`} variant="secondary" size="lg" trailingIcon="arrowRight" className="rounded-full border-transparent bg-surface">
             {started ? t.home.continue : t.home.start}
           </ButtonLink>
         </div>
-      </div>
-      <div className="relative hidden min-h-64 md:block" aria-hidden="true">
-        <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 size-full" fill="none">
-          <g className={g.ring} strokeWidth="1.5" opacity=".22">
-            <circle cx="150" cy="150" r="72" />
-            <circle cx="150" cy="150" r="112" />
-            <circle cx="150" cy="150" r="152" />
-          </g>
-        </svg>
-        <Illustration name={illustrationForModule(entry.slug)} priority className="absolute top-1/2 left-1/2 h-[62%] max-h-60 -translate-x-1/2 -translate-y-1/2" />
-        <Illustration name="tick" className="absolute top-[14%] right-[12%] h-[16%] max-h-14 rotate-12 opacity-90" />
-        <Illustration name="flash" className="absolute bottom-[12%] left-[10%] h-[18%] max-h-16 -rotate-12 opacity-90" />
-      </div>
-    </section>
+      }
+    >
+      <p className="mb-4 inline-flex items-center gap-2 self-start rounded-full border border-hero-chip-line px-3 py-1 text-[0.8125rem] text-on-hero">
+        <span className="size-1.5 rounded-full bg-rav" aria-hidden="true" />
+        {started ? t.home.continueEyebrow : t.home.startEyebrow} · {format(t.list.moduleNumber, { n: number })}
+      </p>
+      <HeroTitle as="h2">{entry.title}</HeroTitle>
+      <p className="line-clamp-3 max-w-xl text-body text-on-hero">{entry.summary}</p>
+      <HeroMeta
+        items={[
+          ...(level ? [{ text: format(t.intro.factLevel, { level: entry.level, label: level }) }] : []),
+          { icon: "clock" as const, text: format(t.intro.metaMinutes, { minutes: num(entry.minutes) }) },
+          ...(entry.steps > 0 ? [{ icon: "book" as const, text: format(t.list.steps, { count: num(entry.steps) }) }] : []),
+          ...(started ? [{ text: t.home.inProgress }] : []),
+        ]}
+      />
+    </HeroCard>
   );
 }
 
-function Kpi({ icon, label, value, hint, children }: { icon: IconName; label: string; value: string; hint?: string; children?: React.ReactNode }) {
-  return (
-    <div data-spot className="flex flex-col gap-3 overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-6">
-      <div className="flex items-center gap-2.5 sm:gap-3">
-        <AppIcon name={icon} size="sm" />
-        <p className="text-label leading-tight text-ink-muted">{label}</p>
-      </div>
-      <p className="text-title-2 text-ink tabular-nums sm:text-title-1">{value}</p>
-      {children}
-      {hint && <p className="hidden text-caption text-ink-subtle sm:block">{hint}</p>}
-    </div>
-  );
-}
-
-function Kpis({ modules, certificates }: { modules: CatalogEntry[]; certificates: number }) {
+/** "Din fremgang": the learner's own key figures (never compared with colleagues). */
+function Progress({ modules, certificates }: { modules: CatalogEntry[]; certificates: number }) {
   const passed = modules.filter((m) => m.status === "PASSED");
   const best = passed.map((m) => m.bestScorePct).filter((v): v is number => v !== null);
   const avg = best.length ? Math.round(best.reduce((a, b) => a + b, 0) / best.length) : null;
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-      <Kpi icon="book" label={t.home.kpiPassed} value={`${num(passed.length)} / ${num(modules.length)}`}>
+    <Panel title={t.home.progressTitle} data-testid="home-progress">
+      <div className="flex flex-col gap-2">
+        <p className="flex items-baseline justify-between gap-3 text-body-sm text-ink-muted">
+          <span>{t.home.kpiPassed}</span>
+          <span className="text-label text-ink tabular-nums">{format(t.home.passedOf, { passed: num(passed.length), total: num(modules.length) })}</span>
+        </p>
         <ProgressBar value={passed.length} max={modules.length} tone="success" label={t.home.kpiPassed} />
-      </Kpi>
-      <Kpi icon="chart" label={t.home.kpiAverage} value={avg === null ? t.home.none : `${num(avg)} %`} hint={t.home.kpiAverageHint} />
-      <Kpi icon="lightning" label={t.home.kpiInProgress} value={num(modules.filter((m) => m.status === "IN_PROGRESS").length)} hint={t.home.kpiInProgressHint} />
-      <Kpi icon="award" label={t.home.kpiCertificates} value={num(certificates)} hint={t.home.kpiCertificatesHint} />
-    </div>
+      </div>
+      <KpiRow
+        bleed
+        items={[
+          { value: avg === null ? t.home.none : `${num(avg)} %`, label: t.home.kpiAverage, hint: t.home.kpiAverageHint },
+          { value: num(modules.filter((m) => m.status === "IN_PROGRESS").length), label: t.home.kpiInProgress, hint: t.home.kpiInProgressHint },
+          { value: num(certificates), label: t.home.kpiCertificates, hint: t.home.kpiCertificatesHint },
+        ]}
+      />
+    </Panel>
   );
 }
 
@@ -143,55 +90,55 @@ function ModuleThumb({ slug }: { slug: string }) {
   if (photo)
     return (
       // eslint-disable-next-line @next/next/no-img-element -- static, pre-optimized WebP from /public
-      <img src={photo} alt="" aria-hidden="true" loading="lazy" className="h-10 w-14 shrink-0 rounded-lg object-cover object-[72%_55%] ring-1 ring-line sm:h-12 sm:w-[72px]" />
+      <img src={photo} alt="" aria-hidden="true" loading="lazy" className="size-12.5 shrink-0 rounded-full object-cover object-[72%_55%] ring-1 ring-line" />
     );
-  return <span className={cx("h-10 w-14 shrink-0 rounded-lg ring-1 ring-line sm:h-12 sm:w-[72px]", coverGround(slug).ground)} aria-hidden="true" />;
+  return <span className={cx("size-12.5 shrink-0 rounded-full ring-1 ring-line", coverGround(slug).ground)} aria-hidden="true" />;
 }
 
 function ModuleList({ items }: { items: { m: CatalogEntry; n: number }[] }) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-line bg-surface shadow-sm">
-      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-line px-6 py-5">
-        <div className="flex flex-col gap-1">
-          <h2 className="text-title-3 text-ink">{t.home.modulesTitle}</h2>
-          <p className="text-body-sm text-ink-muted">{t.home.modulesLead}</p>
-        </div>
+    <Panel
+      title={t.home.modulesTitle}
+      actions={
         <TextLink href="/moduler" className="text-body-sm">
           {t.home.seeAll}
         </TextLink>
-      </header>
-      <div className="hidden grid-cols-[minmax(0,26rem)_9rem_11rem_1fr] gap-6 border-b border-line bg-sunken px-6 py-2.5 text-caption font-semibold text-ink-muted md:grid">
-        <span>{t.home.colModule}</span>
-        <span>{t.home.colStatus}</span>
-        <span>{t.home.colScore}</span>
+      }
+    >
+      <p className="-mt-2 text-body-sm text-ink-muted">{t.home.modulesLead}</p>
+      <div aria-hidden="true" className="hidden grid-cols-[minmax(0,1fr)_auto_1rem] gap-x-4 border-b border-line pb-2 text-caption text-ink-subtle md:grid">
+        <span>
+          {t.home.colModule} · {t.home.colStatus}
+        </span>
+        <span className="text-right">{t.home.colScore}</span>
         <span />
       </div>
-      <ul className="divide-y divide-line">
+      <ul className="-mx-3 -mt-2 flex flex-col">
         {items.map(({ m, n }) => (
           <li key={m.slug}>
             <Link
               href={`/modul/${m.slug}`}
-              className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 px-6 py-3.5 transition-colors hover:bg-sunken/60 md:grid-cols-[minmax(0,26rem)_9rem_11rem_1fr]"
+              className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 rounded-2xl px-3 py-3 transition-colors hover:bg-sunken/70 md:grid-cols-[minmax(0,1fr)_auto_1rem]"
             >
-              <span className="flex min-w-0 items-center gap-4">
+              <span className="flex min-w-0 items-center gap-3.5">
                 <ModuleThumb slug={m.slug} />
-                <span className="flex min-w-0 flex-col gap-0.5">
-                  <span className="line-clamp-2 text-label text-ink md:truncate">{m.title}</span>
-                  <span className="font-mono text-mono text-ink-subtle">
-                    {format(t.list.moduleNumber, { n })} · {format(t.list.minutes, { minutes: num(m.minutes) })}
+                <span className="flex min-w-0 flex-col gap-1">
+                  <span className="line-clamp-2 text-label text-ink">{m.title}</span>
+                  <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-body-sm text-ink-muted">
+                    <StatusBadge status={m.status} />
+                    <span>
+                      {format(t.list.moduleNumber, { n })} · {format(t.list.minutes, { minutes: num(m.minutes) })}
+                    </span>
                   </span>
                 </span>
               </span>
-              <span className="justify-self-end md:justify-self-start">
-                <StatusBadge status={m.status} />
-              </span>
-              <span className={cx("col-span-2 items-center gap-3 md:col-span-1 md:flex", m.bestScorePct === null ? "hidden" : "flex")}>
+              <span className="flex items-center justify-end gap-3">
                 {m.bestScorePct !== null ? (
                   <>
-                    <span className="w-10 text-label text-ink">{num(Math.round(m.bestScorePct))} %</span>
-                    <span className="flex-1">
-                      <ProgressBar value={m.bestScorePct} tone={m.status === "PASSED" ? "success" : "accent"} label={t.home.colScore} />
+                    <span className="hidden sm:flex">
+                      <Segments pct={m.bestScorePct} label={`${t.home.colScore}: ${num(Math.round(m.bestScorePct))} %`} />
                     </span>
+                    <span className="w-11 text-right text-label text-ink tabular-nums">{num(Math.round(m.bestScorePct))} %</span>
                   </>
                 ) : (
                   <span className="text-body-sm text-ink-subtle">{t.home.none}</span>
@@ -202,7 +149,7 @@ function ModuleList({ items }: { items: { m: CatalogEntry; n: number }[] }) {
           </li>
         ))}
       </ul>
-    </section>
+    </Panel>
   );
 }
 
@@ -210,13 +157,15 @@ function ModuleList({ items }: { items: { m: CatalogEntry; n: number }[] }) {
 function ProfileCard() {
   const p = getMessages().profile.homeCard;
   return (
-    <section data-spot className="flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-sm sm:flex-row sm:items-center sm:p-6" data-testid="profile-card">
-      <AppIcon name="link" tone="sky" size="lg" />
+    <section className="flex flex-col gap-4 rounded-card border border-line bg-surface p-6 sm:flex-row sm:items-center sm:px-7" data-testid="profile-card">
+      <span className="grid size-12 shrink-0 place-items-center rounded-full bg-tint text-tint-ink" aria-hidden="true">
+        <Icon name="link" size={20} />
+      </span>
       <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <h2 className="text-title-3 text-ink">{p.title}</h2>
+        <h2 className="text-[1.125rem] font-semibold text-ink">{p.title}</h2>
         <p className="text-body-sm text-ink-muted">{p.body}</p>
       </div>
-      <ButtonLink href="/profil/virksomhed" variant="secondary" trailingIcon="arrowRight">
+      <ButtonLink href="/profil/virksomhed" variant="secondary" trailingIcon="arrowRight" className="rounded-full">
         {p.cta}
       </ButtonLink>
     </section>
@@ -225,16 +174,12 @@ function ProfileCard() {
 
 function HelpCard() {
   return (
-    <section className="flex items-start gap-4 rounded-2xl border border-line bg-surface p-6 shadow-sm">
-      <AppIcon name="help" size="md" />
-      <div className="flex flex-col gap-1">
-        <h2 className="text-label text-ink">{t.home.helpTitle}</h2>
-        <p className="text-body-sm text-ink-muted">{t.home.helpBody}</p>
-        <TextLink href="/hjaelp" className="mt-1 text-body-sm">
-          {t.home.helpLink}
-        </TextLink>
-      </div>
-    </section>
+    <Panel title={t.home.helpTitle}>
+      <p className="-mt-2 text-body-sm text-ink-muted">{t.home.helpBody}</p>
+      <ButtonLink href="/hjaelp" variant="secondary" icon="help" className="self-start rounded-full">
+        {t.home.helpLink}
+      </ButtonLink>
+    </Panel>
   );
 }
 
@@ -246,24 +191,28 @@ function Practice() {
     ["/sandkasse/claude", s.tracks.claude, "claude"],
   ] as const;
   return (
-    <section className="relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-6 pt-0 shadow-sm">
+    <section className="flex flex-col overflow-hidden rounded-card border border-line bg-surface">
       {/* eslint-disable-next-line @next/next/no-img-element -- static, pre-optimized WebP from /public */}
-      <img src="/heroes/hero-sandbox.webp" alt="" aria-hidden="true" loading="lazy" className="-mx-6 aspect-[16/9] w-[calc(100%+3rem)] max-w-none object-cover object-[75%_50%]" />
-      <div className="flex flex-col gap-1">
-        <h2 className="text-title-3 text-ink">{t.home.practiceTitle}</h2>
-        <p className="text-body-sm text-ink-muted">{t.home.practiceBody}</p>
+      <img src="/heroes/hero-sandbox.webp" alt="" aria-hidden="true" loading="lazy" className="aspect-[16/8] w-full object-cover object-[75%_50%]" />
+      <div className="flex flex-col gap-3 p-6 sm:px-7">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-[1.125rem] font-semibold text-ink">{t.home.practiceTitle}</h2>
+          <p className="text-body-sm text-ink-muted">{t.home.practiceBody}</p>
+        </div>
+        <ul className="-mx-3 flex flex-col">
+          {tracks.map(([href, label, brand]) => (
+            <li key={href}>
+              <Link href={href} className="group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-label text-ink transition-colors hover:bg-sunken">
+                <span className="grid size-9 place-items-center rounded-full bg-sunken" aria-hidden="true">
+                  <BrandIcon brand={brand} size={20} />
+                </span>
+                {label}
+                <Icon name="arrowRight" className="ml-auto text-ink-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-ink" />
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
-      <ul className="-mx-2 flex flex-col">
-        {tracks.map(([href, label, brand]) => (
-          <li key={href}>
-            <Link href={href} className="group flex items-center gap-3 rounded-md px-2 py-2.5 text-label text-ink transition-colors hover:bg-sunken">
-              <BrandIcon brand={brand} size={24} />
-              {label}
-              <Icon name="arrowRight" className="ml-auto text-ink-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-ink" />
-            </Link>
-          </li>
-        ))}
-      </ul>
     </section>
   );
 }
@@ -292,7 +241,7 @@ async function Content() {
           <h1 className="text-title-1 text-ink">{firstName ? format(t.home.greeting, { name: firstName }) : t.home.greetingNoName}</h1>
           <p className="text-body text-ink-muted">{t.home.lead}</p>
         </div>
-        <ButtonLink href="/plan" variant="secondary" icon="plan">
+        <ButtonLink href="/plan" variant="secondary" icon="plan" className="rounded-full">
           {t.home.planCta}
         </ButtonLink>
       </header>
@@ -303,25 +252,24 @@ async function Content() {
           {t.home.emptyBody}
         </EmptyState>
       ) : (
-        <>
-          <Kpis modules={visible} certificates={certs.length} />
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="flex min-w-0 flex-col gap-6">
-              {next ? (
-                <NextModule entry={next.m} number={next.n} />
-              ) : (
-                <EmptyState icon="award" title={t.home.allPassedTitle}>
-                  {t.home.allPassedBody}
-                </EmptyState>
-              )}
-              <ModuleList items={numbered} />
-            </div>
-            <aside className="flex flex-col gap-6">
-              <Practice />
-              <HelpCard />
-            </aside>
+        <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+          <div className="flex min-w-0 flex-col gap-7">
+            {next ? (
+              <NextModule entry={next.m} number={next.n} />
+            ) : (
+              <HeroCard>
+                <HeroTitle as="h2">{t.home.allPassedTitle}</HeroTitle>
+                <p className="max-w-xl text-body text-on-hero">{t.home.allPassedBody}</p>
+              </HeroCard>
+            )}
+            <ModuleList items={numbered} />
           </div>
-        </>
+          <aside className="flex flex-col gap-6">
+            <Progress modules={visible} certificates={certs.length} />
+            <Practice />
+            <HelpCard />
+          </aside>
+        </div>
       )}
     </>
   );
@@ -329,7 +277,7 @@ async function Content() {
 
 export default function HomePage() {
   return (
-    <main className="mf-spots mf-stagger flex w-full max-w-wide flex-1 flex-col gap-8 px-4 pt-10 pb-16 sm:px-6 lg:px-12">
+    <main className="mf-stagger flex w-full flex-1 flex-col gap-8 px-4 pt-8 pb-16 sm:px-6 lg:px-11 lg:pt-6">
       <Suspense>
         <Content />
       </Suspense>
