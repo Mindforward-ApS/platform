@@ -131,6 +131,7 @@ export const da = {
   },
   account: {
     title: "Din konto",
+    legalTitle: "Juridisk og privatliv",
     activeOrg: "Aktiv organisation",
     role: "Rolle",
     orgType: { PERSONAL: "Personlig", BUSINESS: "Virksomhed" },

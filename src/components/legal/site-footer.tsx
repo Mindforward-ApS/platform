@@ -3,7 +3,7 @@ import { Wordmark } from "@/components/ui/brand";
 import { getMessages } from "@/lib/i18n";
 import { CookieSettingsButton } from "./cookie-banner";
 
-/** Footer: legal links, cookie settings, vendor disclaimer (docs/10 § 4, § 8). `compact` inside the signed-in app. */
+/** Footer: legal links, cookie settings, vendor disclaimer (docs/10 § 4, § 8). `compact` in focused flows (auth). The signed-in app has none — see LegalLinksCard on /konto. */
 export function SiteFooter({ variant = "full" }: { variant?: "full" | "compact" }) {
   const t = getMessages().placement.footer;
   const links = [

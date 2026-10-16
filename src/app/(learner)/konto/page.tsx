@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { LegalLinksCard } from "@/components/legal/legal-links-card";
 import { SettingsItem, SettingsList, SettingsRow } from "@/components/account/settings";
 import { AccountDataLinks } from "@/components/admin/account-data-links";
 import { needsFirstLoginInfo } from "@/server/admin/first-login";
@@ -178,6 +179,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
           </Card>
 
           <AccountDataLinks user={ctx.user} isBusinessAdmin={isBusinessAdmin} />
+          <LegalLinksCard />
         </div>
       </div>
     </>
