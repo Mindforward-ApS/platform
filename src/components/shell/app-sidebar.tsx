@@ -12,9 +12,9 @@ import { BrandIcon, type BrandKey } from "@/components/ui/brand-icon";
 import { NavLink } from "./nav-link";
 import { Breadcrumb, CollapseButton, ExpandableNav, type Crumb } from "./sidebar-client";
 
-// Signed-in app frame, design v3 (Marco 16 Oct 2026, mindforward-preview/platform-preview.html): the app is a big
-// rounded frame on a blue canvas — dark slate-blue sidebar on the left, white content panel on the right.
-// Phones get no frame: a dark top bar with the same sidebar as a drawer.
+// Signed-in app frame, design v3 (Marco 16 Oct 2026, mindforward-preview/platform-preview.html): the app fills the
+// viewport — full-height slate-blue sidebar on the left edge, white content panel to its right (the blue backdrop
+// and rounded frame in the reference were presentation only). Phones: a dark top bar with the sidebar as a drawer.
 
 export interface SidebarItem {
   href: string;
@@ -256,11 +256,11 @@ function SidebarContent({ groups, rail = false }: { groups: SidebarGroup[]; rail
   );
 }
 
-/** The whole signed-in frame: blue canvas, rounded frame with the dark sidebar and the white content panel. */
+/** The whole signed-in frame: full-height dark sidebar and the white content panel. */
 export function AppFrame({ groups = learnerGroups(), children }: { groups?: SidebarGroup[]; children: ReactNode }) {
   const t = getMessages();
   return (
-    <div className="flex flex-1 flex-col bg-surface lg:mf-canvas lg:p-8 xl:p-14">
+    <div className="flex flex-1 flex-col bg-surface">
       <a href="#indhold" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-sm focus:bg-surface focus:px-3 focus:py-2 focus:shadow-md">
         {t.shell.skipToContent}
       </a>
@@ -277,15 +277,15 @@ export function AppFrame({ groups = learnerGroups(), children }: { groups?: Side
       </MobileNav>
       <div
         data-app-frame
-        className="flex flex-1 flex-col lg:mx-auto lg:grid lg:w-full lg:max-w-[94rem] lg:flex-none lg:grid-cols-[17rem_minmax(0,1fr)] lg:rounded-panel lg:shadow-frame lg:outline-[10px] lg:outline-frame-outline lg:data-collapsed:grid-cols-[5.5rem_minmax(0,1fr)] xl:outline-[18px]"
+        className="flex flex-1 flex-col lg:grid lg:grid-cols-[17rem_minmax(0,1fr)] lg:data-collapsed:grid-cols-[5.5rem_minmax(0,1fr)]"
       >
-        <aside className="relative hidden bg-sidebar lg:block lg:rounded-l-panel">
+        <aside className="relative z-20 hidden bg-sidebar lg:block">
           <CollapseButton collapseLabel={t.shell.collapseMenu} expandLabel={t.shell.expandMenu} />
-          <div className="sticky top-8 flex h-[calc(100dvh-4rem)] flex-col overflow-y-auto overscroll-contain xl:top-14 xl:h-[calc(100dvh-7rem)]">
+          <div className="sticky top-0 flex h-dvh flex-col overflow-y-auto overscroll-contain">
             <SidebarContent groups={groups} rail />
           </div>
         </aside>
-        <div id="indhold" className="app-panel flex min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1 flex-col bg-surface lg:min-h-[calc(100dvh-4rem)] lg:rounded-r-panel xl:min-h-[calc(100dvh-7rem)]">
+        <div id="indhold" className="app-panel flex min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1 flex-col bg-surface lg:min-h-dvh">
           <TopBar groups={groups} />
           {children}
         </div>

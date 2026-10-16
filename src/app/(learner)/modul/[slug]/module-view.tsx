@@ -157,7 +157,7 @@ export function ModuleView({ slug, initial, intro }: { slug: string; initial: Pl
   ];
 
   return (
-    <div className="flex w-full flex-1 flex-col gap-6 px-4 pt-6 pb-20 sm:px-6 lg:px-11 lg:pt-6">
+    <div className="flex w-full max-w-wide flex-1 flex-col gap-6 px-4 pt-6 pb-20 sm:px-6 lg:px-11 lg:pt-6">
       <Link href="/moduler" className="inline-flex items-center gap-1.5 self-start rounded-xs text-label text-ink-muted transition-colors hover:text-ink lg:hidden">
         <Icon name="arrowLeft" />
         {t.intro.back}

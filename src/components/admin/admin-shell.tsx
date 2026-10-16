@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 export function AdminShell({ title, lead, actions, children }: { title: string; lead?: ReactNode; actions?: ReactNode; children: ReactNode }) {
   return (
-    <main className="flex w-full flex-1 flex-col gap-7 px-4 pt-8 pb-16 sm:px-6 lg:px-11 lg:pt-6">
+    <main className="flex w-full max-w-wide flex-1 flex-col gap-7 px-4 pt-8 pb-16 sm:px-6 lg:px-11 lg:pt-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="text-title-1 text-ink">{title}</h1>

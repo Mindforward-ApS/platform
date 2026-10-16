@@ -277,7 +277,7 @@ async function Content() {
 
 export default function HomePage() {
   return (
-    <main className="mf-stagger flex w-full flex-1 flex-col gap-8 px-4 pt-8 pb-16 sm:px-6 lg:px-11 lg:pt-6">
+    <main className="mf-stagger flex w-full max-w-wide flex-1 flex-col gap-8 px-4 pt-8 pb-16 sm:px-6 lg:px-11 lg:pt-6">
       <Suspense>
         <Content />
       </Suspense>

@@ -115,15 +115,6 @@
   --mf-object-shadow: 0 18px 22px rgba(11, 27, 43, 0.16);
 
   /* ── Platform v3 (Marco 16 Oct 2026, mindforward-preview/platform-preview.html) ── */
-  /* App canvas behind the framed app: bright blue with a white dot grid and two soft white glows. */
-  --mf-canvas-from: #3f86e8;
-  --mf-canvas-mid: #1f6fe0;
-  --mf-canvas-to: #2a7be6;
-  --mf-canvas-dot: rgba(255, 255, 255, 0.35);
-  --mf-canvas-glow: rgba(255, 255, 255, 0.55);
-  --mf-canvas-glow-2: rgba(255, 255, 255, 0.45);
-  --mf-frame-outline: rgba(255, 255, 255, 0.28);
-  --mf-frame-shadow: 0 40px 80px -30px rgba(5, 20, 70, 0.55);
   /* Sidebar: almost-dark-grey dark blue (Marco 16 Oct 2026: muted slate blue, not saturated navy). Fixed in both themes. */
   --mf-sidebar: #161c2f;
   --mf-sidebar-raised: #1e2540;
@@ -216,13 +207,6 @@
     --mf-chart-bar-hot: #4ccf9c;
     --mf-seg-on: #86a0ff;
     --mf-seg-off: #21324a;
-    --mf-canvas-from: #10306e;
-    --mf-canvas-mid: #0c2558;
-    --mf-canvas-to: #123478;
-    --mf-canvas-dot: rgba(255, 255, 255, 0.12);
-    --mf-canvas-glow: rgba(255, 255, 255, 0.10);
-    --mf-canvas-glow-2: rgba(255, 255, 255, 0.08);
-    --mf-frame-outline: rgba(255, 255, 255, 0.10);
   }
 }
 
@@ -309,7 +293,6 @@
   --color-on-chart-tip: var(--mf-on-chart-tip);
   --color-seg-on: var(--mf-seg-on);
   --color-seg-off: var(--mf-seg-off);
-  --color-frame-outline: var(--mf-frame-outline);
   /* Legacy aliases from the placeholder era — keep working, prefer the names above in new code. */
   --color-fg: var(--mf-ink);
   --color-muted: var(--mf-ink-muted);
@@ -377,7 +360,6 @@
   --shadow-ring: var(--mf-ring);
   --drop-shadow-object: var(--mf-object-shadow);
   --shadow-tile: var(--mf-shadow-tile);
-  --shadow-frame: var(--mf-frame-shadow);
 
   --container-read: 42.5rem;
   --container-app: 80rem;
@@ -432,14 +414,7 @@
   }
 }
 
-/* Platform v3 surfaces that need multi-stop backgrounds (kept here: they are made of raw tokens). */
-@utility mf-canvas {
-    background:
-      radial-gradient(var(--mf-canvas-dot) 1.2px, transparent 1.4px) 0 0 / 14px 14px,
-      radial-gradient(900px 500px at 10% 0%, var(--mf-canvas-glow), transparent 60%),
-      radial-gradient(800px 600px at 95% 100%, var(--mf-canvas-glow-2), transparent 60%),
-      linear-gradient(160deg, var(--mf-canvas-from) 0%, var(--mf-canvas-mid) 50%, var(--mf-canvas-to) 100%);
-}
+/* Platform v3 hero card: a multi-stop background (kept here: it is made of raw tokens). */
 @utility mf-hero {
     color: var(--mf-on-hero);
     background:
