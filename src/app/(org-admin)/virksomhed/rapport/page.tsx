@@ -75,7 +75,7 @@ function ReportPreview({ doc }: { doc: ReportDocument }) {
 
       <section className="flex flex-col gap-3">
         <h4 className="text-title-3 text-ink">{t.tableTitle}</h4>
-        <div className="overflow-x-auto rounded-md border border-line print:overflow-visible">
+        <div tabIndex={0} className="overflow-x-auto rounded-2xl border border-line print:overflow-visible">
           <table className="w-full border-collapse text-left text-body-sm">
             <thead>
               <tr>

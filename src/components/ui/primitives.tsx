@@ -150,7 +150,8 @@ export function DescriptionList({ items }: { items: [ReactNode, ReactNode][] }) 
 /** Table wrapper: horizontal scroll on phones, consistent cell styles via descendant selectors. */
 export function Table({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cx("overflow-x-auto rounded-xl border border-line bg-surface shadow-sm app:rounded-card app:shadow-none", className)}>
+    // tabIndex: on phones the table scrolls sideways, and a scrollable region must be reachable by keyboard (WCAG 2.1.1).
+    <div tabIndex={0} className={cx("overflow-x-auto rounded-xl border border-line bg-surface shadow-sm app:rounded-card app:shadow-none", className)}>
       <table className="w-full border-collapse text-left text-body-sm [&_tbody_tr]:border-t [&_tbody_tr]:border-line [&_tbody_tr:hover]:bg-sunken/60 [&_td]:px-5 [&_td]:py-3.5 [&_td]:align-middle [&_td]:text-ink [&_th]:bg-sunken [&_th]:px-5 [&_th]:py-3 [&_th]:text-caption [&_th]:font-semibold [&_th]:tracking-[0.02em] [&_th]:text-ink-muted">
         {children}
       </table>
