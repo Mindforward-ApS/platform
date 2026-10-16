@@ -38,7 +38,7 @@ export function Page({
         "mf-spots mx-auto flex w-full flex-1 flex-col gap-10 px-4 pt-10 pb-20 sm:px-6 sm:pt-16",
         max,
         // Inside the app: left-aligned, but capped on wide monitors so rows never stretch into empty space.
-        "in-[.app-panel]:mx-0 in-[.app-panel]:max-w-wide in-[.app-panel]:gap-8 in-[.app-panel]:pt-10 in-[.app-panel]:pb-16 lg:in-[.app-panel]:px-12",
+        "in-[.app-panel]:mx-0 in-[.app-panel]:max-w-wide in-[.app-panel]:gap-7 in-[.app-panel]:pt-8 in-[.app-panel]:pb-16 lg:in-[.app-panel]:px-11 lg:in-[.app-panel]:pt-6",
       )}
     >
       <PageHeader title={title} lead={lead} eyebrow={eyebrow} actions={actions} />
@@ -81,18 +81,18 @@ export function Card({
   "data-testid"?: string;
 }) {
   return (
-    <section className={cx("overflow-hidden rounded-xl border border-line bg-surface shadow-sm", className)} {...rest}>
+    <section className={cx("overflow-hidden rounded-xl border border-line bg-surface shadow-sm app:rounded-card app:shadow-none", className)} {...rest}>
       {(title || actions) && (
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line px-6 py-4">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line px-6 py-4 app:py-5 app:sm:px-7">
           <div className="flex min-w-0 flex-col gap-1">
-            {title && <h2 className="text-title-3 text-ink">{title}</h2>}
+            {title && <h2 className="text-title-3 text-ink app:text-[1.125rem] app:leading-snug app:font-semibold app:tracking-[-0.01em]">{title}</h2>}
             {description && <p className="text-body-sm text-ink-muted">{description}</p>}
           </div>
           {actions && <div className="flex items-center gap-2">{actions}</div>}
         </div>
       )}
-      {children !== undefined && <div className={cx(padded && "p-6", "flex flex-col gap-4")}>{children}</div>}
-      {footer && <div className="flex flex-wrap items-center justify-end gap-3 border-t border-line bg-sunken px-6 py-4">{footer}</div>}
+      {children !== undefined && <div className={cx(padded && "p-6 app:sm:px-7", "flex flex-col gap-4")}>{children}</div>}
+      {footer && <div className="flex flex-wrap items-center justify-end gap-3 border-t border-line bg-sunken px-6 py-4 app:sm:px-7">{footer}</div>}
     </section>
   );
 }
@@ -100,7 +100,7 @@ export function Card({
 /** Small figure tile for dashboards. */
 export function Stat({ label, value, hint, icon }: { label: ReactNode; value: ReactNode; hint?: ReactNode; icon?: IconName }) {
   return (
-    <div data-spot className="flex flex-col gap-3 overflow-hidden rounded-xl border border-line bg-surface p-6 shadow-sm">
+    <div data-spot className="flex flex-col gap-3 overflow-hidden rounded-xl border border-line bg-surface p-6 shadow-sm app:rounded-card app:shadow-none app:sm:px-7">
       <p className="flex items-center gap-2.5 text-label text-ink-muted">
         {icon && <AppIcon name={icon} size="xs" />}
         {label}
@@ -113,7 +113,7 @@ export function Stat({ label, value, hint, icon }: { label: ReactNode; value: Re
 
 export function EmptyState({ icon = "sparkle", title, children, action }: { icon?: IconName; title: ReactNode; children?: ReactNode; action?: ReactNode }) {
   return (
-    <div className="flex w-full flex-col items-center gap-4 rounded-xl border border-dashed border-line-strong/40 bg-surface px-6 py-16 text-center sm:py-20">
+    <div className="flex w-full flex-col items-center gap-4 rounded-xl border border-dashed border-line-strong/40 bg-surface px-6 py-16 text-center app:rounded-card sm:py-20">
       <AppIcon name={icon} size="xl" />
       <p className="text-title-2 text-ink">{title}</p>
       {children && <div className="max-w-md text-body text-ink-muted">{children}</div>}
@@ -150,7 +150,7 @@ export function DescriptionList({ items }: { items: [ReactNode, ReactNode][] }) 
 /** Table wrapper: horizontal scroll on phones, consistent cell styles via descendant selectors. */
 export function Table({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cx("overflow-x-auto rounded-xl border border-line bg-surface shadow-sm", className)}>
+    <div className={cx("overflow-x-auto rounded-xl border border-line bg-surface shadow-sm app:rounded-card app:shadow-none", className)}>
       <table className="w-full border-collapse text-left text-body-sm [&_tbody_tr]:border-t [&_tbody_tr]:border-line [&_tbody_tr:hover]:bg-sunken/60 [&_td]:px-5 [&_td]:py-3.5 [&_td]:align-middle [&_td]:text-ink [&_th]:bg-sunken [&_th]:px-5 [&_th]:py-3 [&_th]:text-caption [&_th]:font-semibold [&_th]:tracking-[0.02em] [&_th]:text-ink-muted">
         {children}
       </table>
@@ -165,7 +165,7 @@ type Size = "sm" | "md" | "lg";
 
 export function buttonClass(variant: Variant = "primary", size: Size = "md", className = "") {
   const base =
-    "group/btn inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border text-label transition-[background-color,box-shadow,color,border-color] duration-[120ms] ease-out select-none disabled:cursor-not-allowed aria-disabled:cursor-not-allowed";
+    "group/btn inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md border app:rounded-full text-label transition-[background-color,box-shadow,color,border-color] duration-[120ms] ease-out select-none disabled:cursor-not-allowed aria-disabled:cursor-not-allowed";
   const sizes: Record<Size, string> = { sm: "h-9 px-3.5", md: "h-11 px-5", lg: "h-13 px-6 text-body font-medium" };
   const looks: Record<Variant, string> = {
     primary:
@@ -243,7 +243,7 @@ export function TextLink({ href, className = "", children, ...props }: AnchorHTM
 /* ───────────────────────── Forms ───────────────────────── */
 
 const controlClass =
-  "w-full rounded-sm border border-line-strong bg-surface px-3 text-body text-ink shadow-xs transition-[border-color,box-shadow] duration-[120ms] placeholder:text-ink-subtle focus:border-accent focus:shadow-ring focus:outline-none disabled:bg-sunken disabled:text-ink-subtle aria-[invalid=true]:border-danger";
+  "w-full rounded-sm app:rounded-xl border border-line-strong bg-surface px-3 text-body text-ink shadow-xs transition-[border-color,box-shadow] duration-[120ms] placeholder:text-ink-subtle focus:border-accent focus:shadow-ring focus:outline-none disabled:bg-sunken disabled:text-ink-subtle aria-[invalid=true]:border-danger";
 
 function FieldShell({ label, help, error, children }: { label: ReactNode; help?: ReactNode; error?: ReactNode; children: ReactNode }) {
   return (
@@ -325,7 +325,7 @@ export function Badge({
   ...rest
 }: { tone?: Tone; icon?: IconName; dot?: boolean; children: ReactNode; className?: string; "data-testid"?: string }) {
   return (
-    <span {...rest} className={cx("inline-flex h-[22px] items-center gap-[5px] rounded-xs px-2 text-caption font-[550] whitespace-nowrap", badgeTones[tone], className)}>
+    <span {...rest} className={cx("inline-flex h-[22px] items-center gap-[5px] rounded-xs app:rounded-full app:px-2.5 px-2 text-caption font-[550] whitespace-nowrap", badgeTones[tone], className)}>
       {dot && <span className="size-1.5 rounded-full bg-rav" />}
       {icon && <Icon name={icon} size={12} strokeWidth={2} />}
       {children}
@@ -362,7 +362,7 @@ export function Notice({
   const look = noticeLook[tone];
   const alert = tone === "error" || tone === "danger";
   return (
-    <div {...rest} role={alert ? "alert" : "status"} className={cx("flex gap-3 rounded-md border px-4 py-3.5", look.box, className)}>
+    <div {...rest} role={alert ? "alert" : "status"} className={cx("flex gap-3 rounded-md border px-4 py-3.5 app:rounded-2xl", look.box, className)}>
       <Icon name={icon ?? look.icon} size={18} className={cx("mt-px", look.accent)} />
       <div className="flex min-w-0 flex-col gap-0.5 text-body-sm">
         {title && (
@@ -394,7 +394,7 @@ export function StepSegments({ current, total, label }: { current: number; total
   return (
     <div role="progressbar" aria-valuemin={1} aria-valuemax={total} aria-valuenow={current} aria-label={label} className="grid gap-1" style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }}>
       {Array.from({ length: total }, (_, i) => (
-        <span key={i} className={cx("h-1.5 rounded-full", i + 1 < current ? "bg-ink" : i + 1 === current ? "bg-accent" : "bg-sunken ring-1 ring-inset ring-line")} />
+        <span key={i} className={cx("h-1.5 rounded-full app:h-2", i + 1 < current ? "bg-ink app:bg-success" : i + 1 === current ? "bg-accent" : "bg-sunken ring-1 ring-inset ring-line app:bg-seg-off app:ring-0")} />
       ))}
     </div>
   );

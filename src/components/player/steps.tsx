@@ -191,7 +191,7 @@ function ClickTask({ step, run, pending, actions, readOnly, notice }: Props<"CLI
         <ResultLine step={step} />
       </div>
       {open && (
-        <section aria-label={t.click.sandboxLabel} className="hidden min-w-0 lg:block" data-testid="step-sandbox">
+        <section aria-label={t.click.sandboxLabel} className="mf-sandbox hidden min-w-0 lg:block" data-testid="step-sandbox">
           <StepSandbox stepId={step.id} open={actions.openSandbox} />
         </section>
       )}

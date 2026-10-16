@@ -146,8 +146,8 @@ export function ModulePlayer({ initial, actions }: { initial: PlayerState; actio
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className={cx("mx-auto flex w-full max-w-read flex-1 flex-col gap-10 px-4 pt-8 pb-16 sm:px-6 sm:pt-12", taskView && "lg:max-w-app")}>
-        <header className="flex flex-col gap-6">
+      <div className={cx("mx-auto flex w-full max-w-read flex-1 flex-col gap-10 px-4 pt-8 pb-16 sm:px-6 sm:pt-12 lg:pt-6", taskView && "lg:max-w-app")}>
+        <header className="flex flex-col gap-6 rounded-card border border-line bg-surface p-5 sm:px-7 sm:py-6">
           <PlayerHeader title={state.module.title} />
           <nav aria-label={t.nav.stepList} className="flex flex-col gap-2.5">
             <div className="flex items-baseline justify-between gap-4">
@@ -204,7 +204,7 @@ export function ModulePlayer({ initial, actions }: { initial: PlayerState; actio
         )}
       </div>
 
-      <div className="sticky bottom-0 z-30 border-t border-line bg-surface">
+      <div className="sticky bottom-0 z-30 border-t border-line bg-surface/95 backdrop-blur-sm lg:rounded-br-panel">
         <div className="mx-auto flex h-16 w-full max-w-read items-center justify-between gap-3 px-4 sm:px-6">
           <Button type="button" variant="ghost" icon="arrowLeft" disabled={index === 0} className={index === 0 ? "invisible" : ""} onClick={() => goTo(index - 1)}>
             {t.nav.previous}

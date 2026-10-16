@@ -109,7 +109,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ v?: string; f
   if (variant === "a") {
     return (
       <ProfileShell step={1} align="center">
-        <section className="mx-auto flex w-full max-w-xl flex-col gap-8 rounded-2xl border border-line bg-surface p-6 shadow-md sm:p-10">
+        <section className="mx-auto flex w-full max-w-xl flex-col gap-8 rounded-card border border-line bg-surface p-6 sm:p-10">
           {confirm ?? (
             <>
               <div className="flex flex-col items-center gap-4 text-center">
@@ -163,7 +163,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ v?: string; f
               ))}
             </ol>
           </div>
-          <section className="flex flex-col gap-6 rounded-2xl border border-line bg-surface p-6 shadow-md sm:p-8">
+          <section className="flex flex-col gap-6 rounded-card border border-line bg-surface p-6 sm:p-8">
             {confirm ?? (
               <>
                 <CvrForm variant="b" cvr={cvr} error={error} />
@@ -194,7 +194,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ v?: string; f
             </div>
           )}
         </div>
-        <aside aria-hidden="true" className="relative overflow-hidden rounded-2xl border border-line bg-sunken p-6 sm:p-8">
+        <aside aria-hidden="true" className="relative overflow-hidden rounded-card border border-line bg-sunken p-6 sm:p-8">
           <p className="text-overline text-ink-subtle uppercase">{t.company.preview.eyebrow}</p>
           <p className="mt-2 text-title-3 text-ink">{t.company.preview.title}</p>
           <ul className="mt-6 flex flex-col gap-3">

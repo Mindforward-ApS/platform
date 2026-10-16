@@ -27,7 +27,7 @@ export async function TransferOffers({ userId, organizationId }: { userId: strin
         const modules = count(t.modulesOne, t.modulesMany, o.modules);
         const certificates = o.certificates === 0 ? t.certificatesNone : count(t.certificatesOne, t.certificatesMany, o.certificates);
         return (
-          <section key={o.fromOrganizationId} className="flex flex-col gap-5 rounded-lg border border-line bg-surface p-6 sm:flex-row sm:items-start" data-testid="transfer-offer">
+          <section key={o.fromOrganizationId} className="flex flex-col gap-5 rounded-card border border-line bg-surface p-6 sm:flex-row sm:items-start" data-testid="transfer-offer">
             <AppIcon name="award" tone="coral" size="lg" />
             <div className="flex min-w-0 flex-1 flex-col gap-3">
               <div className="flex flex-col gap-1">

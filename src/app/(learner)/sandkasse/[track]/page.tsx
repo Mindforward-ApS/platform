@@ -47,7 +47,10 @@ async function Sandbox({ params }: { params: Promise<{ track: string }> }) {
     .map((tr) => ({ href: `/sandkasse/${tr.slug}`, label: tr.label, current: tr.slug === track }));
   return (
     <>
-      <SandboxApp key={session.id} {...props} tracks={trackLinks} practice={practice ? { ...practice, canDemo } : null} />
+      {/* mf-sandbox: the app's v3 kit styles (`app:` variant) stop here; the sandbox keeps its own look. */}
+      <div className="mf-sandbox contents">
+        <SandboxApp key={session.id} {...props} tracks={trackLinks} practice={practice ? { ...practice, canDemo } : null} />
+      </div>
       {platform && real && (
         <RealConnectorsStrip platformName={getMessages().profile.platforms[platform]} platformSlug={track} industry={real.profile.industry?.name ?? ""} names={real.recommended.map((r) => r.name)} />
       )}

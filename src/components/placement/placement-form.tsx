@@ -69,7 +69,7 @@ export function PlacementForm({
         <ProgressBar value={answered} max={total} label={fill(t.progress, { answered, total })} tone={answered === total ? "success" : "accent"} />
       </div>
 
-      <div className="rounded-lg border border-line bg-surface p-6">
+      <div className="rounded-card border border-line bg-surface p-6">
         <fieldset className="flex min-w-0 flex-col gap-6">
           <legend className="mb-6 text-title-3 text-ink">{t.profileTitle}</legend>
           {test.profileQuestions.map((p) => (
@@ -92,7 +92,7 @@ export function PlacementForm({
       <h2 className="sr-only">{t.questionsTitle}</h2>
       <ol className="flex flex-col gap-6">
         {test.questions.map((q, i) => (
-          <li key={q.id} className="rounded-lg border border-line bg-surface p-6">
+          <li key={q.id} className="rounded-card border border-line bg-surface p-6">
             <fieldset className="flex min-w-0 flex-col gap-4">
               <legend className="mb-4 flex flex-col gap-2">
                 <span className="font-mono text-mono text-ink-subtle tabular-nums">{fill(t.questionLabel, { n: i + 1, total })}</span>

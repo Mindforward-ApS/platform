@@ -24,7 +24,7 @@ const JOB_ROLES = ["SALES", "HR", "FINANCE", "CUSTOMER_SERVICE", "LEADERSHIP", "
 function ReportPreview({ doc }: { doc: ReportDocument }) {
   const t = getMessages().orgAdmin.report;
   return (
-    <article className="flex flex-col gap-8 rounded-lg border border-line bg-surface px-6 py-8 sm:px-10 sm:py-12 print:border-0 print:p-0">
+    <article className="flex flex-col gap-8 rounded-card border border-line bg-surface px-6 py-8 sm:px-10 sm:py-12 print:border-0 print:p-0">
       <header className="flex flex-col gap-4 border-b border-line pb-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-overline text-ink-muted uppercase">{t.documentLabel}</p>

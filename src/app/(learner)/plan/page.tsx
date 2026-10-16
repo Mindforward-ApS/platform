@@ -90,7 +90,7 @@ async function Content() {
 
   return (
     <div className="flex flex-col gap-12">
-      <div className="grid grid-cols-1 overflow-hidden rounded-lg border border-line bg-surface sm:grid-cols-[1fr_1fr_1.2fr] sm:divide-x sm:divide-line">
+      <div className="grid grid-cols-1 overflow-hidden rounded-card border border-line bg-surface sm:grid-cols-[1fr_1fr_1.2fr] sm:divide-x sm:divide-line">
         <div className="flex flex-col gap-1 border-b border-line px-6 py-4 sm:border-b-0">
           <p className="text-caption text-ink-muted">{v.trackLabel}</p>
           <p className="text-body text-ink" data-testid="plan-track">
@@ -110,7 +110,7 @@ async function Content() {
       </div>
 
       {next ? (
-        <section aria-labelledby="next-title" className="flex flex-col gap-5 rounded-lg border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+        <section aria-labelledby="next-title" className="flex flex-col gap-5 rounded-card border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
           <div className="flex min-w-0 flex-1 flex-col gap-2">
             <p className="text-overline text-accent uppercase">{v.next}</p>
             <h2 id="next-title" className="text-title-2 text-ink">

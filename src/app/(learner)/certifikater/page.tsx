@@ -48,7 +48,7 @@ async function Content() {
       {certs.map((c) => {
         const publicHref = `/certifikat/${c.verificationCode}`;
         return (
-          <li key={c.id} className="flex flex-col overflow-hidden rounded-lg border border-line bg-surface">
+          <li key={c.id} className="flex flex-col overflow-hidden rounded-card border border-line bg-surface">
             <div className="flex items-start gap-4 border-b border-line px-6 py-5">
               <AppIcon name="award" tone="coral" size="lg" />
               <div className="flex min-w-0 flex-col gap-0.5">

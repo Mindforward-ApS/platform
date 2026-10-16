@@ -33,7 +33,7 @@ export function ModuleCard({ entry, number }: { entry: CatalogEntry; number: num
     <li className="flex">
       <Link
         href={`/modul/${entry.slug}`}
-        className="group flex w-full flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-xs transition-[box-shadow,border-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:border-line-strong hover:shadow-md"
+        className="group flex w-full flex-col overflow-hidden rounded-card border border-line bg-surface transition-[box-shadow,border-color,transform] duration-200 ease-out hover:-translate-y-0.5 hover:border-line-strong hover:shadow-md"
       >
         <ModuleCover seed={entry.slug} label={level} className="transition-[filter] duration-200 group-hover:saturate-[1.15]" />
         <div className="flex flex-1 flex-col gap-3 p-5">

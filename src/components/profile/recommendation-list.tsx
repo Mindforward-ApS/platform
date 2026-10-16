@@ -36,7 +36,7 @@ export function RecommendationList({ items, platform, platformName, canDemo, t }
     <ol className="flex flex-col gap-4" data-testid="recommendations">
       {items.map((c, i) => (
         <li key={c.id} className="flex flex-col gap-4">
-          <article data-spot className="flex flex-col gap-4 overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-sm sm:flex-row sm:items-start sm:p-6">
+          <article data-spot className="flex flex-col gap-4 overflow-hidden rounded-card border border-line bg-surface p-5 sm:flex-row sm:items-start sm:p-6">
             <div className="flex items-center gap-3 sm:flex-col sm:items-center">
               <span className="font-mono text-mono text-ink-subtle">{String(i + 1).padStart(2, "0")}</span>
               <AppIcon name="link" tone={i === 0 ? "blue" : i === 1 ? "mint" : "sky"} size="md" />

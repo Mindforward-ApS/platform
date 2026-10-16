@@ -114,7 +114,21 @@ function TopBar({ groups }: { groups: SidebarGroup[] }) {
   const t = getMessages();
   return (
     <div className="hidden items-center gap-6 px-11 pt-8 pb-2 lg:flex">
-      <Breadcrumb items={crumbs(groups)} label={t.shell.breadcrumb} />
+      <Breadcrumb
+        items={[
+          ...crumbs(groups),
+          { href: "/konto", label: t.shell.learner.account },
+          { href: "/hjaelp", label: t.shell.learner.help },
+          // Company pages reached from inside the admin area (not in the sidebar).
+          ...(groups.some((g) => g.label === t.shell.companyGroup)
+            ? [
+                { href: "/virksomhed/abonnement", label: t.billing.business.title, group: t.shell.companyGroup },
+                { href: "/virksomhed/maanedspakke", label: t.monthly.orgStatus.pageTitle, group: t.shell.companyGroup },
+              ]
+            : []),
+        ]}
+        label={t.shell.breadcrumb}
+      />
       <div className="ml-auto flex items-center gap-2.5">
         <form action="/hjaelp" role="search" className="relative w-64 xl:w-72">
           <label htmlFor="topbar-search" className="sr-only">

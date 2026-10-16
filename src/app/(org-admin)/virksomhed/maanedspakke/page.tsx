@@ -11,7 +11,7 @@ import { guardPage } from "@/server/auth/page-guard";
 async function Content() {
   const ctx = await guardPage(() => requireActiveMembership(ADMIN_ROLES), "/virksomhed/maanedspakke");
   return (
-    <div className="rounded-lg border border-line bg-surface p-6">
+    <div className="rounded-card border border-line bg-surface p-6">
       <OrgMonthlyStatus organizationId={ctx.membership.organizationId} />
     </div>
   );

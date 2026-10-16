@@ -61,13 +61,13 @@ async function Content({ searchParams }: { searchParams: Promise<{ platform?: st
         </div>
         <nav aria-label={t.results.platformLabel} className="flex flex-col gap-2">
           <span className="text-caption text-ink-subtle">{t.results.platformLabel}</span>
-          <div className="inline-flex rounded-full border border-line bg-sunken p-1">
+          <div className="inline-flex flex-wrap gap-1.5">
             {PLATFORMS.map((p) => (
               <Link
                 key={p}
                 href={`/profil/anbefalinger?platform=${p.toLowerCase()}`}
                 aria-current={p === platform ? "page" : undefined}
-                className={cx("rounded-full px-3.5 py-1.5 text-body-sm transition-colors", p === platform ? "bg-surface font-medium text-ink shadow-sm" : "text-ink-muted hover:text-ink")}
+                className={cx("rounded-full px-5 py-2.5 text-label transition-colors", p === platform ? "bg-tint text-tint-ink" : "text-ink-muted hover:bg-sunken hover:text-ink")}
               >
                 {t.platforms[p]}
               </Link>

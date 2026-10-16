@@ -59,7 +59,7 @@ export function LinkCard({ href, icon, title, body, cta }: { href: string; icon:
   return (
     <Link
       href={href}
-      className="group flex flex-col gap-4 rounded-lg border border-line bg-surface p-6 transition-[box-shadow,border-color] duration-[120ms] hover:border-line-strong hover:shadow-sm"
+      className="group flex flex-col gap-4 rounded-card border border-line bg-surface p-6 transition-[box-shadow,border-color] duration-[120ms] hover:border-line-strong hover:shadow-sm"
     >
       <AppIcon name={icon} size="md" />
       <span className="flex flex-col gap-1">

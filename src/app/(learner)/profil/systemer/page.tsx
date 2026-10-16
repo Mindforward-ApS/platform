@@ -31,7 +31,7 @@ async function Content() {
       <form action={chooseSystems} className="flex flex-col gap-8">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {categories.map((c) => (
-            <fieldset key={c.slug} className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-5 shadow-sm">
+            <fieldset key={c.slug} className="flex flex-col gap-3 rounded-card border border-line bg-surface p-5">
               <legend className="sr-only">{c.name}</legend>
               <p className="text-label text-ink" aria-hidden="true">
                 {c.name}

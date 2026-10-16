@@ -47,7 +47,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         {t.detail.back}
       </TextLink>
 
-      <div className="flex flex-col gap-4 rounded-lg border border-line bg-surface p-6 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-card border border-line bg-surface p-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-4">
           <span className="grid size-12 shrink-0 place-items-center rounded-full bg-sunken text-ink-muted ring-1 ring-inset ring-line">
             <Icon name="user" size={20} />
