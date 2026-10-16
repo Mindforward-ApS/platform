@@ -61,7 +61,7 @@ async function Content() {
   }));
   const weekCount = weekly.weeks.length;
   return (
-    <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+    <div className="grid grid-cols-1 items-start gap-8 xl:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
       <div className="flex min-w-0 flex-col gap-7">
         <HeroCard
           aside={

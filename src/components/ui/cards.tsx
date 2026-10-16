@@ -40,7 +40,7 @@ export function Panel({
 export function HeroCard({ children, aside, className, ...rest }: { children: ReactNode; aside?: ReactNode; className?: string; "data-testid"?: string }) {
   return (
     <section
-      className={cx("mf-hero grid gap-6 overflow-hidden rounded-card p-6 sm:px-7.5 sm:py-7 md:min-h-[14.5rem]", aside ? "md:grid-cols-[minmax(0,1fr)_auto]" : "", className)}
+      className={cx("mf-hero grid min-w-0 grid-cols-1 gap-6 overflow-hidden rounded-card p-6 sm:px-7.5 sm:py-7 md:min-h-[14.5rem]", aside ? "md:grid-cols-[minmax(0,1fr)_auto]" : "", className)}
       {...rest}
     >
       <div className="flex min-w-0 flex-col">{children}</div>
