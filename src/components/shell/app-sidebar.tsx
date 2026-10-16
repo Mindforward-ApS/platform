@@ -113,7 +113,8 @@ function crumbs(groups: SidebarGroup[]): Crumb[] {
 function TopBar({ groups }: { groups: SidebarGroup[] }) {
   const t = getMessages();
   return (
-    <div className="hidden items-center gap-6 px-11 pt-8 pb-2 lg:flex">
+    // h-20: the sandbox below sizes itself to 100dvh - 5rem, so together they fill the viewport exactly.
+    <div className="sticky top-0 z-30 hidden h-20 shrink-0 items-center gap-6 bg-surface px-11 lg:flex">
       <Breadcrumb
         items={[
           ...crumbs(groups),
@@ -260,7 +261,9 @@ function SidebarContent({ groups, rail = false }: { groups: SidebarGroup[]; rail
 export function AppFrame({ groups = learnerGroups(), children }: { groups?: SidebarGroup[]; children: ReactNode }) {
   const t = getMessages();
   return (
-    <div className="flex flex-1 flex-col bg-surface">
+    // Desktop is app-like: the frame is exactly one viewport tall, the sidebar scrolls on its own if needed, and only
+    // the content panel (#indhold) scrolls — under a sticky top bar. Phones keep normal page scroll.
+    <div className="flex flex-1 flex-col bg-surface lg:h-dvh lg:flex-none lg:overflow-hidden">
       <a href="#indhold" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-sm focus:bg-surface focus:px-3 focus:py-2 focus:shadow-md">
         {t.shell.skipToContent}
       </a>
@@ -277,15 +280,15 @@ export function AppFrame({ groups = learnerGroups(), children }: { groups?: Side
       </MobileNav>
       <div
         data-app-frame
-        className="flex flex-1 flex-col lg:grid lg:grid-cols-[17rem_minmax(0,1fr)] lg:data-collapsed:grid-cols-[5.5rem_minmax(0,1fr)]"
+        className="flex flex-1 flex-col lg:grid lg:h-dvh lg:min-h-0 lg:grid-cols-[17rem_minmax(0,1fr)] lg:data-collapsed:grid-cols-[5.5rem_minmax(0,1fr)]"
       >
-        <aside className="relative z-20 hidden bg-sidebar lg:block">
+        <aside className="relative z-40 hidden bg-sidebar lg:block lg:h-dvh">
           <CollapseButton collapseLabel={t.shell.collapseMenu} expandLabel={t.shell.expandMenu} />
-          <div className="sticky top-0 flex h-dvh flex-col overflow-y-auto overscroll-contain">
+          <div className="flex h-full flex-col overflow-y-auto overscroll-contain">
             <SidebarContent groups={groups} rail />
           </div>
         </aside>
-        <div id="indhold" className="app-panel flex min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1 flex-col bg-surface lg:min-h-dvh">
+        <div id="indhold" className="app-panel relative flex min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1 flex-col bg-surface lg:h-dvh lg:min-h-0 lg:scroll-pt-20 lg:overflow-y-auto lg:overscroll-contain">
           <TopBar groups={groups} />
           {children}
         </div>

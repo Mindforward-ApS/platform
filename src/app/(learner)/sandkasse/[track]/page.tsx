@@ -46,15 +46,18 @@ async function Sandbox({ params }: { params: Promise<{ track: string }> }) {
     .filter((tr): tr is { slug: string; label: string } => Boolean(tr.slug))
     .map((tr) => ({ href: `/sandkasse/${tr.slug}`, label: tr.label, current: tr.slug === track }));
   return (
-    <>
+    // Desktop: the sandbox and the strip below share exactly the space under the top bar, so the app panel never
+    // scrolls on this page (only the sandbox's own panes do). The sandbox's inner UI is untouched; only its outer
+    // box is told to fill the remaining height instead of a fixed 100dvh - 5rem.
+    <div className="mf-sandbox-page contents lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
       {/* mf-sandbox: the app's v3 kit styles (`app:` variant) stop here; the sandbox keeps its own look. */}
-      <div className="mf-sandbox contents">
+      <div className="mf-sandbox contents lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:[&>*]:h-auto! lg:[&>*]:min-h-[420px]! lg:[&>*]:flex-1">
         <SandboxApp key={session.id} {...props} tracks={trackLinks} practice={practice ? { ...practice, canDemo } : null} />
       </div>
       {platform && real && (
         <RealConnectorsStrip platformName={getMessages().profile.platforms[platform]} platformSlug={track} industry={real.profile.industry?.name ?? ""} names={real.recommended.map((r) => r.name)} />
       )}
-    </>
+    </div>
   );
 }
 

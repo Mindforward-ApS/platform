@@ -62,7 +62,9 @@ export function ModulePlayer({ initial, actions }: { initial: PlayerState; actio
       firstRender.current = false;
       return;
     }
+    // On desktop the app panel (#indhold) is the scroll container; on phones the page scrolls.
     window.scrollTo({ top: 0 });
+    document.getElementById("indhold")?.scrollTo({ top: 0 });
     heading.current?.focus({ preventScroll: true });
   }, [index, state.status]);
 

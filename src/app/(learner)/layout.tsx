@@ -5,7 +5,8 @@ import { AppFrame } from "@/components/shell/app-sidebar";
 export default function LearnerLayout({ children }: { children: React.ReactNode }) {
   return (
     <AppFrame>
-      <div className="flex flex-1 flex-col">{children}</div>
+      {/* min-h-0 only around the sandbox page, so it can fill (not overflow) the panel under the top bar. */}
+      <div className="flex flex-1 flex-col lg:has-[.mf-sandbox-page]:min-h-0">{children}</div>
     </AppFrame>
   );
 }
