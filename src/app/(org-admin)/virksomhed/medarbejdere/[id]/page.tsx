@@ -123,7 +123,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         {row.certificates.length === 0 ? (
           <p className="text-body-sm text-ink-muted">{t.members.none}</p>
         ) : (
-          <ul className="-mx-6 -my-6 flex flex-col divide-y divide-line">
+          <ul className="-mx-6 -my-6 flex flex-col divide-y divide-line sm:-mx-7">
             {row.certificates.map((cert) => (
               <li key={`${cert.trackName}-${cert.level}`} className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
                 <span className="flex items-center gap-3">

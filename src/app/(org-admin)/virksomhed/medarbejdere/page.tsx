@@ -4,6 +4,7 @@ import { ActionForm } from "@/components/admin/action-form";
 import { AdminShell, Section } from "@/components/admin/admin-shell";
 import { Cell, CodeBox, StatusBadge } from "@/components/admin/admin-ui";
 import { AdminSubmit } from "@/components/admin/danger-submit";
+import { Avatar, RoleTag, Segments } from "@/components/ui/cards";
 import { Icon } from "@/components/ui/icons";
 import { Badge, Button, ButtonLink, EmptyState, Field, Notice, ProgressBar, Select, TextArea, TextLink, type Tone } from "@/components/ui/primitives";
 import { SubmitButton } from "@/components/ui/submit-button";
@@ -33,7 +34,7 @@ import {
   turnOffJoinLink,
 } from "./actions";
 
-// V3 Medarbejdere: status, best score, dates, certificates per employee (never answers or prompts), invitations by
+// Medarbejdere (design v3: people rows with avatar, role tag and segmented best score): status, best score, dates, certificates per employee (never answers or prompts), invitations by
 // email/CSV, link and verified domain, track/job-role assignment, remove (frees the seat), seats used/limit.
 
 const JOB_ROLES = ["SALES", "HR", "FINANCE", "CUSTOMER_SERVICE", "LEADERSHIP", "OPERATIONS", "OTHER"] as const;
@@ -43,7 +44,7 @@ const STATUS_LOOK: Record<EmployeeRow["status"], { tone: Tone; icon: "dash" | "c
   CERTIFIED: { tone: "success", icon: "award" },
 };
 // Desktop column template shared by the header and every row, so the list reads as one table.
-const COLS = "md:grid md:grid-cols-[minmax(0,1.5fr)_7.5rem_minmax(0,1fr)_4.5rem_7rem_6rem_1.5rem] md:items-center md:gap-3";
+const COLS = "md:grid md:grid-cols-[minmax(0,1.6fr)_7.5rem_minmax(0,1fr)_9.5rem_6.5rem_6rem_1.5rem] md:items-center md:gap-4";
 
 type Search = { cursor?: string; spor?: string; jobrolle?: string; fejl?: string };
 
@@ -86,20 +87,28 @@ function MemberRow({ r, tracks, canChangeRole }: { r: EmployeeRow; tracks: { id:
   const look = STATUS_LOOK[r.status];
   return (
     <li className="flex flex-col" data-testid="member-row">
-      <div className={`grid grid-cols-2 gap-x-4 gap-y-3 px-6 py-4 ${COLS}`}>
-        <div className="col-span-2 flex min-w-0 flex-col gap-0.5 md:col-span-1">
-          <Link href={`/virksomhed/medarbejdere/${r.memberId}`} className="truncate text-body font-medium text-ink hover:text-accent">
-            {r.name || r.email}
-          </Link>
-          <span className="truncate text-body-sm text-ink-muted">{r.email}</span>
-          <span className="text-caption text-ink-subtle">
-            {t.roles[r.role]}
-            {r.jobRole ? ` · ${t.jobRoles[r.jobRole]}` : ""}
-            <span className="sr-only">
-              {" "}
-              ({c.role}, {c.jobRole}: {r.jobRole ? t.jobRoles[r.jobRole] : t.members.none})
+      <div className={`grid grid-cols-2 gap-x-4 gap-y-3 px-6 py-4 sm:px-7 ${COLS}`}>
+        <div className="col-span-2 flex min-w-0 items-center gap-3.5 md:col-span-1">
+          <Avatar name={r.name} email={r.email} size="lg" />
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+              <Link href={`/virksomhed/medarbejdere/${r.memberId}`} className="truncate text-body font-medium text-ink hover:text-accent">
+                {r.name || r.email}
+              </Link>
+              <RoleTag role={r.role}>
+                {t.roles[r.role]}
+                <span className="sr-only"> ({c.role})</span>
+              </RoleTag>
             </span>
-          </span>
+            <span className="truncate text-body-sm text-ink-muted">{r.email}</span>
+            <span className="text-caption text-ink-subtle">
+              {r.jobRole ? t.jobRoles[r.jobRole] : ""}
+              <span className="sr-only">
+                {" "}
+                ({c.jobRole}: {r.jobRole ? t.jobRoles[r.jobRole] : t.members.none})
+              </span>
+            </span>
+          </div>
         </div>
         <Cell label={c.status}>
           <StatusBadge tone={look.tone} icon={look.icon} testId="member-status">
@@ -120,8 +129,11 @@ function MemberRow({ r, tracks, canChangeRole }: { r: EmployeeRow; tracks: { id:
             </span>
           )}
         </Cell>
-        <Cell label={t.members.scoreShort} align="end" className="md:pr-4">
-          <span className="tabular-nums">{r.avgBestScorePct === null ? t.members.none : `${r.avgBestScorePct} %`}</span>
+        <Cell label={t.members.scoreShort} align="end">
+          <span className="flex items-center gap-2.5 md:justify-end">
+            {r.avgBestScorePct !== null && <Segments pct={r.avgBestScorePct} label={`${t.members.scoreShort}: ${r.avgBestScorePct} %`} />}
+            <span className="w-10 text-right font-medium tabular-nums">{r.avgBestScorePct === null ? t.members.none : `${r.avgBestScorePct} %`}</span>
+          </span>
         </Cell>
         <Cell label={c.passed}>
           <span className="tabular-nums">{r.passedCount}</span>
@@ -143,12 +155,12 @@ function MemberRow({ r, tracks, canChangeRole }: { r: EmployeeRow; tracks: { id:
         </div>
       </div>
       <details className="group/manage border-t border-dashed border-line">
-        <summary className="flex cursor-pointer list-none items-center gap-1.5 px-6 py-2.5 text-label text-ink-muted transition-colors duration-[120ms] hover:bg-sunken hover:text-ink [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center gap-1.5 px-6 py-2.5 sm:px-7 text-label text-ink-muted transition-colors duration-[120ms] hover:bg-sunken hover:text-ink [&::-webkit-details-marker]:hidden">
           <Icon name="settings" />
           {t.members.manage}
           <Icon name="chevronDown" className="transition-transform duration-[120ms] group-open/manage:rotate-180" />
         </summary>
-        <div className="flex flex-col gap-5 border-t border-line bg-sunken px-6 py-5">
+        <div className="flex flex-col gap-5 border-t border-line bg-sunken px-6 py-5 sm:px-7">
           <ActionForm action={assignMember} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
             <input type="hidden" name="memberId" value={r.memberId} />
             <TrackAndRoleFields tracks={tracks} row={r} />
@@ -225,7 +237,7 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
         </Notice>
       )}
 
-      <div className="flex flex-col gap-3 rounded-lg border border-line bg-surface px-6 py-4 sm:flex-row sm:items-center sm:gap-6">
+      <div className="flex flex-col gap-3 rounded-card border border-line bg-surface px-6 py-5 sm:flex-row sm:items-center sm:gap-6 sm:px-7">
         <p className="flex shrink-0 items-center gap-2 text-body-sm text-ink" data-testid="seat-usage">
           <Icon name="users" className="text-ink-muted" />
           {format(t.seats.usage, { used, limit: ent.seatLimit })}
@@ -238,9 +250,9 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
         </TextLink>
       </div>
 
-      <section className="overflow-hidden rounded-lg border border-line bg-surface">
-        <div className="flex flex-col gap-4 border-b border-line px-6 py-4 lg:flex-row lg:items-end lg:justify-between">
-          <h2 className="text-title-3 text-ink lg:pb-2">{t.members.listTitle}</h2>
+      <section className="overflow-hidden rounded-card border border-line bg-surface">
+        <div className="flex flex-col gap-4 border-b border-line px-6 py-5 sm:px-7 lg:flex-row lg:items-end lg:justify-between">
+          <h2 className="text-[1.125rem] font-semibold text-ink lg:pb-2">{t.members.listTitle}</h2>
           <form method="get" className="grid grid-cols-2 items-end gap-3 sm:flex sm:flex-wrap" aria-label={t.members.filters.title}>
             <div className="sm:w-48">
               <Select label={t.members.filters.track} name="spor" defaultValue={sp.spor ?? ""}>
@@ -262,16 +274,16 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
                 ))}
               </Select>
             </div>
-            <Button type="submit" variant="secondary" icon="search" className="col-span-2">
+            <Button type="submit" variant="secondary" icon="search" className="col-span-2 rounded-full">
               {t.members.filters.apply}
             </Button>
           </form>
         </div>
-        <div className={`hidden border-b border-line bg-sunken px-6 py-2.5 text-caption font-semibold tracking-[0.02em] text-ink-muted ${COLS}`} aria-hidden="true">
+        <div className={`hidden border-b border-line px-6 py-2.5 text-caption text-ink-subtle sm:px-7 ${COLS}`} aria-hidden="true">
           <span>{t.members.employee}</span>
           <span>{c.status}</span>
           <span>{c.track}</span>
-          <span className="text-right md:pr-4">{t.members.scoreShort}</span>
+          <span className="text-right">{t.members.scoreShort}</span>
           <span>{c.passed}</span>
           <span>{c.lastActivity}</span>
           <span />
@@ -288,7 +300,7 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
           </ul>
         )}
         {(sp.cursor || page.nextCursor) && (
-          <nav aria-label={t.members.pagination} className="flex justify-end gap-3 border-t border-line bg-sunken px-6 py-3">
+          <nav aria-label={t.members.pagination} className="flex justify-end gap-3 border-t border-line px-6 py-3 sm:px-7">
             {sp.cursor && (
               <ButtonLink href={qs({})} variant="secondary" size="sm" icon="arrowLeft">
                 {t.members.first}
@@ -319,13 +331,13 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
             </div>
           </ActionForm>
           {pending.length > 0 && (
-            <div className="-mx-6 -mb-6 mt-2 border-t border-line">
-              <h3 className="bg-sunken px-6 py-2.5 text-caption font-semibold tracking-[0.02em] text-ink-muted">
+            <div className="-mx-6 -mb-6 mt-2 border-t border-line sm:-mx-7">
+              <h3 className="bg-sunken px-6 py-2.5 sm:px-7 text-caption font-semibold tracking-[0.02em] text-ink-muted">
                 {t.members.pending} <span className="tabular-nums">({pending.length})</span>
               </h3>
               <ul data-testid="pending-invitations" className="flex flex-col divide-y divide-line border-t border-line">
                 {pending.map((p) => (
-                  <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+                  <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-3 sm:px-7">
                     <span className="flex min-w-0 flex-col gap-0.5">
                       <span className="flex items-center gap-2 truncate text-body-sm text-ink">
                         <Icon name="mail" className="text-ink-muted" />
@@ -412,9 +424,9 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
 
       {removed.length > 0 && (
         <Section title={t.members.inactiveTitle}>
-          <ul className="-mx-6 -my-6 flex flex-col divide-y divide-line">
+          <ul className="-mx-6 -my-6 flex flex-col divide-y divide-line sm:-mx-7">
             {removed.map((m) => (
-              <li key={m.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-3">
+              <li key={m.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-3 sm:px-7">
                 <span className="flex min-w-0 flex-col gap-0.5">
                   <span className="text-body-sm text-ink">{m.user.name}</span>
                   <span className="text-caption text-ink-muted">

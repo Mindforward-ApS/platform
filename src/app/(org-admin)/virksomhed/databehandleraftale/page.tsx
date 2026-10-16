@@ -40,7 +40,7 @@ async function Content() {
           </Badge>
         }
       >
-        <div className="-mx-6 -my-6 max-h-[28rem] overflow-y-auto px-6 py-6 sm:px-8" tabIndex={0} role="region" aria-label={t.title}>
+        <div className="-mx-6 -my-6 max-h-[28rem] overflow-y-auto px-6 py-6 sm:-mx-7 sm:px-8" tabIndex={0} role="region" aria-label={t.title}>
           <div className="max-w-read">
             <LegalText text={dpaText()} />
           </div>
