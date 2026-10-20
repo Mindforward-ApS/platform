@@ -1,4 +1,15 @@
 {
   "$comment": "Modules Marco has approved for publication (CLAUDE.md: never auto-publish CORE modules). Seed publishes a module only when it is listed here AND all its PROMPT_TASK golden sets exist. Add a slug only after Marco's explicit approval; core-aiact-01 also needs legal review (docs/10).",
-  "approved": []
+  "approved": [
+    "core-llm-01",
+    "core-prompt-01",
+    "core-prompt-02",
+    "core-fact-01",
+    "core-data-01",
+    "core-policy-01",
+    "core-mail-01",
+    "core-meeting-01",
+    "core-aiact-01"
+  ],
+  "$approval": "Marco approved all nine level-1 modules on 2026-10-20 (\"Advokaten har kigget alt igennem. og det er klar til go.\"), incl. core-aiact-01 after legal review."
 }
