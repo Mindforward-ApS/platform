@@ -117,10 +117,10 @@ export async function seedContentSources(db: PrismaClient, sources: SourceConfig
   return sources.length;
 }
 
-export async function seedAll(db: PrismaClient) {
+export async function seedAll(db: PrismaClient, approved?: Set<string>) {
   await seedTracks(db);
   await seedPlans(db);
-  const modules = await seedModules(db);
+  const modules = await seedModules(db, approved);
   const contentSources = await seedContentSources(db);
   await seedConnectors(db);
   return { tracks: TRACKS.length, plans: await db.plan.count({ where: { active: true } }), modules, contentSources, industries: await db.industry.count({ where: { isActive: true } }) };

@@ -96,12 +96,12 @@ describe("entitlements (docs/07 § 3)", () => {
 describe("VAT (25 % from config)", () => {
   it("B2C price is incl. VAT: 4900 øre = 3920 net + 980 VAT", () => {
     expect(splitInclusive(4900)).toEqual({ netOre: 3920, vatOre: 980, grossOre: 4900 });
-    expect(planPrice(getPlan("B2C_MONTHLY"))).toEqual({ netOre: 3920, vatOre: 980, grossOre: 4900 });
+    expect(planPrice(getPlan("B2C_MONTHLY"))).toEqual({ netOre: 5520, vatOre: 1380, grossOre: 6900 });
   });
 
   it("B2B price is ex. VAT: 5 seats × 4900 = 24500 net + 6125 VAT", () => {
     expect(addVat(4900)).toEqual({ netOre: 4900, vatOre: 1225, grossOre: 6125 });
-    expect(planPrice(getPlan("B2B_MONTHLY"), 5)).toEqual({ netOre: 24500, vatOre: 6125, grossOre: 30625 });
+    expect(planPrice(getPlan("B2B_MONTHLY"), 5)).toEqual({ netOre: 34500, vatOre: 8625, grossOre: 43125 });
   });
 
   it("uses the configured rate", () => {

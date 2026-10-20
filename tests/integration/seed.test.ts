@@ -24,17 +24,17 @@ describe("db:seed", () => {
     expect(tracks.find((t) => t.key === "COPILOT")?.licenseTiers).toEqual(["COPILOT_CHAT", "COPILOT_M365"]);
   });
 
-  it("seeds prices from config: B2C 49 kr incl. VAT monthly, B2B 49 kr ex. VAT monthly / 490 kr yearly, min. 5 seats, no B2C annual", async () => {
+  it("seeds prices from config: B2C 69 kr incl. VAT monthly, B2B 69 kr ex. VAT monthly / 490 kr yearly, min. 5 seats, no B2C annual", async () => {
     await seedAll(testDb());
     const plans = Object.fromEntries((await testDb().plan.findMany({ where: { active: true } })).map((p) => [p.code, p]));
     expect(Object.keys(plans).sort()).toEqual(["B2B_ANNUAL", "B2B_MONTHLY", "B2C_MONTHLY"]);
-    expect(plans.B2C_MONTHLY).toMatchObject({ unitAmountOre: 4900, taxBehavior: "INCLUSIVE", interval: "MONTH" });
-    expect(plans.B2B_MONTHLY).toMatchObject({ unitAmountOre: 4900, taxBehavior: "EXCLUSIVE", minSeats: 5, trialDays: 14, trialMaxSeats: 5 });
+    expect(plans.B2C_MONTHLY).toMatchObject({ unitAmountOre: 6900, taxBehavior: "INCLUSIVE", interval: "MONTH" });
+    expect(plans.B2B_MONTHLY).toMatchObject({ unitAmountOre: 6900, taxBehavior: "EXCLUSIVE", minSeats: 5, trialDays: 14, trialMaxSeats: 5 });
     expect(plans.B2B_ANNUAL).toMatchObject({ unitAmountOre: 49000, interval: "YEAR", minSeats: 5 });
   });
 
   it("never publishes a module Marco has not approved", async () => {
-    await seedAll(testDb());
+    await seedAll(testDb(), new Set());
     expect(await testDb().moduleVersion.count({ where: { status: "PUBLISHED" } })).toBe(0);
   });
 
@@ -51,7 +51,7 @@ describe("db:seed", () => {
   });
 
   it("loads core-prompt-01 on all its tracks; held in review until approved", async () => {
-    await seedAll(testDb());
+    await seedAll(testDb(), new Set());
     const mod = await testDb().module.findUniqueOrThrow({ where: { slug: "core-prompt-01" }, include: { tracks: { include: { track: true } }, versions: true } });
     expect(mod.tracks.map((t) => t.track.key).sort()).toEqual(["CHATGPT", "CLAUDE", "COPILOT", "GEMINI"]);
     expect(mod.requiredLicense).toBe("COPILOT_CHAT");

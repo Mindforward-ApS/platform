@@ -20,8 +20,8 @@ export type PlanConfig = z.infer<typeof planSchema>;
 
 export const plans: readonly PlanConfig[] = z.array(planSchema).parse([
   { key: "FREE", audience: "B2C", interval: null, taxMode: null, unitAmountOre: 0, minSeats: 1, trialDays: 0, trialMaxSeats: null, stripePriceEnv: null },
-  { key: "B2C_MONTHLY", audience: "B2C", interval: "MONTH", taxMode: "INCLUSIVE", unitAmountOre: 4900, minSeats: 1, trialDays: 0, trialMaxSeats: null, stripePriceEnv: "STRIPE_PRICE_B2C_MONTHLY" },
-  { key: "B2B_MONTHLY", audience: "B2B", interval: "MONTH", taxMode: "EXCLUSIVE", unitAmountOre: 4900, minSeats: 5, trialDays: 14, trialMaxSeats: 5, stripePriceEnv: "STRIPE_PRICE_B2B_MONTHLY" },
+  { key: "B2C_MONTHLY", audience: "B2C", interval: "MONTH", taxMode: "INCLUSIVE", unitAmountOre: 6900, minSeats: 1, trialDays: 0, trialMaxSeats: null, stripePriceEnv: "STRIPE_PRICE_B2C_MONTHLY" },
+  { key: "B2B_MONTHLY", audience: "B2B", interval: "MONTH", taxMode: "EXCLUSIVE", unitAmountOre: 6900, minSeats: 5, trialDays: 14, trialMaxSeats: 5, stripePriceEnv: "STRIPE_PRICE_B2B_MONTHLY" },
   { key: "B2B_ANNUAL", audience: "B2B", interval: "YEAR", taxMode: "EXCLUSIVE", unitAmountOre: 49000, minSeats: 5, trialDays: 14, trialMaxSeats: 5, stripePriceEnv: "STRIPE_PRICE_B2B_ANNUAL" },
 ]);
 
