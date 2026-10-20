@@ -151,6 +151,12 @@
   --mf-site-line: rgb(20 22 28 / 0.08);
   --mf-site-shadow: rgb(20 22 28 / 0.4);
   --mf-site-navy-shadow: rgb(14 26 61 / 0.7);
+  /* Website "bezel" buttons and fields: grey 3px edge, dark hairline inside, grey icon tile. */
+  --mf-site-bezel: #e5e5e5;
+  --mf-site-bezel-hover: #d6d6d6;
+  --mf-site-hairline: rgb(11 13 31 / 0.2);
+  --mf-site-lift: rgb(11 13 31 / 0.1);
+  --mf-site-tile: #eef0f6;
   /* Hero card for the current entity. White text stays ≥ 5:1 on every stop where text sits. */
   --mf-hero-from: #1d4fd8;
   --mf-hero-mid: #2a5fe6;
@@ -303,6 +309,11 @@
   --color-site-line: var(--mf-site-line);
   --color-site-shadow: var(--mf-site-shadow);
   --color-site-navy-shadow: var(--mf-site-navy-shadow);
+  --color-site-bezel: var(--mf-site-bezel);
+  --color-site-bezel-hover: var(--mf-site-bezel-hover);
+  --color-site-hairline: var(--mf-site-hairline);
+  --color-site-lift: var(--mf-site-lift);
+  --color-site-tile: var(--mf-site-tile);
   --color-sidebar-raised: var(--mf-sidebar-raised);
   --color-sidebar-active: var(--mf-sidebar-active);
   --color-sidebar-hover: var(--mf-sidebar-hover);

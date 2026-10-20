@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { AuthMain, AuthValue } from "@/components/auth/auth-shell";
+import { AuthMain, AuthWelcome } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
 import { getMessages } from "@/lib/i18n";
 
@@ -12,7 +12,7 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
 export default function SignupPage(props: PageProps<"/opret">) {
   const t = getMessages();
   return (
-    <AuthMain aside={<AuthValue eyebrow={t.brand} title={t.auth.valueTitle} points={t.auth.valuePoints} />}>
+    <AuthMain aside={<AuthWelcome greeting={t.auth.welcomeNew} />}>
       <Suspense>
         <Content searchParams={props.searchParams as Promise<{ fejl?: string; next?: string }>} />
       </Suspense>

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { AppIcon, Icon, type IconName } from "@/components/ui/icons";
+import { AppIcon, type IconName } from "@/components/ui/icons";
 
 
 // Layout pieces for the focused auth flows (login, signup, check mail, invitations), design v3: one white card,
@@ -10,7 +10,7 @@ export function AuthMain({ children, aside }: { children: ReactNode; aside?: Rea
     <main className="mx-auto flex w-full max-w-[1180px] flex-1 items-start justify-center px-4 pt-10 pb-20 sm:px-6 sm:pt-16 lg:items-center lg:py-20">
       {aside ? (
         <div className="mx-auto grid w-full max-w-[920px] items-stretch gap-10 lg:grid-cols-2 xl:gap-12">
-          <div className="hidden overflow-hidden rounded-[22px] bg-site-navy p-8 shadow-[0_30px_60px_-30px_var(--color-site-navy-shadow)] lg:block xl:p-10">{aside}</div>
+          <div className="hidden lg:block">{aside}</div>
           <div className="mx-auto flex w-full max-w-[440px] flex-col lg:max-w-none [&>section]:lg:flex-1">{children}</div>
         </div>
       ) : (
@@ -59,26 +59,24 @@ export function AuthCard({
   );
 }
 
-/** Short value statement shown beside the login/signup card on wide screens. */
-export function AuthValue({ eyebrow, title, points }: { eyebrow: ReactNode; title: ReactNode; points: readonly string[] }) {
+/** Beside the login/signup card on wide screens: the woman from the website hero, waving hello, rising out
+ *  of a navy frame (same build as the hero on mindforward.dk), with a short welcome bubble. */
+export function AuthWelcome({ greeting }: { greeting: ReactNode }) {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-linear-160 from-site-blue-light via-site-blue to-site-blue-deep" aria-hidden="true">
-        {/* eslint-disable-next-line @next/next/no-img-element -- static WebP from /public, same photo as the website hero */}
-        <img src="/heroes/auth-person.webp" alt="" decoding="async" className="absolute inset-x-0 bottom-0 mx-auto h-[115%] w-auto object-contain object-bottom" />
+    <div className="flex h-full items-end justify-center pb-0" aria-hidden="true">
+      {/* same proportions as the hero box on mindforward.dk: 460×660, frame 78% high and 8% wider on each side,
+          the cut-out 17% wider on each side so the waving hand fits; only the frame's rounded bottom clips her.
+          Box = 86.2% of the column, so the frame (116%) fills the column exactly */}
+      <div className="relative aspect-[460/660] w-[86.2%]">
+        <div className="absolute -inset-x-[8%] bottom-0 h-[78%] rounded-[28px] bg-site-navy shadow-[0_30px_60px_-30px_var(--color-site-navy-shadow)]" />
+        <div className="absolute -inset-x-[17%] bottom-0 h-full [clip-path:inset(-100%_-100%_0_-100%_round_0_0_28px_28px)]">
+          {/* eslint-disable-next-line @next/next/no-img-element -- static cut-out WebP from /public */}
+          <img src="/heroes/auth-wave.webp" alt="" decoding="async" className="size-full object-contain object-bottom" />
+        </div>
+        <p className="absolute top-[12%] -left-[14%] rounded-2xl bg-surface px-4 py-3 text-[15.5px] font-semibold tracking-[-0.01em] whitespace-nowrap text-site-ink shadow-[0_24px_50px_-22px_var(--color-site-shadow)] ring-1 ring-site-line">
+          {greeting}
+        </p>
       </div>
-      <p className="text-[0.6875rem] font-medium tracking-[0.12em] text-on-sidebar-label uppercase">{eyebrow}</p>
-      <h2 className="text-[34px] leading-[1.1] font-semibold tracking-[-0.02em] text-on-sidebar">{title}</h2>
-      <ul className="flex flex-col gap-4 border-t border-sidebar-line pt-6">
-        {points.map((p) => (
-          <li key={p} className="flex items-start gap-3 text-[15.5px] leading-[1.6] text-on-sidebar-muted">
-            <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-site-blue text-on-sidebar">
-              <Icon name="check" size={12} strokeWidth={2.25} />
-            </span>
-            {p}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

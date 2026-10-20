@@ -100,6 +100,8 @@ export const da = {
     loginLead: "Vi sender et login-link til din email. Du skal ikke huske en adgangskode.",
     signupLead: "Skriv din email, så sender vi et link, der opretter din bruger.",
     emailPlaceholder: "dig@eksempel.dk",
+    welcomeBack: "Hej, godt at se dig igen!",
+    welcomeNew: "Hej, velkommen til!",
     valueTitle: "Lær AI ved at gøre det.",
     valuePoints: [
       "Korte, praktiske opgaver i et øvemiljø med en fiktiv virksomhed.",
