@@ -7,7 +7,7 @@ import { AppIcon, Icon, type IconName } from "@/components/ui/icons";
 
 export function AuthMain({ children, aside }: { children: ReactNode; aside?: ReactNode }) {
   return (
-    <main className="mx-auto flex w-full max-w-[1180px] flex-1 items-start justify-center px-4 pt-10 pb-20 sm:px-6 sm:pt-16 lg:items-center lg:pb-24">
+    <main className="mx-auto flex w-full max-w-[1180px] flex-1 items-start justify-center px-4 pt-10 pb-20 sm:px-6 sm:pt-16 lg:items-center lg:py-20">
       {aside ? (
         <div className="mx-auto grid w-full max-w-[920px] items-stretch gap-10 lg:grid-cols-2 xl:gap-12">
           <div className="hidden overflow-hidden rounded-[22px] bg-site-navy p-8 shadow-[0_30px_60px_-30px_var(--color-site-navy-shadow)] lg:block xl:p-10">{aside}</div>

@@ -1,21 +1,13 @@
-import Link from "next/link";
 import { SiteFooter } from "@/components/legal/site-footer";
-import { SiteLogo } from "@/components/ui/brand";
-import { getMessages } from "@/lib/i18n";
+import { BrainMark } from "@/components/ui/brand";
 
-// Login, signup, invitations: same look as the website (mindforward.dk) — light-blue background, Inter,
-// brain + "Forward" logo in a floating white bar. Nothing else to click away to.
+// Login, signup, invitations: same look as the website (mindforward.dk) — light-blue background, Inter.
+// No header (Marco 20 Oct 2026): the brain from the logo sits huge and faint behind the cards instead.
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-1 flex-col bg-site-bg font-site text-site-ink">
-      <header className="px-4 pt-4 sm:px-6">
-        <div className="mx-auto flex h-16 max-w-[920px] items-center rounded-2xl bg-surface px-5 shadow-[0_10px_30px_-20px_var(--color-site-shadow)] sm:h-[72px] sm:px-6">
-          <Link href="/" className="rounded-lg" aria-label={getMessages().brand}>
-            <SiteLogo />
-          </Link>
-        </div>
-      </header>
-      <div id="indhold" className="mf-v3 flex flex-1 flex-col">
+    <div className="relative isolate flex flex-1 flex-col overflow-hidden bg-site-bg font-site text-site-ink">
+      <div id="indhold" className="mf-v3 relative flex flex-1 flex-col">
+        <BrainMark className="pointer-events-none absolute top-1/2 left-1/2 -z-10 size-[min(140vw,1150px)] -translate-x-1/2 -translate-y-1/2 fill-site-blue opacity-[0.1]" />
         {children}
       </div>
       <SiteFooter variant="compact" />
