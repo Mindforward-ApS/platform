@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Wordmark } from "@/components/ui/brand";
+import { SiteLogo } from "@/components/ui/brand";
 import { getMessages } from "@/lib/i18n";
 import { CookieSettingsButton } from "./cookie-banner";
 
@@ -39,7 +39,7 @@ export function SiteFooter({ variant = "full" }: { variant?: "full" | "compact" 
       <div className="mx-auto flex max-w-app flex-col gap-8 px-4 py-12 sm:px-6">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-start">
           <div className="flex flex-col gap-3">
-            <Wordmark size={18} />
+            <SiteLogo />
             <p className="max-w-xs text-body-sm text-ink-muted">{getMessages().meta.description}</p>
           </div>
           {nav}

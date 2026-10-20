@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { signOut } from "@/app/(learner)/konto/actions";
-import { Wordmark } from "@/components/ui/brand";
+import { SiteLogo } from "@/components/ui/brand";
 import { Icon } from "@/components/ui/icons";
 import { cx } from "@/components/ui/primitives";
 import { getMessages } from "@/lib/i18n";
@@ -34,7 +34,7 @@ export function AppHeader({ items = learnerNav(), home = "/moduler", badge }: { 
       <header className="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur-md supports-[backdrop-filter]:bg-surface/80">
         <div className="mx-auto flex h-16 max-w-app items-center gap-8 px-4 sm:px-6">
           <Link href={home} className="flex items-center gap-3 rounded-sm" aria-label={t.brand}>
-            <Wordmark size={19} />
+            <SiteLogo />
             {badge}
           </Link>
           <nav aria-label={t.shell.mainNav} className="hidden h-16 items-center gap-6 md:flex">
@@ -80,7 +80,7 @@ export function FocusHeader({ right }: { right?: ReactNode }) {
     <header className="border-b border-line bg-surface">
       <div className={cx("mx-auto flex h-16 max-w-app items-center justify-between gap-4 px-4 sm:px-6")}>
         <Link href="/" className="rounded-sm" aria-label={getMessages().brand}>
-          <Wordmark size={19} />
+          <SiteLogo />
         </Link>
         {right}
       </div>

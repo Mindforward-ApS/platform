@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { AuthCard } from "@/components/auth/auth-shell";
 import { PrintButton } from "@/components/certificate/print-button";
 import { SiteFooter } from "@/components/legal/site-footer";
-import { Wordmark } from "@/components/ui/brand";
+import { SiteLogo } from "@/components/ui/brand";
 import { Badge, Notice } from "@/components/ui/primitives";
 import { CERTIFICATE_DISCLAIMER } from "@/lib/config/certificates";
 import { formatDateDa } from "@/lib/format-date";
@@ -56,7 +56,7 @@ async function Content({ params }: { params: Promise<{ code: string }> }) {
       <article data-testid="public-certificate" className="overflow-hidden rounded-xl border border-line bg-surface">
         <div className="flex flex-col gap-10 px-6 py-10 sm:px-12 sm:py-14">
           <div className="flex items-start justify-between gap-4">
-            <Wordmark size={18} />
+            <SiteLogo />
             <span className="hidden print:block">
               <Badge tone="success" icon="check">
                 {v.verified}
@@ -91,7 +91,7 @@ export default function PublicCertificatePage(props: PageProps<"/certifikat/[cod
       <header className="border-b border-line bg-surface print:hidden">
         <div className="mx-auto flex h-16 max-w-app items-center px-4 sm:px-6">
           <Link href="/" className="rounded-sm" aria-label={getMessages().brand}>
-            <Wordmark size={19} />
+            <SiteLogo />
           </Link>
         </div>
       </header>

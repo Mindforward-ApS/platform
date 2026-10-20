@@ -56,7 +56,8 @@ export const da = {
       business: "Til virksomheder",
       help: "Hjælp",
       login: "Log ind",
-      signup: "Prøv gratis",
+      signup: "Kom i gang",
+      website: "Til forsiden",
     },
     owner: {
       label: "Ejer-konsol",

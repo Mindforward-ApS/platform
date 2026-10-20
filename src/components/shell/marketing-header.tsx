@@ -1,38 +1,31 @@
 import Link from "next/link";
-import { Wordmark } from "@/components/ui/brand";
-import { ButtonLink } from "@/components/ui/primitives";
+import { SiteLogo } from "@/components/ui/brand";
+import { SITE_URL } from "@/lib/config/site";
 import { getMessages } from "@/lib/i18n";
 import { NavLink } from "./nav-link";
 
-/** Public top bar. `tone="night"` sits on the dark hero band of the landing page. */
-export function MarketingHeader({ tone = "default" }: { tone?: "default" | "night" }) {
+/** Public top bar (niveautest, hjælp, legal pages): the website's floating white bar with the brain + "Forward"
+ *  logo, which leads back to mindforward.dk. `tone` is kept for callers; there is no dark variant any more. */
+export function MarketingHeader(_props: { tone?: "default" | "night" }) {
   const t = getMessages();
   const m = t.shell.marketing;
-  const night = tone === "night";
   return (
-    <header className={night ? "relative z-10 bg-night" : "sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur-md"}>
-      <div className="mx-auto flex h-16 max-w-app items-center gap-8 px-4 sm:px-6">
-        <Link href="/" className="rounded-sm" aria-label={t.brand}>
-          <Wordmark size={19} tone={night ? "night" : "default"} />
-        </Link>
-        <nav aria-label={t.shell.mainNav} className="hidden h-16 items-center gap-6 md:flex">
-          <NavLink href="/niveautest" tone={tone}>
-            {m.placement}
-          </NavLink>
-          <NavLink href="/hjaelp" tone={tone}>
-            {m.help}
-          </NavLink>
+    <header className="sticky top-0 z-40 px-4 pt-3 sm:px-6 sm:pt-4">
+      <div className="mx-auto flex h-16 max-w-[1180px] items-center gap-8 rounded-2xl bg-surface/95 px-4 shadow-[0_10px_30px_-20px_var(--color-site-shadow)] ring-1 ring-site-line backdrop-blur-md sm:h-[72px] sm:px-6">
+        <a href={SITE_URL} className="rounded-lg" aria-label={`${t.brand} – ${m.website}`}>
+          <SiteLogo />
+        </a>
+        <nav aria-label={t.shell.mainNav} className="hidden h-full items-center gap-6 md:flex">
+          <NavLink href="/niveautest">{m.placement}</NavLink>
+          <NavLink href="/hjaelp">{m.help}</NavLink>
         </nav>
-        <div className="ml-auto flex items-center gap-1 sm:gap-2">
-          <Link
-            href="/log-ind"
-            className={`flex h-9 items-center whitespace-nowrap rounded-sm px-2 text-label sm:px-3 transition-colors ${night ? "text-on-night-muted hover:text-on-night" : "text-ink-muted hover:bg-sunken hover:text-ink"}`}
-          >
+        <div className="ml-auto flex items-center gap-1 sm:gap-3">
+          <Link href="/log-ind" className="hidden px-3 text-[14.5px] font-medium text-site-ink transition-colors hover:text-site-blue sm:block">
             {m.login}
           </Link>
-          <ButtonLink href="/opret" size="sm" trailingIcon="arrowRight" className={`max-sm:px-3 max-sm:[&_svg]:hidden ${night ? "bg-night-accent text-night! hover:bg-on-night" : ""}`}>
+          <Link href="/opret" className="rounded-xl bg-site-navy px-5 py-2.5 text-[15px] font-semibold whitespace-nowrap text-on-sidebar transition hover:bg-site-navy-hover sm:px-6 sm:py-3">
             {m.signup}
-          </ButtonLink>
+          </Link>
         </div>
       </div>
     </header>

@@ -21,8 +21,8 @@ interface Strings {
 }
 
 const OPTION =
-  "flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-3 text-body text-ink transition-[background-color,border-color] duration-[120ms] hover:border-line-strong has-checked:border-accent has-checked:bg-accent-soft has-focus-visible:shadow-ring";
-const RADIO = "mt-1 size-4 shrink-0 cursor-pointer accent-accent";
+  "flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-3 text-body text-ink transition-[background-color,border-color] duration-[120ms] hover:border-line-strong has-checked:border-site-blue has-checked:bg-site-soft has-focus-visible:shadow-ring";
+const RADIO = "mt-1 size-4 shrink-0 cursor-pointer accent-site-blue";
 
 const fill = (s: string, vars: Record<string, number>) => s.replace(/\{(\w+)\}/g, (m, k: string) => (k in vars ? String(vars[k]) : m));
 
@@ -59,17 +59,17 @@ export function PlacementForm({
         </label>
       </div>
 
-      <div className="sticky top-16 z-30 -mx-4 flex flex-col gap-2 border-b border-line bg-bg/95 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
+      <div className="sticky top-[88px] z-30 flex flex-col gap-2 rounded-[18px] bg-surface/95 px-5 py-3.5 shadow-[0_18px_40px_-28px_var(--color-site-shadow)] ring-1 ring-site-line backdrop-blur-md sm:top-[104px]">
         <div className="flex items-center justify-between gap-4">
           <span className="text-label text-ink">{t.questionsTitle}</span>
-          <span className="font-mono text-mono text-ink-muted tabular-nums" data-testid="progress">
+          <span className="text-[13.5px] font-medium text-site-body tabular-nums" data-testid="progress">
             {fill(t.progress, { answered, total })}
           </span>
         </div>
         <ProgressBar value={answered} max={total} label={fill(t.progress, { answered, total })} tone={answered === total ? "success" : "accent"} />
       </div>
 
-      <div className="rounded-card border border-line bg-surface p-6">
+      <div className="rounded-[18px] bg-surface p-6 shadow-[0_18px_40px_-28px_var(--color-site-shadow)] ring-1 ring-site-line sm:p-7">
         <fieldset className="flex min-w-0 flex-col gap-6">
           <legend className="mb-6 text-title-3 text-ink">{t.profileTitle}</legend>
           {test.profileQuestions.map((p) => (
@@ -92,10 +92,10 @@ export function PlacementForm({
       <h2 className="sr-only">{t.questionsTitle}</h2>
       <ol className="flex flex-col gap-6">
         {test.questions.map((q, i) => (
-          <li key={q.id} className="rounded-card border border-line bg-surface p-6">
+          <li key={q.id} className="rounded-[18px] bg-surface p-6 shadow-[0_18px_40px_-28px_var(--color-site-shadow)] ring-1 ring-site-line sm:p-7">
             <fieldset className="flex min-w-0 flex-col gap-4">
               <legend className="mb-4 flex flex-col gap-2">
-                <span className="font-mono text-mono text-ink-subtle tabular-nums">{fill(t.questionLabel, { n: i + 1, total })}</span>
+                <span className="text-[12px] font-semibold tracking-[0.12em] text-site-blue uppercase tabular-nums">{fill(t.questionLabel, { n: i + 1, total })}</span>
                 <span className="text-title-3 text-ink">{q.prompt}</span>
               </legend>
               {q.context && (

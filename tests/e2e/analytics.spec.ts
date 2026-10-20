@@ -33,7 +33,7 @@ test("PostHog stores nothing before analytics consent and persists only after it
     return route.fulfill({ status: 200, contentType: "application/json", body: '{"status":1}' });
   });
 
-  await page.goto("/");
+  await page.goto("/niveautest");
   await expect(page.getByTestId("cookie-banner")).toBeVisible();
   // PostHog loaded and sent an (anonymous, cookieless) page view.
   await expect.poll(() => captured.length, { timeout: 15_000 }).toBeGreaterThan(0);

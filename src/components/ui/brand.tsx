@@ -58,7 +58,7 @@ export function AppWordmark({ size = 22, tone = "default", className = "" }: { s
   );
 }
 
-/** Website logo (mindforward.dk, Oct 2026): duotone brain + "Forward". Used on the login/signup pages so they match the site. */
+/** Website logo (mindforward.dk, Oct 2026): duotone brain + "Forward". `light` = white, for the dark app sidebar. */
 /** Duotone brain from the website logo ("Mind"). Sized and coloured by the caller. */
 export function BrainMark({ className = "" }: { className?: string }) {
   return (
@@ -69,11 +69,11 @@ export function BrainMark({ className = "" }: { className?: string }) {
   );
 }
 
-export function SiteLogo({ className = "" }: { className?: string }) {
+export function SiteLogo({ tone = "default", className = "" }: { tone?: "default" | "light"; className?: string }) {
   return (
     <span className={`inline-flex items-center gap-1 ${className}`}>
-      <BrainMark className="size-9 shrink-0 fill-site-brain" />
-      <span className="text-[23px] font-extrabold tracking-tighter text-site-ink">Forward</span>
+      <BrainMark className={`size-9 shrink-0 ${tone === "light" ? "fill-on-sidebar" : "fill-site-brain"}`} />
+      <span className={`font-site text-[23px] font-extrabold tracking-tighter ${tone === "light" ? "text-on-sidebar" : "text-site-ink"}`}>Forward</span>
     </span>
   );
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { signOut } from "@/app/(learner)/konto/actions";
-import { AppWordmark } from "@/components/ui/brand";
+import { SiteLogo } from "@/components/ui/brand";
 import { Icon, type IconName, type IconTone } from "@/components/ui/icons";
 import { cx } from "@/components/ui/primitives";
 import { getMessages } from "@/lib/i18n";
@@ -213,7 +213,7 @@ function SidebarContent({ groups, rail = false }: { groups: SidebarGroup[]; rail
   return (
     <div className={cx("flex min-h-full flex-col px-5 pt-7 pb-4 in-data-collapsed:px-3", rail && "relative")}>
       <Link href="/hjem" className="self-start rounded-md px-2.5 pb-5 in-data-collapsed:self-center in-data-collapsed:px-0" aria-label={t.brand}>
-        <AppWordmark size={22} tone="light" className="in-data-collapsed:[&>span]:sr-only" />
+        <SiteLogo tone="light" className="in-data-collapsed:[&>span]:sr-only" />
       </Link>
       <nav aria-label={t.shell.mainNav} className="flex flex-col gap-1">
         {groups.map((g, i) => (
@@ -272,7 +272,7 @@ export function AppFrame({ groups = learnerGroups(), children }: { groups?: Side
         closeLabel={t.shell.closeMenu}
         bar={
           <Link href="/hjem" aria-label={t.brand} className="rounded-sm">
-            <AppWordmark size={19} tone="light" />
+            <SiteLogo tone="light" />
           </Link>
         }
       >
