@@ -12,6 +12,14 @@
   font-style: normal;
   font-display: swap;
 }
+/* Inter (SIL OFL 1.1): the new website's face, used on the login/signup pages (Marco 20 Oct 2026). */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: "Schibsted Grotesk";
   src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2");
@@ -129,6 +137,20 @@
   /* Logo mark (head + forward arrow). On the dark sidebar the navy parts turn white. */
   --mf-logo-navy: #071b60;
   --mf-logo-blue: #2858c4;
+  /* New website (mindforward.dk, Oct 2026) — the login/signup pages match it. */
+  --mf-site-bg: #edf1fd;
+  --mf-site-navy: #0e1a3d;
+  --mf-site-navy-hover: #1b2a5c;
+  --mf-site-ink: #14161c;
+  --mf-site-body: #3b3f48;
+  --mf-site-blue: #3a5bd9;
+  --mf-site-blue-light: #5b7cf0;
+  --mf-site-blue-deep: #2c46b8;
+  --mf-site-soft: #f6f8fe;
+  --mf-site-brain: #1e3a8a;
+  --mf-site-line: rgb(20 22 28 / 0.08);
+  --mf-site-shadow: rgb(20 22 28 / 0.4);
+  --mf-site-navy-shadow: rgb(14 26 61 / 0.7);
   /* Hero card for the current entity. White text stays ≥ 5:1 on every stop where text sits. */
   --mf-hero-from: #1d4fd8;
   --mf-hero-mid: #2a5fe6;
@@ -268,6 +290,19 @@
   --color-tile-ink-from: var(--mf-tile-ink-from);
   --color-tile-ink-to: var(--mf-tile-ink-to);
   --color-sidebar: var(--mf-sidebar);
+  --color-site-bg: var(--mf-site-bg);
+  --color-site-navy: var(--mf-site-navy);
+  --color-site-navy-hover: var(--mf-site-navy-hover);
+  --color-site-ink: var(--mf-site-ink);
+  --color-site-body: var(--mf-site-body);
+  --color-site-blue: var(--mf-site-blue);
+  --color-site-blue-light: var(--mf-site-blue-light);
+  --color-site-blue-deep: var(--mf-site-blue-deep);
+  --color-site-soft: var(--mf-site-soft);
+  --color-site-brain: var(--mf-site-brain);
+  --color-site-line: var(--mf-site-line);
+  --color-site-shadow: var(--mf-site-shadow);
+  --color-site-navy-shadow: var(--mf-site-navy-shadow);
   --color-sidebar-raised: var(--mf-sidebar-raised);
   --color-sidebar-active: var(--mf-sidebar-active);
   --color-sidebar-hover: var(--mf-sidebar-hover);
@@ -300,6 +335,7 @@
   --color-accent-fg: var(--mf-on-accent);
 
   --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-site: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 
   /* Type scale → text-display-xl, text-title-1 … (size, leading, tracking, weight in one class) */
