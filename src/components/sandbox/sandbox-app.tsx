@@ -36,7 +36,8 @@ export function SandboxApp(props: SandboxProps) {
   const [turns, setTurns] = useState<ChatTurnView[]>(props.turns);
   const [conversationId, setConversationId] = useState<string | null>(props.conversationId);
   const [notice, setNotice] = useState<string | null>(null);
-  const [pane, setPane] = useState<Pane>(skin.shell === "APP_RAIL_SIDE_PANEL" ? "content" : "chat");
+  // With a prefilled prompt the chat opens first, also in the app-rail shell, so the text is in view.
+  const [pane, setPane] = useState<Pane>(skin.shell === "APP_RAIL_SIDE_PANEL" && !props.initialDraft ? "content" : "chat");
   const compact = skin.tokens.density === "compact";
 
   // Actions are serialized so events reach the server in the order the user made them.
@@ -210,6 +211,7 @@ export function SandboxApp(props: SandboxProps) {
       connectors={(["mail", "calendar", "files", "crm", "sheet"] as const).map((id) => ({ id, label: t.connectors.names[id], icon: CONNECTOR_ICONS[id], connected: state.connectors[id].connected }))}
       practice={(props.practice?.items ?? []).map((i) => t.practice.kinds[i.kind])}
       onOpenConnectors={() => navigate("connectors", "CONNECTORS")}
+      initialText={props.initialDraft}
     />
   );
 

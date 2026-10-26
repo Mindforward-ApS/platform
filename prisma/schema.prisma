@@ -444,33 +444,34 @@ model User {
   lastActiveAt             DateTime?
   deletionRequestedAt      DateTime? // GDPR erasure: hard-deleted by job within 30 days
 
-  sessions             Session[]
-  accounts             Account[]
-  twoFactors           TwoFactor[]
-  memberships          Membership[]
-  invitationsSent      Invitation[]
-  assignments          Assignment[]          @relation("AssignmentLearner")
-  assignmentsCreated   Assignment[]          @relation("AssignmentAssigner")
-  attempts             Attempt[]
-  certificates         Certificate[]
-  monthlyAssignments   MonthlyAssignment[]
-  placementResults     PlacementResult[]
-  consentRecords       ConsentRecord[]
-  emailMessages        EmailMessage[]
-  supportConversations SupportConversation[]
-  escalations          Escalation[]          @relation("EscalationUser")
-  escalationsResolved  Escalation[]          @relation("EscalationResolver")
-  auditLogs            AuditLog[]
-  sandboxSessions      SandboxSession[]
-  sandboxEvents        SandboxEvent[]
-  aiUsageDaily         AiUsageDaily[]
-  aiCalls              AiCall[]
-  withdrawalRequests   WithdrawalRequest[]
-  trackEnrollments     TrackEnrollment[]
-  credentialTransfers  CredentialTransfer[]
-  certificateShares    CertificateShare[]
-  workProfiles         WorkProfile[]
-  connectorDemoRuns    ConnectorDemoRun[]
+  sessions                Session[]
+  accounts                Account[]
+  twoFactors              TwoFactor[]
+  memberships             Membership[]
+  invitationsSent         Invitation[]
+  assignments             Assignment[]             @relation("AssignmentLearner")
+  assignmentsCreated      Assignment[]             @relation("AssignmentAssigner")
+  attempts                Attempt[]
+  certificates            Certificate[]
+  courseLessonCompletions CourseLessonCompletion[]
+  monthlyAssignments      MonthlyAssignment[]
+  placementResults        PlacementResult[]
+  consentRecords          ConsentRecord[]
+  emailMessages           EmailMessage[]
+  supportConversations    SupportConversation[]
+  escalations             Escalation[]             @relation("EscalationUser")
+  escalationsResolved     Escalation[]             @relation("EscalationResolver")
+  auditLogs               AuditLog[]
+  sandboxSessions         SandboxSession[]
+  sandboxEvents           SandboxEvent[]
+  aiUsageDaily            AiUsageDaily[]
+  aiCalls                 AiCall[]
+  withdrawalRequests      WithdrawalRequest[]
+  trackEnrollments        TrackEnrollment[]
+  credentialTransfers     CredentialTransfer[]
+  certificateShares       CertificateShare[]
+  workProfiles            WorkProfile[]
+  connectorDemoRuns       ConnectorDemoRun[]
 
   @@map("user")
 }
@@ -585,25 +586,26 @@ model Organization {
   dpaVersion              String?
   deletedAt               DateTime? // soft delete → hard delete job after 30 days (legal records kept)
 
-  members               Membership[]
-  invitations           Invitation[]
-  subscriptions         Subscription[]
-  assignments           Assignment[]
-  attempts              Attempt[]
-  certificates          Certificate[]
-  monthlyAssignments    MonthlyAssignment[]
-  placementResults      PlacementResult[]
-  emailMessages         EmailMessage[]
-  supportConversations  SupportConversation[]
-  escalations           Escalation[]
-  auditLogs             AuditLog[]
-  sandboxSessions       SandboxSession[]
-  withdrawalRequests    WithdrawalRequest[]
-  trackEnrollments      TrackEnrollment[]
-  credentialTransfersIn CredentialTransfer[]
-  certificateShares     CertificateShare[]
-  workProfiles          WorkProfile[]
-  connectorDemoRuns     ConnectorDemoRun[]
+  members                 Membership[]
+  invitations             Invitation[]
+  subscriptions           Subscription[]
+  assignments             Assignment[]
+  attempts                Attempt[]
+  certificates            Certificate[]
+  courseLessonCompletions CourseLessonCompletion[]
+  monthlyAssignments      MonthlyAssignment[]
+  placementResults        PlacementResult[]
+  emailMessages           EmailMessage[]
+  supportConversations    SupportConversation[]
+  escalations             Escalation[]
+  auditLogs               AuditLog[]
+  sandboxSessions         SandboxSession[]
+  withdrawalRequests      WithdrawalRequest[]
+  trackEnrollments        TrackEnrollment[]
+  credentialTransfersIn   CredentialTransfer[]
+  certificateShares       CertificateShare[]
+  workProfiles            WorkProfile[]
+  connectorDemoRuns       ConnectorDemoRun[]
 
   @@index([type])
   @@map("organization")
@@ -772,6 +774,7 @@ model Track {
   contentSources   ContentSource[]
   sandboxSessions  SandboxSession[]
   enrollments      TrackEnrollment[]
+  courses          Course[]
 
   @@map("track")
 }
@@ -1765,4 +1768,132 @@ model CompanyLookupCache {
   fetchedAt DateTime @default(now())
 
   @@map("company_lookup_cache")
+}
+
+// ───────────────────────────── Forløb (courses) ─────────────────────────────
+// Step-by-step courses per tool (ChatGPT, Claude, Copilot): levels → modules → lessons, plus a test per level.
+// Separate from Module/ModuleVersion on purpose: those feed the module catalog, placement plans, monthly packages and
+// the content engine; course modules must not appear there. Content comes from content/forloeb/forloeb.json via
+// `pnpm db:seed:forloeb` (idempotent upserts on the JSON ids, stored in `slug`). Additive tables only.
+
+/// "klar" = can be opened; "kommer-snart" = visible, greyed out, cannot be opened. Unlocked per row without code changes.
+enum CourseContentStatus {
+  READY       @map("klar")
+  COMING_SOON @map("kommer-snart")
+}
+
+model Course {
+  id         String              @id @default(cuid())
+  slug       String              @unique // JSON id, also the URL segment: /forloeb/<slug>
+  trackId    String
+  track      Track               @relation(fields: [trackId], references: [id])
+  toolName   String // "ChatGPT" — text only, never a logo
+  toolUrl    String
+  headline   String
+  disclaimer String
+  status     CourseContentStatus @default(COMING_SOON)
+  sortOrder  Int                 @default(0)
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+
+  levels      CourseLevel[]
+  completions CourseLessonCompletion[]
+
+  @@index([trackId])
+  @@map("course")
+}
+
+model CourseLevel {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  nr        Int
+  name      String // "Grøn"
+  title     String
+  outcome   String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  modules CourseModule[]
+  test    CourseTest?
+
+  @@index([courseId, sortOrder])
+  @@map("course_level")
+}
+
+model CourseModule {
+  id          String              @id @default(cuid())
+  slug        String              @unique
+  levelId     String
+  level       CourseLevel         @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  nr          Int
+  title       String
+  description String
+  status      CourseContentStatus @default(COMING_SOON)
+  sortOrder   Int                 @default(0)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  lessons CourseLesson[]
+
+  @@index([levelId, sortOrder])
+  @@map("course_module")
+}
+
+model CourseLesson {
+  id        String              @id @default(cuid())
+  slug      String              @unique
+  moduleId  String
+  module    CourseModule        @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  nr        String // "1.1"
+  title     String
+  minutes   Int
+  badges    String[]            @default([]) // shown in JSON order
+  status    CourseContentStatus @default(COMING_SOON)
+  content   Json? // { know, tryIt, quiz } — only for READY lessons; validated by src/lib/schemas/course.ts
+  sortOrder Int                 @default(0)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  completions CourseLessonCompletion[]
+
+  @@index([moduleId, sortOrder])
+  @@map("course_lesson")
+}
+
+/// One test after each level. The questions come later; only title/description/time/pass mark for now.
+model CourseTest {
+  id          String              @id @default(cuid())
+  slug        String              @unique
+  levelId     String              @unique
+  level       CourseLevel         @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  minutes     Int
+  passPercent Int                 @default(80)
+  status      CourseContentStatus @default(COMING_SOON)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@map("course_test")
+}
+
+/// A lesson is completed when its check question was answered correctly. Per user, per org (like Assignment), per course.
+model CourseLessonCompletion {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId       String
+  course         Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId       String
+  lesson         CourseLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completedAt    DateTime     @default(now())
+
+  @@unique([organizationId, userId, lessonId])
+  @@index([organizationId, userId, courseId])
+  @@map("course_lesson_completion")
 }

@@ -17,6 +17,7 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
+    "db:seed:forloeb": "tsx --conditions=react-server prisma/seed/forloeb.ts",
     "content:validate": "tsx scripts/content-validate.ts",
     "sandbox:schema": "tsx scripts/sandbox-schema.ts",
     "postinstall": "prisma generate",

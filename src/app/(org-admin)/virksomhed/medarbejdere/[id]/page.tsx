@@ -4,7 +4,7 @@ import { AdminShell, Section } from "@/components/admin/admin-shell";
 import { StatusBadge } from "@/components/admin/admin-ui";
 import { Avatar, HeroCard, HeroChips, HeroMeta, HeroTitle } from "@/components/ui/cards";
 import { Icon } from "@/components/ui/icons";
-import { Badge, EmptyState, Notice, Stat, Table, TextLink, type Tone } from "@/components/ui/primitives";
+import { Badge, EmptyState, Notice, ProgressBar, Stat, Table, TextLink, type Tone } from "@/components/ui/primitives";
 import { formatDateDa } from "@/lib/format-date";
 import { format, getMessages } from "@/lib/i18n";
 import { assertBusinessOrg } from "@/server/admin/context";
@@ -137,6 +137,31 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
                 <span className="text-body-sm text-ink-muted">{formatDateDa(cert.issuedAt)}</span>
               </li>
             ))}
+          </ul>
+        )}
+      </Section>
+
+      <Section title={getMessages().courses.admin.title} description={getMessages().courses.admin.description}>
+        {detail.courses.length === 0 ? (
+          <p className="text-body-sm text-ink-muted">{getMessages().courses.admin.none}</p>
+        ) : (
+          <ul className="-mx-6 -my-6 flex flex-col divide-y divide-line sm:-mx-7" data-testid="member-courses">
+            {detail.courses.flatMap((course) =>
+              course.modules.map((m) => {
+                const label = format(getMessages().courses.admin.progress, { done: m.completed, total: m.total });
+                return (
+                  <li key={`${course.courseSlug}-${m.nr}`} className="flex flex-col gap-2 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+                    <span className="text-body text-ink">
+                      {course.toolName} · {format(getMessages().courses.admin.module, { nr: m.nr, title: m.title })}
+                    </span>
+                    <span className="flex items-center gap-3 sm:w-64">
+                      <ProgressBar value={m.completed} max={m.total} tone="success" label={label} />
+                      <span className="shrink-0 text-body-sm text-ink-muted tabular-nums">{label}</span>
+                    </span>
+                  </li>
+                );
+              }),
+            )}
           </ul>
         )}
       </Section>

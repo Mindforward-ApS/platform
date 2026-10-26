@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { z } from "zod";
 import { Suspense } from "react";
 import { RealConnectorsStrip } from "@/components/profile/real-connectors-strip";
 import { SandboxApp } from "@/components/sandbox/sandbox-app";
@@ -16,8 +17,12 @@ import { getOrCreateFreePlaySession, SandboxError } from "@/server/sandbox/servi
 // "Fri leg" sandbox per track (docs/04): /sandkasse/chatgpt, /sandkasse/copilot, /sandkasse/claude.
 const TRACK_KEYS: Record<string, TrackKey> = { chatgpt: "CHATGPT", copilot: "COPILOT", claude: "CLAUDE", gemini: "GEMINI" };
 
-async function Sandbox({ params }: { params: Promise<{ track: string }> }) {
+// ?tekst=… (from a forløb lesson): put in the composer, never sent. Plain text, capped; anything else is ignored.
+const draftParam = z.string().trim().min(1).max(1000);
+
+async function Sandbox({ params, searchParams }: { params: Promise<{ track: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { track } = await params;
+  const draft = draftParam.safeParse((await searchParams).tekst);
   const trackKey = TRACK_KEYS[track];
   if (!trackKey) notFound();
   const ctx = await guardPage(() => requireActiveMembership(["OWNER", "ADMIN", "LEARNER"]), `/sandkasse/${track}`);
@@ -52,7 +57,7 @@ async function Sandbox({ params }: { params: Promise<{ track: string }> }) {
     <div className="mf-sandbox-page contents lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
       {/* mf-sandbox: the app's v3 kit styles (`app:` variant) stop here; the sandbox keeps its own look. */}
       <div className="mf-sandbox contents lg:flex lg:min-h-0 lg:flex-1 lg:flex-col lg:[&>*]:h-auto! lg:[&>*]:min-h-[420px]! lg:[&>*]:flex-1">
-        <SandboxApp key={session.id} {...props} tracks={trackLinks} practice={practice ? { ...practice, canDemo } : null} />
+        <SandboxApp key={session.id} {...props} tracks={trackLinks} practice={practice ? { ...practice, canDemo } : null} initialDraft={draft.success ? draft.data : undefined} />
       </div>
       {platform && real && (
         <RealConnectorsStrip platformName={getMessages().profile.platforms[platform]} platformSlug={track} industry={real.profile.industry?.name ?? ""} names={real.recommended.map((r) => r.name)} />
@@ -64,7 +69,7 @@ async function Sandbox({ params }: { params: Promise<{ track: string }> }) {
 export default function SandboxPage(props: PageProps<"/sandkasse/[track]">) {
   return (
     <Suspense>
-      <Sandbox params={props.params} />
+      <Sandbox params={props.params} searchParams={props.searchParams} />
     </Suspense>
   );
 }

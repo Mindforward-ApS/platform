@@ -78,6 +78,8 @@ export interface SandboxProps {
   variant?: "page" | "task";
   practice?: PracticeView | null;
   tracks?: TrackLink[];
+  /** Free play only: text put in the composer on open (e.g. a forløb lesson's "Prøv selv" prompt). Never sent automatically. */
+  initialDraft?: string;
   skin: SkinConfig;
   initialState: SandboxState;
   conversationId: string | null;

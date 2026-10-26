@@ -1,4 +1,5 @@
 import "server-only";
+import { getMemberCourseProgress, type MemberCourseProgress } from "@/server/courses/service";
 import type { JobRole, MembershipRole, PrismaClient } from "@/generated/prisma/client";
 import { assertAdminSafe } from "./allowed-fields";
 import { certificatesVisibleIn } from "@/server/certificates/transfer";
@@ -143,6 +144,8 @@ export async function listOpenInvitations(db: PrismaClient, organizationId: stri
 export interface EmployeeDetail {
   row: EmployeeRow;
   modules: { slug: string; title: string; status: string; bestScorePct: number | null; passedAt: Date | null }[];
+  /** Forløb: lessons completed per open module (today module 1), per course. Counts only. */
+  courses: MemberCourseProgress[];
 }
 
 /** V4: one employee's progress — modules (status, best score, date) and certificates. */
@@ -164,8 +167,10 @@ export async function employeeDetail(db: PrismaClient, organizationId: string, b
     },
   });
   if (!row) return null;
+  const courses = await getMemberCourseProgress(db, { organizationId, userId: member.userId });
   return assertAdminSafe({
     row,
+    courses,
     modules: assignments.map((a) => ({
       slug: a.module.slug,
       title: a.module.versions[0]?.title ?? a.module.slug,

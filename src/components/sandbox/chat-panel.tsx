@@ -49,10 +49,12 @@ interface Props {
   /** The learner's industry practice connectors (neutral names). */
   practice?: string[];
   onOpenConnectors?: () => void;
+  /** Text already in the composer when the panel opens (free play from a forløb lesson). */
+  initialText?: string;
 }
 
-export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined }: Props) {
-  const [text, setText] = useState("");
+export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined, initialText = "" }: Props) {
+  const [text, setText] = useState(initialText);
   const [attachments, setAttachments] = useState<string[]>([]);
   const [picker, setPicker] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);

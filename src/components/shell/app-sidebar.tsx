@@ -44,6 +44,8 @@ export function learnerGroups(): SidebarGroup[] {
       label: t.learnGroup,
       items: [
         { href: "/hjem", label: t.learner.home, icon: "home", tone: "blue" },
+        // Forløb per tool (ChatGPT, Claude, Copilot); /forloeb opens ChatGPT. Text only, no vendor logos.
+        { href: "/forloeb", label: getMessages().courses.navLabel, icon: "route", tone: "mint" },
         {
           href: "/moduler",
           label: t.learner.modules,
