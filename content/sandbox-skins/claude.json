@@ -5,6 +5,10 @@
   "regions": ["nav", "history", "chat", "composer", "workspace", "notifications"],
   "nav": [
     { "id": "new-chat", "labelKey": "newChat", "concept": "CHAT" },
+    { "id": "assistants", "labelKey": "assistants", "concept": "ASSISTANTS" },
+    { "id": "connectors", "labelKey": "connectors", "concept": "CONNECTORS" },
+    { "id": "automations", "labelKey": "automations", "concept": "AUTOMATIONS" },
+    { "id": "agents", "labelKey": "agents", "concept": "AGENTS" },
     { "id": "files", "labelKey": "files", "concept": "FILES" },
     { "id": "mail", "labelKey": "mail", "concept": "MAIL" },
     { "id": "calendar", "labelKey": "calendar", "concept": "CALENDAR" },
