@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { CourseDisclaimer, LessonBadges } from "@/components/courses/course-ui";
 import { LessonQuiz } from "@/components/courses/lesson-quiz";
-import { Icon } from "@/components/ui/icons";
-import { Button, ButtonLink, Card, EmptyState, TextLink } from "@/components/ui/primitives";
+import { AppIcon, Icon } from "@/components/ui/icons";
+import { Button, ButtonLink, Card, TextLink } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import type { TryIt } from "@/lib/schemas/course";
 import { requireActiveMembership } from "@/server/auth/authz";
@@ -50,17 +50,16 @@ async function Lesson({ params }: { params: Promise<{ spor: string; lektion: str
   if (found.kind === "locked") {
     return (
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 pt-8 pb-16 sm:px-6 in-[.app-panel]:mx-0 lg:in-[.app-panel]:px-11">
-        <EmptyState
-          icon="lock"
-          title={t.locked.title}
-          action={
-            <ButtonLink href={`/forloeb/${found.courseSlug}`} variant="secondary">
-              {t.lesson.backToCourse}
-            </ButtonLink>
-          }
-        >
-          {found.title}. {t.locked.body}
-        </EmptyState>
+        <div className="flex w-full flex-col items-center gap-4 rounded-card border border-dashed border-line-strong/40 bg-surface px-6 py-16 text-center sm:py-20" data-testid="lesson-locked">
+          <AppIcon name="lock" size="xl" />
+          <h1 className="text-title-2 text-ink">{t.locked.title}</h1>
+          <p className="max-w-md text-body text-ink-muted">
+            {found.title}. {t.locked.body}
+          </p>
+          <ButtonLink href={`/forloeb/${found.courseSlug}`} variant="secondary" className="mt-2">
+            {t.lesson.backToCourse}
+          </ButtonLink>
+        </div>
       </main>
     );
   }
