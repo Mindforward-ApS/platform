@@ -68,7 +68,7 @@ export async function runStart(db: PrismaClient, args: StartArgs): Promise<{ red
   }
 }
 
-async function createPersonalOrg(db: PrismaClient, user: { id: string; name: string }): Promise<Organization> {
+export async function createPersonalOrg(db: PrismaClient, user: { id: string; name: string }): Promise<Organization> {
   return db.$transaction(async (tx) => {
     // Re-check inside the transaction so two concurrent /start requests cannot create two PERSONAL orgs.
     await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`personal-org:${user.id}`}))`;

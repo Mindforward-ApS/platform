@@ -27,6 +27,8 @@ export const serverEnvSchema = z
     INNGEST_SIGNING_KEY: optionalString,
     INNGEST_DEV: flag,
     ENABLE_DEBUG_ROUTES: flag,
+    // Preview only: /api/dev/adgang signs in a fixed demo user without email (Marco 26 Oct 2026). Forbidden in production.
+    PREVIEW_AUTO_LOGIN: flag,
     LOG_LEVEL: z.preprocess((v) => (v === "" ? undefined : v), z.enum(["debug", "info", "warn", "error"]).default("info")),
 
     // M1 — auth (Better Auth)
@@ -148,7 +150,7 @@ export const serverEnvSchema = z
     if (env.ENABLE_DEBUG_ROUTES) {
       ctx.addIssue({ code: "custom", path: ["ENABLE_DEBUG_ROUTES"], message: "må ikke være slået til i produktion" });
     }
-    for (const key of ["ALLOW_UNPUBLISHED_MODULES", "GRADER_MOCK", "CLICK_TASK_MOCK", "STRIPE_MOCK", "JOBS_INLINE"] as const) {
+    for (const key of ["ALLOW_UNPUBLISHED_MODULES", "GRADER_MOCK", "CLICK_TASK_MOCK", "STRIPE_MOCK", "JOBS_INLINE", "PREVIEW_AUTO_LOGIN"] as const) {
       if (env[key]) ctx.addIssue({ code: "custom", path: [key], message: "må ikke være slået til i produktion" });
     }
   });
