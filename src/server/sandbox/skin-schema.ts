@@ -9,7 +9,7 @@ import { CONCEPTS } from "./events";
 export const TERM_KEYS = [
   "chat", "newChat", "history", "assistants", "newAssistant", "connectors", "automations", "agents", "mail", "calendar",
   "files", "crm", "sheet", "attach", "tools", "settings", "notifications", "reset",
-  "new", "search", "projects", "artifacts", "scheduled", "customize", "more",
+  "new", "search", "projects", "artifacts", "scheduled", "customize", "more", "library", "plugins", "explore", "gpts", "scheduledShort",
 ] as const;
 export type TermKey = (typeof TERM_KEYS)[number];
 

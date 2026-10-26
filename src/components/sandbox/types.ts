@@ -78,6 +78,8 @@ export interface CatalogItem {
   categories: string[];
   data: ("mail" | "calendar" | "files" | "crm" | "sheet")[];
   featured: number;
+  /** Short description (plugin directory); absent in the connector catalog. */
+  description?: string;
 }
 
 /** A skill or plugin under "Tilpasning" (real name as text only). */
@@ -100,6 +102,8 @@ export interface SandboxProps {
   tracks?: TrackLink[];
   /** Connector catalog for the Forbindelser view and the "+" menu. */
   catalog: CatalogItem[];
+  /** Plugin directory sections (sidebar-chat shell), in the tool's order. */
+  pluginSections?: { title: string; ids: string[] }[];
   /** Skills and plugins for "Tilpasning" (the workpane shell). */
   customize?: { skills: CustomizeItem[]; plugins: CustomizeItem[] };
   /** Free play only: text put in the composer on open (e.g. a forløb lesson's "Prøv selv" prompt). Never sent automatically. */

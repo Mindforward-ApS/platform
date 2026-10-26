@@ -7,6 +7,7 @@ import { buildSheetCells } from "./tools";
 import { formatDayLabel, loadWorld, resolveDay } from "./world";
 import { loadConnectorCatalog } from "./connector-catalog";
 import { loadCustomizeCatalog } from "./customize-catalog";
+import { loadPluginDirectory } from "./chatgpt-plugins";
 
 /** Seed world + session overlay → serializable props for the sandbox UI (own session only). */
 export async function buildSandboxProps(db: PrismaClient, owner: Owner, session: SandboxSession): Promise<SandboxProps> {
@@ -21,7 +22,8 @@ export async function buildSandboxProps(db: PrismaClient, owner: Owner, session:
   return {
     sessionId: session.id,
     skin: loadSkin(session.skinKey),
-    catalog: loadConnectorCatalog(),
+    // The sidebar-chat track has its own tool's plugin directory; the other tracks use the connector catalog.
+    ...(session.skinKey === "chatgpt" ? { catalog: loadPluginDirectory().items, pluginSections: loadPluginDirectory().sections } : { catalog: loadConnectorCatalog() }),
     customize: loadCustomizeCatalog(),
     initialState: state,
     conversationId,

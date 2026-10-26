@@ -28,11 +28,11 @@ test("learner opens the sandbox from /konto, sends a chat message and sees an Ø
   await expect(page.getByTestId("sandbox-nav").getByRole("button", { name: "Ny chat" })).toBeVisible();
 
   // Client-side PII block: never sent.
-  await page.getByLabel("Skriv til Øvemodel …").fill("Mit CPR er 010190-1234");
+  await page.getByLabel("Spørg Øvemodel").fill("Mit CPR er 010190-1234");
   await page.getByRole("button", { name: "Send" }).click();
   await expect(page.getByTestId("pii-blocked")).toContainText("CPR-nummer");
 
-  await page.getByLabel("Skriv til Øvemodel …").fill("Hvem er du?");
+  await page.getByLabel("Spørg Øvemodel").fill("Hvem er du?");
   await page.getByRole("button", { name: "Send" }).click();
   await expect(page.getByTestId("model-label").first()).toHaveText("Øvemodel");
   await expect(page.getByTestId("sandbox-chat")).toContainText("Dette er et testsvar fra øvemodellen.");

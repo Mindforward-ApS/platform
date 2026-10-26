@@ -32,3 +32,16 @@ describe("skills and plugins in the session state", () => {
     expect(applyEvent(initialState(), set("effort", "max")).installed).toBeUndefined();
   });
 });
+
+describe("plugin directory (sidebar-chat shell)", () => {
+  it("loads unique plugins, sections that only point at known ids, and mail/files/calendar/crm practice data", async () => {
+    const { loadPluginDirectory } = await import("@/server/sandbox/chatgpt-plugins");
+    const d = loadPluginDirectory();
+    const ids = new Set(d.items.map((i) => i.id));
+    expect(ids.size).toBe(d.items.length);
+    for (const s of d.sections) for (const id of s.ids) expect(ids.has(id)).toBe(true);
+    const reach = new Set(d.items.flatMap((i) => i.data));
+    for (const k of ["mail", "files", "calendar", "crm"]) expect(reach.has(k as never)).toBe(true);
+    expect(d.items.find((i) => i.id === "gmail")?.featured).toBe(1);
+  });
+});

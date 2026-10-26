@@ -96,7 +96,7 @@ export function ConnectDialog({ item, state, emit, editing, onClose }: { item: C
             <h3 id="connect-title" className="text-title-3 text-ink">
               {step === "signin" ? format(c.signInTitle, { name: item.name }) : format(c.permTitle, { name: item.name })}
             </h3>
-            <span className="text-caption text-ink-subtle">{format(c.madeBy, { name: item.madeBy })}</span>
+            {item.madeBy && <span className="text-caption text-ink-subtle">{format(c.madeBy, { name: item.madeBy })}</span>}
           </div>
         </div>
         <div className="flex min-h-0 flex-col gap-4 overflow-y-auto px-6 py-5">

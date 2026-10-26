@@ -36,7 +36,7 @@ test("gennemfør core-prompt-01 og se bestået-skærmen med kriterier", async ({
   await expect(sandbox.getByTestId("sandbox-disclaimer")).toHaveText("Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google.");
   await sandbox.getByTestId("sandbox-nav").getByRole("button", { name: "Ny chat" }).click();
   await sandbox.getByRole("button", { name: "Tilføj og forbind" }).click();
-  await sandbox.getByRole("button", { name: "Vedhæft en Nordlys-fil" }).click();
+  await sandbox.getByRole("menuitem", { name: /Tilføj fotos og filer/ }).click();
   const attached = page.waitForResponse((r) => /\/api\/sandbox\/[^/]+\/actions$/.test(r.url()) && (r.request().postDataJSON() as { event?: { type?: string } }).event?.type === "CHAT_FILE_ATTACHED");
   await sandbox.getByRole("button", { name: /Tone of voice Nordlys/ }).click();
   const response = await attached;

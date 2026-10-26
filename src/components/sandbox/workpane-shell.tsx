@@ -24,7 +24,7 @@ const TAB_CONCEPT: Record<CustomizeTab, Concept> = { skills: "SKILLS", connector
 export const CUSTOMIZE_CONCEPTS: Concept[] = ["SKILLS", "CONNECTORS", "PLUGINS"];
 
 /** Open/close with outside click and Escape. */
-function usePopover() {
+export function usePopover() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -41,8 +41,8 @@ function usePopover() {
   return { open, setOpen, ref };
 }
 
-const menuBox = "z-30 flex flex-col rounded-xl border border-line bg-surface p-1.5 shadow-lg";
-const menuItem = "flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-body-sm text-ink hover:bg-sunken";
+export const menuBox = "z-30 flex flex-col rounded-xl border border-line bg-surface p-1.5 shadow-lg";
+export const menuItem = "flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-left text-body-sm text-ink hover:bg-sunken";
 
 /* ───────────────────────── Sidebar ───────────────────────── */
 
@@ -182,7 +182,7 @@ function Flyout({ label, icon, children }: { label: string; icon: Parameters<typ
   );
 }
 
-function Switch({ on, label, onChange }: { on: boolean; label: string; onChange: (on: boolean) => void }) {
+export function Switch({ on, label, onChange }: { on: boolean; label: string; onChange: (on: boolean) => void }) {
   return (
     <button type="button" role="switch" aria-checked={on} aria-label={label} onClick={() => onChange(!on)} className={cx("relative h-5 w-9 shrink-0 rounded-full transition-colors", on ? "bg-accent" : "bg-line-strong")}>
       <span className={cx("absolute top-0.5 size-4 rounded-full bg-surface transition-all", on ? "left-[1.125rem]" : "left-0.5")} />

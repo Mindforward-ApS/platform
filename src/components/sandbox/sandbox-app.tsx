@@ -8,6 +8,7 @@ import type { SandboxState } from "@/server/sandbox/reducer";
 import type { NavId } from "@/server/sandbox/skin-schema";
 import { postIntent } from "./api";
 import { ChatPanel } from "./chat-panel";
+import { ChatMenu, ChatSidebar, ChatSuggestions, EffortButton, LibraryView, MicButton, ModeToggle, PlannedView, PluginsView, PluginTabs, SearchDialog, SkillsView, WorkExtras, type ChatMenuSettings, type ChatMode, type Effort } from "./sidebar-chat-shell";
 import { ArtifactsView, WorkpaneSidebar, ComposerMenu, ComposerRow, ComposerTools, CUSTOMIZE_CONCEPTS, CustomizeView, SearchView, TAB_CONCEPT, type ComposerSettings, type CustomizeTab } from "./workpane-shell";
 import { CONCEPT_ICON, MODEL_CONCEPTS, SbIcon } from "./sandbox-icons";
 import type { ChatTurnView, Intent, SandboxProps } from "./types";
@@ -43,6 +44,11 @@ export function SandboxApp(props: SandboxProps) {
   const [customizeTab, setCustomizeTab] = useState<CustomizeTab>("skills");
   const [composer, setComposer] = useState<ComposerSettings>({ research: false, memory: true, effort: "max" });
   const [draft, setDraft] = useState<{ text: string; key: number } | null>(null);
+  // Sidebar-chat shell only: Chat | Work, effort, the "+" menu toggles and the search dialog.
+  const [mode, setMode] = useState<ChatMode>("chat");
+  const [effort, setEffort] = useState<Effort>("medium");
+  const [menuSettings, setMenuSettings] = useState<ChatMenuSettings>({ web: false, research: false });
+  const [searchOpen, setSearchOpen] = useState(false);
 
   // Actions are serialized so events reach the server in the order the user made them.
   const queue = useRef<Promise<unknown>>(Promise.resolve());
@@ -69,6 +75,184 @@ export function SandboxApp(props: SandboxProps) {
     // Phones: jump to what was just opened.
     setPane(target === "CHAT" ? "chat" : "content");
   };
+
+  // Sidebar-chat shell: the real app's structure — sidebar · one main area (Chat/Work start screen, Planlagt,
+  // Bibliotek, Plugins | Skills, GPT'er, or a Nordlys system opened from "Udforsk"). Nothing opens in a new tab.
+  function renderSidebarChat() {
+    const linked = props.catalog.filter((c) => (state.catalog?.linked ?? []).includes(c.id)).map((c) => ({ id: c.id, label: c.name, on: !(state.catalog?.chatOff ?? []).includes(c.id) }));
+    const toggleConnector = (id: string, on: boolean) => emit({ event: { type: "SETTING_CHANGED", payload: { key: on ? "chat-connector-on" : "chat-connector-off", value: id } } });
+    const startChat = (text: string) => {
+      navigate("new-chat", "CHAT");
+      setDraft((d) => ({ text, key: (d?.key ?? 0) + 1 }));
+    };
+    const go = (to: "CONNECTORS" | "SKILLS") => {
+      emit({ event: { type: "UI_NAVIGATED", payload: { concept: to, view: to === "SKILLS" ? "skills" : "connectors" } } });
+      setConcept(to);
+      setPane("content");
+    };
+    const switchMode = (m: ChatMode) => {
+      emit({ event: { type: "SETTING_CHANGED", payload: { key: "chat-mode", value: m } } });
+      setMode(m);
+    };
+    const work = mode === "work";
+    const chatNode = (
+      <ChatPanel
+        key={`${draft?.key ?? 0}-${mode}`}
+        sessionId={sessionId}
+        stepId={stepId}
+        turns={turns}
+        setTurns={setTurns}
+        conversationId={conversationId}
+        setConversationId={setConversationId}
+        files={world.files}
+        attachFromFiles={skin.composer.attachFromFiles}
+        density={skin.tokens.density}
+        emit={emit}
+        wide
+        variant={work ? "center" : "pill"}
+        inline={!work}
+        heading={work ? t.chatShell.work.heading : t.chatShell.chat.heading}
+        placeholder={work ? t.chatShell.work.placeholder : t.chatShell.chat.placeholder}
+        connectors={linked}
+        onToggleConnector={toggleConnector}
+        onOpenConnectors={() => go("CONNECTORS")}
+        initialText={draft?.text ?? props.initialDraft}
+        hideSuggestions
+        menuClassName="w-[min(34rem,calc(100vw-2rem))]"
+        composerTools={
+          <>
+            <EffortButton mode={mode} effort={effort} onEffort={setEffort} emit={emit} />
+            <MicButton />
+          </>
+        }
+        renderMenu={({ close, openPicker }) => (
+          <ChatMenu
+            mode={mode}
+            close={close}
+            openPicker={openPicker}
+            plugins={linked}
+            onTogglePlugin={toggleConnector}
+            settings={menuSettings}
+            onSettings={(n) => setMenuSettings((x) => ({ ...x, ...n }))}
+            onDraft={startChat}
+            onManagePlugins={() => go("CONNECTORS")}
+            emit={emit}
+          />
+        )}
+        belowComposer={
+          turns.length > 0
+            ? undefined
+            : ({ setText }) => (work ? <WorkExtras setText={setText} onFiles={() => navigate("files", "FILES")} onPlugins={() => go("CONNECTORS")} /> : <ChatSuggestions setText={setText} />)
+        }
+      />
+    );
+    const main = (() => {
+      switch (concept) {
+        case "CHAT":
+          return chatNode;
+        case "AUTOMATIONS":
+          return <PlannedView state={state} emit={emit} />;
+        case "FILES":
+          return (
+            <LibraryView
+              files={world.files}
+              emit={emit}
+              onOpenSheet={() => {
+                emit({ event: { type: "SHEET_OPENED", payload: { sheetId: "f15" } } });
+                setConcept("SHEET");
+              }}
+            />
+          );
+        case "CONNECTORS":
+          return <PluginsView catalog={props.catalog} sections={props.pluginSections ?? []} state={state} emit={emit} practice={props.practice ?? null} sessionId={sessionId} />;
+        case "SKILLS":
+          return <SkillsView state={state} emit={emit} onChat={startChat} />;
+        case "ASSISTANTS":
+          return <AssistantsView state={state} files={world.files} emit={emit} title={t.chatShell.gpts.title} />;
+        default:
+          return workspace;
+      }
+    })();
+    const topBar = concept === "CHAT" && turns.length === 0 ? (
+      <div className="flex h-12 shrink-0 items-center justify-center px-4">
+        <ModeToggle mode={mode} onMode={switchMode} />
+      </div>
+    ) : concept === "CONNECTORS" || concept === "SKILLS" ? (
+      <div className="flex h-12 shrink-0 items-center px-4">
+        <PluginTabs concept={concept} onTab={go} />
+      </div>
+    ) : null;
+    const mainPane: Pane = concept === "CHAT" ? "chat" : "content";
+    const active: Pane = pane === "nav" ? "nav" : mainPane;
+    const show = (p: Pane) => (active === p ? "flex" : "hidden lg:flex");
+
+    return (
+      <div
+        className={cx(
+          "flex flex-col overflow-hidden bg-bg",
+          variant === "task" ? "h-[min(44rem,calc(100dvh-8rem))] min-h-[520px] rounded-xl border border-line" : "h-[calc(100dvh-3.5rem)] min-h-[560px] lg:h-[calc(100dvh-5rem)] lg:rounded-b-xl",
+        )}
+        data-shell={skin.shell}
+        data-variant={variant}
+        data-accent={skin.tokens.accentSlot}
+      >
+        <DisclaimerBar />
+        {variant === "task" ? <h3 className="sr-only">{t.title}</h3> : <h1 className="sr-only">{t.title}</h1>}
+        <div role="tablist" aria-label={t.frame.panes} className="flex shrink-0 gap-1 border-b border-line bg-surface px-4 py-2 sm:px-6 lg:hidden">
+          {(["nav", mainPane] as Pane[]).map((p) => (
+            <button
+              key={p}
+              type="button"
+              role="tab"
+              id={`sb-tab-${p}`}
+              aria-selected={active === p}
+              aria-controls={`sb-pane-${p}`}
+              className={cx("flex h-8 flex-1 items-center justify-center rounded-sm text-label transition-colors", active === p ? "bg-accent-soft text-accent-ink" : "text-ink-muted hover:bg-sunken hover:text-ink")}
+              onClick={() => setPane(p)}
+            >
+              {t.frame.paneTabs[p]}
+            </button>
+          ))}
+        </div>
+        {notice && (
+          <div className="shrink-0 border-b border-line bg-surface px-4 py-3 sm:px-6">
+            <Notice>{notice}</Notice>
+          </div>
+        )}
+        <div className="flex min-h-0 flex-1">
+          <aside id="sb-pane-nav" aria-labelledby="sb-tab-nav" className={cx(show("nav"), "w-full min-w-0 flex-col border-line bg-sunken/50 lg:w-64 lg:shrink-0 lg:border-r")}>
+            <ChatSidebar
+              skin={skin}
+              concept={concept}
+              conversations={state.chat.conversations}
+              activeConversation={Boolean(conversationId)}
+              onNav={navigate}
+              onReset={reset}
+              onSearch={() => {
+                emit({ event: { type: "UI_CLICKED", target: "nav.search", payload: { region: "nav", control: "search" } } });
+                setSearchOpen(true);
+              }}
+            />
+          </aside>
+          <main id={`sb-pane-${mainPane}`} aria-labelledby={`sb-tab-${mainPane}`} className={cx(show(mainPane), "min-h-0 min-w-0 flex-1 flex-col bg-surface")}>
+            {topBar}
+            {main}
+          </main>
+        </div>
+        {searchOpen && (
+          <SearchDialog
+            conversations={state.chat.conversations}
+            activeConversation={Boolean(conversationId)}
+            onClose={() => setSearchOpen(false)}
+            onOpen={() => {
+              setSearchOpen(false);
+              navigate("chat", "CHAT");
+            }}
+          />
+        )}
+      </div>
+    );
+  }
 
   // Workpane shell: the real app's structure — sidebar · one main area (chat, Søg, Projekter, Artefakter, Planlagte,
   // Tilpasning or a Nordlys system opened from "Mere"). Nothing opens in a new tab.
@@ -385,6 +569,7 @@ export function SandboxApp(props: SandboxProps) {
   })();
 
   if (shell === "SIDEBAR_CHAT_WORKPANE") return renderWorkpane();
+  if (shell === "SIDEBAR_CHAT") return renderSidebarChat();
 
   // Which regions exist for this shell right now. Phones show one at a time via the pane tabs.
   const showChat = skin.shell !== "SIDEBAR_CHAT" || workspace === null;
@@ -396,7 +581,7 @@ export function SandboxApp(props: SandboxProps) {
   const vis = (p: Pane) => (activePane === p ? "flex" : "hidden lg:flex");
 
   const sidebarWidth = isRail ? "lg:w-[4.75rem]" : "lg:w-64";
-  const sidebarLook = shell === "SIDEBAR_CHAT" ? "bg-sunken lg:border-r-0" : isRail ? "bg-bg" : "bg-bg";
+  const sidebarLook = "bg-bg";
 
   return (
     <div

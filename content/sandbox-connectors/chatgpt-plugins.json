@@ -1,0 +1,645 @@
+{
+ "source": "chatgpt.com/plugins, set 26.10.2026 (offentlige plugins). Navne og korte beskrivelser som tekst.",
+ "plugins": [
+  {
+   "id": "gmail",
+   "name": "Gmail",
+   "description": "Read and manage Gmail",
+   "data": [
+    "mail"
+   ]
+  },
+  {
+   "id": "google-drive",
+   "name": "Google Drive",
+   "description": "Drive, Docs, Sheets or Slides",
+   "data": [
+    "files"
+   ]
+  },
+  {
+   "id": "health",
+   "name": "Health",
+   "description": "Explore your health data in ChatGPT",
+   "data": []
+  },
+  {
+   "id": "github",
+   "name": "GitHub",
+   "description": "Triage PRs, issues, CI, and publish flows",
+   "data": []
+  },
+  {
+   "id": "supabase",
+   "name": "Supabase",
+   "description": "Manage and query databases",
+   "data": []
+  },
+  {
+   "id": "outlook-email",
+   "name": "Outlook Email",
+   "description": "Triage Outlook inboxes",
+   "data": [
+    "mail"
+   ]
+  },
+  {
+   "id": "hevy",
+   "name": "Hevy",
+   "description": "Gym workout plans and insights",
+   "data": []
+  },
+  {
+   "id": "tripsy",
+   "name": "Tripsy",
+   "description": "Plan and organize your trips",
+   "data": []
+  },
+  {
+   "id": "sonos",
+   "name": "Sonos",
+   "description": "Control your Sonos system",
+   "data": []
+  },
+  {
+   "id": "canva",
+   "name": "Canva",
+   "description": "Create, review, edit designs",
+   "data": []
+  },
+  {
+   "id": "coros",
+   "name": "COROS",
+   "description": "Training and health insights",
+   "data": []
+  },
+  {
+   "id": "adobe",
+   "name": "Adobe",
+   "description": "Design, combine, and edit",
+   "data": []
+  },
+  {
+   "id": "dropbox",
+   "name": "Dropbox",
+   "description": "Find, create, and take action",
+   "data": [
+    "files"
+   ]
+  },
+  {
+   "id": "hubspot",
+   "name": "HubSpot",
+   "description": "Insights to action in HubSpot",
+   "data": [
+    "crm"
+   ]
+  },
+  {
+   "id": "stripe",
+   "name": "Stripe",
+   "description": "Accept payments. Grow revenue.",
+   "data": []
+  },
+  {
+   "id": "gusto",
+   "name": "Gusto",
+   "description": "People and payroll, made easy",
+   "data": []
+  },
+  {
+   "id": "ads-manager",
+   "name": "Ads Manager",
+   "description": "Manage ads and performance",
+   "data": []
+  },
+  {
+   "id": "notion",
+   "name": "Notion",
+   "description": "Create docs, tasks, databases",
+   "data": [
+    "files"
+   ]
+  },
+  {
+   "id": "writing-style",
+   "name": "Writing Style",
+   "description": "Write with context from your own writing",
+   "data": []
+  },
+  {
+   "id": "google-calendar",
+   "name": "Google Calendar",
+   "description": "Manage Google Calendar events",
+   "data": [
+    "calendar"
+   ]
+  },
+  {
+   "id": "outlook-calendar",
+   "name": "Outlook Calendar",
+   "description": "Manage Outlook schedules",
+   "data": [
+    "calendar"
+   ]
+  },
+  {
+   "id": "todoist-to-do-list-calendar",
+   "name": "Todoist: To Do List & Calendar",
+   "description": "Planner & Reminders",
+   "data": []
+  },
+  {
+   "id": "slack",
+   "name": "Slack",
+   "description": "Read and manage Slack",
+   "data": []
+  },
+  {
+   "id": "teams",
+   "name": "Teams",
+   "description": "Summarize Teams and follow up",
+   "data": []
+  },
+  {
+   "id": "hostinger-mail",
+   "name": "Hostinger Mail",
+   "description": "Use Hostinger Mail",
+   "data": [
+    "mail"
+   ]
+  },
+  {
+   "id": "zoom",
+   "name": "Zoom",
+   "description": "Insights from Zoom",
+   "data": []
+  },
+  {
+   "id": "mailopoly-inbox",
+   "name": "Mailopoly Inbox",
+   "description": "Search, send emails & messages",
+   "data": [
+    "mail"
+   ]
+  },
+  {
+   "id": "superhuman-mail",
+   "name": "Superhuman Mail",
+   "description": "Best email+calendar assistant",
+   "data": [
+    "mail",
+    "calendar"
+   ]
+  },
+  {
+   "id": "higgsfield",
+   "name": "Higgsfield",
+   "description": "Every image and video model",
+   "data": []
+  },
+  {
+   "id": "product-design",
+   "name": "Product Design",
+   "description": "Explore and prototype ideas",
+   "data": []
+  },
+  {
+   "id": "figma",
+   "name": "Figma",
+   "description": "Create designs, ship to code",
+   "data": []
+  },
+  {
+   "id": "runway",
+   "name": "Runway",
+   "description": "Generate with every AI model",
+   "data": []
+  },
+  {
+   "id": "remote-desktop-commander",
+   "name": "Remote Desktop Commander",
+   "description": "Use your computer from chat",
+   "data": []
+  },
+  {
+   "id": "vercel",
+   "name": "Vercel",
+   "description": "Build and deploy apps",
+   "data": []
+  },
+  {
+   "id": "lovable",
+   "name": "Lovable",
+   "description": "Build full-stack apps by chat",
+   "data": []
+  },
+  {
+   "id": "tinyfish",
+   "name": "TinyFish",
+   "description": "Find and complete web tasks",
+   "data": []
+  },
+  {
+   "id": "exa",
+   "name": "Exa",
+   "description": "Web search for AI agents",
+   "data": []
+  },
+  {
+   "id": "base44",
+   "name": "Base44",
+   "description": "Build Apps & Websites with AI",
+   "data": []
+  },
+  {
+   "id": "fitness-ai-connector",
+   "name": "Fitness AI Connector",
+   "description": "AI coach for your Garmin data",
+   "data": []
+  },
+  {
+   "id": "tredict",
+   "name": "Tredict",
+   "description": "Analyze workouts, create plans",
+   "data": []
+  },
+  {
+   "id": "freddy",
+   "name": "freddy",
+   "description": "Ask about your health data",
+   "data": []
+  },
+  {
+   "id": "calorie-tracker",
+   "name": "Calorie Tracker",
+   "description": "Track your food and calories",
+   "data": []
+  },
+  {
+   "id": "interactive-brokers-ibkr",
+   "name": "Interactive Brokers (IBKR)",
+   "description": "Analyze global markets",
+   "data": []
+  },
+  {
+   "id": "public-equity-investing",
+   "name": "Public Equity Investing",
+   "description": "Public equity research",
+   "data": []
+  },
+  {
+   "id": "binance",
+   "name": "Binance",
+   "description": "Explore Binance market data",
+   "data": []
+  },
+  {
+   "id": "longbridge",
+   "name": "Longbridge",
+   "description": "Stock quotes, financial data",
+   "data": []
+  },
+  {
+   "id": "financial-datasets",
+   "name": "Financial Datasets",
+   "description": "Access stock market data",
+   "data": []
+  },
+  {
+   "id": "booking-com",
+   "name": "Booking.com",
+   "description": "Find all best stays and more.",
+   "data": []
+  },
+  {
+   "id": "skyscanner",
+   "name": "Skyscanner",
+   "description": "Find cheap flights",
+   "data": []
+  },
+  {
+   "id": "trip-com",
+   "name": "Trip.com",
+   "description": "All-in-one Travel Companion",
+   "data": []
+  },
+  {
+   "id": "flight-network",
+   "name": "Flight Network",
+   "description": "Search and book flights",
+   "data": []
+  },
+  {
+   "id": "wikiloc",
+   "name": "Wikiloc",
+   "description": "Your perfect trail. Just ask.",
+   "data": []
+  },
+  {
+   "id": "tripadvisor",
+   "name": "Tripadvisor",
+   "description": "Book top-rated hotels",
+   "data": []
+  },
+  {
+   "id": "spotify",
+   "name": "Spotify",
+   "description": "Music and podcasts for you",
+   "data": []
+  },
+  {
+   "id": "apple-music",
+   "name": "Apple Music",
+   "description": "Build playlists and find music",
+   "data": []
+  },
+  {
+   "id": "chessy",
+   "name": "Chessy",
+   "description": "Play Chess Against ChatGPT",
+   "data": []
+  },
+  {
+   "id": "consensus",
+   "name": "Consensus",
+   "description": "Search peer-reviewed research",
+   "data": []
+  },
+  {
+   "id": "scispace",
+   "name": "SciSpace",
+   "description": "For science and research",
+   "data": []
+  },
+  {
+   "id": "zotero",
+   "name": "Zotero",
+   "description": "Find papers and add citations from Zotero",
+   "data": []
+  },
+  {
+   "id": "sider-scholar",
+   "name": "Sider Scholar",
+   "description": "Search Papers & Research",
+   "data": []
+  },
+  {
+   "id": "scite",
+   "name": "Scite",
+   "description": "Search scientific literature",
+   "data": []
+  },
+  {
+   "id": "shopify",
+   "name": "Shopify",
+   "description": "Create and manage your store",
+   "data": []
+  },
+  {
+   "id": "sales",
+   "name": "Sales",
+   "description": "Practical workflows for sales",
+   "data": []
+  },
+  {
+   "id": "vidiq",
+   "name": "vidIQ",
+   "description": "Grow on YouTube, IG & TikTok",
+   "data": []
+  },
+  {
+   "id": "wix",
+   "name": "Wix",
+   "description": "Create your own website",
+   "data": []
+  },
+  {
+   "id": "windsor-ai",
+   "name": "Windsor.ai",
+   "description": "Connect 350+ data sources",
+   "data": []
+  },
+  {
+   "id": "data",
+   "name": "Data",
+   "description": "Answer questions with data",
+   "data": [
+    "sheet"
+   ]
+  },
+  {
+   "id": "gsc-wizard",
+   "name": "GSC Wizard",
+   "description": "Search Console, Bing and GA4",
+   "data": []
+  },
+  {
+   "id": "posthog",
+   "name": "PostHog",
+   "description": "Analyze your product data",
+   "data": []
+  },
+  {
+   "id": "helium-10",
+   "name": "Helium 10",
+   "description": "Access your Helium 10 data",
+   "data": []
+  },
+  {
+   "id": "malwarebytes",
+   "name": "Malwarebytes",
+   "description": "Verify links, domains, phones.",
+   "data": []
+  },
+  {
+   "id": "privacyhawk",
+   "name": "PrivacyHawk",
+   "description": "Protect your personal data",
+   "data": []
+  },
+  {
+   "id": "soluvery",
+   "name": "Soluvery",
+   "description": "Audit Google Drive Permissions",
+   "data": []
+  },
+  {
+   "id": "linkedin",
+   "name": "LinkedIn",
+   "description": "Find the right professional",
+   "data": []
+  },
+  {
+   "id": "etsy",
+   "name": "Etsy",
+   "description": "Shop Home, Style & More",
+   "data": []
+  }
+ ],
+ "sections": [
+  {
+   "title": "Populære",
+   "ids": [
+    "gmail",
+    "google-drive",
+    "health",
+    "github",
+    "supabase",
+    "outlook-email"
+   ]
+  },
+  {
+   "title": "Nyt og interessant",
+   "ids": [
+    "hevy",
+    "tripsy",
+    "sonos",
+    "canva",
+    "coros",
+    "adobe"
+   ]
+  },
+  {
+   "title": "Små virksomheder",
+   "ids": [
+    "dropbox",
+    "hubspot",
+    "stripe",
+    "canva",
+    "gusto",
+    "ads-manager"
+   ]
+  },
+  {
+   "title": "Produktivitet",
+   "ids": [
+    "notion",
+    "writing-style",
+    "google-calendar",
+    "dropbox",
+    "outlook-calendar",
+    "todoist-to-do-list-calendar"
+   ]
+  },
+  {
+   "title": "Kommunikation",
+   "ids": [
+    "slack",
+    "teams",
+    "hostinger-mail",
+    "zoom",
+    "mailopoly-inbox",
+    "superhuman-mail"
+   ]
+  },
+  {
+   "title": "Kreativitet",
+   "ids": [
+    "canva",
+    "higgsfield",
+    "product-design",
+    "figma",
+    "runway",
+    "adobe"
+   ]
+  },
+  {
+   "title": "Udviklerværktøjer",
+   "ids": [
+    "remote-desktop-commander",
+    "vercel",
+    "lovable",
+    "tinyfish",
+    "exa",
+    "base44"
+   ]
+  },
+  {
+   "title": "Sundhed",
+   "ids": [
+    "fitness-ai-connector",
+    "coros",
+    "tredict",
+    "freddy",
+    "calorie-tracker",
+    "hevy"
+   ]
+  },
+  {
+   "title": "Finans",
+   "ids": [
+    "interactive-brokers-ibkr",
+    "public-equity-investing",
+    "binance",
+    "longbridge",
+    "stripe",
+    "financial-datasets"
+   ]
+  },
+  {
+   "title": "Rejser",
+   "ids": [
+    "booking-com",
+    "skyscanner",
+    "trip-com",
+    "flight-network",
+    "wikiloc",
+    "tripadvisor"
+   ]
+  },
+  {
+   "title": "Underholdning",
+   "ids": [
+    "spotify",
+    "apple-music",
+    "chessy"
+   ]
+  },
+  {
+   "title": "Uddannelse",
+   "ids": [
+    "consensus",
+    "scispace",
+    "zotero",
+    "sider-scholar",
+    "scite"
+   ]
+  },
+  {
+   "title": "Virksomhed og drift",
+   "ids": [
+    "shopify",
+    "sales",
+    "vidiq",
+    "hubspot",
+    "wix",
+    "windsor-ai"
+   ]
+  },
+  {
+   "title": "Data og analyse",
+   "ids": [
+    "data",
+    "gsc-wizard",
+    "posthog",
+    "helium-10"
+   ]
+  },
+  {
+   "title": "Sikkerhed",
+   "ids": [
+    "malwarebytes",
+    "privacyhawk",
+    "soluvery"
+   ]
+  },
+  {
+   "title": "Andet",
+   "ids": [
+    "linkedin",
+    "etsy"
+   ]
+  }
+ ]
+}

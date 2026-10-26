@@ -56,11 +56,16 @@ interface Props {
   placeholder?: string;
   renderMenu?: (api: { close: () => void; openPicker: () => void }) => ReactNode;
   composerTools?: ReactNode;
-  belowComposer?: ReactNode;
+  belowComposer?: ReactNode | ((api: { setText: (text: string) => void }) => ReactNode);
   hideSuggestions?: boolean;
+  /** Start-screen heading instead of the shell default. */
+  heading?: string;
+  /** One-row composer: "+", the text field and the tools on a single line. */
+  inline?: boolean;
+  menuClassName?: string;
 }
 
-export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined, onToggleConnector = () => undefined, initialText = "", placeholder = t.chat.placeholder, renderMenu, composerTools, belowComposer, hideSuggestions = false }: Props) {
+export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined, onToggleConnector = () => undefined, initialText = "", placeholder = t.chat.placeholder, renderMenu, composerTools, belowComposer, hideSuggestions = false, heading, inline = false, menuClassName = "w-60" }: Props) {
   const [text, setText] = useState(initialText);
   const [attachments, setAttachments] = useState<string[]>([]);
   const [picker, setPicker] = useState(false);
@@ -93,6 +98,12 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
       document.removeEventListener("keydown", key);
     };
   }, [menuOpen, picker]);
+
+  // Text put in from outside the composer (suggestions under it) moves focus to the field.
+  const [focusTick, setFocusTick] = useState(0);
+  useEffect(() => {
+    if (focusTick > 0) composer.current?.focus();
+  }, [focusTick]);
 
   // Keep the newest message in view while the answer streams in.
   useEffect(() => {
@@ -165,7 +176,7 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
   // Messages (or the variant's empty state), the composer and the "+" menu. The layout mirrors the familiar desktop
   // chat apps per shell — centered greeting, centered pill, or side panel — always in Mindforward's own look.
   const menu = menuOpen && (
-    <div role="dialog" aria-label={t.chat.menu.open} className={cx("absolute left-0 z-20 flex flex-col rounded-xl border border-line bg-surface p-1.5 shadow-lg", renderMenu ? "w-60" : "w-[min(22rem,calc(100vw-2rem))] overflow-hidden", turns.length === 0 && variant !== "panel" ? "top-full mt-2" : "bottom-full mb-2")} data-testid="composer-menu">
+    <div role="dialog" aria-label={t.chat.menu.open} className={cx("absolute left-0 z-20 flex flex-col rounded-xl border border-line bg-surface p-1.5 shadow-lg", renderMenu ? menuClassName : "w-[min(22rem,calc(100vw-2rem))] overflow-hidden", turns.length === 0 && variant !== "panel" ? "top-full mt-2" : "bottom-full mb-2")} data-testid="composer-menu">
       {renderMenu ? renderMenu({ close: () => setMenuOpen(false), openPicker: () => { setMenuOpen(false); setPicker(true); } }) : <>
       {attachFromFiles && (
         <button type="button" className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-body-sm text-ink hover:bg-sunken" onClick={() => { setMenuOpen(false); setPicker(true); emit({ event: { type: "UI_CLICKED", target: "composer.attach", payload: { region: "composer", control: "attach" } } }); }}>
@@ -244,12 +255,13 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
       )}
       <div
         className={cx(
-          "flex flex-col border border-line bg-surface transition-[border-color,box-shadow] focus-within:border-accent/60",
-          variant === "pill" ? "rounded-[1.75rem] shadow-md" : variant === "center" ? "rounded-2xl shadow-md" : "rounded-xl shadow-xs",
+          "flex border border-line bg-surface transition-[border-color,box-shadow] focus-within:border-accent/60",
+          inline ? "flex-row flex-wrap items-center gap-x-1 px-2 py-1.5" : "flex-col",
+          inline ? "rounded-[1.75rem] shadow-md" : variant === "pill" ? "rounded-[1.75rem] shadow-md" : variant === "center" ? "rounded-2xl shadow-md" : "rounded-xl shadow-xs",
         )}
       >
         {attachments.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5 px-4 pt-3">
+          <div className={cx("flex flex-wrap items-center gap-1.5 px-4 pt-3", inline && "order-first basis-full pt-1.5 pb-1")}>
             <span className="text-caption text-ink-muted">{t.chat.attached}</span>
             {attachments.map((id) => (
               <button
@@ -271,7 +283,8 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
         <textarea
           id="sandbox-composer"
           ref={composer}
-          className={cx("w-full resize-none bg-transparent px-5 pt-4 text-body text-ink placeholder:text-ink-subtle focus:outline-none", variant === "panel" ? "min-h-14 px-4 pt-3" : "min-h-16")}
+          className={cx("resize-none bg-transparent text-body text-ink placeholder:text-ink-subtle focus:outline-none", inline ? "order-1 h-10 min-h-0 w-auto min-w-[9rem] flex-1 px-1.5 py-2 leading-6" : variant === "panel" ? "min-h-14 w-full px-4 pt-3" : "min-h-16 w-full px-5 pt-4")}
+          rows={inline ? 1 : undefined}
           placeholder={placeholder}
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -283,12 +296,12 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
           }}
           maxLength={MAX_CHARS}
         />
-        <div className="flex items-center gap-1.5 px-3 pb-3">
+        <div className={inline ? "contents" : "flex items-center gap-1.5 px-3 pb-3"}>
           <button
             type="button"
             aria-label={t.chat.menu.open}
             aria-expanded={menuOpen}
-            className={cx("grid size-9 place-items-center rounded-full text-ink-muted transition-colors hover:bg-sunken hover:text-ink", variant === "pill" ? "bg-sunken" : "border border-line")}
+            className={cx("grid size-9 place-items-center rounded-full text-ink-muted transition-colors hover:bg-sunken hover:text-ink", inline ? "" : variant === "pill" ? "bg-sunken" : "border border-line")}
             onClick={() => {
               setPicker(false);
               setMenuOpen((o) => !o);
@@ -297,12 +310,12 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
             <SbIcon name="plus" />
           </button>
           {connectedCount > 0 && (
-            <button type="button" onClick={() => setMenuOpen((o) => !o)} className="inline-flex h-8 items-center gap-1.5 rounded-full border border-accent/25 bg-accent-soft px-3 text-caption font-medium text-accent-ink">
+            <button type="button" onClick={() => setMenuOpen((o) => !o)} className={cx("inline-flex h-8 items-center gap-1.5 rounded-full border border-accent/25 bg-accent-soft px-3 text-caption font-medium text-accent-ink", inline && "order-2")}>
               <SbIcon name="plug" size={14} />
               {connectedCount === 1 ? t.chat.menu.one : format(t.chat.menu.count, { n: connectedCount })}
             </button>
           )}
-          <span className="ml-auto flex items-center gap-2">
+          <span className={cx("ml-auto flex items-center gap-2", inline && "order-2 gap-1")}>
             {text.length > MAX_CHARS * 0.75 && (
               <span className="font-mono text-mono text-ink-subtle" aria-label={format(t.chat.counterLabel, { n: text.length, max: nf.format(MAX_CHARS) })}>
                 {format(t.chat.counter, { n: nf.format(text.length), max: nf.format(MAX_CHARS) })}
@@ -320,7 +333,14 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
           </span>
         </div>
       </div>
-      {belowComposer}
+      {typeof belowComposer === "function"
+        ? belowComposer({
+            setText: (v) => {
+              setText(v);
+              setFocusTick((n) => n + 1);
+            },
+          })
+        : belowComposer}
     </form>
   );
 
@@ -353,11 +373,11 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
       {centered ? (
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-7 overflow-y-auto px-4 py-8 sm:px-6">
           {variant === "center" ? (
-            <h2 className="flex items-center gap-3 text-center text-title-1 text-ink">
-              {greeting}
+            <h2 className={cx("flex items-center gap-3 text-center text-ink", heading ? "text-title-2" : "text-title-1")}>
+              {heading ?? greeting}
             </h2>
           ) : (
-            <h2 className="text-center text-title-2 text-ink">{t.chat.askTitle}</h2>
+            <h2 className="text-center text-title-2 text-ink">{heading ?? t.chat.askTitle}</h2>
           )}
           {composerBox}
           {!hideSuggestions && suggestionChips}
