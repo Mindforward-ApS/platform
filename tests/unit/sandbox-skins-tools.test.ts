@@ -5,6 +5,7 @@ import { loadSkin, UnknownSkinError } from "@/server/sandbox/skin";
 import { availableTools, buildSheetCells, executeTool, ToolInputError } from "@/server/sandbox/tools";
 import { copenhagenDate, loadWorld, resolveDay, worldSummary } from "@/server/sandbox/world";
 import { TRACKS } from "@/server/content/seed";
+import { loadFeatures } from "@/server/sandbox/features";
 
 describe("skins (docs/04 § 3)", () => {
   it("every active track's skinKey has a valid skin file; the skin is chosen by data", () => {
@@ -19,8 +20,13 @@ describe("skins (docs/04 § 3)", () => {
     const files = readdirSync("content/sandbox-skins").map((f) => f.replace(/\.json$/, ""));
     const skins = files.map(loadSkin);
     for (const s of skins) expect(s.composer.modelPicker).toBe(false);
-    const ids = skins.map((s) => s.nav.map((n) => n.id).sort());
-    expect(new Set(ids.map((x) => x.join())).size).toBeLessThanOrEqual(2); // same vocabulary, different order/regions
+    // Same vocabulary across skins. A skin with a feature guide (content/sandbox-features/<skin>.json, 26 Oct 2026)
+    // moves its feature items (connectors, assistants, automations …) into the guide; the others keep them in the nav.
+    for (const [i, s] of skins.entries()) {
+      const ids = s.nav.map((n) => n.id);
+      if (loadFeatures(files[i]!)) expect(ids).not.toContain("connectors");
+      else expect(ids).toEqual(expect.arrayContaining(["assistants", "connectors", "automations"]));
+    }
   });
 
   it("rejects unknown or path-like skin keys", () => {

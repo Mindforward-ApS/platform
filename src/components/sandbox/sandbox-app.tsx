@@ -19,7 +19,11 @@ const t = getMessages().sandbox;
 
 export function DisclaimerBar() {
   return (
-    <div role="note" className="flex w-full items-center justify-center gap-2 border-b border-line bg-sunken px-4 py-2 text-center text-caption text-ink-muted" data-testid="sandbox-disclaimer">
+    <div
+      role="note"
+      className="flex w-full items-center justify-center gap-2 border-b border-line bg-sunken px-4 py-2 text-center text-caption text-ink-muted"
+      data-testid="sandbox-disclaimer"
+    >
       <SbIcon name="info" size={14} className="hidden text-ink-subtle sm:block" />
       {t.disclaimer}
     </div>
@@ -31,7 +35,7 @@ type Pane = "nav" | "content" | "chat";
 export function SandboxApp(props: SandboxProps) {
   const { skin, sessionId, world, stepId, variant = "page" } = props;
   const [state, setState] = useState<SandboxState>(props.initialState);
-  const [concept, setConcept] = useState<Concept>(skin.shell === "APP_RAIL_SIDE_PANEL" ? "MAIL" : "CHAT");
+  const [concept, setConcept] = useState<Concept>(props.initialConcept ?? (skin.shell === "APP_RAIL_SIDE_PANEL" ? "MAIL" : "CHAT"));
   const [turns, setTurns] = useState<ChatTurnView[]>(props.turns);
   const [conversationId, setConversationId] = useState<string | null>(props.conversationId);
   const [notice, setNotice] = useState<string | null>(null);
@@ -71,7 +75,10 @@ export function SandboxApp(props: SandboxProps) {
   };
 
   const conceptEnabled = (c: Concept) =>
-    (c !== "ASSISTANTS" || skin.concepts.assistants) && (c !== "CONNECTORS" || skin.concepts.connectors) && (c !== "AUTOMATIONS" || skin.concepts.automations) && (c !== "AGENTS" || skin.concepts.agents);
+    (c !== "ASSISTANTS" || skin.concepts.assistants) &&
+    (c !== "CONNECTORS" || skin.concepts.connectors) &&
+    (c !== "AUTOMATIONS" || skin.concepts.automations) &&
+    (c !== "AGENTS" || skin.concepts.agents);
 
   // Keep the skin's order; only split it into the practice model's tools and Nordlys' work systems.
   const items = skin.nav.filter((n) => conceptEnabled(n.concept));
@@ -96,7 +103,10 @@ export function SandboxApp(props: SandboxProps) {
             type="button"
             data-target={`nav.${n.id}`}
             aria-current={active ? "page" : undefined}
-            className={cx("flex flex-col items-center gap-1 rounded-md px-1 py-2 text-[0.6875rem] leading-tight transition-colors", active ? "bg-accent-soft text-accent-ink" : "text-ink-muted hover:bg-sunken hover:text-ink")}
+            className={cx(
+              "flex flex-col items-center gap-1 rounded-md px-1 py-2 text-[0.6875rem] leading-tight transition-colors",
+              active ? "bg-accent-soft text-accent-ink" : "text-ink-muted hover:bg-sunken hover:text-ink",
+            )}
             onClick={() => navigate(n.id, n.concept)}
           >
             <SbIcon name={n.id === "new-chat" ? "plus" : CONCEPT_ICON[n.concept]} size={20} />
@@ -107,9 +117,37 @@ export function SandboxApp(props: SandboxProps) {
     </nav>
   );
 
+  // Feature guide (tracks with content/sandbox-features/<skin>.json): in plan order, each opens its own page in a new tab with explanation + practice.
+  const featureGroup = props.features?.length ? (
+    <div key="features" className="flex flex-col gap-0.5" data-testid="sandbox-features">
+      <p className="px-3 pb-1.5 text-overline text-ink-subtle uppercase">{t.frame.navGroups.features}</p>
+      {props.features.map((f) => (
+        <a
+          key={f.id}
+          href={`${props.featureBase}/${f.id}`}
+          target="_blank"
+          rel="noopener"
+          data-target={`nav.feature-${f.id}`}
+          className={cx(
+            "flex w-full items-center gap-2.5 rounded-md px-3 text-left text-label text-ink-muted transition-colors hover:bg-surface/70 hover:text-ink",
+            compact ? "h-8" : "h-9",
+          )}
+          onClick={() =>
+            emit({ event: { type: "UI_CLICKED", target: `nav.feature-${f.id}`, payload: { region: "nav", control: `feature-${f.id}` } } })
+          }
+        >
+          <SbIcon name={f.icon} className="shrink-0 text-ink-subtle" />
+          <span className="flex-1 truncate">{f.label}</span>
+          <SbIcon name="external" size={13} className="shrink-0 text-ink-subtle" />
+          <span className="sr-only">{t.frame.featureNewTab}</span>
+        </a>
+      ))}
+    </div>
+  ) : null;
+
   const nav = (
     <nav aria-label={t.frame.navLabel} className="flex flex-col gap-5" data-testid="sandbox-nav">
-      {groups.map((g) => (
+      {groups.flatMap((g) => [
         <div key={g.key} className="flex flex-col gap-0.5">
           <p className="px-3 pb-1.5 text-overline text-ink-subtle uppercase">{g.label}</p>
           {g.items.map((n) => {
@@ -123,7 +161,11 @@ export function SandboxApp(props: SandboxProps) {
                 className={cx(
                   "flex w-full items-center gap-2.5 rounded-md px-3 text-left text-label transition-colors",
                   compact ? "h-8" : "h-9",
-                  n.id === "new-chat" ? "font-medium text-ink hover:bg-surface/70" : active ? "bg-surface text-ink shadow-xs ring-1 ring-line" : "text-ink-muted hover:bg-surface/70 hover:text-ink",
+                  n.id === "new-chat"
+                    ? "font-medium text-ink hover:bg-surface/70"
+                    : active
+                      ? "bg-surface text-ink shadow-xs ring-1 ring-line"
+                      : "text-ink-muted hover:bg-surface/70 hover:text-ink",
                 )}
                 onClick={() => navigate(n.id, n.concept)}
               >
@@ -142,8 +184,9 @@ export function SandboxApp(props: SandboxProps) {
               </button>
             );
           })}
-        </div>
-      ))}
+        </div>,
+        ...(g.key === "model" ? [featureGroup] : []),
+      ])}
     </nav>
   );
 
@@ -165,7 +208,13 @@ export function SandboxApp(props: SandboxProps) {
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto">{rail}</div>
       <div className="border-t border-line p-1.5">
-        <button type="button" aria-label={t.terms.reset} title={t.terms.reset} className="flex w-full flex-col items-center gap-1 rounded-md py-2 text-[0.6875rem] text-ink-muted hover:bg-sunken hover:text-ink" onClick={reset}>
+        <button
+          type="button"
+          aria-label={t.terms.reset}
+          title={t.terms.reset}
+          className="flex w-full flex-col items-center gap-1 rounded-md py-2 text-[0.6875rem] text-ink-muted hover:bg-sunken hover:text-ink"
+          onClick={reset}
+        >
           <SbIcon name="refresh" size={18} />
         </button>
       </div>
@@ -181,12 +230,20 @@ export function SandboxApp(props: SandboxProps) {
         {history}
       </div>
       <div className="flex items-center gap-2.5 border-t border-line p-3">
-        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-caption font-semibold text-on-accent">{t.frame.userInitials}</span>
+        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-caption font-semibold text-on-accent">
+          {t.frame.userInitials}
+        </span>
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="truncate text-label text-ink">{t.frame.user}</span>
           <span className="truncate text-caption text-ink-subtle">{t.frame.userSub}</span>
         </span>
-        <button type="button" aria-label={t.terms.reset} title={t.terms.reset} className="grid size-8 place-items-center rounded-md text-ink-subtle transition-colors hover:bg-surface hover:text-ink" onClick={reset}>
+        <button
+          type="button"
+          aria-label={t.terms.reset}
+          title={t.terms.reset}
+          className="grid size-8 place-items-center rounded-md text-ink-subtle transition-colors hover:bg-surface hover:text-ink"
+          onClick={reset}
+        >
           <SbIcon name="refresh" />
         </button>
       </div>
@@ -207,8 +264,12 @@ export function SandboxApp(props: SandboxProps) {
       emit={emit}
       wide={skin.shell !== "APP_RAIL_SIDE_PANEL"}
       variant={shell === "SIDEBAR_CHAT_WORKPANE" ? "center" : shell === "SIDEBAR_CHAT" ? "pill" : "panel"}
-      connectors={props.catalog.filter((c) => (state.catalog?.linked ?? []).includes(c.id)).map((c) => ({ id: c.id, label: c.name, on: !(state.catalog?.chatOff ?? []).includes(c.id) }))}
-      onToggleConnector={(id, on) => emit({ event: { type: "SETTING_CHANGED", payload: { key: on ? "chat-connector-on" : "chat-connector-off", value: id } } })}
+      connectors={props.catalog
+        .filter((c) => (state.catalog?.linked ?? []).includes(c.id))
+        .map((c) => ({ id: c.id, label: c.name, on: !(state.catalog?.chatOff ?? []).includes(c.id) }))}
+      onToggleConnector={(id, on) =>
+        emit({ event: { type: "SETTING_CHANGED", payload: { key: on ? "chat-connector-on" : "chat-connector-off", value: id } } })
+      }
       practice={(props.practice?.items ?? []).map((i) => t.practice.kinds[i.kind])}
       onOpenConnectors={() => navigate("connectors", "CONNECTORS")}
       initialText={props.initialDraft}
@@ -237,7 +298,16 @@ export function SandboxApp(props: SandboxProps) {
       case "SHEET":
         return <SheetView cells={world.sheet} />;
       case "CONNECTORS":
-        return <ConnectorsView state={state} emit={emit} practice={props.practice ?? null} layout={skin.connectorsLayout} sessionId={sessionId} catalog={props.catalog} />;
+        return (
+          <ConnectorsView
+            state={state}
+            emit={emit}
+            practice={props.practice ?? null}
+            layout={skin.connectorsLayout}
+            sessionId={sessionId}
+            catalog={props.catalog}
+          />
+        );
       case "ASSISTANTS":
         return <AssistantsView state={state} files={world.files} emit={emit} />;
       case "AUTOMATIONS":
@@ -265,7 +335,9 @@ export function SandboxApp(props: SandboxProps) {
     <div
       className={cx(
         "flex flex-col overflow-hidden bg-bg",
-        variant === "task" ? "h-[min(44rem,calc(100dvh-8rem))] min-h-[520px] rounded-xl border border-line" : "h-[calc(100dvh-3.5rem)] min-h-[560px] lg:h-[calc(100dvh-5rem)] lg:rounded-b-xl",
+        variant === "task"
+          ? "h-[min(44rem,calc(100dvh-8rem))] min-h-[520px] rounded-xl border border-line"
+          : "h-[calc(100dvh-3.5rem)] min-h-[560px] lg:h-[calc(100dvh-5rem)] lg:rounded-b-xl",
       )}
       data-shell={skin.shell}
       data-variant={variant}
@@ -276,7 +348,9 @@ export function SandboxApp(props: SandboxProps) {
         <div className="hidden h-11 shrink-0 items-center gap-3 bg-night px-4 text-on-night lg:flex" data-testid="workplace-bar">
           <SbIcon name="apps" size={18} />
           <span className="text-label">{t.frame.workplace}</span>
-          <span className="ml-auto grid size-7 place-items-center rounded-full bg-mark-dot text-caption font-semibold text-night">{t.frame.userInitials}</span>
+          <span className="ml-auto grid size-7 place-items-center rounded-full bg-mark-dot text-caption font-semibold text-night">
+            {t.frame.userInitials}
+          </span>
         </div>
       )}
       <header className="hidden h-12 shrink-0 items-center justify-start border-b border-line bg-surface px-4 sm:px-6 lg:flex lg:h-14 lg:gap-6">
@@ -289,7 +363,11 @@ export function SandboxApp(props: SandboxProps) {
       </header>
 
       {tabs.length > 1 && (
-        <div role="tablist" aria-label={t.frame.panes} className="flex shrink-0 gap-1 border-b border-line bg-surface px-4 py-2 sm:px-6 lg:hidden">
+        <div
+          role="tablist"
+          aria-label={t.frame.panes}
+          className="flex shrink-0 gap-1 border-b border-line bg-surface px-4 py-2 sm:px-6 lg:hidden"
+        >
           {tabs.map((p) => (
             <button
               key={p}
@@ -317,7 +395,11 @@ export function SandboxApp(props: SandboxProps) {
       )}
 
       <div className="flex min-h-0 flex-1">
-        <aside id="sb-pane-nav" aria-labelledby="sb-tab-nav" className={cx(vis("nav"), "w-full min-w-0 flex-col border-line lg:shrink-0 lg:border-r", sidebarLook, sidebarWidth)}>
+        <aside
+          id="sb-pane-nav"
+          aria-labelledby="sb-tab-nav"
+          className={cx(vis("nav"), "w-full min-w-0 flex-col border-line lg:shrink-0 lg:border-r", sidebarLook, sidebarWidth)}
+        >
           {sidebar}
         </aside>
 
@@ -335,11 +417,19 @@ export function SandboxApp(props: SandboxProps) {
         ) : skin.shell === "SIDEBAR_CHAT_WORKPANE" ? (
           // Sidebar · chat · work pane that opens for documents, sheets and files.
           <>
-            <main id="sb-pane-chat" className={cx(vis("chat"), "min-h-0 min-w-0 flex-1 flex-col lg:min-w-[360px]")} aria-label={t.terms.chat}>
+            <main
+              id="sb-pane-chat"
+              className={cx(vis("chat"), "min-h-0 min-w-0 flex-1 flex-col lg:min-w-[360px]")}
+              aria-label={t.terms.chat}
+            >
               {chat}
             </main>
             {workspace && (
-              <section id="sb-pane-content" aria-label={t.frame.workspace} className={cx(vis("content"), "min-h-0 min-w-0 flex-1 flex-col border-line bg-surface lg:border-l")}>
+              <section
+                id="sb-pane-content"
+                aria-label={t.frame.workspace}
+                className={cx(vis("content"), "min-h-0 min-w-0 flex-1 flex-col border-line bg-surface lg:border-l")}
+              >
                 {workspace}
               </section>
             )}
@@ -350,7 +440,11 @@ export function SandboxApp(props: SandboxProps) {
             <main id="sb-pane-content" className={cx(vis("content"), "min-h-0 min-w-0 flex-1 flex-col bg-surface")}>
               {contentNode}
             </main>
-            <aside id="sb-pane-chat" aria-label={t.modelLabel} className={cx(vis("chat"), "min-h-0 w-full min-w-0 flex-col border-line lg:w-[400px] lg:shrink-0 lg:border-l")}>
+            <aside
+              id="sb-pane-chat"
+              aria-label={t.modelLabel}
+              className={cx(vis("chat"), "min-h-0 w-full min-w-0 flex-col border-line lg:w-[400px] lg:shrink-0 lg:border-l")}
+            >
               {chat}
             </aside>
           </>

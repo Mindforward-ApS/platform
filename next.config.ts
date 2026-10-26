@@ -25,9 +25,9 @@ const nextConfig: NextConfig = {
   // The sandbox reads the versioned Nordlys world and skins from content/ at runtime (src/server/sandbox/world.ts).
   outputFileTracingIncludes: {
     "/api/sandbox/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json"],
-    "/sandkasse/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json"],
+    "/sandkasse/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json", "./content/sandbox-features/**"],
     // Opgavevisning: the module player opens the attempt-bound sandbox through a server action.
-    "/modul/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json"],
+    "/modul/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json", "./content/sandbox-features/**"],
     // M7: the DPA text is shown and hashed at acceptance (src/server/orgs/dpa.ts).
     "/virksomhed/**": ["./content/legal/dpa.v1.md"],
     // M10: help-center articles are read from content/help at runtime (src/server/support/help.ts).

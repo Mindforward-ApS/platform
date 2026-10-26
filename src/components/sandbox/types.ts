@@ -88,6 +88,12 @@ export interface SandboxProps {
   variant?: "page" | "task";
   practice?: PracticeView | null;
   tracks?: TrackLink[];
+  /** Feature guide links for the menu (each opens its own page in a new tab), in order; absent = no guide. */
+  features?: { id: string; label: string; icon: "chats" | "lock" | "sparkle" | "file" | "grid" | "link" | "send" | "book" | "bulb" | "clock" | "lightning" }[];
+  /** Base path for the feature pages, e.g. /sandkasse/<track>/funktion. */
+  featureBase?: string;
+  /** View to open first (feature pages open straight on the feature). */
+  initialConcept?: "CHAT" | "ASSISTANTS" | "CONNECTORS" | "AUTOMATIONS" | "AGENTS" | "MAIL" | "CALENDAR" | "FILES" | "CRM" | "SHEET";
   /** Connector catalog for the Forbindelser view and the "+" menu. */
   catalog: CatalogItem[];
   /** Free play only: text put in the composer on open (e.g. a forløb lesson's "Prøv selv" prompt). Never sent automatically. */

@@ -8,6 +8,7 @@ import { daPlacement } from "./da-placement";
 import { daProfile } from "./da-profile";
 import { daPlayer } from "./da-player";
 import { daSandbox } from "./da-sandbox";
+import { daSandboxGuide } from "./da-sandbox-guide";
 import { daSupport } from "./da-support";
 
 // Danish UI strings. Components never hardcode UI text (CLAUDE.md) — add keys here.
@@ -19,6 +20,7 @@ export const da = {
   /** Accessible name of the logo link: starts with the visible word "Forward" (WCAG 2.5.3 label in name). */
   logoLabel: `Forward · ${BRAND}`,
   sandbox: daSandbox,
+  sandboxGuide: daSandboxGuide,
   player: daPlayer,
   courses: daCourses,
   placement: daPlacement,

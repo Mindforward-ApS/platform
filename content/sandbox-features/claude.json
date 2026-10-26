@@ -1,0 +1,155 @@
+{
+  "track": "claude",
+  "checked": "2026-10-26",
+  "source": "support.claude.com, claude.com/pricing og claude.com/marketplace, læst 26.10.2026",
+  "features": [
+    {
+      "id": "samtaler",
+      "label": "Samtaler",
+      "icon": "chats",
+      "what": "Alle dine chats og opgaver samlet i én liste, så du kan finde og fortsætte en tidligere samtale.",
+      "inTool": [
+        "Dine samtaler ligger under Recents i sidemenuen. Chats og opgaver står i samme liste med den nyeste øverst.",
+        "Du kan stjernemarkere samtaler, du bruger tit, og søge i dem.",
+        "Siden 16. september 2026 er Chat og Cowork samlet i ét layout. Det rulles ud til Pro og Max først."
+      ],
+      "practice": "soon",
+      "concept": "CHAT"
+    },
+    {
+      "id": "incognito",
+      "label": "Incognito",
+      "icon": "lock",
+      "what": "En chat, der ikke bliver gemt i din historik og ikke bruges til hukommelse.",
+      "inTool": [
+        "Klik på spøgelsesikonet øverst til højre i en ny chat.",
+        "Vinduet får en sort kant og mærket Incognito chat.",
+        "Det virker ikke inde i et projekt, og i det nye layout kan Claude ikke lave filer eller køre kode i en incognito-chat."
+      ],
+      "practice": "soon",
+      "concept": "CHAT"
+    },
+    {
+      "id": "model",
+      "label": "Model og tænkning",
+      "icon": "sparkle",
+      "what": "Vælg hvor hurtigt eller grundigt der skal svares, og om der skal tænkes, før svaret kommer.",
+      "inTool": [
+        "Menuen ved send-knappen samler model, effort og thinking.",
+        "Modellerne hedder Haiku, Sonnet og Opus. Effort går fra Low til Max, og High er standard.",
+        "På Free kan du bruge Sonnet og Haiku. Opus kræver Pro eller højere."
+      ],
+      "practice": "soon",
+      "concept": "CHAT"
+    },
+    {
+      "id": "lav-dokumenter",
+      "label": "Lav dokumenter",
+      "icon": "file",
+      "what": "Bed om et færdigt dokument, en præsentation eller et design i stedet for kun et svar i chatten.",
+      "inTool": [
+        "Output-menuen i skrivefeltet har Docs, Slides og Design. De findes på alle planer.",
+        "Dashboards er i beta på betalte planer. Motion er i beta på Team og Enterprise.",
+        "Claude kan også lave Word-, Excel-, PowerPoint- og PDF-filer, som du kan downloade."
+      ],
+      "practice": "soon",
+      "concept": "CHAT"
+    },
+    {
+      "id": "mit-arbejde",
+      "label": "Mit arbejde",
+      "icon": "grid",
+      "what": "Det, der bliver lavet i chatten, åbner i et panel ved siden af, hvor du kan rette, dele og finde det igen.",
+      "inTool": [
+        "Fanen Artifacts i sidemenuen samler alt, du har lavet, og har et galleri med skabeloner.",
+        "Et artifact åbner i et panel ved siden af chatten. Du kan dele det med Share eller Publish.",
+        "På Free, Pro og Max kan alle med linket se et delt artifact. På Team og Enterprise er det kun internt."
+      ],
+      "practice": "soon",
+      "concept": "CHAT"
+    },
+    {
+      "id": "forbindelser",
+      "label": "Forbindelser",
+      "icon": "link",
+      "what": "Giv adgang til de apps, du bruger, så svarene kan bygge på dine egne mails, filer og kunder.",
+      "inTool": [
+        "Gå til Customize i sidemenuen og fanen Connectors. Under Discover finder du kataloget med over 1.000 forbindelser.",
+        "Vælg en forbindelse, tryk Connect, og log ind hos tjenesten.",
+        "For hvert værktøj vælger du Always allow, Needs approval eller Blocked.",
+        "I en chat slår du de enkelte forbindelser til og fra under + og Connectors."
+      ],
+      "practice": "ready",
+      "concept": "CONNECTORS",
+      "tryIt": "Forbind fx Gmail og Google Drive, og bed derefter om at finde Mettes mail om den nye AI-politik."
+    },
+    {
+      "id": "handlinger",
+      "label": "Handlinger",
+      "icon": "send",
+      "what": "Lad den gøre noget for dig i dine apps, fx skrive en mailkladde eller oprette et møde. Den spørger først.",
+      "inTool": [
+        "Når en forbindelse må skrive, kan Claude fx lave en mailkladde, oprette en kalenderaftale eller rette i et dokument.",
+        "Står værktøjet til Needs approval, spørger Claude, før handlingen udføres.",
+        "Som standard spørger Claude før en handling. Du kan slå til, at den arbejder videre og kun melder tilbage ved behov."
+      ],
+      "practice": "soon",
+      "concept": "CONNECTORS"
+    },
+    {
+      "id": "projekter",
+      "label": "Projekter",
+      "icon": "book",
+      "what": "Et fast arbejdsrum med egne instruktioner og egen viden, som alle chats i projektet bruger.",
+      "inTool": [
+        "Vælg Projects i sidemenuen og + New Project.",
+        "Læg filer i projektviden, og skriv instruktioner under Set project instructions.",
+        "Et projekt har sin egen hukommelse. På Free kan du have op til 5 projekter."
+      ],
+      "practice": "ready",
+      "concept": "ASSISTANTS",
+      "tryIt": "Lav et arbejdsrum med instruktionen Svar altid kort og venligt, og læg en Nordlys-fil ind som viden."
+    },
+    {
+      "id": "hukommelse",
+      "label": "Hukommelse",
+      "icon": "bulb",
+      "what": "Den kan huske ting om dig og dit arbejde mellem samtaler, og du bestemmer selv hvad.",
+      "inTool": [
+        "Under Settings og Your Claude finder du Instructions for Claude og Memory from chats.",
+        "Hukommelsen er punkter, du kan se, rette og slette. Du kan også fravælge følsomme emner.",
+        "Du kan slå hukommelsen fra for en enkelt chat under + før første besked.",
+        "Search and reference chats, altså at finde tidligere samtaler, kræver Pro eller højere."
+      ],
+      "practice": "soon",
+      "concept": "CHAT"
+    },
+    {
+      "id": "planlagt",
+      "label": "Planlagt",
+      "icon": "clock",
+      "what": "Opgaver, der kører af sig selv på faste tidspunkter, fx et ugentligt overblik.",
+      "inTool": [
+        "Vælg Scheduled i sidemenuen.",
+        "Opgaverne kører i skyen, så din computer behøver ikke være tændt.",
+        "Planlagte opgaver kræver en betalt plan."
+      ],
+      "practice": "ready",
+      "concept": "AUTOMATIONS",
+      "tryIt": "Lav en opgave, der hver mandag opsummerer ugens kundemails og giver dig besked."
+    },
+    {
+      "id": "faerdigheder",
+      "label": "Færdigheder",
+      "icon": "lightning",
+      "what": "Lær den dine faste arbejdsgange én gang, så du ikke skal forklare dem hver gang.",
+      "inTool": [
+        "Gå til Customize i sidemenuen og fanen Skills.",
+        "Under + vælger du Browse skills, Create skill eller Upload a skill.",
+        "Record a skill, hvor du optager arbejdsgangen, kræver Pro, Max eller Team og Mac."
+      ],
+      "practice": "soon",
+      "concept": "CHAT"
+    }
+  ]
+}

@@ -13,7 +13,8 @@ export const daSandbox = {
   frame: {
     tracks: "Spor",
     navLabel: "Øvemiljøets menu",
-    navGroups: { model: "Øvemodel", work: "Nordlys' systemer" },
+    navGroups: { model: "Øvemodel", features: "Funktioner", work: "Nordlys' systemer" },
+    featureNewTab: "(åbner i en ny fane)",
     workspace: "Arbejdsflade",
     panes: "Visning",
     paneTabs: { nav: "Menu", content: "Indhold", chat: "Chat" },
