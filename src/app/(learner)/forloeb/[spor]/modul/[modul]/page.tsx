@@ -1,16 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { CourseDisclaimer } from "@/components/courses/course-ui";
-import { AppIcon, Icon } from "@/components/ui/icons";
-import { ButtonLink, Card } from "@/components/ui/primitives";
+import { CourseDisclaimer, CourseFrame, CourseMain, Stage, WebButtonLink, WebCard } from "@/components/courses/course-ui";
+import { Icon } from "@/components/ui/icons";
 import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
 import { getModuleCompletion, isCourseSlug } from "@/server/courses/service";
 import { db } from "@/server/db";
 
-// Module ending, reached with "Næste" from the module's last lesson.
+// Module ending, reached with "Næste" from the module's last lesson. Website look (:3400).
 
 async function Completion({ params }: { params: Promise<{ spor: string; modul: string }> }) {
   const { spor, modul } = await params;
@@ -22,32 +21,45 @@ async function Completion({ params }: { params: Promise<{ spor: string; modul: s
   const complete = c.missing.length === 0;
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 pt-8 pb-16 sm:px-6 in-[.app-panel]:mx-0 lg:in-[.app-panel]:px-11 lg:in-[.app-panel]:pt-6">
-      <Card>
-        <div className="flex flex-col items-start gap-4" data-testid="module-done" data-complete={complete}>
-          <AppIcon name={complete ? "trophy" : "clock"} size="lg" />
-          <h1 className="text-title-1 text-ink">{format(complete ? t.title : t.notYetTitle, { nr: c.module.nr })}</h1>
-          <p className="text-body text-ink-muted">{complete ? format(t.body, { total: c.total, title: c.module.title }) : format(t.notYetBody, { count: c.missing.length })}</p>
-          {!complete && (
-            <ul className="flex w-full flex-col divide-y divide-line rounded-md border border-line">
+    <CourseFrame>
+      <CourseMain narrow>
+        <Stage data-testid="module-done">
+          <div className="flex flex-col items-start gap-5" data-complete={complete}>
+            <span aria-hidden="true" className="grid size-14 place-items-center rounded-full bg-linear-to-b from-web-coral-from to-web-coral-to text-web-white shadow-[0_10px_30px_-10px_var(--color-web-glow)]">
+              <Icon name={complete ? "trophy" : "clock"} size={26} />
+            </span>
+            <h1 className="text-[2.25rem] leading-[1.08] font-normal tracking-[-0.035em] text-web-white sm:text-[3rem]">{format(complete ? t.title : t.notYetTitle, { nr: c.module.nr })}</h1>
+            <p className="max-w-xl text-[1.0625rem] text-web-stage-text">{complete ? format(t.body, { total: c.total, title: c.module.title }) : format(t.notYetBody, { count: c.missing.length })}</p>
+            {complete && (
+              <WebButtonLink href={`/forloeb/${c.courseSlug}`} icon="arrowLeft" className="mt-2">
+                {t.back}
+              </WebButtonLink>
+            )}
+          </div>
+        </Stage>
+        {!complete && (
+          <WebCard>
+            <ul className="-my-2 flex flex-col divide-y divide-web-line">
               {c.missing.map((l) => (
                 <li key={l.slug}>
-                  <Link href={`/forloeb/${c.courseSlug}/${l.slug}`} className="flex items-center gap-3 px-4 py-3 text-body-sm text-ink hover:bg-sunken">
-                    <span className="w-9 font-mono text-mono text-ink-subtle tabular-nums">{l.nr}</span>
+                  <Link href={`/forloeb/${c.courseSlug}/${l.slug}`} className="flex items-center gap-3 py-3 text-[0.9375rem] text-web-ink hover:text-web-coral-ink">
+                    <span className="w-10 text-[0.8125rem] text-web-muted tabular-nums">{l.nr}</span>
                     <span className="flex-1">{l.title}</span>
-                    <Icon name="chevronRight" size={14} className="text-ink-subtle" />
+                    <Icon name="chevronRight" size={14} className="text-web-muted" />
                   </Link>
                 </li>
               ))}
             </ul>
-          )}
-          <ButtonLink href={`/forloeb/${c.courseSlug}`} icon="arrowLeft" variant={complete ? "primary" : "secondary"}>
-            {t.back}
-          </ButtonLink>
-        </div>
-      </Card>
-      <CourseDisclaimer text={c.disclaimer} />
-    </main>
+            <div className="mt-6">
+              <WebButtonLink href={`/forloeb/${c.courseSlug}`} look="light" icon="arrowLeft">
+                {t.back}
+              </WebButtonLink>
+            </div>
+          </WebCard>
+        )}
+        <CourseDisclaimer text={c.disclaimer} />
+      </CourseMain>
+    </CourseFrame>
   );
 }
 

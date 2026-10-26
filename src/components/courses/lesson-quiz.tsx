@@ -35,8 +35,8 @@ export function LessonQuiz({ question, options, initiallyCompleted, answer }: { 
 
   return (
     <fieldset className="flex flex-col gap-3" data-testid="lesson-quiz">
-      <legend className="mb-3 text-body font-medium text-ink">{question}</legend>
-      {initiallyCompleted && !solved && <p className="text-body-sm text-ink-muted">{t.completedNote}</p>}
+      <legend className="mb-4 text-[1.0625rem] font-medium text-web-ink">{question}</legend>
+      {initiallyCompleted && !solved && <p className="text-[0.875rem] text-web-muted">{t.completedNote}</p>}
       <ul className="flex min-h-[9.5rem] flex-col gap-2">
         {hydrated &&
           order.map((jsonIndex) => {
@@ -51,22 +51,22 @@ export function LessonQuiz({ question, options, initiallyCompleted, answer }: { 
                   aria-pressed={isPicked}
                   data-testid="quiz-option"
                   className={cx(
-                    "flex w-full items-center gap-3 rounded-md border px-4 py-3 text-left text-body transition-colors duration-[120ms] app:rounded-2xl",
-                    state === "correct" && "border-success bg-success-soft text-ink",
-                    state === "wrong" && "border-danger bg-danger-soft text-ink",
-                    state === null && "border-line-strong bg-surface text-ink hover:bg-sunken",
-                    (pending || solved) && state === null && "text-ink-muted",
+                    "flex w-full items-center gap-3 rounded-[14px] border px-4 py-3.5 text-left text-[1rem] transition-colors duration-[120ms]",
+                    state === "correct" && "border-success bg-success-soft text-web-ink",
+                    state === "wrong" && "border-web-coral bg-web-coral-soft text-web-ink",
+                    state === null && "border-web-line-strong bg-web-surface text-web-ink hover:border-web-coral hover:bg-web-bg",
+                    (pending || solved) && state === null && "text-web-muted",
                   )}
                 >
                   <span className="flex-1">{options[jsonIndex]}</span>
                   {state === "correct" && <Icon name="check" size={18} className="text-success" />}
-                  {state === "wrong" && <Icon name="x" size={18} className="text-danger" />}
+                  {state === "wrong" && <Icon name="x" size={18} className="text-web-coral-ink" />}
                 </button>
               </li>
             );
           })}
       </ul>
-      <p role="status" aria-live="polite" className={cx("min-h-6 text-body-sm font-medium", result === "correct" ? "text-success" : result === "wrong" ? "text-danger" : "text-ink-muted")} data-testid="quiz-feedback">
+      <p role="status" aria-live="polite" className={cx("min-h-6 text-[0.9375rem] font-medium", result === "correct" ? "text-success" : result === "wrong" ? "text-web-coral-ink" : "text-web-muted")} data-testid="quiz-feedback">
         {result === "correct" ? t.correct : result === "wrong" ? t.wrong : result === "error" ? t.answerError : ""}
       </p>
     </fieldset>
