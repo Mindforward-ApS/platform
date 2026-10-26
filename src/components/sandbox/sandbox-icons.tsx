@@ -77,6 +77,19 @@ const LOCAL = {
       <path d="M2.25 8h11.5M8 2.25c1.6 1.6 2.4 3.5 2.4 5.75S9.6 12.15 8 13.75C6.4 12.15 5.6 10.25 5.6 8S6.4 3.85 8 2.25Z" />
     </>
   ),
+  notebook: (
+    <>
+      <rect x="3.25" y="1.75" width="9.5" height="12.5" rx="1.5" />
+      <path d="M1.75 4.5h3M1.75 8h3M1.75 11.5h3M7 5h3.5" />
+    </>
+  ),
+  shield: <path d="M8 1.75 2.75 3.75v4c0 3.1 2.2 5.3 5.25 6.5 3.05-1.2 5.25-3.4 5.25-6.5v-4Z M5.75 8l1.6 1.6 3-3.1" />,
+  gear: (
+    <>
+      <circle cx="8" cy="8" r="2" />
+      <path d="M8 1.75v1.5M8 12.75v1.5M14.25 8h-1.5M3.25 8h-1.5M12.4 3.6l-1.05 1.05M4.65 11.35 3.6 12.4M12.4 12.4l-1.05-1.05M4.65 4.65 3.6 3.6" />
+    </>
+  ),
   star: <path d="m8 2.25 1.75 3.6 3.95.55-2.85 2.75.7 3.9L8 11.2l-3.55 1.85.7-3.9L2.3 6.4l3.95-.55Z" />,
   list: <path d="M5.75 4h8M5.75 8h8M5.75 12h8M2.25 4h.01M2.25 8h.01M2.25 12h.01" />,
   memory: (
@@ -125,6 +138,7 @@ export const CONCEPT_ICON: Record<Concept, LocalIconName | IconName> = {
   ARTIFACTS: "artifact",
   SKILLS: "bag",
   PLUGINS: "bag",
+  NOTEBOOKS: "notebook",
 };
 
 /** Concepts that belong to the practice model (vs. Nordlys' simulated work systems) — only used to group the nav. */

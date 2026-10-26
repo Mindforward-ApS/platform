@@ -226,7 +226,8 @@
                 "SEARCH",
                 "ARTIFACTS",
                 "SKILLS",
-                "PLUGINS"
+                "PLUGINS",
+                "NOTEBOOKS"
               ]
             },
             "view": {

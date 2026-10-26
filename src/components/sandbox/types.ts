@@ -88,7 +88,7 @@ export interface CustomizeItem {
   name: string;
   madeBy: string;
   section: "forYou" | "new" | "popular";
-  icon: "file" | "table" | "grid" | "sparkle" | "mail" | "plan" | "building" | "search" | "users" | "chart" | "check" | "calendar" | "lightning";
+  icon: "file" | "table" | "grid" | "sparkle" | "mail" | "plan" | "building" | "search" | "users" | "chart" | "check" | "calendar" | "lightning" | "chat";
   description: string;
 }
 

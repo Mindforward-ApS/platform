@@ -9,6 +9,7 @@ import type { NavId } from "@/server/sandbox/skin-schema";
 import { postIntent } from "./api";
 import { ChatPanel } from "./chat-panel";
 import { ChatMenu, ChatSidebar, ChatSuggestions, EffortButton, LibraryView, MicButton, ModeToggle, PlannedView, PluginsView, PluginTabs, SearchDialog, SkillsView, WorkExtras, type ChatMenuSettings, type ChatMode, type Effort } from "./sidebar-chat-shell";
+import { AgentsStore, NotebooksPage, WorkChips, WorkLibrary, WorkMenu, WorkSearch, WorkSidebar, WorkTopBar, type ModelMode, type SidebarMode } from "./work-chat-shell";
 import { ArtifactsView, WorkpaneSidebar, ComposerMenu, ComposerRow, ComposerTools, CUSTOMIZE_CONCEPTS, CustomizeView, SearchView, TAB_CONCEPT, type ComposerSettings, type CustomizeTab } from "./workpane-shell";
 import { CONCEPT_ICON, MODEL_CONCEPTS, SbIcon } from "./sandbox-icons";
 import type { ChatTurnView, Intent, SandboxProps } from "./types";
@@ -33,12 +34,12 @@ type Pane = "nav" | "content" | "chat";
 export function SandboxApp(props: SandboxProps) {
   const { skin, sessionId, world, stepId, variant = "page" } = props;
   const [state, setState] = useState<SandboxState>(props.initialState);
-  const [concept, setConcept] = useState<Concept>(skin.shell === "APP_RAIL_SIDE_PANEL" ? "MAIL" : "CHAT");
+  const [concept, setConcept] = useState<Concept>("CHAT");
   const [turns, setTurns] = useState<ChatTurnView[]>(props.turns);
   const [conversationId, setConversationId] = useState<string | null>(props.conversationId);
   const [notice, setNotice] = useState<string | null>(null);
   // With a prefilled prompt the chat opens first, also in the app-rail shell, so the text is in view.
-  const [pane, setPane] = useState<Pane>(skin.shell === "APP_RAIL_SIDE_PANEL" && !props.initialDraft ? "content" : "chat");
+  const [pane, setPane] = useState<Pane>("chat");
   const compact = skin.tokens.density === "compact";
   // Workpane shell only: Tilpasning tab, composer settings, and a draft put in a fresh chat ("Prøv", "Lav noget nyt").
   const [customizeTab, setCustomizeTab] = useState<CustomizeTab>("skills");
@@ -49,6 +50,10 @@ export function SandboxApp(props: SandboxProps) {
   const [effort, setEffort] = useState<Effort>("medium");
   const [menuSettings, setMenuSettings] = useState<ChatMenuSettings>({ web: false, research: false });
   const [searchOpen, setSearchOpen] = useState(false);
+  // Work-chat shell only: Chat | Kollega in the sidebar, Arbejds-IQ and the model mode.
+  const [sidebarMode, setSidebarMode] = useState<SidebarMode>("chat");
+  const [workIq, setWorkIq] = useState(true);
+  const [modelMode, setModelMode] = useState<ModelMode>("auto");
 
   // Actions are serialized so events reach the server in the order the user made them.
   const queue = useRef<Promise<unknown>>(Promise.resolve());
@@ -75,6 +80,161 @@ export function SandboxApp(props: SandboxProps) {
     // Phones: jump to what was just opened.
     setPane(target === "CHAT" ? "chat" : "content");
   };
+
+  // Work-chat shell (the app-rail skin key, now in the work app's own structure): sidebar with Chat | Kollega ·
+  // one main area (start screen, Søg, Bibliotek, Agenter, Notesbøger, Automatiseringer, Tilpas, or a Nordlys app).
+  function renderWorkChat() {
+    const ws = t.workShell;
+    const customize = props.customize ?? { skills: [], plugins: [] };
+    const linked = props.catalog.filter((c) => (state.catalog?.linked ?? []).includes(c.id)).map((c) => ({ id: c.id, label: c.name, on: !(state.catalog?.chatOff ?? []).includes(c.id) }));
+    // Handlers only: emit/navigate run from clicks, never during render (the refs rule cannot see that here).
+    // eslint-disable-next-line react-hooks/refs
+    const toggleConnector = (id: string, on: boolean) => emit({ event: { type: "SETTING_CHANGED", payload: { key: on ? "chat-connector-on" : "chat-connector-off", value: id } } });
+    const agents = ws.builtInAgents.filter((a) => (state.installed?.agents ?? []).includes(a.id));
+    const startChat = (text: string) => {
+      // eslint-disable-next-line react-hooks/refs
+      navigate("new-chat", "CHAT");
+      setDraft((d) => ({ text, key: (d?.key ?? 0) + 1 }));
+    };
+    const openAgent = (a: (typeof ws.builtInAgents)[number]) => {
+      emit({ event: { type: "UI_CLICKED", target: `agents.${a.id}.open`, payload: { region: "agents", control: `${a.id}.open` } } });
+      startChat(format(ws.agents.openText, { name: a.name }));
+    };
+    const openCustomize = (tab: CustomizeTab) => {
+      emit({ event: { type: "UI_NAVIGATED", payload: { concept: TAB_CONCEPT[tab], view: `customize-${tab}` } } });
+      setCustomizeTab(tab);
+      setConcept(TAB_CONCEPT[tab]);
+      setPane("content");
+    };
+    const cowork = sidebarMode === "cowork";
+    const chatNode = (
+      <ChatPanel
+        key={`${draft?.key ?? 0}-${sidebarMode}`}
+        sessionId={sessionId}
+        stepId={stepId}
+        turns={turns}
+        setTurns={setTurns}
+        conversationId={conversationId}
+        setConversationId={setConversationId}
+        files={world.files}
+        attachFromFiles={skin.composer.attachFromFiles}
+        density={skin.tokens.density}
+        emit={emit}
+        wide
+        variant="pill"
+        inline={!cowork}
+        heading={format(cowork ? ws.coworkGreeting : ws.greeting, { name: t.chat.persona })}
+        placeholder={cowork ? ws.coworkPlaceholder : ws.placeholder}
+        connectors={linked}
+        onToggleConnector={toggleConnector}
+        onOpenConnectors={() => openCustomize("connectors")}
+        initialText={draft?.text ?? props.initialDraft}
+        hideSuggestions
+        menuClassName="w-80"
+        composerTools={
+          <span className="grid size-8 place-items-center rounded-full text-ink-subtle max-sm:hidden" aria-hidden="true">
+            <SbIcon name="mic" />
+          </span>
+        }
+        renderMenu={({ close, openPicker }) => (
+          <WorkMenu close={close} openPicker={openPicker} agents={agents} onAgent={openAgent} plugins={linked} onTogglePlugin={toggleConnector} onManage={() => openCustomize("connectors")} emit={emit} />
+        )}
+        belowComposer={turns.length > 0 ? undefined : ({ setText }) => <WorkChips mode={sidebarMode} setText={setText} />}
+      />
+    );
+    const main = (() => {
+      if (CUSTOMIZE_CONCEPTS.includes(concept))
+        return <CustomizeView title={ws.customize.title} tab={customizeTab} onTab={openCustomize} state={state} emit={emit} catalog={props.catalog} customize={customize} practice={props.practice ?? null} sessionId={sessionId} onTry={startChat} />;
+      switch (concept) {
+        case "CHAT":
+          return chatNode;
+        case "SEARCH":
+          return <WorkSearch mail={world.mail} calendar={world.calendar} files={world.files} crm={world.crm} emit={emit} />;
+        case "FILES":
+          return (
+            <WorkLibrary
+              files={world.files}
+              emit={emit}
+              onOpenSheet={() => {
+                emit({ event: { type: "SHEET_OPENED", payload: { sheetId: "f15" } } });
+                setConcept("SHEET");
+              }}
+            />
+          );
+        case "AGENTS":
+          return <AgentsStore state={state} emit={emit} onOpen={openAgent} builder={<AssistantsView state={state} files={world.files} emit={emit} title={ws.agents.builder} />} />;
+        case "NOTEBOOKS":
+          return <NotebooksPage files={world.files} calendar={world.calendar} mail={world.mail} onChat={startChat} />;
+        case "AUTOMATIONS":
+          return <AutomationsView state={state} emit={emit} title={ws.automations.title} />;
+        default:
+          return workspace;
+      }
+    })();
+    const mainPane: Pane = concept === "CHAT" ? "chat" : "content";
+    const active: Pane = pane === "nav" ? "nav" : mainPane;
+    const show = (p: Pane) => (active === p ? "flex" : "hidden lg:flex");
+
+    return (
+      <div
+        className={cx(
+          "flex flex-col overflow-hidden bg-bg",
+          variant === "task" ? "h-[min(44rem,calc(100dvh-8rem))] min-h-[520px] rounded-xl border border-line" : "h-[calc(100dvh-3.5rem)] min-h-[560px] lg:h-[calc(100dvh-5rem)] lg:rounded-b-xl",
+        )}
+        data-shell={skin.shell}
+        data-variant={variant}
+        data-accent={skin.tokens.accentSlot}
+      >
+        <DisclaimerBar />
+        {variant === "task" ? <h3 className="sr-only">{t.title}</h3> : <h1 className="sr-only">{t.title}</h1>}
+        <div role="tablist" aria-label={t.frame.panes} className="flex shrink-0 gap-1 border-b border-line bg-surface px-4 py-2 sm:px-6 lg:hidden">
+          {(["nav", mainPane] as Pane[]).map((p) => (
+            <button
+              key={p}
+              type="button"
+              role="tab"
+              id={`sb-tab-${p}`}
+              aria-selected={active === p}
+              aria-controls={`sb-pane-${p}`}
+              className={cx("flex h-8 flex-1 items-center justify-center rounded-sm text-label transition-colors", active === p ? "bg-accent-soft text-accent-ink" : "text-ink-muted hover:bg-sunken hover:text-ink")}
+              onClick={() => setPane(p)}
+            >
+              {t.frame.paneTabs[p]}
+            </button>
+          ))}
+        </div>
+        {notice && (
+          <div className="shrink-0 border-b border-line bg-surface px-4 py-3 sm:px-6">
+            <Notice>{notice}</Notice>
+          </div>
+        )}
+        <div className="flex min-h-0 flex-1">
+          <aside id="sb-pane-nav" aria-labelledby="sb-tab-nav" className={cx(show("nav"), "w-full min-w-0 flex-col border-line bg-sunken/60 lg:w-64 lg:shrink-0 lg:border-r")}>
+            <WorkSidebar
+              skin={skin}
+              concept={concept}
+              mode={sidebarMode}
+              onMode={(m) => {
+                emit({ event: { type: "SETTING_CHANGED", payload: { key: "sidebar-mode", value: m } } });
+                setSidebarMode(m);
+                navigate("new-chat", "CHAT");
+              }}
+              conversations={state.chat.conversations}
+              activeConversation={Boolean(conversationId)}
+              agents={agents}
+              onNav={navigate}
+              onAgent={openAgent}
+              onReset={reset}
+            />
+          </aside>
+          <main id={`sb-pane-${mainPane}`} aria-labelledby={`sb-tab-${mainPane}`} className={cx(show(mainPane), "min-h-0 min-w-0 flex-1 flex-col bg-surface")}>
+            {concept === "CHAT" && <WorkTopBar workIq={workIq} onWorkIq={setWorkIq} model={modelMode} onModel={setModelMode} onNewChat={() => navigate("new-chat", "CHAT")} emit={emit} />}
+            {main}
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   // Sidebar-chat shell: the real app's structure — sidebar · one main area (Chat/Work start screen, Planlagt,
   // Bibliotek, Plugins | Skills, GPT'er, or a Nordlys system opened from "Udforsk"). Nothing opens in a new tab.
@@ -570,6 +730,7 @@ export function SandboxApp(props: SandboxProps) {
 
   if (shell === "SIDEBAR_CHAT_WORKPANE") return renderWorkpane();
   if (shell === "SIDEBAR_CHAT") return renderSidebarChat();
+  if (shell === "APP_RAIL_SIDE_PANEL") return renderWorkChat();
 
   // Which regions exist for this shell right now. Phones show one at a time via the pane tabs.
   const showChat = skin.shell !== "SIDEBAR_CHAT" || workspace === null;

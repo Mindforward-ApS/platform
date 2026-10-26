@@ -22,7 +22,7 @@ export type SandboxEventType = (typeof SANDBOX_EVENT_TYPES)[number];
 export const ACTORS = ["USER", "MODEL", "AUTOMATION", "SYSTEM"] as const;
 export type Actor = (typeof ACTORS)[number];
 
-export const CONCEPTS = ["CHAT", "ASSISTANTS", "CONNECTORS", "AUTOMATIONS", "AGENTS", "MAIL", "CALENDAR", "FILES", "CRM", "SHEET", "SEARCH", "ARTIFACTS", "SKILLS", "PLUGINS"] as const;
+export const CONCEPTS = ["CHAT", "ASSISTANTS", "CONNECTORS", "AUTOMATIONS", "AGENTS", "MAIL", "CALENDAR", "FILES", "CRM", "SHEET", "SEARCH", "ARTIFACTS", "SKILLS", "PLUGINS", "NOTEBOOKS"] as const;
 export type Concept = (typeof CONCEPTS)[number];
 
 export const SURFACES = ["chat", "prompt_task", "assistant_instructions", "automation_prompt", "mail_draft"] as const;

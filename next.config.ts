@@ -24,10 +24,10 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   // The sandbox reads the versioned Nordlys world and skins from content/ at runtime (src/server/sandbox/world.ts).
   outputFileTracingIncludes: {
-    "/api/sandbox/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json", "./content/sandbox-customize/catalog.json", "./content/sandbox-connectors/chatgpt-plugins.json"],
-    "/sandkasse/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json", "./content/sandbox-customize/catalog.json", "./content/sandbox-connectors/chatgpt-plugins.json"],
+    "/api/sandbox/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json", "./content/sandbox-customize/**", "./content/sandbox-connectors/chatgpt-plugins.json"],
+    "/sandkasse/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json", "./content/sandbox-customize/**", "./content/sandbox-connectors/chatgpt-plugins.json"],
     // Opgavevisning: the module player opens the attempt-bound sandbox through a server action.
-    "/modul/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json", "./content/sandbox-customize/catalog.json", "./content/sandbox-connectors/chatgpt-plugins.json"],
+    "/modul/**": ["./content/sandbox-world/**", "./content/sandbox-skins/**", "./content/sandbox-connectors/catalog.json", "./content/sandbox-customize/**", "./content/sandbox-connectors/chatgpt-plugins.json"],
     // M7: the DPA text is shown and hashed at acceptance (src/server/orgs/dpa.ts).
     "/virksomhed/**": ["./content/legal/dpa.v1.md"],
     // M10: help-center articles are read from content/help at runtime (src/server/support/help.ts).

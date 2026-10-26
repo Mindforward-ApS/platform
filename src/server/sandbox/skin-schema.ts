@@ -9,14 +9,14 @@ import { CONCEPTS } from "./events";
 export const TERM_KEYS = [
   "chat", "newChat", "history", "assistants", "newAssistant", "connectors", "automations", "agents", "mail", "calendar",
   "files", "crm", "sheet", "attach", "tools", "settings", "notifications", "reset",
-  "new", "search", "projects", "artifacts", "scheduled", "customize", "more", "library", "plugins", "explore", "gpts", "scheduledShort",
+  "new", "search", "projects", "artifacts", "scheduled", "customize", "more", "library", "plugins", "explore", "gpts", "scheduledShort", "agentsPlural", "notebooks", "searchLong", "automationsShort", "customizeShort",
 ] as const;
 export type TermKey = (typeof TERM_KEYS)[number];
 
 /** Nav ids are the `control` part of UI_CLICKED targets ("nav.<id>"), shared across skins so one module fits several tracks. */
 export const NAV_IDS = [
   "new-chat", "chat", "assistants", "connectors", "automations", "agents", "mail", "calendar", "files", "crm", "sheet", "settings", "notifications",
-  "search", "artifacts", "customize",
+  "search", "artifacts", "customize", "notebooks",
 ] as const;
 export type NavId = (typeof NAV_IDS)[number];
 

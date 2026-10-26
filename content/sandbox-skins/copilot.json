@@ -1,22 +1,23 @@
 {
   "key": "copilot",
-  "version": "1",
+  "version": "2",
   "shell": "APP_RAIL_SIDE_PANEL",
   "regions": ["nav", "workspace", "sidePanel", "composer", "notifications"],
   "nav": [
+    { "id": "new-chat", "labelKey": "newChat", "concept": "CHAT" },
+    { "id": "search", "labelKey": "searchLong", "concept": "SEARCH" },
+    { "id": "files", "labelKey": "library", "concept": "FILES" },
+    { "id": "agents", "labelKey": "agentsPlural", "concept": "AGENTS" },
+    { "id": "notebooks", "labelKey": "notebooks", "concept": "NOTEBOOKS" },
+    { "id": "automations", "labelKey": "automationsShort", "concept": "AUTOMATIONS" },
+    { "id": "customize", "labelKey": "customizeShort", "concept": "SKILLS" },
     { "id": "mail", "labelKey": "mail", "concept": "MAIL" },
     { "id": "calendar", "labelKey": "calendar", "concept": "CALENDAR" },
-    { "id": "files", "labelKey": "files", "concept": "FILES" },
     { "id": "crm", "labelKey": "crm", "concept": "CRM" },
-    { "id": "sheet", "labelKey": "sheet", "concept": "SHEET" },
-    { "id": "chat", "labelKey": "chat", "concept": "CHAT" },
-    { "id": "assistants", "labelKey": "assistants", "concept": "ASSISTANTS" },
-    { "id": "connectors", "labelKey": "connectors", "concept": "CONNECTORS" },
-    { "id": "automations", "labelKey": "automations", "concept": "AUTOMATIONS" },
-    { "id": "agents", "labelKey": "agents", "concept": "AGENTS" }
+    { "id": "sheet", "labelKey": "sheet", "concept": "SHEET" }
   ],
   "composer": { "attachFromFiles": true, "toolsMenu": ["attach"], "modelPicker": false },
   "concepts": { "assistants": true, "connectors": true, "automations": true, "agents": true },
   "connectorsLayout": "PANEL",
-  "tokens": { "density": "compact", "accentSlot": "b" }
+  "tokens": { "density": "comfortable", "accentSlot": "b" }
 }

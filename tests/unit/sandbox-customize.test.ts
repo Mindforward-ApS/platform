@@ -6,12 +6,12 @@ import { applyEvent, initialState, normalizeState } from "@/server/sandbox/reduc
 const set = (key: string, value: string) => ({ type: "SETTING_CHANGED" as const, actor: "USER" as const, payload: { key, value } });
 
 describe("customize catalog", () => {
-  it("loads skills and plugins with unique ids and every section filled", () => {
-    const c = loadCustomizeCatalog();
-    for (const list of [c.skills, c.plugins]) {
-      expect(new Set(list.map((i) => i.id)).size).toBe(list.length);
-      for (const section of ["forYou", "new", "popular"]) expect(list.some((i) => i.section === section)).toBe(true);
-    }
+  it("loads skills and plugins with unique ids and every section filled (both tracks)", () => {
+    for (const c of [loadCustomizeCatalog(), loadCustomizeCatalog("cowork")])
+      for (const list of [c.skills, c.plugins]) {
+        expect(new Set(list.map((i) => i.id)).size).toBe(list.length);
+        for (const section of ["forYou", "new", "popular"]) expect(list.some((i) => i.section === section)).toBe(true);
+      }
   });
 });
 

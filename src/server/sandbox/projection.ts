@@ -24,7 +24,7 @@ export async function buildSandboxProps(db: PrismaClient, owner: Owner, session:
     skin: loadSkin(session.skinKey),
     // The sidebar-chat track has its own tool's plugin directory; the other tracks use the connector catalog.
     ...(session.skinKey === "chatgpt" ? { catalog: loadPluginDirectory().items, pluginSections: loadPluginDirectory().sections } : { catalog: loadConnectorCatalog() }),
-    customize: loadCustomizeCatalog(),
+    customize: loadCustomizeCatalog(session.skinKey === "copilot" ? "cowork" : "catalog"),
     initialState: state,
     conversationId,
     turns: turns.map((t) => ({ seq: t.seq, role: t.role, text: t.text })),

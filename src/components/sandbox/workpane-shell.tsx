@@ -552,7 +552,9 @@ export function CustomizeView({
   practice,
   sessionId,
   onTry,
+  title = s.customize.title,
 }: {
+  title?: string;
   tab: CustomizeTab;
   onTab: (tab: CustomizeTab) => void;
   state: SandboxState;
@@ -691,7 +693,7 @@ export function CustomizeView({
   }
 
   return (
-    <Page title={c.title} testId="sandbox-customize">
+    <Page title={title} testId="sandbox-customize">
       <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2" data-testid="customize-toolbar">
         <Segmented label={c.title} value={tab} onChange={switchTab} items={(["skills", "connectors", "plugins"] as const).map((k) => ({ key: k, label: c.tabs[k] }))} />
         <span className="h-5 w-px bg-line" aria-hidden="true" />
