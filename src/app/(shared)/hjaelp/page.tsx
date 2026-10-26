@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { Stage } from "@/components/courses/course-ui";
 import { ArticleCard, SupportCard, teaser } from "@/components/marketing/help";
 import { Icon } from "@/components/ui/icons";
 import { Button } from "@/components/ui/primitives";
@@ -32,7 +33,7 @@ function SearchForm({ defaultValue }: { defaultValue?: string }) {
   const t = getMessages().support.help;
   return (
     <form action="/hjaelp" method="get" role="search" className="flex flex-col gap-2">
-      <label htmlFor="help-q" className="text-label text-ink">
+      <label htmlFor="help-q" className="text-label text-web-white">
         {t.searchLabel}
       </label>
       <div className="flex gap-2">
@@ -68,20 +69,21 @@ export default function HelpCenterPage(props: PageProps<"/hjaelp">) {
   const sp = props.searchParams as Promise<{ q?: string | string[] }>;
   return (
     <main className="flex flex-1 flex-col">
-      <section className="border-b border-line bg-surface">
-        <div className="mx-auto w-full max-w-app px-4 pt-10 pb-12 sm:px-6 sm:pt-16 sm:pb-14">
+      {/* Same chocolate stage as the rest of the app's page headers (forløb), not the old white marketing band. */}
+      <div className="mx-auto w-full max-w-app px-4 pt-6 sm:px-6 lg:pt-8">
+        <Stage>
           <div className="flex max-w-read flex-col gap-6">
             <div className="flex flex-col gap-3">
-              <p className="text-overline text-accent uppercase">{m.eyebrow}</p>
-              <h1 className="text-title-1 text-ink sm:text-display">{t.title}</h1>
-              <p className="text-body-lg text-ink-muted">{t.intro}</p>
+              <p className="text-overline text-web-coral uppercase">{m.eyebrow}</p>
+              <h1 className="text-title-1 text-web-white sm:text-display">{t.title}</h1>
+              <p className="text-body-lg text-web-stage-text">{t.intro}</p>
             </div>
             <Suspense fallback={<SearchForm />}>
               <Search searchParams={sp} />
             </Suspense>
           </div>
-        </div>
-      </section>
+        </Stage>
+      </div>
 
       <div className="mx-auto flex w-full max-w-app flex-col gap-12 px-4 pt-10 pb-20 sm:px-6 sm:pt-12">
         <Suspense>

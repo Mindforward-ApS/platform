@@ -137,26 +137,27 @@
   /* Logo mark (head + forward arrow). On the dark sidebar the navy parts turn white. */
   --mf-logo-navy: #071b60;
   --mf-logo-blue: #2858c4;
-  /* New website (mindforward.dk, Oct 2026) — the login/signup pages match it. */
-  --mf-site-bg: #edf1fd;
-  --mf-site-navy: #0e1a3d;
-  --mf-site-navy-hover: #1b2a5c;
-  --mf-site-ink: #14161c;
-  --mf-site-body: #3b3f48;
-  --mf-site-blue: #3a5bd9;
-  --mf-site-blue-light: #5b7cf0;
-  --mf-site-blue-deep: #2c46b8;
-  --mf-site-soft: #f6f8fe;
-  --mf-site-brain: #1e3a8a;
-  --mf-site-line: rgb(20 22 28 / 0.08);
-  --mf-site-shadow: rgb(20 22 28 / 0.4);
-  --mf-site-navy-shadow: rgb(14 26 61 / 0.7);
+  /* Public pages (niveautest, hjælp, login/signup, legal) in the new website's palette (:3400, Oct 2026): cream page,
+     chocolate for dark buttons, coral as the accent. Was blue/navy; retinted 26 Oct 2026 ("har stadig det gamle design"). */
+  --mf-site-bg: #faf6f3;
+  --mf-site-navy: #201613;
+  --mf-site-navy-hover: #2e1f1c;
+  --mf-site-ink: #17100e;
+  --mf-site-body: #433b39;
+  --mf-site-blue: #c2453f;
+  --mf-site-blue-light: #ea6b5e;
+  --mf-site-blue-deep: #a8372f;
+  --mf-site-soft: #fffdfb;
+  --mf-site-brain: #c2453f;
+  --mf-site-line: rgb(26 20 19 / 0.09);
+  --mf-site-shadow: rgb(48 30 24 / 0.35);
+  --mf-site-navy-shadow: rgb(32 22 19 / 0.6);
   /* Website "bezel" buttons and fields: grey 3px edge, dark hairline inside, grey icon tile. */
   --mf-site-bezel: #e5e5e5;
   --mf-site-bezel-hover: #d6d6d6;
   --mf-site-hairline: rgb(11 13 31 / 0.2);
   --mf-site-lift: rgb(11 13 31 / 0.1);
-  --mf-site-tile: #eef0f6;
+  --mf-site-tile: #f3ece8;
   /* New website on :3400 (web-skabelon, Oct 2026): chocolate stage, cream page, coral accent. Used by forløb. */
   --mf-web-bg: #faf6f3;
   --mf-web-surface: #fffdfb;

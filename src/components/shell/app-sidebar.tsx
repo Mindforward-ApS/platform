@@ -127,6 +127,7 @@ function TopBar({ groups }: { groups: SidebarGroup[] }) {
             ...crumbs(groups),
             { href: "/konto", label: t.shell.learner.account },
             { href: "/hjaelp", label: t.shell.learner.help },
+            { href: "/niveautest", label: t.placement.footer.placement },
             // Company pages reached from inside the admin area (not in the sidebar).
             ...(groups.some((g) => g.label === t.shell.companyGroup)
               ? [

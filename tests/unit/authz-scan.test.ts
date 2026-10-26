@@ -19,8 +19,8 @@ const ALLOWLIST: Record<string, string[]> = {
   "src/app/api/webhooks/stripe/route.ts": ["POST"], // authenticated by the Stripe-Signature header (constructEvent on the raw body)
   "src/app/(billing)/fortryd-aftale/actions.ts": ["submitWithdrawalForm"], // § 20 a: must work without login; rate-limited per IP
   // M5 public lead magnet: no login by design; honeypot + min time + rate limits in src/server/placement/submit.ts
-  "src/app/(marketing)/niveautest/[track]/actions.ts": ["submitPlacementTest"],
-  "src/app/(marketing)/niveautest/resultat/actions.ts": ["giveMarketingConsent"], // voluntary consent, 5/h per IP + email
+  "src/app/(shared)/niveautest/[track]/actions.ts": ["submitPlacementTest"],
+  "src/app/(shared)/niveautest/resultat/actions.ts": ["giveMarketingConsent"], // voluntary consent, 5/h per IP + email
   "src/app/(marketing)/samtykke/bekraeft/actions.ts": ["confirmConsent"], // authenticated by the opt-in token
   "src/app/(marketing)/afmeld/actions.ts": ["unsubscribe"], // authenticated by the HMAC unsubscribe token
   "src/app/api/afmeld/route.ts": ["POST"], // RFC 8058 one-click, HMAC token
