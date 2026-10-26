@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Badge, Button, cx, Notice } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import { detectPii, type PiiKind } from "@/lib/pii";
@@ -52,9 +52,15 @@ interface Props {
   onOpenConnectors?: () => void;
   /** Text already in the composer when the panel opens (free play from a forløb lesson). */
   initialText?: string;
+  /** Workpane shell: the tool's own composer parts — placeholder, "+" menu content, icons by send, the row under the box. */
+  placeholder?: string;
+  renderMenu?: (api: { close: () => void; openPicker: () => void }) => ReactNode;
+  composerTools?: ReactNode;
+  belowComposer?: ReactNode;
+  hideSuggestions?: boolean;
 }
 
-export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined, onToggleConnector = () => undefined, initialText = "" }: Props) {
+export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined, onToggleConnector = () => undefined, initialText = "", placeholder = t.chat.placeholder, renderMenu, composerTools, belowComposer, hideSuggestions = false }: Props) {
   const [text, setText] = useState(initialText);
   const [attachments, setAttachments] = useState<string[]>([]);
   const [picker, setPicker] = useState(false);
@@ -69,6 +75,24 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
   const composer = useRef<HTMLTextAreaElement>(null);
   const compact = density === "compact";
   const column = wide ? "mx-auto w-full max-w-3xl" : "w-full";
+
+  // The "+" menu and the file picker close on Escape or a click outside the composer.
+  const form = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (!menuOpen && !picker) return;
+    const close = () => {
+      setMenuOpen(false);
+      setPicker(false);
+    };
+    const down = (e: MouseEvent) => form.current && !form.current.contains(e.target as Node) && close();
+    const key = (e: KeyboardEvent) => e.key === "Escape" && close();
+    document.addEventListener("mousedown", down);
+    document.addEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("mousedown", down);
+      document.removeEventListener("keydown", key);
+    };
+  }, [menuOpen, picker]);
 
   // Keep the newest message in view while the answer streams in.
   useEffect(() => {
@@ -141,7 +165,8 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
   // Messages (or the variant's empty state), the composer and the "+" menu. The layout mirrors the familiar desktop
   // chat apps per shell — centered greeting, centered pill, or side panel — always in Mindforward's own look.
   const menu = menuOpen && (
-    <div role="dialog" aria-label={t.chat.menu.open} className={cx("absolute left-0 z-20 flex w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-line bg-surface p-1.5 shadow-lg", turns.length === 0 && variant !== "panel" ? "top-full mt-2" : "bottom-full mb-2")} data-testid="composer-menu">
+    <div role="dialog" aria-label={t.chat.menu.open} className={cx("absolute left-0 z-20 flex flex-col rounded-xl border border-line bg-surface p-1.5 shadow-lg", renderMenu ? "w-60" : "w-[min(22rem,calc(100vw-2rem))] overflow-hidden", turns.length === 0 && variant !== "panel" ? "top-full mt-2" : "bottom-full mb-2")} data-testid="composer-menu">
+      {renderMenu ? renderMenu({ close: () => setMenuOpen(false), openPicker: () => { setMenuOpen(false); setPicker(true); } }) : <>
       {attachFromFiles && (
         <button type="button" className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-body-sm text-ink hover:bg-sunken" onClick={() => { setMenuOpen(false); setPicker(true); emit({ event: { type: "UI_CLICKED", target: "composer.attach", payload: { region: "composer", control: "attach" } } }); }}>
           <SbIcon name="paperclip" className="text-ink-subtle" />
@@ -185,11 +210,13 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
         <SbIcon name="apps" className="text-ink-subtle" />
         {t.connectors.catalog.manage}
       </button>
+      </>}
     </div>
   );
 
   const composerBox = (
     <form
+      ref={form}
       className={cx("relative flex flex-col gap-2", variant === "panel" ? "w-full" : "mx-auto w-full max-w-3xl")}
       onSubmit={(e) => {
         e.preventDefault();
@@ -239,13 +266,13 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
           </div>
         )}
         <label className="sr-only" htmlFor="sandbox-composer">
-          {t.chat.placeholder}
+          {placeholder}
         </label>
         <textarea
           id="sandbox-composer"
           ref={composer}
           className={cx("w-full resize-none bg-transparent px-5 pt-4 text-body text-ink placeholder:text-ink-subtle focus:outline-none", variant === "panel" ? "min-h-14 px-4 pt-3" : "min-h-16")}
-          placeholder={t.chat.placeholder}
+          placeholder={placeholder}
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
@@ -281,7 +308,7 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
                 {format(t.chat.counter, { n: nf.format(text.length), max: nf.format(MAX_CHARS) })}
               </span>
             )}
-            {variant !== "panel" && <span className="hidden text-caption text-ink-subtle sm:inline">{t.modelLabel}</span>}
+            {composerTools ?? (variant !== "panel" && <span className="hidden text-caption text-ink-subtle sm:inline">{t.modelLabel}</span>)}
             <button
               type="submit"
               aria-label={busy ? t.chat.sending : t.chat.send}
@@ -293,6 +320,7 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
           </span>
         </div>
       </div>
+      {belowComposer}
     </form>
   );
 
@@ -332,7 +360,7 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
             <h2 className="text-center text-title-2 text-ink">{t.chat.askTitle}</h2>
           )}
           {composerBox}
-          {suggestionChips}
+          {!hideSuggestions && suggestionChips}
           {(error || blocked) && (
             <div className="mx-auto flex w-full max-w-3xl flex-col gap-3">
               {error && <Notice tone="error">{error}</Notice>}

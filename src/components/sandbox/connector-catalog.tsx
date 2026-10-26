@@ -65,7 +65,7 @@ function ModePicker({ scope, value, onChange }: { scope: Scope; value: Mode; onC
   );
 }
 
-function ConnectDialog({ item, state, emit, editing, onClose }: { item: CatalogItem; state: SandboxState; emit: Emit; editing: boolean; onClose: () => void }) {
+export function ConnectDialog({ item, state, emit, editing, onClose }: { item: CatalogItem; state: SandboxState; emit: Emit; editing: boolean; onClose: () => void }) {
   const c = t.connectors.catalog;
   const [step, setStep] = useState<"signin" | "perms">(editing ? "perms" : "signin");
   const [modes, setModes] = useState<Record<string, Mode>>(() => currentModes(state, item));
@@ -180,6 +180,17 @@ function Row({ item, state, onConnect, onEdit, onDisconnect }: { item: CatalogIt
   );
 }
 
+/** Records the start of a connect (the dialog then grants or cancels). */
+export function startConnect(item: CatalogItem, emit: Emit) {
+  if (item.data[0]) emit({ event: { type: "CONNECTOR_CONNECT_STARTED", payload: { connectorId: item.data[0], via: item.id } } });
+  else emit({ event: { type: "UI_CLICKED", target: `connectors.${item.id}.connect`, payload: { region: "connectors", control: `${item.id}.connect` } } });
+}
+
+export function disconnectItem(item: CatalogItem, emit: Emit) {
+  for (const b of item.data) emit({ event: { type: "CONNECTOR_DISCONNECTED", payload: { connectorId: b, via: item.id } } });
+  emit({ event: { type: "SETTING_CHANGED", payload: { key: "connector-unlinked", value: item.id } } });
+}
+
 export function ConnectorCatalog({ catalog, state, emit }: { catalog: CatalogItem[]; state: SandboxState; emit: Emit }) {
   const c = t.connectors.catalog;
   const linkedCount = (state.catalog?.linked ?? []).length;
@@ -202,14 +213,10 @@ export function ConnectorCatalog({ catalog, state, emit }: { catalog: CatalogIte
   const connected = catalog.filter((i) => isLinked(state, i.id));
 
   const connect = (item: CatalogItem) => {
-    if (item.data[0]) emit({ event: { type: "CONNECTOR_CONNECT_STARTED", payload: { connectorId: item.data[0], via: item.id } } });
-    else emit({ event: { type: "UI_CLICKED", target: `connectors.${item.id}.connect`, payload: { region: "connectors", control: `${item.id}.connect` } } });
+    startConnect(item, emit);
     setDialog({ item, editing: false });
   };
-  const disconnect = (item: CatalogItem) => {
-    for (const b of item.data) emit({ event: { type: "CONNECTOR_DISCONNECTED", payload: { connectorId: b, via: item.id } } });
-    emit({ event: { type: "SETTING_CHANGED", payload: { key: "connector-unlinked", value: item.id } } });
-  };
+  const disconnect = (item: CatalogItem) => disconnectItem(item, emit);
   const row = (i: CatalogItem) => <Row key={i.id} item={i} state={state} onConnect={() => connect(i)} onEdit={() => setDialog({ item: i, editing: true })} onDisconnect={() => disconnect(i)} />;
   const list = "divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface";
 

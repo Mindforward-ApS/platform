@@ -1,22 +1,23 @@
 {
   "key": "claude",
-  "version": "1",
+  "version": "2",
   "shell": "SIDEBAR_CHAT_WORKPANE",
   "regions": ["nav", "history", "chat", "composer", "workspace", "notifications"],
   "nav": [
-    { "id": "new-chat", "labelKey": "newChat", "concept": "CHAT" },
-    { "id": "assistants", "labelKey": "assistants", "concept": "ASSISTANTS" },
-    { "id": "connectors", "labelKey": "connectors", "concept": "CONNECTORS" },
-    { "id": "automations", "labelKey": "automations", "concept": "AUTOMATIONS" },
-    { "id": "agents", "labelKey": "agents", "concept": "AGENTS" },
-    { "id": "files", "labelKey": "files", "concept": "FILES" },
+    { "id": "new-chat", "labelKey": "new", "concept": "CHAT" },
+    { "id": "search", "labelKey": "search", "concept": "SEARCH" },
+    { "id": "assistants", "labelKey": "projects", "concept": "ASSISTANTS" },
+    { "id": "artifacts", "labelKey": "artifacts", "concept": "ARTIFACTS" },
+    { "id": "automations", "labelKey": "scheduled", "concept": "AUTOMATIONS" },
+    { "id": "customize", "labelKey": "customize", "concept": "SKILLS" },
     { "id": "mail", "labelKey": "mail", "concept": "MAIL" },
     { "id": "calendar", "labelKey": "calendar", "concept": "CALENDAR" },
+    { "id": "files", "labelKey": "files", "concept": "FILES" },
     { "id": "crm", "labelKey": "crm", "concept": "CRM" },
     { "id": "sheet", "labelKey": "sheet", "concept": "SHEET" }
   ],
   "composer": { "attachFromFiles": true, "toolsMenu": ["attach", "tools"], "modelPicker": false },
-  "concepts": { "assistants": true, "connectors": true, "automations": true, "agents": true },
+  "concepts": { "assistants": true, "connectors": true, "automations": true, "agents": false },
   "connectorsLayout": "LIST",
   "tokens": { "density": "comfortable", "accentSlot": "a" }
 }

@@ -11,6 +11,8 @@ export interface SandboxState {
   connectors: Record<ConnectorId, { connected: boolean; scopes: Scope[]; via?: string[]; approval?: Scope[] }>;
   /** Catalog connectors the learner has connected (ids), and the ones switched off for the current chats. */
   catalog?: { linked: string[]; chatOff: string[] };
+  /** Skills and plugins added under Tilpasning (catalog ids). Absent until the first one is added. */
+  installed?: { skills: string[]; plugins: string[] };
   assistants: Array<{ id: string; knowledgeFileIds: string[]; connectorIds: string[]; starterCount: number; instructionCharCount: number }>;
   automations: Array<{ id: string; enabled: boolean; trigger: Trigger; actionTypes: string[]; testRuns: number; simulatedRuns: number }>;
   mail: { draftsCount: number; sentCount: number; externalSentCount: number; draftIds: string[] };
@@ -191,6 +193,11 @@ export function applyEvent(prev: SandboxState, event: SandboxEventInput): Sandbo
       else if (key === "connector-unlinked") s.catalog = { linked: c.linked.filter((v) => v !== value), chatOff: c.chatOff.filter((v) => v !== value) };
       else if (key === "chat-connector-off") s.catalog = { ...c, chatOff: addUnique(c.chatOff, value) };
       else if (key === "chat-connector-on") s.catalog = { ...c, chatOff: c.chatOff.filter((v) => v !== value) };
+      else if (/^(skill|plugin)-(added|removed)$/.test(key)) {
+        const i = s.installed ?? { skills: [], plugins: [] };
+        const kind = key.startsWith("skill") ? "skills" : "plugins";
+        s.installed = { ...i, [kind]: key.endsWith("added") ? addUnique(i[kind], value) : i[kind].filter((v) => v !== value) };
+      }
       return s;
     }
 
@@ -232,6 +239,7 @@ export function normalizeState(raw: unknown): SandboxState {
     chat: { ...base.chat, ...r.chat, active: { ...base.chat.active, ...r.chat?.active } },
     connectors: { ...base.connectors, ...r.connectors },
     catalog: { linked: r.catalog?.linked ?? [], chatOff: r.catalog?.chatOff ?? [] },
+    ...(r.installed ? { installed: { skills: r.installed.skills ?? [], plugins: r.installed.plugins ?? [] } } : {}),
     mail: { ...base.mail, ...r.mail },
     crm: { ...base.crm, ...r.crm },
     sheet: { ...base.sheet, ...r.sheet },

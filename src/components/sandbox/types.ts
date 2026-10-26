@@ -80,6 +80,16 @@ export interface CatalogItem {
   featured: number;
 }
 
+/** A skill or plugin under "Tilpasning" (real name as text only). */
+export interface CustomizeItem {
+  id: string;
+  name: string;
+  madeBy: string;
+  section: "forYou" | "new" | "popular";
+  icon: "file" | "table" | "grid" | "sparkle" | "mail" | "plan" | "building" | "search" | "users" | "chart" | "check" | "calendar" | "lightning";
+  description: string;
+}
+
 export interface SandboxProps {
   sessionId: string;
   /** Opgavevisning: the module step this sandbox is opened for. Every event is tagged with it (validated server-side). */
@@ -90,6 +100,8 @@ export interface SandboxProps {
   tracks?: TrackLink[];
   /** Connector catalog for the Forbindelser view and the "+" menu. */
   catalog: CatalogItem[];
+  /** Skills and plugins for "Tilpasning" (the workpane shell). */
+  customize?: { skills: CustomizeItem[]; plugins: CustomizeItem[] };
   /** Free play only: text put in the composer on open (e.g. a forløb lesson's "Prøv selv" prompt). Never sent automatically. */
   initialDraft?: string;
   skin: SkinConfig;

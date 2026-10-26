@@ -222,7 +222,11 @@
                 "CALENDAR",
                 "FILES",
                 "CRM",
-                "SHEET"
+                "SHEET",
+                "SEARCH",
+                "ARTIFACTS",
+                "SKILLS",
+                "PLUGINS"
               ]
             },
             "view": {

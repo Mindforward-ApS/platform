@@ -42,6 +42,47 @@ const LOCAL = {
   compose: <path d="M7.25 2.75H4a1.25 1.25 0 0 0-1.25 1.25v8A1.25 1.25 0 0 0 4 13.25h8A1.25 1.25 0 0 0 13.25 12V8.75M11.6 2.4a1.4 1.4 0 0 1 2 2L8.25 9.75 5.75 10.25l.5-2.5Z" />,
   apps: <path d="M3 3h.01M8 3h.01M13 3h.01M3 8h.01M8 8h.01M13 8h.01M3 13h.01M8 13h.01M13 13h.01" />,
   paperclip: <path d="M12.75 7.25 7.9 12.1a2.9 2.9 0 0 1-4.1-4.1l5.05-5.05a1.95 1.95 0 0 1 2.75 2.75L6.6 10.7a.95.95 0 0 1-1.35-1.35L9.75 4.9" />,
+  folder: <path d="M2.25 4.25c0-.7.55-1.25 1.25-1.25h2.6l1.4 1.5h5c.7 0 1.25.55 1.25 1.25v6.25c0 .7-.55 1.25-1.25 1.25h-9c-.7 0-1.25-.55-1.25-1.25Z" />,
+  artifact: (
+    <>
+      <rect x="4.75" y="4.75" width="9" height="9" rx="1.5" />
+      <path d="M11.25 2.25H3.5c-.7 0-1.25.55-1.25 1.25v7.75" />
+    </>
+  ),
+  bag: (
+    <>
+      <rect x="2.25" y="4.75" width="11.5" height="9" rx="1.5" />
+      <path d="M5.75 4.75v-1.5c0-.55.45-1 1-1h2.5c.55 0 1 .45 1 1v1.5M2.25 8.5h11.5" />
+    </>
+  ),
+  dots: <path d="M3.5 8h.01M8 8h.01M12.5 8h.01" />,
+  mic: (
+    <>
+      <rect x="5.75" y="1.75" width="4.5" height="7.5" rx="2.25" />
+      <path d="M3.25 7.5a4.75 4.75 0 0 0 9.5 0M8 12.25v2" />
+    </>
+  ),
+  wave: <path d="M2.25 7v2M5 5v6M8 3v10M11 5v6M13.75 7v2" />,
+  sidebar: (
+    <>
+      <rect x="2.25" y="2.75" width="11.5" height="10.5" rx="1.5" />
+      <path d="M6.25 2.75v10.5" />
+    </>
+  ),
+  filter: <path d="M2.25 4h11.5M4.5 8h7M6.75 12h2.5" />,
+  sort: <path d="M5 13.25V2.75M2.75 5 5 2.75 7.25 5M11 2.75v10.5M8.75 11 11 13.25 13.25 11" />,
+  globe: (
+    <>
+      <circle cx="8" cy="8" r="5.75" />
+      <path d="M2.25 8h11.5M8 2.25c1.6 1.6 2.4 3.5 2.4 5.75S9.6 12.15 8 13.75C6.4 12.15 5.6 10.25 5.6 8S6.4 3.85 8 2.25Z" />
+    </>
+  ),
+  memory: (
+    <>
+      <circle cx="8" cy="8" r="5.75" />
+      <path d="M8 4.75V8l2.25 1.5" />
+    </>
+  ),
 } as const;
 
 export type LocalIconName = keyof typeof LOCAL;
@@ -78,6 +119,10 @@ export const CONCEPT_ICON: Record<Concept, LocalIconName | IconName> = {
   FILES: "file",
   CRM: "building",
   SHEET: "table",
+  SEARCH: "search",
+  ARTIFACTS: "artifact",
+  SKILLS: "bag",
+  PLUGINS: "bag",
 };
 
 /** Concepts that belong to the practice model (vs. Nordlys' simulated work systems) — only used to group the nav. */

@@ -8,6 +8,7 @@ import type { SandboxState } from "@/server/sandbox/reducer";
 import type { NavId } from "@/server/sandbox/skin-schema";
 import { postIntent } from "./api";
 import { ChatPanel } from "./chat-panel";
+import { ArtifactsView, WorkpaneSidebar, ComposerMenu, ComposerRow, ComposerTools, CUSTOMIZE_CONCEPTS, CustomizeView, SearchView, TAB_CONCEPT, type ComposerSettings, type CustomizeTab } from "./workpane-shell";
 import { CONCEPT_ICON, MODEL_CONCEPTS, SbIcon } from "./sandbox-icons";
 import type { ChatTurnView, Intent, SandboxProps } from "./types";
 import { AssistantsView, AutomationsView, CalendarView, ConnectorsView, CrmView, FilesView, MailView, SheetView, StubView } from "./views";
@@ -38,6 +39,10 @@ export function SandboxApp(props: SandboxProps) {
   // With a prefilled prompt the chat opens first, also in the app-rail shell, so the text is in view.
   const [pane, setPane] = useState<Pane>(skin.shell === "APP_RAIL_SIDE_PANEL" && !props.initialDraft ? "content" : "chat");
   const compact = skin.tokens.density === "compact";
+  // Workpane shell only: Tilpasning tab, composer settings, and a draft put in a fresh chat ("Prøv", "Lav noget nyt").
+  const [customizeTab, setCustomizeTab] = useState<CustomizeTab>("skills");
+  const [composer, setComposer] = useState<ComposerSettings>({ research: false, memory: true, effort: "max" });
+  const [draft, setDraft] = useState<{ text: string; key: number } | null>(null);
 
   // Actions are serialized so events reach the server in the order the user made them.
   const queue = useRef<Promise<unknown>>(Promise.resolve());
@@ -58,10 +63,136 @@ export function SandboxApp(props: SandboxProps) {
       setConversationId(null);
       setTurns([]);
     }
+    if (target === "SKILLS") setCustomizeTab("skills");
+    if (target === "CONNECTORS") setCustomizeTab("connectors");
     setConcept(target);
     // Phones: jump to what was just opened.
     setPane(target === "CHAT" ? "chat" : "content");
   };
+
+  // Workpane shell: the real app's structure — sidebar · one main area (chat, Søg, Projekter, Artefakter, Planlagte,
+  // Tilpasning or a Nordlys system opened from "Mere"). Nothing opens in a new tab.
+  function renderWorkpane() {
+    const customize = props.customize ?? { skills: [], plugins: [] };
+    const linked = props.catalog.filter((c) => (state.catalog?.linked ?? []).includes(c.id)).map((c) => ({ id: c.id, label: c.name, on: !(state.catalog?.chatOff ?? []).includes(c.id) }));
+    const toggleConnector = (id: string, on: boolean) => emit({ event: { type: "SETTING_CHANGED", payload: { key: on ? "chat-connector-on" : "chat-connector-off", value: id } } });
+    const openCustomize = (tab: CustomizeTab) => {
+      emit({ event: { type: "UI_NAVIGATED", payload: { concept: TAB_CONCEPT[tab], view: `customize-${tab}` } } });
+      setCustomizeTab(tab);
+      setConcept(TAB_CONCEPT[tab]);
+      setPane("content");
+    };
+    const startChat = (text: string) => {
+      navigate("new-chat", "CHAT");
+      setDraft((d) => ({ text, key: (d?.key ?? 0) + 1 }));
+    };
+    const pick = (ids: string[], list: typeof customize.skills) => list.filter((i) => ids.includes(i.id));
+    const chatNode = (
+      <ChatPanel
+        key={draft?.key ?? 0}
+        sessionId={sessionId}
+        stepId={stepId}
+        turns={turns}
+        setTurns={setTurns}
+        conversationId={conversationId}
+        setConversationId={setConversationId}
+        files={world.files}
+        attachFromFiles={skin.composer.attachFromFiles}
+        density={skin.tokens.density}
+        emit={emit}
+        wide
+        variant="center"
+        connectors={linked}
+        onToggleConnector={toggleConnector}
+        onOpenConnectors={() => openCustomize("connectors")}
+        initialText={draft?.text ?? props.initialDraft}
+        placeholder={t.shell.placeholder}
+        hideSuggestions
+        composerTools={<ComposerTools />}
+        renderMenu={({ close, openPicker }) => (
+          <ComposerMenu
+            close={close}
+            openPicker={openPicker}
+            attachFromFiles={skin.composer.attachFromFiles}
+            connectors={linked}
+            onToggleConnector={toggleConnector}
+            skills={pick(state.installed?.skills ?? [], customize.skills)}
+            plugins={pick(state.installed?.plugins ?? [], customize.plugins)}
+            settings={composer}
+            onSettings={(n) => setComposer((c) => ({ ...c, ...n }))}
+            onOpenCustomize={openCustomize}
+            emit={emit}
+          />
+        )}
+        belowComposer={<ComposerRow projects={state.assistants.length} settings={composer} onSettings={(n) => setComposer((c) => ({ ...c, ...n }))} onNewProject={() => navigate("assistants", "ASSISTANTS")} emit={emit} />}
+      />
+    );
+    const main = (() => {
+      if (CUSTOMIZE_CONCEPTS.includes(concept))
+        return <CustomizeView tab={customizeTab} onTab={openCustomize} state={state} emit={emit} catalog={props.catalog} customize={customize} practice={props.practice ?? null} sessionId={sessionId} onTry={startChat} />;
+      switch (concept) {
+        case "CHAT":
+          return chatNode;
+        case "SEARCH":
+          return <SearchView conversations={state.chat.conversations} activeConversation={Boolean(conversationId)} onOpen={() => navigate("chat", "CHAT")} />;
+        case "ARTIFACTS":
+          return <ArtifactsView created={state.files.createdFileIds.length} onMake={startChat} />;
+        case "ASSISTANTS":
+          return <AssistantsView state={state} files={world.files} emit={emit} title={t.shell.projects.title} />;
+        case "AUTOMATIONS":
+          return <AutomationsView state={state} emit={emit} title={t.shell.scheduled.title} />;
+        default:
+          return workspace;
+      }
+    })();
+    const mainPane: Pane = concept === "CHAT" ? "chat" : "content";
+    const active: Pane = pane === "nav" ? "nav" : mainPane;
+    const show = (p: Pane) => (active === p ? "flex" : "hidden lg:flex");
+
+    return (
+      <div
+        className={cx(
+          "flex flex-col overflow-hidden bg-bg",
+          variant === "task" ? "h-[min(44rem,calc(100dvh-8rem))] min-h-[520px] rounded-xl border border-line" : "h-[calc(100dvh-3.5rem)] min-h-[560px] lg:h-[calc(100dvh-5rem)] lg:rounded-b-xl",
+        )}
+        data-shell={skin.shell}
+        data-variant={variant}
+        data-accent={skin.tokens.accentSlot}
+      >
+        <DisclaimerBar />
+        {variant === "task" ? <h3 className="sr-only">{t.title}</h3> : <h1 className="sr-only">{t.title}</h1>}
+        <div role="tablist" aria-label={t.frame.panes} className="flex shrink-0 gap-1 border-b border-line bg-surface px-4 py-2 sm:px-6 lg:hidden">
+          {(["nav", mainPane] as Pane[]).map((p) => (
+            <button
+              key={p}
+              type="button"
+              role="tab"
+              id={`sb-tab-${p}`}
+              aria-selected={active === p}
+              aria-controls={`sb-pane-${p}`}
+              className={cx("flex h-8 flex-1 items-center justify-center rounded-sm text-label transition-colors", active === p ? "bg-accent-soft text-accent-ink" : "text-ink-muted hover:bg-sunken hover:text-ink")}
+              onClick={() => setPane(p)}
+            >
+              {t.frame.paneTabs[p]}
+            </button>
+          ))}
+        </div>
+        {notice && (
+          <div className="shrink-0 border-b border-line bg-surface px-4 py-3 sm:px-6">
+            <Notice>{notice}</Notice>
+          </div>
+        )}
+        <div className="flex min-h-0 flex-1">
+          <aside id="sb-pane-nav" aria-labelledby="sb-tab-nav" className={cx(show("nav"), "w-full min-w-0 flex-col border-line bg-bg lg:w-60 lg:shrink-0 lg:border-r")}>
+            <WorkpaneSidebar skin={skin} concept={concept} conversations={state.chat.conversations} activeConversation={Boolean(conversationId)} onNav={navigate} onReset={reset} />
+          </aside>
+          <main id={`sb-pane-${mainPane}`} aria-labelledby={`sb-tab-${mainPane}`} className={cx(show(mainPane), "min-h-0 min-w-0 flex-1 flex-col bg-surface")}>
+            {main}
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   const reset = () => {
     emit({ event: { type: "SESSION_RESET", payload: { reason: "USER" } } });
@@ -245,9 +376,15 @@ export function SandboxApp(props: SandboxProps) {
       case "AGENTS":
         return <StubView heading={t.agents.heading} body={t.agents.intro} />;
       case "CHAT":
+      case "SEARCH":
+      case "ARTIFACTS":
+      case "SKILLS":
+      case "PLUGINS":
         return null;
     }
   })();
+
+  if (shell === "SIDEBAR_CHAT_WORKPANE") return renderWorkpane();
 
   // Which regions exist for this shell right now. Phones show one at a time via the pane tabs.
   const showChat = skin.shell !== "SIDEBAR_CHAT" || workspace === null;

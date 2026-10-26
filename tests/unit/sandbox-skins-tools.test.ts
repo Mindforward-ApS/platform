@@ -20,7 +20,9 @@ describe("skins (docs/04 § 3)", () => {
     const skins = files.map(loadSkin);
     for (const s of skins) expect(s.composer.modelPicker).toBe(false);
     const ids = skins.map((s) => s.nav.map((n) => n.id).sort());
-    expect(new Set(ids.map((x) => x.join())).size).toBeLessThanOrEqual(2); // same vocabulary, different order/regions
+    // Same vocabulary (NAV_IDS), different order/regions; the workpane skin mirrors its tool's own sidebar.
+    expect(new Set(ids.map((x) => x.join())).size).toBeLessThanOrEqual(3);
+    expect(loadSkin("claude").nav.map((n) => n.id)).toEqual(["new-chat", "search", "assistants", "artifacts", "automations", "customize", "mail", "calendar", "files", "crm", "sheet"]);
   });
 
   it("rejects unknown or path-like skin keys", () => {

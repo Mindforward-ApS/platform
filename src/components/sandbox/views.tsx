@@ -617,7 +617,7 @@ const KIND_ICON: Record<PracticeKind, { icon: IconName; tone: IconTone }> = {
 };
 
 /** "Til jeres branche": the industry's connectors under neutral names; the layout follows the skin (grid, list, panel). */
-function PracticeConnectors({ practice, layout, sessionId }: { practice: PracticeView | null; layout: ConnectorsLayout; sessionId: string }) {
+export function PracticeConnectors({ practice, layout, sessionId }: { practice: PracticeView | null; layout: ConnectorsLayout; sessionId: string }) {
   const p = t.practice;
   const [open, setOpen] = useState<PracticeKind | null>(null);
   const [tried, setTried] = useState<PracticeKind[]>([]);
@@ -731,13 +731,13 @@ function TextGate({ text }: { text: string }) {
   return kind ? <Notice tone="danger">{t.pii.blocked[kind]}</Notice> : null;
 }
 
-export function AssistantsView({ state, files, emit }: { state: SandboxState; files: FileItem[]; emit: Emit }) {
+export function AssistantsView({ state, files, emit, title = t.assistants.heading }: { state: SandboxState; files: FileItem[]; emit: Emit; title?: string }) {
   const [instructions, setInstructions] = useState("");
   const [knowledge, setKnowledge] = useState<string[]>([]);
   const blocked = detectPii(instructions).action === "BLOCK";
   return (
     <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-assistants">
-      <PaneHeader title={t.assistants.heading} meta={state.assistants.length > 0 ? String(state.assistants.length) : undefined} />
+      <PaneHeader title={title} meta={state.assistants.length > 0 ? String(state.assistants.length) : undefined} />
       <FormColumn>
         <p className="text-body text-ink-muted">{t.assistants.intro}</p>
         {state.assistants.length === 0 ? (
@@ -800,14 +800,14 @@ export function AssistantsView({ state, files, emit }: { state: SandboxState; fi
 
 /* ───────────────────────── Automations ───────────────────────── */
 
-export function AutomationsView({ state, emit }: { state: SandboxState; emit: Emit }) {
+export function AutomationsView({ state, emit, title = t.automations.heading }: { state: SandboxState; emit: Emit; title?: string }) {
   const [prompt, setPrompt] = useState("");
   const [weekday, setWeekday] = useState(5);
   const [time, setTime] = useState("08:00");
   const blocked = detectPii(prompt).action === "BLOCK";
   return (
     <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-automations">
-      <PaneHeader title={t.automations.heading} meta={state.automations.length > 0 ? String(state.automations.length) : undefined} />
+      <PaneHeader title={title} meta={state.automations.length > 0 ? String(state.automations.length) : undefined} />
       <FormColumn>
         <p className="text-body text-ink-muted">{t.automations.intro}</p>
         {state.automations.length === 0 ? (
