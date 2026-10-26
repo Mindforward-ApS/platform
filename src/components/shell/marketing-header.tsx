@@ -12,7 +12,7 @@ export function MarketingHeader(_props: { tone?: "default" | "night" }) {
   return (
     <header className="sticky top-0 z-40 px-4 pt-3 sm:px-6 sm:pt-4">
       <div className="mx-auto flex h-16 max-w-[1180px] items-center gap-8 rounded-2xl bg-surface/95 px-4 shadow-[0_10px_30px_-20px_var(--color-site-shadow)] ring-1 ring-site-line backdrop-blur-md sm:h-[72px] sm:px-6">
-        <a href={SITE_URL} className="rounded-lg" aria-label={`${t.brand} – ${m.website}`}>
+        <a href={SITE_URL} className="rounded-lg" aria-label={`${t.logoLabel} – ${m.website}`}>
           <SiteLogo />
         </a>
         <nav aria-label={t.shell.mainNav} className="hidden h-full items-center gap-6 md:flex">

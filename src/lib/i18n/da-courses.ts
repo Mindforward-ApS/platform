@@ -55,6 +55,14 @@ export const daCourses = {
     notYetBody: "Du mangler {count} lektioner. Besvar kontrolspørgsmålet i hver af dem.",
     back: "Tilbage til forløbet",
   },
+  home: {
+    title: "Dine forløb",
+    seeAll: "Se forløbene",
+    start: "Start forløbet",
+    continue: "Fortsæt",
+    done: "Modul {nr} gennemført",
+    module: "Modul {nr} · {title}",
+  },
   admin: {
     title: "Forløb",
     description: "Lektioner gennemført i de moduler, der er åbne. Svar og tekster vises ikke.",

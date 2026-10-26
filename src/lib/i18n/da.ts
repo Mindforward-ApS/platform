@@ -16,6 +16,8 @@ export const BRAND = "Mindforward";
 
 export const da = {
   brand: BRAND,
+  /** Accessible name of the logo link: starts with the visible word "Forward" (WCAG 2.5.3 label in name). */
+  logoLabel: `Forward · ${BRAND}`,
   sandbox: daSandbox,
   player: daPlayer,
   courses: daCourses,
@@ -36,6 +38,8 @@ export const da = {
     expandMenu: "Vis menuen",
     showSubItems: "Vis undersider til {label}",
     breadcrumb: "Du er her",
+    tagline: "Lær · Øv · Kom videre",
+    promo: { title: "Små skridt giver store fremskridt", body: "10 minutter om dagen er nok.", cta: "Fortsæt dit forløb" },
     learnGroup: "Lær",
     sandboxGroup: "Øvemiljø",
     companyGroup: "Virksomhed",

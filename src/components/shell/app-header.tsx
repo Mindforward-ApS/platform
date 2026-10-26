@@ -33,7 +33,7 @@ export function AppHeader({ items = learnerNav(), home = "/moduler", badge }: { 
       </a>
       <header className="sticky top-0 z-40 border-b border-line bg-surface/90 backdrop-blur-md supports-[backdrop-filter]:bg-surface/80">
         <div className="mx-auto flex h-16 max-w-app items-center gap-8 px-4 sm:px-6">
-          <Link href={home} className="flex items-center gap-3 rounded-sm" aria-label={t.brand}>
+          <Link href={home} className="flex items-center gap-3 rounded-sm" aria-label={t.logoLabel}>
             <SiteLogo />
             {badge}
           </Link>
@@ -79,7 +79,7 @@ export function FocusHeader({ right }: { right?: ReactNode }) {
   return (
     <header className="border-b border-line bg-surface">
       <div className={cx("mx-auto flex h-16 max-w-app items-center justify-between gap-4 px-4 sm:px-6")}>
-        <Link href="/" className="rounded-sm" aria-label={getMessages().brand}>
+        <Link href="/" className="rounded-sm" aria-label={getMessages().logoLabel}>
           <SiteLogo />
         </Link>
         {right}

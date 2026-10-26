@@ -52,23 +52,23 @@
 /* Raw palette per theme. Components never use these directly — use the Tailwind names in @theme below. */
 :root {
   color-scheme: light;
-  --mf-bg: #f6f8fb;
+  --mf-bg: #f5f2f0;
   --mf-surface: #ffffff;
-  --mf-surface-sunken: #eef2f7;
-  --mf-line: #e3e8ef;
-  --mf-line-strong: #7d8a9c;
-  --mf-ink: #0b1b2b;
-  --mf-ink-muted: #475669;
-  --mf-ink-subtle: #5f6d80;
-  --mf-accent: #2447cc;
-  --mf-accent-hover: #1b38a8;
-  --mf-accent-soft: #e9eeff;
-  --mf-accent-ink: #1b38a8;
+  --mf-surface-sunken: #f3eeeb;
+  --mf-line: #e9e3df;
+  --mf-line-strong: #8a7d77;
+  --mf-ink: #1a0f0c;
+  --mf-ink-muted: #4d423e;
+  --mf-ink-subtle: #6b5f5a;
+  --mf-accent: #b8413a;
+  --mf-accent-hover: #9e3631;
+  --mf-accent-soft: #fbe9e6;
+  --mf-accent-ink: #9e3631;
   --mf-on-accent: #ffffff;
-  --mf-focus: #2447cc;
+  --mf-focus: #b8413a;
   --mf-rav: #f0b03c;
   --mf-on-rav: #0b1b2b;
-  --mf-mark-dot: #86a0ff;
+  --mf-mark-dot: #ffa282;
   --mf-hint: #875400;
   --mf-hint-soft: #fdf1d8;
   --mf-success: #13724f;
@@ -84,32 +84,32 @@
   --mf-night-accent: #86a0ff;
 
   /* Module covers: soft ground + one strong shape color each (design: "covers på modulkort", 14 Oct 2026). */
-  --mf-cover-blue: #e3eaff;
-  --mf-cover-blue-ink: #2447cc;
+  --mf-cover-blue: #fbe9e6;
+  --mf-cover-blue-ink: #c4473f;
   --mf-cover-amber: #fdf0d2;
   --mf-cover-amber-ink: #e39a1c;
   --mf-cover-mint: #dcf3e8;
   --mf-cover-mint-ink: #13724f;
   --mf-cover-coral: #fde6df;
   --mf-cover-coral-ink: #d4552e;
-  --mf-cover-sky: #dcf0f8;
-  --mf-cover-sky-ink: #1b7aa3;
+  --mf-cover-sky: #f3eeeb;
+  --mf-cover-sky-ink: #4a332c;
 
   /* App-icon tiles (icon system E, Marco 14 Oct 2026): soft top-to-bottom gradient, white glyph. The only place gradients are allowed. */
-  --mf-tile-blue-from: #5b7bf5;
-  --mf-tile-blue-to: #2447cc;
-  --mf-tile-amber-from: #f7c35a;
-  --mf-tile-amber-to: #e08a0b;
-  --mf-tile-mint-from: #3cc58c;
-  --mf-tile-mint-to: #11895a;
+  --mf-tile-blue-from: #fb836d;
+  --mf-tile-blue-to: #d24c4c;
+  --mf-tile-amber-from: #ffa282;
+  --mf-tile-amber-to: #ea6b5e;
+  --mf-tile-mint-from: #6b4a40;
+  --mf-tile-mint-to: #3d2c28;
   --mf-tile-coral-from: #f58a64;
   --mf-tile-coral-to: #d9471b;
-  --mf-tile-sky-from: #4cb7e8;
-  --mf-tile-sky-to: #1584b8;
-  --mf-tile-slate-from: #8a97ab;
-  --mf-tile-slate-to: #56657a;
-  --mf-tile-ink-from: #3a4b5f;
-  --mf-tile-ink-to: #0b1b2b;
+  --mf-tile-sky-from: #4a332c;
+  --mf-tile-sky-to: #201613;
+  --mf-tile-slate-from: #a3948e;
+  --mf-tile-slate-to: #6b5f5a;
+  --mf-tile-ink-from: #3d2c28;
+  --mf-tile-ink-to: #1a0f0c;
   --mf-shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.12), 0 2px 6px -1px rgba(11, 27, 43, 0.25);
 
   --mf-shadow-xs: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
@@ -117,23 +117,23 @@
   --mf-shadow-md: 0 1px 2px rgba(11, 27, 43, 0.05), 0 4px 8px rgba(11, 27, 43, 0.05), 0 12px 24px -8px rgba(11, 27, 43, 0.1);
   --mf-shadow-lg: 0 1px 2px rgba(11, 27, 43, 0.05), 0 8px 16px -4px rgba(11, 27, 43, 0.08), 0 32px 64px -16px rgba(11, 27, 43, 0.22);
   /* Soft accent light behind page headers (website hero "spots"). */
-  --mf-spot: rgba(36, 71, 204, 0.08);
-  --mf-spot-2: rgba(76, 183, 232, 0.08);
+  --mf-spot: rgba(234, 107, 94, 0.08);
+  --mf-spot-2: rgba(255, 162, 130, 0.06);
   --mf-ring: 0 0 0 1px var(--mf-accent), 0 0 0 4px var(--mf-accent-soft);
   --mf-object-shadow: 0 18px 22px rgba(11, 27, 43, 0.16);
 
   /* ── Platform v3 (Marco 16 Oct 2026, mindforward-preview/platform-preview.html) ── */
   /* Sidebar: almost-dark-grey dark blue (Marco 16 Oct 2026: muted slate blue, not saturated navy). Fixed in both themes. */
-  --mf-sidebar: #161c2f;
-  --mf-sidebar-raised: #1e2540;
-  --mf-sidebar-active: rgba(255, 255, 255, 0.08);
-  --mf-sidebar-hover: rgba(255, 255, 255, 0.05);
-  --mf-sidebar-icon: rgba(255, 255, 255, 0.06);
-  --mf-sidebar-line: rgba(255, 255, 255, 0.08);
+  --mf-sidebar: #201613;
+  --mf-sidebar-raised: #2e1f1c;
+  --mf-sidebar-active: #c4473f;
+  --mf-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --mf-sidebar-icon: rgba(255, 255, 255, 0.07);
+  --mf-sidebar-line: rgba(255, 255, 255, 0.1);
   --mf-on-sidebar: #ffffff;
-  --mf-on-sidebar-muted: #c7cfe6; /* 10.9:1 on --mf-sidebar */
-  --mf-on-sidebar-subtle: #9aa5c8; /* 6.9:1 */
-  --mf-on-sidebar-label: #7f8bb0; /* 5.0:1 — group labels */
+  --mf-on-sidebar-muted: #e7dcd7; /* 10.9:1 on --mf-sidebar */
+  --mf-on-sidebar-subtle: #b8a8a1; /* 6.9:1 */
+  --mf-on-sidebar-label: #98908f; /* 5.0:1 — group labels */
   /* Logo mark (head + forward arrow). On the dark sidebar the navy parts turn white. */
   --mf-logo-navy: #071b60;
   --mf-logo-blue: #2858c4;
@@ -180,48 +180,48 @@
   --mf-web-glow: rgb(244 124 107 / 0.35);
   --mf-web-shadow: rgb(48 30 24 / 0.25);
   --mf-web-white: #ffffff;
-  /* Hero card for the current entity. White text stays ≥ 5:1 on every stop where text sits. */
-  --mf-hero-from: #1d4fd8;
-  --mf-hero-mid: #2a5fe6;
-  --mf-hero-to: #2565ea;
-  --mf-hero-glow: #3a70ec;
-  --mf-hero-shine: rgba(255, 255, 255, 0.12);
-  --mf-hero-chip-line: rgba(255, 255, 255, 0.5);
+  /* Hero card for the current entity (:3500 look: chocolate stage with a coral glow). White text ≥ 5:1 everywhere. */
+  --mf-hero-from: #201613;
+  --mf-hero-mid: #2a1c18;
+  --mf-hero-to: #1a0f0c;
+  --mf-hero-glow: rgba(244, 124, 107, 0.45);
+  --mf-hero-shine: rgba(255, 255, 255, 0.06);
+  --mf-hero-chip-line: rgba(255, 255, 255, 0.25);
   --mf-hero-pill: rgba(255, 255, 255, 0.1);
   --mf-hero-pill-line: rgba(255, 255, 255, 0.25);
   --mf-on-hero: #ffffff;
   /* Pill tabs and soft tags. */
-  --mf-tint: #e9f0ff;
-  --mf-tint-ink: #2447cc;
+  --mf-tint: #fbe9e6;
+  --mf-tint-ink: #9e3631;
   --mf-tag-learner: #e8f7ef;
   --mf-tag-learner-ink: #16794a;
   /* Charts and segmented progress. */
   --mf-chart-bar: #c9ecd3;
   --mf-chart-bar-hot: #3fbf6a;
-  --mf-chart-tip: #161c2f;
+  --mf-chart-tip: #201613;
   --mf-on-chart-tip: #ffffff;
-  --mf-seg-on: #2f6bff;
-  --mf-seg-off: #e8ecf4;
+  --mf-seg-on: #c4473f;
+  --mf-seg-off: #efe9e6;
   --mf-panel-radius: 28px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --mf-bg: #08121c;
-    --mf-surface: #0f1c29;
-    --mf-surface-sunken: #0b1621;
-    --mf-line: #21324a;
+    --mf-bg: #140d0b;
+    --mf-surface: #1c1411;
+    --mf-surface-sunken: #170f0d;
+    --mf-line: #3a2a25;
     --mf-line-strong: #64788f;
-    --mf-ink: #edf2f7;
-    --mf-ink-muted: #a8b5c4;
-    --mf-ink-subtle: #8f9db0;
-    --mf-accent: #86a0ff;
-    --mf-accent-hover: #a3b7ff;
-    --mf-accent-soft: #17275a;
-    --mf-accent-ink: #b8c7ff;
+    --mf-ink: #f5ece8;
+    --mf-ink-muted: #cbbcb6;
+    --mf-ink-subtle: #ab9b95;
+    --mf-accent: #ff8f7d;
+    --mf-accent-hover: #ffaa9b;
+    --mf-accent-soft: #3a1f1b;
+    --mf-accent-ink: #ffb3a6;
     --mf-on-accent: #08121c;
-    --mf-focus: #9fb3ff;
+    --mf-focus: #ff8f7d;
     --mf-mark-dot: #2447cc;
     --mf-hint: #f3c362;
     --mf-hint-soft: #2e230b;
@@ -250,14 +250,14 @@
     --mf-shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
     --mf-spot: rgba(134, 160, 255, 0.10);
     --mf-spot-2: rgba(92, 194, 234, 0.06);
-    --mf-tint: #17275a;
-    --mf-tint-ink: #b8c7ff;
+    --mf-tint: #3a1f1b;
+    --mf-tint-ink: #ffb3a6;
     --mf-tag-learner: #0c2c22;
     --mf-tag-learner-ink: #4ccf9c;
     --mf-chart-bar: #1d4a33;
     --mf-chart-bar-hot: #4ccf9c;
-    --mf-seg-on: #86a0ff;
-    --mf-seg-off: #21324a;
+    --mf-seg-on: #ff8f7d;
+    --mf-seg-off: #3a2a25;
   }
 }
 
@@ -390,7 +390,7 @@
   --color-border: var(--mf-line);
   --color-accent-fg: var(--mf-on-accent);
 
-  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
   --font-site: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 

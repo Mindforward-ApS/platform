@@ -95,7 +95,10 @@ async function Avatar() {
   const ctx = await getAuthContext().catch(() => null);
   if (!ctx) return null;
   return (
-    <Link href="/konto" className="grid size-11 place-items-center rounded-full border border-line bg-tint text-caption font-semibold text-tint-ink transition-shadow hover:shadow-ring">
+    <Link
+      href="/konto"
+      className="grid size-10 place-items-center rounded-full bg-sidebar text-caption font-semibold text-on-sidebar transition-shadow hover:shadow-ring"
+    >
       <span aria-hidden="true">{initials(ctx.user.name, ctx.user.email)}</span>
       <span className="sr-only">{getMessages().shell.learner.account}</span>
     </Link>
@@ -116,42 +119,50 @@ function TopBar({ groups }: { groups: SidebarGroup[] }) {
   const t = getMessages();
   return (
     // h-20: the sandbox below sizes itself to 100dvh - 5rem, so together they fill the viewport exactly.
-    <div className="sticky top-0 z-30 hidden h-20 shrink-0 items-center gap-6 bg-surface px-11 lg:flex">
-      <Breadcrumb
-        items={[
-          ...crumbs(groups),
-          { href: "/konto", label: t.shell.learner.account },
-          { href: "/hjaelp", label: t.shell.learner.help },
-          // Company pages reached from inside the admin area (not in the sidebar).
-          ...(groups.some((g) => g.label === t.shell.companyGroup)
-            ? [
-                { href: "/virksomhed/abonnement", label: t.billing.business.title, group: t.shell.companyGroup },
-                { href: "/virksomhed/maanedspakke", label: t.monthly.orgStatus.pageTitle, group: t.shell.companyGroup },
-              ]
-            : []),
-        ]}
-        label={t.shell.breadcrumb}
-      />
-      <div className="ml-auto flex items-center gap-2.5">
-        <form action="/hjaelp" role="search" className="relative w-64 xl:w-72">
-          <label htmlFor="topbar-search" className="sr-only">
-            {t.shell.searchLabel}
-          </label>
-          <Icon name="search" size={18} className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-ink-subtle" />
-          <input
-            id="topbar-search"
-            name="q"
-            type="search"
-            placeholder={t.shell.searchPlaceholder}
-            className="h-11 w-full rounded-full border border-line bg-surface pr-4 pl-11 text-body-sm text-ink placeholder:text-ink-subtle transition-[border-color,box-shadow] focus:border-accent focus:shadow-ring focus:outline-none"
-          />
-        </form>
-        <Link href="/hjaelp" aria-label={t.shell.learner.help} title={t.shell.learner.help} className="grid size-11 place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:bg-sunken">
-          <Icon name="help" size={18} />
-        </Link>
-        <Suspense fallback={<span className="size-11 rounded-full bg-sunken" />}>
-          <Avatar />
-        </Suspense>
+    // :3500 look: the bar is a white card on the cream page (pt-3 + h-16 + pb-1 keeps the 5rem the sandbox expects).
+    <div className="sticky top-0 z-30 hidden h-20 shrink-0 bg-bg px-3 pt-3 pb-1 lg:block">
+      <div className="flex h-16 items-center gap-6 rounded-[14px] border border-line bg-surface px-6">
+        <Breadcrumb
+          items={[
+            ...crumbs(groups),
+            { href: "/konto", label: t.shell.learner.account },
+            { href: "/hjaelp", label: t.shell.learner.help },
+            // Company pages reached from inside the admin area (not in the sidebar).
+            ...(groups.some((g) => g.label === t.shell.companyGroup)
+              ? [
+                  { href: "/virksomhed/abonnement", label: t.billing.business.title, group: t.shell.companyGroup },
+                  { href: "/virksomhed/maanedspakke", label: t.monthly.orgStatus.pageTitle, group: t.shell.companyGroup },
+                ]
+              : []),
+          ]}
+          label={t.shell.breadcrumb}
+        />
+        <div className="ml-auto flex items-center gap-2.5">
+          <form action="/hjaelp" role="search" className="relative w-64 xl:w-72">
+            <label htmlFor="topbar-search" className="sr-only">
+              {t.shell.searchLabel}
+            </label>
+            <Icon name="search" size={18} className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-ink-subtle" />
+            <input
+              id="topbar-search"
+              name="q"
+              type="search"
+              placeholder={t.shell.searchPlaceholder}
+              className="h-11 w-full rounded-full border border-line bg-surface pr-4 pl-11 text-body-sm text-ink placeholder:text-ink-subtle transition-[border-color,box-shadow] focus:border-accent focus:shadow-ring focus:outline-none"
+            />
+          </form>
+          <Link
+            href="/hjaelp"
+            aria-label={t.shell.learner.help}
+            title={t.shell.learner.help}
+            className="grid size-11 place-items-center rounded-full border border-line bg-surface text-ink transition-colors hover:bg-sunken"
+          >
+            <Icon name="help" size={18} />
+          </Link>
+          <Suspense fallback={<span className="size-11 rounded-full bg-sunken" />}>
+            <Avatar />
+          </Suspense>
+        </div>
       </div>
     </div>
   );
@@ -172,10 +183,20 @@ async function UserChip() {
     : null;
   const t = getMessages();
   // Business members see "Role · Company" (mock: "Ejer · Fjordlys"); private learners keep their email.
-  const sub = membership?.organization.type === "BUSINESS" ? `${t.orgAdmin.roles[membership.role]} · ${membership.organization.name}` : name ? email : null;
+  const sub =
+    membership?.organization.type === "BUSINESS"
+      ? `${t.orgAdmin.roles[membership.role]} · ${membership.organization.name}`
+      : name
+        ? email
+        : null;
   return (
-    <Link href="/konto" className="flex min-w-0 flex-1 items-center gap-3 rounded-xl p-1.5 transition-colors hover:bg-sidebar-hover in-data-collapsed:flex-none">
-      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sidebar-raised text-caption font-semibold text-on-sidebar ring-1 ring-sidebar-line">{initials(name, email)}</span>
+    <Link
+      href="/konto"
+      className="flex min-w-0 flex-1 items-center gap-3 rounded-xl p-1.5 transition-colors hover:bg-sidebar-hover in-data-collapsed:flex-none"
+    >
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sidebar-raised text-caption font-semibold text-on-sidebar ring-1 ring-sidebar-line">
+        {initials(name, email)}
+      </span>
       <span className="flex min-w-0 flex-col in-data-collapsed:sr-only">
         <span className="truncate text-label text-on-sidebar">{name || email}</span>
         {sub && <span className="truncate text-caption font-normal text-on-sidebar-muted">{sub}</span>}
@@ -188,7 +209,7 @@ function ItemIcon({ item }: { item: SidebarItem }) {
   return (
     <span
       aria-hidden="true"
-      className="grid size-[2.125rem] shrink-0 place-items-center rounded-full bg-sidebar-icon text-on-sidebar-muted transition-colors group-aria-[current=page]/nav:bg-on-sidebar group-aria-[current=page]/nav:text-sidebar"
+      className="grid size-[1.875rem] shrink-0 place-items-center rounded-full bg-sidebar-icon text-on-sidebar-muted transition-colors group-aria-[current=page]/nav:bg-sidebar-hover group-aria-[current=page]/nav:text-on-sidebar"
     >
       {item.brand ? (
         <BrandIcon brand={item.brand} size={18} />
@@ -210,17 +231,40 @@ function RailLink({ item }: { item: SidebarItem }) {
   );
 }
 
+/** :3500 look: small card at the bottom of the sidebar that points to the forløb. Hidden when the rail is collapsed. */
+function PromoCard() {
+  const t = getMessages().shell.promo;
+  return (
+    <div className="relative mb-3 overflow-hidden rounded-[14px] bg-sidebar-icon p-4 ring-1 ring-inset ring-sidebar-line in-data-collapsed:hidden">
+      <p className="max-w-[10rem] text-[0.9375rem] leading-snug font-semibold text-on-sidebar">{t.title}</p>
+      <p className="mt-1 text-[0.75rem] text-on-sidebar-subtle">{t.body}</p>
+      <Link href="/forloeb" className="mt-3 inline-flex items-center gap-1 text-[0.75rem] font-semibold text-mark-dot hover:underline">
+        {t.cta}
+        <Icon name="arrowRight" size={12} />
+      </Link>
+      <Icon name="book" size={44} className="pointer-events-none absolute right-3 bottom-3 text-sidebar-active opacity-80" />
+    </div>
+  );
+}
+
 function SidebarContent({ groups, rail = false }: { groups: SidebarGroup[]; rail?: boolean }) {
   const t = getMessages();
   return (
     <div className={cx("flex min-h-full flex-col px-5 pt-7 pb-4 in-data-collapsed:px-3", rail && "relative")}>
-      <Link href="/hjem" className="self-start rounded-md px-2.5 pb-5 in-data-collapsed:self-center in-data-collapsed:px-0" aria-label={t.brand}>
-        <SiteLogo tone="light" className="in-data-collapsed:[&>span]:sr-only" />
-      </Link>
+      <div className="flex flex-col gap-1 self-start px-2 pb-5 in-data-collapsed:self-center in-data-collapsed:px-0">
+        <Link href="/hjem" className="rounded-md" aria-label={t.logoLabel}>
+          <SiteLogo tone="light" className="in-data-collapsed:[&>span]:sr-only" />
+        </Link>
+        <p className="pl-0.5 text-[0.6875rem] text-on-sidebar-label in-data-collapsed:hidden">{t.shell.tagline}</p>
+      </div>
       <nav aria-label={t.shell.mainNav} className="flex flex-col gap-1">
         {groups.map((g, i) => (
           <div key={g.label ?? i} className="flex flex-col gap-0.5">
-            {g.label && <p className="px-3 pt-4 pb-2 text-[0.6875rem] font-medium tracking-[0.12em] text-on-sidebar-label uppercase in-data-collapsed:sr-only">{g.label}</p>}
+            {g.label && (
+              <p className="px-3 pt-4 pb-2 text-[0.6875rem] font-medium tracking-[0.12em] text-on-sidebar-label uppercase in-data-collapsed:sr-only">
+                {g.label}
+              </p>
+            )}
             {g.items.map((item) =>
               item.children?.length ? (
                 <ExpandableNav key={item.href} link={<RailLink item={item} />} label={item.label} toggleLabel={t.shell.showSubItems}>
@@ -238,6 +282,7 @@ function SidebarContent({ groups, rail = false }: { groups: SidebarGroup[]; rail
         ))}
       </nav>
       <div className="mt-auto flex flex-col gap-1 pt-6">
+        <PromoCard />
         <RailLink item={{ href: "/hjaelp", label: t.shell.learner.help, icon: "help" }} />
         <div className="mt-2 flex items-center gap-1 border-t border-sidebar-line pt-3 in-data-collapsed:flex-col">
           <Suspense fallback={<span className="h-13 flex-1" />}>
@@ -265,15 +310,18 @@ export function AppFrame({ groups = learnerGroups(), children }: { groups?: Side
   return (
     // Desktop is app-like: the frame is exactly one viewport tall, the sidebar scrolls on its own if needed, and only
     // the content panel (#indhold) scrolls — under a sticky top bar. Phones keep normal page scroll.
-    <div className="flex flex-1 flex-col bg-surface lg:h-dvh lg:flex-none lg:overflow-hidden">
-      <a href="#indhold" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-sm focus:bg-surface focus:px-3 focus:py-2 focus:shadow-md">
+    <div className="flex flex-1 flex-col bg-bg lg:h-dvh lg:flex-none lg:overflow-hidden">
+      <a
+        href="#indhold"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-sm focus:bg-surface focus:px-3 focus:py-2 focus:shadow-md"
+      >
         {t.shell.skipToContent}
       </a>
       <MobileNav
         openLabel={t.shell.openMenu}
         closeLabel={t.shell.closeMenu}
         bar={
-          <Link href="/hjem" aria-label={t.brand} className="rounded-sm">
+          <Link href="/hjem" aria-label={t.logoLabel} className="rounded-sm">
             <SiteLogo tone="light" />
           </Link>
         }
@@ -282,15 +330,23 @@ export function AppFrame({ groups = learnerGroups(), children }: { groups?: Side
       </MobileNav>
       <div
         data-app-frame
-        className="flex flex-1 flex-col lg:grid lg:h-dvh lg:min-h-0 lg:grid-cols-[17rem_minmax(0,1fr)] lg:data-collapsed:grid-cols-[5.5rem_minmax(0,1fr)]"
+        className="flex flex-1 flex-col lg:grid lg:h-dvh lg:min-h-0 lg:grid-cols-[17.75rem_minmax(0,1fr)] lg:data-collapsed:grid-cols-[6.25rem_minmax(0,1fr)]"
       >
-        <aside className="relative z-40 hidden bg-sidebar lg:block lg:h-dvh">
+        {/* :3500 look: the dark brown sidebar sits inset with rounded corners and a faint coral glow at the top. */}
+        <aside className="relative z-40 hidden bg-sidebar lg:m-3 lg:mr-0 lg:block lg:h-[calc(100dvh-1.5rem)] lg:rounded-[18px]">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-[18px] bg-[radial-gradient(120%_40%_at_30%_0%,var(--color-web-glow),transparent_70%)] opacity-60"
+          />
           <CollapseButton collapseLabel={t.shell.collapseMenu} expandLabel={t.shell.expandMenu} />
-          <div className="flex h-full flex-col overflow-y-auto overscroll-contain">
+          <div className="relative flex h-full flex-col overflow-y-auto overscroll-contain rounded-[18px]">
             <SidebarContent groups={groups} rail />
           </div>
         </aside>
-        <div id="indhold" className="app-panel relative flex min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1 flex-col bg-surface lg:h-dvh lg:min-h-0 lg:scroll-pt-20 lg:overflow-y-auto lg:overscroll-contain">
+        <div
+          id="indhold"
+          className="app-panel relative flex min-h-[calc(100dvh-3.5rem)] min-w-0 flex-1 flex-col bg-bg lg:h-dvh lg:min-h-0 lg:scroll-pt-20 lg:overflow-y-auto lg:overscroll-contain"
+        >
           <TopBar groups={groups} />
           {children}
         </div>

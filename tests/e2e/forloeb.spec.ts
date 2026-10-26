@@ -128,9 +128,7 @@ test("WCAG 2.1 AA (axe) på oversigt, lektion, låst lektion og afslutning", asy
   for (const path of ["/forloeb/claude", `/forloeb/claude/${first}`, "/forloeb/claude/claude-l02-01", "/forloeb/claude/modul/claude-m01"]) {
     await page.goto(path);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    // The shell's logo link (aria-label "Mindforward", visible text "Forward") is a known, pre-existing
-    // label-content-name-mismatch on every app page; it is not part of forløb and is excluded here.
-    const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).exclude('a[aria-label="Mindforward"]').analyze();
+    const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
     expect(result.violations.map((v) => `${path}: ${v.id} (${v.impact}) ${v.nodes.map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
   }
 });

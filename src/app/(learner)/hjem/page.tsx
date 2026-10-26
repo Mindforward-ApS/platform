@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { TransferOffers } from "@/components/certificate/transfer-offer";
+import { HomeCourses } from "@/components/courses/home-courses";
 import { num } from "@/components/player/kit";
 import { StatusBadge } from "@/components/player/module-card";
 import { HeroCard, HeroMeta, HeroTitle, KpiRow, Panel, Segments } from "@/components/ui/cards";
@@ -16,6 +17,7 @@ import { guardPage } from "@/server/auth/page-guard";
 import { needsFirstLoginInfo } from "@/server/admin/first-login";
 import { listMyCertificates } from "@/server/certificates/service";
 import { getWorkProfile } from "@/server/connectors/service";
+import { getMemberCourseProgress } from "@/server/courses/service";
 import { db } from "@/server/db";
 import type { CatalogEntry } from "@/server/modules/catalog";
 import { listModulesForLearner } from "@/server/modules/catalog";
@@ -221,10 +223,11 @@ async function Content() {
   const ctx = await guardPage(() => requireActiveMembership(["OWNER", "ADMIN", "LEARNER"]), "/hjem");
   // M7: B2B employees see once what their admin can and cannot see (docs/10 § 1.6) — same gate as /konto.
   if (await needsFirstLoginInfo(db(), ctx.user.id, ctx.membership.organizationId)) redirect("/konto/data-info");
-  const [modules, certs, workProfile] = await Promise.all([
+  const [modules, certs, workProfile, courses] = await Promise.all([
     listModulesForLearner(db(), { userId: ctx.user.id, organizationId: ctx.membership.organizationId }, playableOptions()),
     listMyCertificates(db(), ctx.user.id),
     getWorkProfile(db(), { userId: ctx.user.id, organizationId: ctx.membership.organizationId }),
+    getMemberCourseProgress(db(), { userId: ctx.user.id, organizationId: ctx.membership.organizationId }),
   ]);
   const firstName = ctx.user.name?.trim().split(/\s+/)[0];
   const visible = modules.filter((m) => m.status !== "REMOVED");
@@ -246,6 +249,7 @@ async function Content() {
         </ButtonLink>
       </header>
       <TransferOffers userId={ctx.user.id} organizationId={ctx.membership.organizationId} />
+      <HomeCourses courses={courses} />
       {!workProfile?.completedAt && <ProfileCard />}
       {visible.length === 0 ? (
         <EmptyState icon="book" title={t.home.emptyTitle}>

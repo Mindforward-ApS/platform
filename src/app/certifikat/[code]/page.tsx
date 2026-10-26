@@ -90,7 +90,7 @@ export default function PublicCertificatePage(props: PageProps<"/certifikat/[cod
     <>
       <header className="border-b border-line bg-surface print:hidden">
         <div className="mx-auto flex h-16 max-w-app items-center px-4 sm:px-6">
-          <Link href="/" className="rounded-sm" aria-label={getMessages().brand}>
+          <Link href="/" className="rounded-sm" aria-label={getMessages().logoLabel}>
             <SiteLogo />
           </Link>
         </div>

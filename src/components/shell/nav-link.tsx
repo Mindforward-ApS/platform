@@ -31,8 +31,9 @@ function NavLinkView({ href, variant = "bar", tone = "default", children, active
         href={href}
         aria-current={active ? "page" : undefined}
         className={cx(
-          "group/nav flex h-12 items-center gap-3.5 rounded-xl px-2.5 text-[0.96875rem] font-medium transition-colors duration-[120ms] in-data-collapsed:justify-center in-data-collapsed:px-0",
-          active ? "bg-sidebar-active text-on-sidebar" : "text-on-sidebar-muted hover:bg-sidebar-hover hover:text-on-sidebar",
+          "group/nav flex h-11 items-center gap-3 rounded-[10px] px-2 text-[0.9375rem] font-medium transition-colors duration-[120ms] in-data-collapsed:justify-center in-data-collapsed:px-0",
+          // :3500 look: the active item is a filled coral pill.
+          active ? "bg-sidebar-active text-on-sidebar shadow-[0_6px_14px_-6px_var(--color-sidebar-active)]" : "text-on-sidebar-muted hover:bg-sidebar-hover hover:text-on-sidebar",
         )}
       >
         {children}
@@ -45,7 +46,7 @@ function NavLinkView({ href, variant = "bar", tone = "default", children, active
         href={href}
         aria-current={active ? "page" : undefined}
         className={cx(
-          "flex h-10 items-center rounded-xl pr-2.5 pl-[3.9rem] text-body-sm font-medium transition-colors duration-[120ms]",
+          "flex h-9 items-center rounded-[10px] pr-2.5 pl-[3.4rem] text-body-sm font-medium transition-colors duration-[120ms]",
           active ? "text-on-sidebar" : "text-on-sidebar-subtle hover:bg-sidebar-hover hover:text-on-sidebar",
         )}
       >
