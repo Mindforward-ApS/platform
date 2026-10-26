@@ -219,3 +219,7 @@
 - [ ] **Tests og certifikater i forløb:** de 12 tests er oprettet med `status = kommer-snart` og `passPercent = 80`. Platformens beståelseskrav (80 %) passer. Der er ingen testafvikling endnu, og forløbs-certifikater er ikke koblet til `Certificate` (som i dag udstedes ud fra kernemoduler pr. spor og niveau). · Blokerer: når testspørgsmålene kommer.
 - [ ] **Fejl der fandtes i forvejen på `design-v3-platform` (ikke rettet):** 5 integrationstests fejler (attempts ×2, placement ×2, billing "Fortryd aftale") efter commit 7daebc4 (moduler godkendt → PUBLISHED) og prisændringen; axe `label-content-name-mismatch` på logo-linket i app-menuen (aria-label "Mindforward", tekst "Forward"). Build-fejlen på `/` (cookie læst uden for Suspense, fra 8589916) ER rettet i 9096042, ellers kunne der ikke bygges et preview.
 - [ ] **Next.js 16.4.0 har en kendt sikkerhedssårbarhed** (advarsel fra `next build`). Opgradering er ikke lavet; skal besluttes særskilt.
+
+## Øvemiljø: rigtige connector-navne (26. okt. 2026)
+- [ ] **Advokat:** må øvemiljøet vise rigtige connector-navne (Gmail, Slack, Microsoft 365 …) som tekst i et katalog, der efterligner Claudes, når intet forbinder til tjenesterne og der ingen logoer er (00 § 10e)? Blokerer: launch gate.
+- [ ] **Kataloget skal holdes ajour:** `content/sandbox-connectors/catalog.json` er et øjebliksbillede fra 26. okt. 2026. Forslag: genhent fra claude.com/marketplace månedligt via indholdsmotoren.

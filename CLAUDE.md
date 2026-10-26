@@ -115,6 +115,7 @@ Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installat
 - Ikoner: `Icon` (Phosphor, små UI-ikoner) og `AppIcon` (farvefelt med gradient og hvidt ikon) til menu, feature-lister, dashboards og tomme tilstande. Licenser: `docs/design/third-party-assets.md`.
 - Sandkassen ligner de rigtige desktop-apps så meget som muligt i **opbygning og arbejdsgang** (sidebjælke, startskærm, skrivefelt med "+"-menu og forbindelser, app-bjælke + sidepanel) — Marco 15. okt. 2026: "ligne dem så meget som muligt uden at ligne dem". Udseendet er altid Mindforwards: aldrig leverandørernes logoer, farver, fonte, ikoner, navne, skærmbilleder eller trade dress.
 - Fast disclaimer i sandkassen: "Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google." Svar mærkes "Øvemodel".
+- Connector-navne (Marco 26. okt. 2026, 00 § 10e): Forbindelser i sandkassen bruger de rigtige navne fra `content/sandbox-connectors/catalog.json` — kun som tekst, aldrig logoer, og de forbinder kun til Nordlys-øvedata.
 
 ## Git
 - Små commits med Conventional Commits (`feat:`, `fix:`, `test:`, `chore:`, `docs:`, `refactor:`).

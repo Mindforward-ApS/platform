@@ -2056,6 +2056,11 @@
                 "crm",
                 "sheet"
               ]
+            },
+            "via": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
             }
           },
           "required": [
@@ -2112,6 +2117,31 @@
             },
             "scopes": {
               "minItems": 1,
+              "maxItems": 3,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "mail.read",
+                  "mail.draft",
+                  "mail.send",
+                  "calendar.read",
+                  "calendar.write",
+                  "files.read",
+                  "files.write",
+                  "crm.read",
+                  "crm.write",
+                  "sheet.read",
+                  "sheet.write"
+                ]
+              }
+            },
+            "via": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+            },
+            "approval": {
               "maxItems": 3,
               "type": "array",
               "items": {
@@ -2204,6 +2234,11 @@
                   "sheet.write"
                 ]
               }
+            },
+            "via": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
             }
           },
           "required": [
@@ -2258,6 +2293,11 @@
                 "crm",
                 "sheet"
               ]
+            },
+            "via": {
+              "type": "string",
+              "maxLength": 40,
+              "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
             }
           },
           "required": [

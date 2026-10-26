@@ -7,7 +7,10 @@ import { CONNECTOR_IDS } from "./events";
 
 export interface SandboxState {
   chat: { active: { id: string | null; assistantId?: string; attachments: string[]; messageCount: number }; conversations: number };
-  connectors: Record<ConnectorId, { connected: boolean; scopes: Scope[] }>;
+  /** Nordlys data reachable by the model. `via` = catalog connectors that granted it; empty = connected the old way. */
+  connectors: Record<ConnectorId, { connected: boolean; scopes: Scope[]; via?: string[]; approval?: Scope[] }>;
+  /** Catalog connectors the learner has connected (ids), and the ones switched off for the current chats. */
+  catalog?: { linked: string[]; chatOff: string[] };
   assistants: Array<{ id: string; knowledgeFileIds: string[]; connectorIds: string[]; starterCount: number; instructionCharCount: number }>;
   automations: Array<{ id: string; enabled: boolean; trigger: Trigger; actionTypes: string[]; testRuns: number; simulatedRuns: number }>;
   mail: { draftsCount: number; sentCount: number; externalSentCount: number; draftIds: string[] };
@@ -24,6 +27,7 @@ export function initialState(): SandboxState {
   return {
     chat: { active: { id: null, attachments: [], messageCount: 0 }, conversations: 0 },
     connectors: Object.fromEntries(CONNECTOR_IDS.map((c) => [c, { connected: false, scopes: [] }])) as unknown as SandboxState["connectors"],
+    catalog: { linked: [], chatOff: [] },
     assistants: [],
     automations: [],
     mail: { draftsCount: 0, sentCount: 0, externalSentCount: 0, draftIds: [] },
@@ -106,12 +110,32 @@ export function applyEvent(prev: SandboxState, event: SandboxEventInput): Sandbo
       return s;
     }
 
-    case "CONNECTOR_PERMISSION_GRANTED":
-      s.connectors[event.payload.connectorId] = { connected: true, scopes: [...new Set(event.payload.scopes)] };
+    case "CONNECTOR_PERMISSION_GRANTED": {
+      const p = event.payload;
+      const prev = s.connectors[p.connectorId];
+      if (!p.via) {
+        s.connectors[p.connectorId] = { connected: true, scopes: [...new Set(p.scopes)] };
+        return s;
+      }
+      // Several catalog connectors can reach the same Nordlys data (Gmail and Microsoft 365 → mail): union of grants.
+      const via = addUnique(prev.via ?? [], p.via);
+      s.connectors[p.connectorId] = {
+        connected: true,
+        scopes: [...new Set([...(prev.connected ? prev.scopes : []), ...p.scopes])],
+        via,
+        approval: [...new Set([...(prev.approval ?? []), ...(p.approval ?? [])])],
+      };
+      s.catalog = { linked: addUnique(s.catalog?.linked ?? [], p.via), chatOff: s.catalog?.chatOff ?? [] };
       return s;
-    case "CONNECTOR_DISCONNECTED":
-      s.connectors[event.payload.connectorId] = { connected: false, scopes: [] };
+    }
+    case "CONNECTOR_DISCONNECTED": {
+      const p = event.payload;
+      const prev = s.connectors[p.connectorId];
+      const via = (prev.via ?? []).filter((v) => v !== p.via);
+      s.connectors[p.connectorId] = p.via && via.length > 0 ? { ...prev, via } : { connected: false, scopes: [] };
+      if (p.via) s.catalog = { linked: (s.catalog?.linked ?? []).filter((v) => v !== p.via), chatOff: (s.catalog?.chatOff ?? []).filter((v) => v !== p.via) };
       return s;
+    }
 
     case "AUTOMATION_CREATED":
     case "AUTOMATION_UPDATED": {
@@ -157,11 +181,23 @@ export function applyEvent(prev: SandboxState, event: SandboxEventInput): Sandbo
       return s;
     }
 
+    case "SETTING_CHANGED": {
+      // Catalog connectors without Nordlys data (e.g. Slack) are linked/unlinked here; "chat-connector-off/on" switches a
+      // connected one off or on for the chats (the "+" menu). Value = the catalog id.
+      const { key, value } = event.payload;
+      if (typeof value !== "string") return s;
+      const c = s.catalog ?? { linked: [], chatOff: [] };
+      if (key === "connector-linked") s.catalog = { ...c, linked: addUnique(c.linked, value) };
+      else if (key === "connector-unlinked") s.catalog = { linked: c.linked.filter((v) => v !== value), chatOff: c.chatOff.filter((v) => v !== value) };
+      else if (key === "chat-connector-off") s.catalog = { ...c, chatOff: addUnique(c.chatOff, value) };
+      else if (key === "chat-connector-on") s.catalog = { ...c, chatOff: c.chatOff.filter((v) => v !== value) };
+      return s;
+    }
+
     // Observational events: recorded for assertions, no change to the overlay.
     case "SESSION_STARTED":
     case "UI_CLICKED":
     case "UI_NAVIGATED":
-    case "SETTING_CHANGED":
     case "CHAT_RESPONSE_REGENERATED":
     case "CHAT_RESPONSE_COPIED":
     case "CHAT_RESPONSE_RATED":
@@ -195,6 +231,7 @@ export function normalizeState(raw: unknown): SandboxState {
     ...r,
     chat: { ...base.chat, ...r.chat, active: { ...base.chat.active, ...r.chat?.active } },
     connectors: { ...base.connectors, ...r.connectors },
+    catalog: { linked: r.catalog?.linked ?? [], chatOff: r.catalog?.chatOff ?? [] },
     mail: { ...base.mail, ...r.mail },
     crm: { ...base.crm, ...r.crm },
     sheet: { ...base.sheet, ...r.sheet },

@@ -5,6 +5,7 @@ import { loadChatTurns, sessionState, type Owner } from "./service";
 import { loadSkin } from "./skin";
 import { buildSheetCells } from "./tools";
 import { formatDayLabel, loadWorld, resolveDay } from "./world";
+import { loadConnectorCatalog } from "./connector-catalog";
 
 /** Seed world + session overlay → serializable props for the sandbox UI (own session only). */
 export async function buildSandboxProps(db: PrismaClient, owner: Owner, session: SandboxSession): Promise<SandboxProps> {
@@ -19,6 +20,7 @@ export async function buildSandboxProps(db: PrismaClient, owner: Owner, session:
   return {
     sessionId: session.id,
     skin: loadSkin(session.skinKey),
+    catalog: loadConnectorCatalog(),
     initialState: state,
     conversationId,
     turns: turns.map((t) => ({ seq: t.seq, role: t.role, text: t.text })),

@@ -4,11 +4,11 @@ import { useState, type ReactNode } from "react";
 import { Badge, Button, Check, cx, EmptyState, Field, Notice, Select, TextArea, type Tone } from "@/components/ui/primitives";
 import { format, getMessages } from "@/lib/i18n";
 import { detectPii } from "@/lib/pii";
-import type { ConnectorId, Scope } from "@/server/sandbox/events";
 import type { SandboxState } from "@/server/sandbox/reducer";
 import { newOverlayId, streamConnectorDemo } from "./api";
 import { SbIcon, type LocalIconName } from "./sandbox-icons";
-import type { CalendarItem, CustomerItem, FileItem, Intent, MailItem, PracticeKind, PracticeView, SheetCellView } from "./types";
+import type { CalendarItem, CatalogItem, CustomerItem, FileItem, Intent, MailItem, PracticeKind, PracticeView, SheetCellView } from "./types";
+import { ConnectorCatalog } from "./connector-catalog";
 import { DemoPanel } from "@/components/profile/demo-panel";
 import { AppIcon, type IconTone } from "@/components/ui/icons";
 import type { ConnectorsLayout } from "@/server/sandbox/skin-schema";
@@ -602,16 +602,6 @@ export function SheetView({ cells }: { cells: Record<string, SheetCellView> }) {
 
 /* ───────────────────────── Connectors ───────────────────────── */
 
-const CONNECTOR_SCOPES: Record<ConnectorId, Scope[]> = {
-  mail: ["mail.read", "mail.draft", "mail.send"],
-  calendar: ["calendar.read", "calendar.write"],
-  files: ["files.read", "files.write"],
-  crm: ["crm.read", "crm.write"],
-  sheet: ["sheet.read", "sheet.write"],
-};
-
-const CONNECTOR_ICON: Record<ConnectorId, LocalIconName | IconName> = { mail: "mail", calendar: "calendar", files: "file", crm: "building", sheet: "table" };
-
 const KIND_ICON: Record<PracticeKind, { icon: IconName; tone: IconTone }> = {
   office: { icon: "mail", tone: "blue" },
   files: { icon: "file", tone: "sky" },
@@ -719,108 +709,15 @@ function PracticeConnectors({ practice, layout, sessionId }: { practice: Practic
   );
 }
 
-export function ConnectorsView({ state, emit, practice = null, layout = "LIST", sessionId }: { state: SandboxState; emit: Emit; practice?: PracticeView | null; layout?: ConnectorsLayout; sessionId: string }) {
-  const [dialog, setDialog] = useState<ConnectorId | null>(null);
-  const [chosen, setChosen] = useState<Scope[]>([]);
+export function ConnectorsView({ state, emit, practice = null, layout = "LIST", sessionId, catalog }: { state: SandboxState; emit: Emit; practice?: PracticeView | null; layout?: ConnectorsLayout; sessionId: string; catalog: CatalogItem[] }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col" data-testid="sandbox-connectors">
       <PaneHeader title={t.connectors.heading} />
       <FormColumn>
-        <PracticeConnectors practice={practice} layout={layout} sessionId={sessionId} />
-        <div className="flex flex-col gap-1 border-t border-line pt-6">
-          <p className="text-title-3 text-ink">{t.practice.nordlysHeading}</p>
-          <p className="text-body-sm text-ink-muted">{t.practice.nordlysLead}</p>
+        <ConnectorCatalog catalog={catalog} state={state} emit={emit} />
+        <div className="border-t border-line pt-6">
+          <PracticeConnectors practice={practice} layout={layout} sessionId={sessionId} />
         </div>
-        <p className="text-body text-ink-muted">{t.connectors.intro}</p>
-        {dialog && (
-          <section role="dialog" aria-labelledby="perm-title" className="overflow-hidden rounded-lg border border-line-strong bg-surface">
-            <div className="flex items-center gap-3 border-b border-line px-6 py-4">
-              <SbIcon name="shield" className="text-accent" />
-              <h3 id="perm-title" className="text-title-3 text-ink">
-                {t.connectors.permissionTitle} ({t.connectors.names[dialog]})
-              </h3>
-            </div>
-            <div className="flex flex-col gap-4 p-6">
-              <div className="flex flex-col gap-3">
-                {CONNECTOR_SCOPES[dialog].map((s) => (
-                  <Check key={s} label={t.connectors.scopes[s]} checked={chosen.includes(s)} onChange={(e) => setChosen((c) => (e.target.checked ? [...c, s] : c.filter((x) => x !== s)))} />
-                ))}
-              </div>
-              <details className="group rounded-md border border-line bg-sunken px-4 py-3">
-                <summary className="flex cursor-pointer list-none items-center gap-2 text-label text-ink">
-                  <SbIcon name="chevronRight" className="text-ink-subtle transition-transform group-open:rotate-90" />
-                  {t.connectors.whatDoesItMean}
-                </summary>
-                <p className="mt-2 pl-6 text-body-sm text-ink-muted">{t.connectors.leastPrivilege}</p>
-              </details>
-            </div>
-            <div className="flex flex-wrap items-center justify-end gap-3 border-t border-line bg-sunken px-6 py-4">
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => {
-                  emit({ event: { type: "CONNECTOR_PERMISSION_DENIED", payload: { connectorId: dialog, deniedScopes: CONNECTOR_SCOPES[dialog] } } });
-                  setDialog(null);
-                }}
-              >
-                {t.connectors.deny}
-              </Button>
-              <Button
-                type="button"
-                disabled={chosen.length === 0}
-                onClick={() => {
-                  emit({ event: { type: "CONNECTOR_PERMISSION_GRANTED", payload: { connectorId: dialog, scopes: chosen } } });
-                  setDialog(null);
-                }}
-              >
-                {t.connectors.grant}
-              </Button>
-            </div>
-          </section>
-        )}
-        <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
-          {(Object.keys(CONNECTOR_SCOPES) as ConnectorId[]).map((id) => {
-            const c = state.connectors[id];
-            return (
-              <li key={id} className="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4">
-                <span className="grid size-9 shrink-0 place-items-center rounded-sm bg-sunken text-ink-muted ring-1 ring-line ring-inset">
-                  <SbIcon name={CONNECTOR_ICON[id]} />
-                </span>
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <span className="flex flex-wrap items-center gap-2">
-                    <span className="text-label text-ink">{t.connectors.names[id]}</span>
-                    {c.connected ? (
-                      <Badge tone="success" icon="check">
-                        {t.connectors.connected}
-                      </Badge>
-                    ) : (
-                      <Badge>{t.connectors.notConnected}</Badge>
-                    )}
-                  </span>
-                  {c.connected && <span className="text-body-sm text-ink-muted">{c.scopes.map((s) => t.connectors.scopes[s]).join(", ")}</span>}
-                </div>
-                {c.connected ? (
-                  <Button type="button" variant="secondary" size="sm" onClick={() => emit({ event: { type: "CONNECTOR_DISCONNECTED", payload: { connectorId: id } } })}>
-                    {t.connectors.disconnect}
-                  </Button>
-                ) : (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      setDialog(id);
-                      setChosen([]);
-                      emit({ event: { type: "CONNECTOR_CONNECT_STARTED", payload: { connectorId: id } } });
-                    }}
-                  >
-                    {t.connectors.connect} {t.connectors.names[id]}
-                  </Button>
-                )}
-              </li>
-            );
-          })}
-        </ul>
       </FormColumn>
     </div>
   );

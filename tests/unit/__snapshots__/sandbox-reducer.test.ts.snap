@@ -43,6 +43,10 @@ exports[`applyEvent (docs/04 § 9) > AGENT_STEP_APPROVED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -142,6 +146,10 @@ exports[`applyEvent (docs/04 § 9) > AGENT_STEP_REJECTED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -243,6 +251,10 @@ exports[`applyEvent (docs/04 § 9) > AGENT_TASK_COMPLETED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -342,6 +354,10 @@ exports[`applyEvent (docs/04 § 9) > AGENT_TASK_STARTED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -443,6 +459,10 @@ exports[`applyEvent (docs/04 § 9) > ASSISTANT_CREATED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -543,6 +563,10 @@ exports[`applyEvent (docs/04 § 9) > ASSISTANT_KNOWLEDGE_ADDED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -647,6 +671,10 @@ exports[`applyEvent (docs/04 § 9) > ASSISTANT_UPDATED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -746,6 +774,10 @@ exports[`applyEvent (docs/04 § 9) > ASSISTANT_USED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -847,6 +879,10 @@ exports[`applyEvent (docs/04 § 9) > AUTOMATION_CREATED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -946,6 +982,10 @@ exports[`applyEvent (docs/04 § 9) > AUTOMATION_DISABLED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -1047,6 +1087,10 @@ exports[`applyEvent (docs/04 § 9) > AUTOMATION_ENABLED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -1146,6 +1190,10 @@ exports[`applyEvent (docs/04 § 9) > AUTOMATION_RUN_SIMULATED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -1247,6 +1295,10 @@ exports[`applyEvent (docs/04 § 9) > AUTOMATION_TEST_RUN: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -1342,6 +1394,10 @@ exports[`applyEvent (docs/04 § 9) > AUTOMATION_UPDATED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -1445,6 +1501,10 @@ exports[`applyEvent (docs/04 § 9) > CALENDAR_EVENT_CREATED: snapshot 1`] = `
       "cal-q1w2",
     ],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -1544,6 +1604,10 @@ exports[`applyEvent (docs/04 § 9) > CALENDAR_EVENT_OPENED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -1645,6 +1709,10 @@ exports[`applyEvent (docs/04 § 9) > CHAT_CONVERSATION_STARTED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -1744,6 +1812,10 @@ exports[`applyEvent (docs/04 § 9) > CHAT_FILE_ATTACHED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -1847,6 +1919,10 @@ exports[`applyEvent (docs/04 § 9) > CHAT_MESSAGE_SENT: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [
@@ -1949,6 +2025,10 @@ exports[`applyEvent (docs/04 § 9) > CHAT_RESPONSE_COPIED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -2048,6 +2128,10 @@ exports[`applyEvent (docs/04 § 9) > CHAT_RESPONSE_RATED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -2149,6 +2233,10 @@ exports[`applyEvent (docs/04 § 9) > CHAT_RESPONSE_RECEIVED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -2248,6 +2336,10 @@ exports[`applyEvent (docs/04 § 9) > CHAT_RESPONSE_REGENERATED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -2349,6 +2441,10 @@ exports[`applyEvent (docs/04 § 9) > CONNECTOR_CONNECT_STARTED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -2449,6 +2545,10 @@ exports[`applyEvent (docs/04 § 9) > CONNECTOR_DISCONNECTED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -2546,6 +2646,10 @@ exports[`applyEvent (docs/04 § 9) > CONNECTOR_PERMISSION_DENIED: snapshot 1`] =
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -2647,6 +2751,10 @@ exports[`applyEvent (docs/04 § 9) > CONNECTOR_PERMISSION_GRANTED: snapshot 1`] 
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -2746,6 +2854,10 @@ exports[`applyEvent (docs/04 § 9) > CRM_FILTER_APPLIED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -2847,6 +2959,10 @@ exports[`applyEvent (docs/04 § 9) > CRM_RECORD_OPENED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -2946,6 +3062,10 @@ exports[`applyEvent (docs/04 § 9) > CRM_RECORD_UPDATED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -3055,6 +3175,10 @@ exports[`applyEvent (docs/04 § 9) > FILE_CREATED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -3157,6 +3281,10 @@ exports[`applyEvent (docs/04 § 9) > FILE_OPENED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -3256,6 +3384,10 @@ exports[`applyEvent (docs/04 § 9) > MAIL_DRAFT_SAVED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -3357,6 +3489,10 @@ exports[`applyEvent (docs/04 § 9) > MAIL_OPENED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -3457,6 +3593,10 @@ exports[`applyEvent (docs/04 § 9) > MAIL_SENT: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -3554,6 +3694,10 @@ exports[`applyEvent (docs/04 § 9) > PII_BLOCKED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -3655,6 +3799,10 @@ exports[`applyEvent (docs/04 § 9) > PII_WARNING_SHOWN: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -3721,6 +3869,10 @@ exports[`applyEvent (docs/04 § 9) > SESSION_RESET: snapshot 1`] = `
   "automations": [],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -3817,6 +3969,10 @@ exports[`applyEvent (docs/04 § 9) > SESSION_STARTED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -3918,6 +4074,10 @@ exports[`applyEvent (docs/04 § 9) > SETTING_CHANGED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -4017,6 +4177,10 @@ exports[`applyEvent (docs/04 § 9) > SHEET_CELL_EDITED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -4122,6 +4286,10 @@ exports[`applyEvent (docs/04 § 9) > SHEET_OPENED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -4221,6 +4389,10 @@ exports[`applyEvent (docs/04 § 9) > TOOL_CALL_EXECUTED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {
@@ -4322,6 +4494,10 @@ exports[`applyEvent (docs/04 § 9) > UI_CLICKED: snapshot 1`] = `
   "calendar": {
     "createdEventIds": [],
   },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
+  },
   "chat": {
     "active": {
       "attachments": [],
@@ -4421,6 +4597,10 @@ exports[`applyEvent (docs/04 § 9) > UI_NAVIGATED: snapshot 1`] = `
   ],
   "calendar": {
     "createdEventIds": [],
+  },
+  "catalog": {
+    "chatOff": [],
+    "linked": [],
   },
   "chat": {
     "active": {

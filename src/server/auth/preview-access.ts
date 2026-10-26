@@ -7,11 +7,11 @@ import { getAuth } from "@/server/auth/better-auth";
 import { createPersonalOrg, setActiveOrganization } from "@/server/orgs/service";
 
 // Preview access without email (Marco 26 Oct 2026: "jeg gider ikke at logge ind"). GET /api/dev/adgang signs in ONE
-// fixed demo user with a personal account. Two locks: PREVIEW_AUTO_LOGIN must be on (env validation refuses it in
+// fixed demo user ("Marco Demo") with a personal account. Two locks: PREVIEW_AUTO_LOGIN must be on (env validation refuses it in
 // production) and the route refuses VERCEL_ENV=production itself. Vercel deployment protection sits in front of previews.
 
 export const PREVIEW_DEMO_EMAIL = "demo@preview.mindforward.invalid";
-const PREVIEW_DEMO_NAME = "Marco (demo)";
+const PREVIEW_DEMO_NAME = "Marco Demo";
 
 export function previewAccessAllowed(env: Pick<ServerEnv, "PREVIEW_AUTO_LOGIN" | "VERCEL_ENV">): boolean {
   return Boolean(env.PREVIEW_AUTO_LOGIN) && env.VERCEL_ENV !== "production";
@@ -22,7 +22,7 @@ export async function ensurePreviewDemoUser(db: PrismaClient) {
   const user = await db.user.upsert({
     where: { email: PREVIEW_DEMO_EMAIL },
     create: { id: randomUUID(), email: PREVIEW_DEMO_EMAIL, name: PREVIEW_DEMO_NAME, emailVerified: true },
-    update: {},
+    update: { name: PREVIEW_DEMO_NAME },
     select: { id: true, name: true },
   });
   const org = await createPersonalOrg(db, { id: user.id, name: user.name });

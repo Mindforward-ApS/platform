@@ -10,7 +10,7 @@ En neutral øve-app med **Grebs egen visuelle identitet**, hvor brugeren arbejde
 Faste regler:
 - Disclaimer synlig hele tiden (topbar, ikke lukkbar): **"Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google."**
 - Hvert AI-svar mærkes **"Øvemodel"**. Vi skriver aldrig, at ChatGPT/Copilot/Claude/Gemini svarer.
-- Ingen leverandørlogoer, -farver, -fonte, -ikoner, -skærmbilleder eller "look and feel". Produktnavne kun beskrivende uden for sandkassens chrome ("Du øver arbejdsgange fra Microsoft 365 Copilot").
+- Ingen leverandørlogoer, -farver, -fonte, -ikoner, -skærmbilleder eller "look and feel". Produktnavne kun beskrivende uden for sandkassens chrome ("Du øver arbejdsgange fra Microsoft 365 Copilot"). **Undtagelse (00 § 10e, 26. okt. 2026):** connector-navne i Forbindelser-kataloget er de rigtige navne fra Claudes katalog, som tekst fra `content/sandbox-connectors/catalog.json` — aldrig logoer, og de forbinder kun til Nordlys-øvedata.
 - Ingen netværkskald ud over egen API og Anthropic (via `src/server/ai/`). Ingen rigtig filupload: "Vedhæft" vælger kun blandt Nordlys-filer.
 - Al design via `src/styles/tokens.css`; visuel identitet besluttes i designsession før M3.
 

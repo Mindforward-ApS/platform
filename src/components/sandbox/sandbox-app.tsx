@@ -16,7 +16,6 @@ import { AssistantsView, AutomationsView, CalendarView, ConnectorsView, CrmView,
 // Mindforward's own tokens. Every user action is sent as an intent and becomes a SandboxEvent on the server.
 
 const t = getMessages().sandbox;
-const CONNECTOR_ICONS = { mail: "mail", calendar: "calendar", files: "file", crm: "building", sheet: "table" } as const;
 
 export function DisclaimerBar() {
   return (
@@ -208,7 +207,8 @@ export function SandboxApp(props: SandboxProps) {
       emit={emit}
       wide={skin.shell !== "APP_RAIL_SIDE_PANEL"}
       variant={shell === "SIDEBAR_CHAT_WORKPANE" ? "center" : shell === "SIDEBAR_CHAT" ? "pill" : "panel"}
-      connectors={(["mail", "calendar", "files", "crm", "sheet"] as const).map((id) => ({ id, label: t.connectors.names[id], icon: CONNECTOR_ICONS[id], connected: state.connectors[id].connected }))}
+      connectors={props.catalog.filter((c) => (state.catalog?.linked ?? []).includes(c.id)).map((c) => ({ id: c.id, label: c.name, on: !(state.catalog?.chatOff ?? []).includes(c.id) }))}
+      onToggleConnector={(id, on) => emit({ event: { type: "SETTING_CHANGED", payload: { key: on ? "chat-connector-on" : "chat-connector-off", value: id } } })}
       practice={(props.practice?.items ?? []).map((i) => t.practice.kinds[i.kind])}
       onOpenConnectors={() => navigate("connectors", "CONNECTORS")}
       initialText={props.initialDraft}
@@ -237,7 +237,7 @@ export function SandboxApp(props: SandboxProps) {
       case "SHEET":
         return <SheetView cells={world.sheet} />;
       case "CONNECTORS":
-        return <ConnectorsView state={state} emit={emit} practice={props.practice ?? null} layout={skin.connectorsLayout} sessionId={sessionId} />;
+        return <ConnectorsView state={state} emit={emit} practice={props.practice ?? null} layout={skin.connectorsLayout} sessionId={sessionId} catalog={props.catalog} />;
       case "ASSISTANTS":
         return <AssistantsView state={state} files={world.files} emit={emit} />;
       case "AUTOMATIONS":

@@ -230,9 +230,12 @@ export type SandboxTool = (typeof TOOLS)[number];
 
 /** Tools the model may use: only those whose scope the user granted on a connected connector. */
 export function availableTools(state: SandboxState): SandboxTool[] {
+  const off = state.catalog?.chatOff ?? [];
   return TOOLS.filter((t) => {
     const c = state.connectors[t.connectorId];
-    return c?.connected && c.scopes.includes(t.scope);
+    if (!c?.connected || !c.scopes.includes(t.scope)) return false;
+    // Connected through catalog connectors: at least one of them must be switched on for the chats ("+" menu).
+    return !c.via?.length || c.via.some((v) => !off.includes(v));
   });
 }
 

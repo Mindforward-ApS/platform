@@ -44,8 +44,9 @@ interface Props {
   wide?: boolean;
   /** Shell look: centered greeting + composer, centered pill composer, or side panel. */
   variant?: "center" | "pill" | "panel";
-  /** Nordlys connectors for the composer's "+" menu. */
-  connectors?: { id: string; label: string; icon: "mail" | "calendar" | "file" | "building" | "table"; connected: boolean }[];
+  /** Connected catalog connectors for the composer's "+" menu, each switchable on/off for the chats. */
+  connectors?: { id: string; label: string; on: boolean }[];
+  onToggleConnector?: (id: string, on: boolean) => void;
   /** The learner's industry practice connectors (neutral names). */
   practice?: string[];
   onOpenConnectors?: () => void;
@@ -53,7 +54,7 @@ interface Props {
   initialText?: string;
 }
 
-export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined, initialText = "" }: Props) {
+export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, setConversationId, files, attachFromFiles, density, emit, wide = false, variant = "panel", connectors = [], practice = [], onOpenConnectors = () => undefined, onToggleConnector = () => undefined, initialText = "" }: Props) {
   const [text, setText] = useState(initialText);
   const [attachments, setAttachments] = useState<string[]>([]);
   const [picker, setPicker] = useState(false);
@@ -135,7 +136,7 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
 
   const fileName = (id: string) => files.find((f) => f.id === id)?.name ?? id;
 
-  const connectedCount = connectors.filter((c) => c.connected).length;
+  const connectedCount = connectors.filter((c) => c.on).length;
 
   // Messages (or the variant's empty state), the composer and the "+" menu. The layout mirrors the familiar desktop
   // chat apps per shell — centered greeting, centered pill, or side panel — always in Mindforward's own look.
@@ -147,13 +148,25 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
           {t.chat.menu.attach}
         </button>
       )}
-      <p className="px-2.5 pt-2.5 pb-1 text-overline text-ink-subtle uppercase">{t.chat.menu.connectors}</p>
+      <p className="px-2.5 pt-2.5 pb-1 text-overline text-ink-subtle uppercase">{t.connectors.catalog.inChatTitle}</p>
+      {connectors.length === 0 && <p className="px-2.5 py-1.5 text-caption text-ink-subtle">{t.connectors.catalog.noneConnected}</p>}
       {connectors.map((c) => (
-        <button key={c.id} type="button" className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-body-sm text-ink hover:bg-sunken" onClick={() => { setMenuOpen(false); onOpenConnectors(); }}>
-          <SbIcon name={c.icon} className="text-ink-subtle" />
-          <span className="flex-1">{c.label}</span>
-          <span className={cx("text-caption", c.connected ? "text-success" : "text-ink-subtle")}>{c.connected ? t.chat.menu.connected : t.chat.menu.connect}</span>
-        </button>
+        <div key={c.id} className="flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-body-sm text-ink" data-testid="menu-connector" data-id={c.id}>
+          <span className="grid size-6 shrink-0 place-items-center rounded-md bg-sunken text-caption font-semibold text-ink ring-1 ring-line ring-inset" aria-hidden="true">
+            {c.label.slice(0, 1).toUpperCase()}
+          </span>
+          <span className="flex-1 truncate">{c.label}</span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={c.on}
+            aria-label={format(c.on ? t.connectors.catalog.turnOff : t.connectors.catalog.turnOn, { name: c.label })}
+            onClick={() => onToggleConnector(c.id, !c.on)}
+            className={cx("relative h-5 w-9 shrink-0 rounded-full transition-colors", c.on ? "bg-accent" : "bg-line-strong")}
+          >
+            <span className={cx("absolute top-0.5 size-4 rounded-full bg-surface transition-all", c.on ? "left-[1.125rem]" : "left-0.5")} />
+          </button>
+        </div>
       ))}
       {practice.length > 0 && (
         <>
@@ -170,7 +183,7 @@ export function ChatPanel({ sessionId, stepId, turns, setTurns, conversationId, 
       <div className="my-1 h-px bg-line" />
       <button type="button" className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-body-sm text-ink-muted hover:bg-sunken" onClick={() => { setMenuOpen(false); onOpenConnectors(); }}>
         <SbIcon name="apps" className="text-ink-subtle" />
-        {t.chat.menu.all}
+        {t.connectors.catalog.manage}
       </button>
     </div>
   );

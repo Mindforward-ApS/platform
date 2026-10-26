@@ -221,10 +221,12 @@ export const payloadSchemas = {
   ASSISTANT_UPDATED: assistantPayload,
   ASSISTANT_KNOWLEDGE_ADDED: z.strictObject({ assistantId: assistantIdSchema, fileId: fileIdSchema }),
   ASSISTANT_USED: z.strictObject({ assistantId: assistantIdSchema, conversationId: conversationIdSchema }),
-  CONNECTOR_CONNECT_STARTED: z.strictObject({ connectorId: z.enum(CONNECTOR_IDS) }),
-  CONNECTOR_PERMISSION_GRANTED: z.strictObject({ connectorId: z.enum(CONNECTOR_IDS), scopes: z.array(scopeSchema).min(1).max(3) }),
-  CONNECTOR_PERMISSION_DENIED: z.strictObject({ connectorId: z.enum(CONNECTOR_IDS), deniedScopes: z.array(scopeSchema).max(3) }),
-  CONNECTOR_DISCONNECTED: z.strictObject({ connectorId: z.enum(CONNECTOR_IDS) }),
+  // `via` = the catalog connector (content/sandbox-connectors/catalog.json, e.g. "gmail") that reaches this Nordlys
+  // data; optional so older events and module assertions keep working. `approval` = scopes set to "Spørg først".
+  CONNECTOR_CONNECT_STARTED: z.strictObject({ connectorId: z.enum(CONNECTOR_IDS), via: token.optional() }),
+  CONNECTOR_PERMISSION_GRANTED: z.strictObject({ connectorId: z.enum(CONNECTOR_IDS), scopes: z.array(scopeSchema).min(1).max(3), via: token.optional(), approval: z.array(scopeSchema).max(3).optional() }),
+  CONNECTOR_PERMISSION_DENIED: z.strictObject({ connectorId: z.enum(CONNECTOR_IDS), deniedScopes: z.array(scopeSchema).max(3), via: token.optional() }),
+  CONNECTOR_DISCONNECTED: z.strictObject({ connectorId: z.enum(CONNECTOR_IDS), via: token.optional() }),
   TOOL_CALL_EXECUTED: z.strictObject({
     tool: z.enum(TOOL_NAMES),
     connectorId: z.enum(CONNECTOR_IDS),

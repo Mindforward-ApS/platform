@@ -70,6 +70,16 @@ export interface PracticeView {
   items: { kind: PracticeKind; useCase: string | null; demo: { id: string; title: string; prompt: string; data: Record<string, Record<string, string | number | boolean>[]> } | null }[];
 }
 
+/** A connector from the catalog (real name as text only; `data` = Nordlys practice data it reaches, [] = none). */
+export interface CatalogItem {
+  id: string;
+  name: string;
+  madeBy: string;
+  categories: string[];
+  data: ("mail" | "calendar" | "files" | "crm" | "sheet")[];
+  featured: number;
+}
+
 export interface SandboxProps {
   sessionId: string;
   /** Opgavevisning: the module step this sandbox is opened for. Every event is tagged with it (validated server-side). */
@@ -78,6 +88,8 @@ export interface SandboxProps {
   variant?: "page" | "task";
   practice?: PracticeView | null;
   tracks?: TrackLink[];
+  /** Connector catalog for the Forbindelser view and the "+" menu. */
+  catalog: CatalogItem[];
   /** Free play only: text put in the composer on open (e.g. a forløb lesson's "Prøv selv" prompt). Never sent automatically. */
   initialDraft?: string;
   skin: SkinConfig;
