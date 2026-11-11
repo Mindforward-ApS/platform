@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { SiteLogo } from "@/components/ui/brand";
+import { MindforwardLogo } from "@/components/platform/logo";
 import { Icon } from "@/components/ui/icons";
 import type { OnboardingKind } from "@/lib/config/onboarding";
 import { getMessages } from "@/lib/i18n";
@@ -30,7 +30,8 @@ export function OnboardingFrame({
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-linear-160 from-web-stage-raised to-web-stage-deep p-10 lg:flex">
         <div aria-hidden="true" className="absolute top-1/3 -right-24 size-[28rem] rounded-full bg-web-coral opacity-30 blur-3xl" />
         <Link href="/" aria-label={getMessages().logoLabel} className="relative self-start">
-          <SiteLogo tone="light" />
+          {/* Same logo as the platform sidebar: coral brain, white "Forward" (Marco 2026-11-11: the brain was white). */}
+          <MindforwardLogo size={30} />
         </Link>
         <div className="relative">
           <p className="max-w-[24rem] text-[2.25rem] leading-[1.15] font-semibold tracking-[-0.03em] text-web-white">
