@@ -236,9 +236,12 @@ export function InviteForm({
   action,
   linkAction,
   skipHref,
+  linkPlaceholder,
 }: {
   t: T["invite"];
   canInvite: boolean;
+  /** "app.mindforward.dk/deltag/…" until a link is made (the token is shown once, after "Lav et link"). */
+  linkPlaceholder: string;
   dpaNotice: ReactNode;
   action: Action;
   linkAction: Action;
@@ -272,7 +275,7 @@ export function InviteForm({
       </form>
       <form action={linkFormAction} className="flex items-center justify-between gap-3 rounded-[12px] bg-web-surface p-3 pl-4 text-[0.875rem] text-web-muted ring-1 ring-web-line">
         <span className="min-w-0 truncate" data-testid="invite-link">
-          {link ?? linkState?.error ?? ""}
+          {link ?? linkState?.error ?? linkPlaceholder}
         </span>
         {link ? (
           <button

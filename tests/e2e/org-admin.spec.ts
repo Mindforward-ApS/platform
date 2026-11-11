@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { expect, test, type Browser, type Page } from "@playwright/test";
 import pg from "pg";
 import { waitForLink } from "./outbox";
+import { enterCode, loginWithCode } from "./login";
 
 // M7: admin invites → employee accepts → shows on the dashboard (never prompt text); certificate verification
 // page reachable by code only when the holder enabled it.
@@ -18,12 +19,8 @@ async function sql<T extends pg.QueryResultRow>(text: string, values: unknown[] 
   }
 }
 
-async function signIn(page: Page, email: string, from = "/opret") {
-  await page.goto(from);
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Send login-link" }).click();
-  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
-  await page.goto(await waitForLink(email, "magic-link"));
+async function signIn(page: Page, email: string, from = "/log-ind") {
+  await loginWithCode(page, email, from);
 }
 
 async function newContextPage(browser: Browser) {
@@ -65,13 +62,14 @@ test("admin accepts the DPA, invites an employee, who accepts and shows on the d
   await learner.page.goto(await waitForLink(learnerEmail, "invitation"));
   await learner.page.getByRole("link", { name: "Log ind for at acceptere" }).click();
   await learner.page.getByLabel("Email").fill(learnerEmail);
-  await learner.page.getByRole("button", { name: "Send login-link" }).click();
-  await learner.page.goto(await waitForLink(learnerEmail, "magic-link"));
+  await learner.page.getByRole("button", { name: "Send kode" }).click();
+  await enterCode(learner.page, learnerEmail);
   await learner.page.getByRole("button", { name: "Accepter invitation" }).click();
   await expect(learner.page).toHaveURL(/\/konto\/data-info$/);
   await expect(learner.page.getByTestId("admin-cannot-see")).toContainText("prompts");
   await learner.page.getByRole("button", { name: "Forstået — fortsæt" }).click();
-  await expect(learner.page).toHaveURL(/\/hjem$/);
+  // Invited employees then get the short onboarding (start → tool → plan).
+  await expect(learner.page).toHaveURL(/\/kom-i-gang\?trin=velkommen$/);
 
   // The employee has written a prompt in a module (seeded directly): admins must never see it.
   const secret = `HEMMELIG-PROMPT-${randomUUID()}`;

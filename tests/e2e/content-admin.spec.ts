@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { expect, test } from "@playwright/test";
 import { Client } from "pg";
-import { waitForLink } from "./outbox";
+import { loginWithCode } from "./login";
 
 // /admin/indhold renders for a GREB_ADMIN whose session has passed 2FA, and is closed to everyone else.
 // 2FA enrollment itself is covered in tests/integration/two-factor.test.ts; here it is set directly in the e2e DB.
@@ -18,11 +18,7 @@ async function sql(query: string, params: unknown[]) {
 
 test("GREB_ADMIN with verified 2FA sees the content engine review screen; a normal user does not", async ({ page }) => {
   const email = `admin-${randomUUID().slice(0, 8)}@example.test`;
-  await page.goto("/opret");
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Send login-link" }).click();
-  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
-  await page.goto(await waitForLink(email, "magic-link"));
+  await loginWithCode(page, email);
   await expect(page).toHaveURL(/\/hjem/);
 
   // Not yet an admin → no access.

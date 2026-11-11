@@ -16,6 +16,7 @@ import {
   type OnboardingRole,
   type StepId,
 } from "@/lib/config/onboarding";
+import { serverEnv } from "@/lib/env";
 import { format, getMessages } from "@/lib/i18n";
 import { requireUser } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
@@ -148,6 +149,7 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
             action={inviteTeam}
             linkAction={makeInviteLink}
             skipHref={hrefFor("start", false)}
+            linkPlaceholder={`${new URL(serverEnv().APP_URL).host}/deltag/…`}
           />
         </OnboardingFrame>
       );

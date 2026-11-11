@@ -1,16 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
-import { waitForLink } from "./outbox";
+import { loginWithCode } from "./login";
 
 // "Gennemfør core-prompt-01": runs against GRADER_MOCK=1 (fixed passing rubric) and CLICK_TASK_MOCK=1.
 
 async function signIn(page: Page) {
   const email = `player-${randomUUID().slice(0, 8)}@example.test`;
-  await page.goto("/opret");
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Send login-link" }).click();
-  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
-  await page.goto(await waitForLink(email, "magic-link"));
+  await loginWithCode(page, email);
   await expect(page).toHaveURL(/\/hjem$/);
 }
 

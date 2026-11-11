@@ -2,7 +2,8 @@ import { randomUUID } from "node:crypto";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
-import { OUTBOX_DIR, waitForLink } from "./outbox";
+import { OUTBOX_DIR } from "./outbox";
+import { loginWithCode } from "./login";
 
 // M6 with STRIPE_MOCK=1: the fake Stripe stands in for hosted Checkout and sends signed webhooks to
 // /api/webhooks/stripe, so access comes only from the webhook-written Subscription.
@@ -10,7 +11,7 @@ import { OUTBOX_DIR, waitForLink } from "./outbox";
 const newEmail = (label: string) => `${label}-${randomUUID().slice(0, 8)}@example.test`;
 const DATE_TIME = /\d{1,2}\. [a-zæøå]+ \d{4} kl\. \d{2}[.:]\d{2}/;
 
-/** Signup = fill email, click "Send login-link", click the link in the mail: 2 clicks. */
+/** Sign-in = fill email, click "Send kode", type the code and "Bekræft" (the code form also submits itself): 2 clicks. */
 const SIGNUP_CLICKS = 2;
 
 // The public withdrawal form is rate-limited per IP (5/hour). Give each test its own client IP so repeated
@@ -20,11 +21,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function signUp(page: Page, email: string) {
-  await page.goto("/opret");
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Send login-link" }).click();
-  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
-  await page.goto(await waitForLink(email, "magic-link"));
+  await loginWithCode(page, email);
   await expect(page).toHaveURL(/\/hjem$/);
 }
 

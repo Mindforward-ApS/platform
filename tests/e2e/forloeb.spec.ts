@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { waitForLink } from "./outbox";
+import { loginWithCode } from "./login";
 
 // Forløb: overview, module 1 from start to finish with the check questions, progress after reload, locked content,
 // "Prøv selv" for all three kinds, phone width and keyboard use. Needs `pnpm db:seed:forloeb` on the e2e database.
@@ -20,11 +20,7 @@ const vis = (page: Page, testId: string) => page.getByTestId(testId).filter({ vi
 
 async function signIn(page: Page) {
   const email = `forloeb-${randomUUID().slice(0, 8)}@example.test`;
-  await page.goto("/opret");
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Send login-link" }).click();
-  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
-  await page.goto(await waitForLink(email, "magic-link"));
+  await loginWithCode(page, email);
   await expect(page).toHaveURL(/\/hjem$/);
 }
 

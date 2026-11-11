@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
-import { waitForLink } from "./outbox";
+import { loginWithCode } from "./login";
 
 // Launch gate P9: no serious or critical WCAG 2.1 AA violations on the public pages and the main learner screens.
 
-const PUBLIC = ["/", "/niveautest", "/niveautest/chatgpt", "/hjaelp", "/privatliv", "/cookies", "/handelsbetingelser", "/tilgaengelighed", "/underdatabehandlere", "/log-ind", "/opret", "/fortryd-aftale"];
+const PUBLIC = ["/", "/niveautest", "/niveautest/chatgpt", "/hjaelp", "/privatliv", "/cookies", "/handelsbetingelser", "/tilgaengelighed", "/underdatabehandlere", "/log-ind", "/opret", "/opret?type=privat", "/opret?type=virksomhed", "/fortryd-aftale"];
 const LEARNER = ["/hjem", "/moduler", "/plan", "/certifikater", "/konto", "/konto/data", "/sandkasse/chatgpt", "/sandkasse/claude", "/sandkasse/copilot", "/profil/virksomhed", "/profil/branche"];
 
 async function audit(page: Page, path: string) {
@@ -24,10 +24,7 @@ test.describe("accessibility (axe, WCAG 2.1 AA)", () => {
 
   test("learner screens", async ({ page }) => {
     const email = `a11y-${randomUUID().slice(0, 8)}@example.test`;
-    await page.goto("/opret");
-    await page.getByLabel("Email").fill(email);
-    await page.getByRole("button", { name: "Send login-link" }).click();
-    await page.goto(await waitForLink(email, "magic-link"));
+    await loginWithCode(page, email);
     await expect(page).toHaveURL(/\/hjem$/);
     for (const path of LEARNER) await audit(page, path);
   });

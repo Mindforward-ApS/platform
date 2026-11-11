@@ -1,19 +1,16 @@
 import { randomUUID } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
-import { waitForLink } from "./outbox";
+import { enterCode, loginWithCode } from "./login";
+import { waitForCode as waitForCodeOf, waitForLink } from "./outbox";
 
 const newEmail = (label: string) => `${label}-${randomUUID().slice(0, 8)}@example.test`;
 
-async function signInWithMagicLink(page: Page, email: string, from: "/opret" | "/log-ind" = "/opret") {
-  await page.goto(from);
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Send login-link" }).click();
-  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
-  await page.goto(await waitForLink(email, "magic-link"));
+async function signInWithCode(page: Page, email: string) {
+  await loginWithCode(page, email);
 }
 
-test("B2C signup with magic link creates a PERSONAL org with the OWNER role", async ({ page }) => {
-  await signInWithMagicLink(page, newEmail("b2c"));
+test("login with an email code for a new address creates a PERSONAL org with the OWNER role", async ({ page }) => {
+  await signInWithCode(page, newEmail("b2c"));
   await expect(page).toHaveURL(/\/hjem$/);
   await page.goto("/konto");
   await expect(page.getByTestId("active-org")).toContainText("Personlig");
@@ -21,7 +18,7 @@ test("B2C signup with magic link creates a PERSONAL org with the OWNER role", as
 });
 
 test("OWNER creates a business, invites an employee, who accepts and lands as LEARNER", async ({ page, browser }) => {
-  await signInWithMagicLink(page, newEmail("owner"));
+  await signInWithCode(page, newEmail("owner"));
   await page.goto("/virksomhed/opret");
   await page.getByLabel("Virksomhedens navn").fill("E2E Firma ApS");
   await page.getByRole("button", { name: "Opret" }).click();
@@ -49,15 +46,16 @@ test("OWNER creates a business, invites an employee, who accepts and lands as LE
   await expect(learner.getByText("E2E Firma ApS")).toBeVisible();
   await learner.getByRole("link", { name: "Log ind for at acceptere" }).click();
   await learner.getByLabel("Email").fill(learnerEmail);
-  await learner.getByRole("button", { name: "Send login-link" }).click();
-  await learner.goto(await waitForLink(learnerEmail, "magic-link"));
+  await learner.getByRole("button", { name: "Send kode" }).click();
+  await enterCode(learner, learnerEmail);
 
   await expect(learner).toHaveURL(/\/invitation\//);
   await learner.getByRole("button", { name: "Accepter invitation" }).click();
   // M7: first login in a business shows what the admin can and cannot see (docs/10 § 1.6).
   await expect(learner).toHaveURL(/\/konto\/data-info$/);
   await learner.getByRole("button", { name: "Forstået — fortsæt" }).click();
-  await expect(learner).toHaveURL(/\/hjem$/);
+  // Then the short employee onboarding: no company or membership steps.
+  await expect(learner).toHaveURL(/\/kom-i-gang\?trin=velkommen$/);
   await learner.goto("/konto");
   await expect(learner.getByTestId("active-org")).toContainText("E2E Firma ApS");
   await expect(learner.getByTestId("active-role")).toHaveText("Medarbejder");
@@ -68,7 +66,7 @@ test("OWNER creates a business, invites an employee, who accepts and lands as LE
 });
 
 test("a PERSONAL (B2C) account cannot open the members page", async ({ page }) => {
-  await signInWithMagicLink(page, newEmail("solo"));
+  await signInWithCode(page, newEmail("solo"));
   await page.goto("/virksomhed/medarbejdere");
   await expect(page).toHaveURL(/\/konto\?fejl=adgang/);
 });
@@ -76,4 +74,17 @@ test("a PERSONAL (B2C) account cannot open the members page", async ({ page }) =
 test("an expired or unknown invitation shows a clear message", async ({ page }) => {
   await page.goto("/invitation/does-not-exist");
   await expect(page.getByRole("alert").filter({ hasText: "udløbet" })).toBeVisible();
+});
+
+test("a wrong code is refused with a message and nothing is signed in", async ({ page }) => {
+  const email = newEmail("wrong");
+  await page.goto("/log-ind");
+  await page.getByLabel("Email").fill(email);
+  await page.getByRole("button", { name: "Send kode" }).click();
+  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
+  const code = await waitForCodeOf(email);
+  await page.getByLabel("Ciffer 1").fill(code === "000000" ? "111111" : "000000");
+  await expect(page.getByText("Koden passer ikke")).toBeVisible();
+  await page.goto("/hjem");
+  await expect(page).toHaveURL(/\/log-ind/);
 });

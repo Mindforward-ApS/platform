@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { expect, test } from "@playwright/test";
-import { waitForLink } from "./outbox";
+import { loginWithCode } from "./login";
 
 // M3: open the free-play sandbox for the ChatGPT track and chat with the (mocked, AI_MOCK=1) practice model.
 test("learner opens the sandbox from /konto, sends a chat message and sees an Øvemodel answer", async ({ page }) => {
@@ -14,11 +14,7 @@ test("learner opens the sandbox from /konto, sends a chat message and sees an Ø
     if (url.protocol.startsWith("http") && url.origin !== ownOrigin && !monitoring) external.push(url.origin);
   });
 
-  await page.goto("/opret");
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Send login-link" }).click();
-  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
-  await page.goto(await waitForLink(email, "magic-link"));
+  await loginWithCode(page, email);
   await expect(page).toHaveURL(/\/hjem$/);
   await page.goto("/konto");
 

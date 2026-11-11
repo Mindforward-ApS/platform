@@ -1,6 +1,7 @@
 import { randomInt, randomUUID } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import { waitForLink } from "./outbox";
+import { enterCode } from "./login";
 
 // M5: public placement test (lead magnet) → result without consent → voluntary double opt-in → save + signup → plan.
 
@@ -55,17 +56,20 @@ test("public test → result is shown without consent; checkbox is NOT pre-ticke
   await expect(page.getByText("din tilmelding er bekræftet")).toBeVisible();
 });
 
-test("'Gem resultat og fortsæt gratis' → magic-link signup keeps the result and shows the plan", async ({ page }) => {
+test("'Gem resultat og fortsæt gratis' → sign-up with a code keeps the result and shows the plan", async ({ page }) => {
   await takeTest(page, "Microsoft 365 Copilot");
   const save = page.getByRole("link", { name: "Gem resultat og fortsæt gratis" });
   await expect(save).toHaveAttribute("href", "/opret?next=/plan");
   await page.goto("/opret?next=/plan");
   const email = newEmail("saver");
-  await expect(page.getByRole("heading", { name: "Opret bruger på Mindforward" })).toBeVisible();
-  await page.getByRole("textbox", { name: "Email" }).fill(email);
-  await page.getByRole("button", { name: "Send login-link" }).click();
-  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
-  await page.goto(await waitForLink(email, "magic-link"));
+  await expect(page.getByRole("heading", { name: "Opret din konto" })).toBeVisible();
+  await page.getByLabel("Fornavn").fill("Gem");
+  await page.getByLabel("Efternavn").fill("Resultat");
+  await page.getByLabel("Telefonnummer").fill("12 34 56 78");
+  await page.getByLabel("E-mailadresse").fill(email);
+  await page.getByRole("button", { name: "Tilmeld" }).click();
+  await expect(page.getByRole("heading", { name: "Bekræft din e-mail" })).toBeVisible();
+  await enterCode(page, email);
 
   await expect(page).toHaveURL(/\/plan$/);
   await expect(page.getByTestId("plan-track")).toContainText("Microsoft 365 Copilot");

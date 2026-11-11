@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import pg from "pg";
 import { CERTIFICATE_LEVELS } from "../../src/lib/config/certificates";
-import { waitForLink } from "./outbox";
+import { loginWithCode } from "./login";
 
 // A learner who finished level 1 privately joins a company: they choose to bring their results along, the company
 // sees the same certificate (not a new one), and they can share it on LinkedIn, by link and in their CV.
@@ -20,11 +20,7 @@ async function sql<T extends pg.QueryResultRow>(text: string, values: unknown[] 
 }
 
 async function signIn(page: Page, email: string) {
-  await page.goto("/opret");
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Send login-link" }).click();
-  await expect(page.getByRole("heading", { name: "Tjek din mail" })).toBeVisible();
-  await page.goto(await waitForLink(email, "magic-link"));
+  await loginWithCode(page, email);
   await expect(page).toHaveURL(/\/hjem$/);
 }
 
