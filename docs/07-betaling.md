@@ -189,7 +189,7 @@ Supportagenten refunderer aldrig — den henviser til "Fortryd aftale"-knappen e
 - `/konto/abonnement` → knap **"Opsig abonnement"** → én bekræftelsesside ("Dit abonnement stopper [dato]. Du har adgang indtil da.") → **"Bekræft opsigelse"**. Ikke flere trin end tilmelding. Ingen tilbud/fastholdelse i flowet.
 - `subscriptions.update(id, { cancel_at_period_end: true })` → SERVICE-mail `cancellation-confirmed` med slutdato.
 - "Genoptag" muligt indtil slutdato.
-- B2B: kun OWNER; samme flow; gemmer `READ_ONLY`-periode.
+- B2B: OWNER og ADMIN (Marco 2026-11-11); samme flow; gemmer `READ_ONLY`-periode.
 - **B2C (00-beslutninger § 10, 13. okt 2026):** ingen binding, intet varsel — opsig fra dag til dag; adgang resten af den betalte løbende måned, ingen refusion for påbegyndt måned. Opfylder § 28 (maks. 1 md. varsel efter 5 mdr.). B2C-årsplan: åben (OPEN-QUESTIONS).
 
 ## 9. Dunning (mislykkede betalinger)
@@ -251,7 +251,7 @@ Beregnes på beløb inkl. moms (det er det, der trækkes). Konsekvens: årsplan 
 
 ## 14. Sikkerhed
 - Secret key kun server. Restricted key til scripts. Webhook-secret pr. miljø.
-- Server actions tjekker rolle: kun OWNER (B2B) / ejer af PERSONAL-org må købe, ændre seats, opsige, fortryde.
+- Server actions tjekker rolle: OWNER eller ADMIN (B2B, Marco 2026-11-11) / ejer af PERSONAL-org må købe, ændre seats, opsige, fortryde.
 - `organizationId` tages aldrig fra klienten ved webhooks — kun fra Stripe metadata + Customer-link i DB.
 - Rate limit på checkout-oprettelse (5/time/org) og offentlig fortrydelsesformular (10/time/IP + Turnstile-lignende bot-værn uden at blokere legitime brugere `[verificér løsning]`).
 

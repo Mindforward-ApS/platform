@@ -36,7 +36,8 @@ async function Content({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
   const v = await subscriptionView(db(), orgId);
   if (v.org.type !== "BUSINESS") redirect("/konto/abonnement");
-  const isOwner = ctx.membership.role === "OWNER";
+  // OWNER and ADMIN both manage billing (Marco 2026-11-11).
+  const isOwner = ctx.membership.role === "OWNER" || ctx.membership.role === "ADMIN";
   const used = await seatUsage(db(), orgId);
   const [monthly, annual] = await Promise.all([loadDisplayPlan(db(), "B2B_MONTHLY"), loadDisplayPlan(db(), "B2B_ANNUAL")]);
   const errorKey = sp.fejl && sp.fejl in ERRORS ? ERRORS[sp.fejl as keyof typeof ERRORS] : undefined;

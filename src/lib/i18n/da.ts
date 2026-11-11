@@ -146,6 +146,11 @@ export const da = {
     activeOrg: "Aktiv organisation",
     role: "Rolle",
     orgType: { PERSONAL: "Personlig", BUSINESS: "Virksomhed" },
+    // What a company admin can see about an employee (Marco 2026-11-11, docs/00 § 10i).
+    adminSees: {
+      title: "Det kan din admin se",
+      body: "Dit navn, hvor langt du er, din score og hvornår du sidst var aktiv. Aldrig det, du skriver i øvemiljøet. Dine kolleger kan ikke se dine resultater.",
+    },
     roles: { OWNER: "Ejer", ADMIN: "Administrator", LEARNER: "Medarbejder" },
     switchOrg: "Skift til",
     createBusiness: "Opret virksomhed",

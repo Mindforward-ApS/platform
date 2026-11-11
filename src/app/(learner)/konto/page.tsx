@@ -44,6 +44,10 @@ async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string
       {/* Wide screens: two columns of settings cards (dashboard layout, Marco 14 Oct 2026). */}
       <div className="grid items-start gap-6 xl:grid-cols-2">
         <div className="flex min-w-0 flex-col gap-6">
+          {/* Employees in a company see exactly what their admin can see (docs/00 § 10i). */}
+          {active?.role === "LEARNER" && active.organization.type === "BUSINESS" && (
+            <Card title={t.adminSees.title} description={t.adminSees.body} />
+          )}
           <Card
             title={t.profile.title}
             description={t.profile.description}

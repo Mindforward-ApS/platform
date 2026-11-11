@@ -3,6 +3,7 @@ import { ButtonLink, Card, DescriptionList, Notice, Page } from "@/components/ui
 import { SubmitButton } from "@/components/ui/submit-button";
 import { format, getMessages } from "@/lib/i18n";
 import { requireActiveMembership } from "@/server/auth/authz";
+import { ADMIN_ROLES } from "@/server/auth/authz-core";
 import { guardPage } from "@/server/auth/page-guard";
 import { subscriptionView } from "@/server/billing/view";
 import { db } from "@/server/db";
@@ -12,7 +13,7 @@ import { confirmCancellation } from "../actions";
 async function Content() {
   const m = getMessages();
   const t = m.billing.cancel;
-  const ctx = await guardPage(() => requireActiveMembership(["OWNER"]), "/konto/abonnement/opsig");
+  const ctx = await guardPage(() => requireActiveMembership(ADMIN_ROLES), "/konto/abonnement/opsig");
   const v = await subscriptionView(db(), ctx.membership.organizationId);
   if (!v.canCancel || !v.endDate) {
     return (
