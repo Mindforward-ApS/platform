@@ -11,9 +11,7 @@ async function Frame({ children }: { children: React.ReactNode }) {
   const ctx = await getAuthContext();
   if (ctx)
     return (
-      <AppFrame>
-        <div className="flex flex-1 flex-col">{children}</div>
-      </AppFrame>
+      <AppFrame>{children}</AppFrame>
     );
   return (
     <div className="flex flex-1 flex-col bg-site-bg font-site text-site-ink">

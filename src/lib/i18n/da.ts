@@ -6,6 +6,7 @@ import { daMarketing } from "./da-marketing";
 import { daMonthly } from "./da-monthly";
 import { daPlacement } from "./da-placement";
 import { daProfile } from "./da-profile";
+import { daPlatform } from "./da-platform";
 import { daPlayer } from "./da-player";
 import { daSandbox } from "./da-sandbox";
 import { daSupport } from "./da-support";
@@ -21,6 +22,7 @@ export const da = {
   sandbox: daSandbox,
   player: daPlayer,
   courses: daCourses,
+  platform: daPlatform,
   placement: daPlacement,
   profile: daProfile,
   billing: daBilling,

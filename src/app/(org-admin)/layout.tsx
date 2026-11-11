@@ -1,10 +1,6 @@
-import { AppFrame, companyGroup, learnerGroups } from "@/components/shell/app-sidebar";
+import { AppFrame } from "@/components/shell/app-sidebar";
 
-// Company admin: the learner sidebar plus a "Virksomhed" group with the admin pages.
+// Company admin: the same platform shell; the sidebar shows "Mit hold" and "Virksomhed" to company admins.
 export default function OrgAdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <AppFrame groups={[...learnerGroups(), companyGroup()]}>
-      <div className="flex flex-1 flex-col">{children}</div>
-    </AppFrame>
-  );
+  return <AppFrame>{children}</AppFrame>;
 }

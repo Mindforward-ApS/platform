@@ -515,3 +515,224 @@
       radial-gradient(400px 300px at 100% 0%, var(--mf-hero-glow) 0%, transparent 60%),
       linear-gradient(120deg, var(--mf-hero-from) 0%, var(--mf-hero-mid) 55%, var(--mf-hero-to) 100%);
 }
+
+/* ───────────── Platform v4: the approved :3500 screens (mindforward-platform, Marco Nov 2026) ─────────────
+   Reference: EduSphere/CampusHub layout in Mindforward colours. Scoped to `.app` (the signed-in frame), light only:
+   the approved design has no dark version, so inside the app the greb palette is pinned to its light values too. */
+.app {
+  --bg: #f5f2f0;
+  --text: #3d322e;
+  --text-muted: #7d6e68;
+  --heading: #1a0f0c;
+  --border: #e9e3df;
+  --border-strong: #d8cfca;
+  --hover-fill: #f3eeeb;
+  --accent: oklch(0.62 0.18 28);
+  --accent-soft: oklch(0.68 0.16 28 / 0.1);
+  --coral: oklch(0.66 0.18 28);
+  --ink: #201613; /* the website's brown (hero stage + footer) */
+  --ink-2: #2e1f1c;
+  --pf-cream: #f7f2ee;
+  background: #fff;
+  color: var(--text);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+}
+@media (prefers-color-scheme: dark) {
+  .app {
+    --mf-bg: #f5f2f0;
+    --mf-surface: #ffffff;
+    --mf-surface-sunken: #f3eeeb;
+    --mf-line: #e9e3df;
+    --mf-line-strong: #8a7d77;
+    --mf-ink: #1a0f0c;
+    --mf-ink-muted: #4d423e;
+    --mf-ink-subtle: #6b5f5a;
+    --mf-accent: #b8413a;
+    --mf-accent-hover: #9e3631;
+    --mf-accent-soft: #fbe9e6;
+    --mf-accent-ink: #9e3631;
+    --mf-on-accent: #ffffff;
+    --mf-focus: #b8413a;
+    --mf-mark-dot: #ffa282;
+    --mf-hint: #875400;
+    --mf-hint-soft: #fdf1d8;
+    --mf-success: #13724f;
+    --mf-success-soft: #e4f4ec;
+    --mf-danger: #b3261e;
+    --mf-danger-soft: #fdecea;
+    --mf-tint: #fbe9e6;
+    --mf-tint-ink: #9e3631;
+    --mf-tag-learner: #e8f7ef;
+    --mf-tag-learner-ink: #16794a;
+    --mf-chart-bar: #c9ecd3;
+    --mf-chart-bar-hot: #3fbf6a;
+    --mf-seg-on: #c4473f;
+    --mf-seg-off: #efe9e6;
+    --mf-cover-blue: #fbe9e6;
+    --mf-cover-blue-ink: #c4473f;
+    --mf-cover-amber: #fdf0d2;
+    --mf-cover-amber-ink: #e39a1c;
+    --mf-cover-mint: #dcf3e8;
+    --mf-cover-mint-ink: #13724f;
+    --mf-cover-coral: #fde6df;
+    --mf-cover-coral-ink: #d4552e;
+    --mf-cover-sky: #f3eeeb;
+    --mf-cover-sky-ink: #4a332c;
+    --mf-shadow-xs: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    --mf-shadow-sm: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    --mf-shadow-md: 0 1px 2px rgba(11, 27, 43, 0.05), 0 4px 8px rgba(11, 27, 43, 0.05), 0 12px 24px -8px rgba(11, 27, 43, 0.1);
+    --mf-shadow-lg: 0 1px 2px rgba(11, 27, 43, 0.05), 0 8px 16px -4px rgba(11, 27, 43, 0.08), 0 32px 64px -16px rgba(11, 27, 43, 0.22);
+  }
+}
+/* Same root size as the approved screens (rem-based parts scale with the window like the website). */
+html:has(.app) {
+  font-size: clamp(16px, 0.625vw + 7px, 20px);
+}
+.app :where(h1, h2, h3, h4) {
+  color: var(--heading);
+}
+/* Pages that want the website's cream page behind white cards, and pages that fill the window to the bottom. */
+.app:has([data-pf-cream]) {
+  background: var(--pf-cream);
+}
+[data-pf-page]:has([data-pf-fill]) {
+  padding-bottom: 0;
+}
+.app-side {
+  background: radial-gradient(120% 45% at 30% 0%, oklch(0.42 0.08 32 / 0.45), transparent 70%), linear-gradient(180deg, #2e1f1c 0%, #201613 45%, #1a0f0c 100%);
+  color: #e7dcd7;
+}
+.app-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+.app-card-dark {
+  background: linear-gradient(180deg, #2a1c18, #201613);
+  border: 1px solid #2e1f1c;
+  color: #e7dcd7;
+}
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 2.125rem;
+  padding: 0 0.85rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 150ms;
+}
+.app-btn-light {
+  background: #fff;
+  color: var(--heading);
+  border: 1px solid var(--border-strong);
+}
+.app-btn-light:hover {
+  background: var(--hover-fill);
+}
+.app-nav-active {
+  background: var(--coral);
+  color: #fff;
+  box-shadow: 0 6px 14px -6px oklch(0.6 0.18 28 / 0.6);
+}
+/* Mindforward brain: a soft heartbeat (two quick beats, then rest). */
+@keyframes brain-beat {
+  0%, 40%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+  10% { transform: scale(1.08); filter: drop-shadow(0 0 6px oklch(0.7 0.17 40 / 0.6)); }
+  20% { transform: scale(1); }
+  28% { transform: scale(1.05); filter: drop-shadow(0 0 4px oklch(0.7 0.17 40 / 0.45)); }
+}
+@keyframes brain-fill { 0%, 40%, 100% { opacity: 0.45; } 10% { opacity: 0.85; } 28% { opacity: 0.7; } }
+.brain-pulse { transform-origin: center; animation: brain-beat 2.4s cubic-bezier(0.2, 0, 0, 1) infinite; }
+.brain-pulse path[opacity] { opacity: 0.45; animation: brain-fill 2.4s cubic-bezier(0.2, 0, 0, 1) infinite; }
+@media (prefers-reduced-motion: reduce) { .brain-pulse, .brain-pulse path[opacity] { animation: none; } }
+@keyframes trin-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+@theme inline {
+  --color-heading: var(--heading);
+  --color-pf-text: var(--text);
+  --color-pf-muted: var(--text-muted);
+  --color-pf-white: #ffffff;
+  --color-pf-black: #000000;
+}
+
+/* Raw colours of the ported platform screens, 1:1 from the approved :3500 code (named by value so the ported markup
+   stays recognisable next to the original). Components use them as var(--pf-…). */
+:root {
+  --pf-0b0806: #0b0806;
+  --pf-0d2a19: #0d2a19;
+  --pf-111: #111;
+  --pf-1a0d06: #1a0d06;
+  --pf-1a0f0c: #1a0f0c;
+  --pf-1f1916: #1f1916;
+  --pf-201613: #201613;
+  --pf-2a211e: #2a211e;
+  --pf-2a221f: #2a221f;
+  --pf-2f8a5c: #2f8a5c;
+  --pf-33231f: #33231f;
+  --pf-362c28: #362c28;
+  --pf-3a2722: #3a2722;
+  --pf-3d1606: #3d1606;
+  --pf-3fae72: #3fae72;
+  --pf-444: #444;
+  --pf-4a332c: #4a332c;
+  --pf-5cbf8f: #5cbf8f;
+  --pf-67c48f: #67c48f;
+  --pf-7d6e68: #7d6e68;
+  --pf-7fd6a6: #7fd6a6;
+  --pf-8a4e3b: #8a4e3b;
+  --pf-8a5a00: #8a5a00;
+  --pf-a8432a: #a8432a;
+  --pf-b8a8a1: #b8a8a1;
+  --pf-c4502f: #c4502f;
+  --pf-cdcdcd: #cdcdcd;
+  --pf-d9ccc5: #d9ccc5;
+  --pf-ddd: #ddd;
+  --pf-e2643f: #e2643f;
+  --pf-e6dcd6: #e6dcd6;
+  --pf-e8f6ee: #e8f6ee;
+  --pf-ebe4e0: #ebe4e0;
+  --pf-ece4df: #ece4df;
+  --pf-eef8f2: #eef8f2;
+  --pf-efe6e1: #efe6e1;
+  --pf-efe8e4: #efe8e4;
+  --pf-f0803a: #f0803a;
+  --pf-f0b03c: #f0b03c;
+  --pf-f1e6df: #f1e6df;
+  --pf-f1e9e4: #f1e9e4;
+  --pf-f1ebe7: #f1ebe7;
+  --pf-f1f1f1: #f1f1f1;
+  --pf-f1faf5: #f1faf5;
+  --pf-f3ece8: #f3ece8;
+  --pf-f3eeeb: #f3eeeb;
+  --pf-f5efeb: #f5efeb;
+  --pf-f5f0ed: #f5f0ed;
+  --pf-f6b49b: #f6b49b;
+  --pf-f7f2ee: #f7f2ee;
+  --pf-fbf6f3: #fbf6f3;
+  --pf-fbf8f6: #fbf8f6;
+  --pf-fcfaf9: #fcfaf9;
+  --pf-fde8dc: #fde8dc;
+  --pf-fdf0ea: #fdf0ea;
+  --pf-fdf2ed: #fdf2ed;
+  --pf-fdf3dc: #fdf3dc;
+  --pf-fdf8f5: #fdf8f5;
+  --pf-ffb27a: #ffb27a;
+  --pf-ffc46e: #ffc46e;
+  --pf-fff: #fff;
+  --pf-oklch-0-7-0-17-40: oklch(0.7 0.17 40);
+  --pf-rgba-130-38-6-45: rgba(130,38,6,.45);
+  --pf-rgba-170-62-30-9: rgba(170,62,30,.9);
+  --pf-rgba-226-100-63-55: rgba(226,100,63,.55);
+  --pf-rgba-226-100-63-85: rgba(226,100,63,.85);
+  --pf-rgba-255-140-60-45: rgba(255,140,60,.45);
+  --pf-rgba-255-255-255-06: rgba(255,255,255,.06);
+  --pf-rgba-255-255-255-35: rgba(255,255,255,.35);
+  --pf-rgba-60-18-4-0: rgba(60,18,4,0);
+  --pf-rgba-92-191-143-15: rgba(92,191,143,.15);
+}
