@@ -19,10 +19,10 @@ describe("evaluateWindow", () => {
 
 describe("rateLimitKeys", () => {
   it("normalizes email so case and whitespace cannot bypass the limit", () => {
-    expect(rateLimitKeys.magicLinkEmail("  Anna@Example.DK ")).toBe(rateLimitKeys.magicLinkEmail("anna@example.dk"));
+    expect(rateLimitKeys.loginCodeEmail("  Anna@Example.DK ")).toBe(rateLimitKeys.loginCodeEmail("anna@example.dk"));
   });
 
   it("does not store the raw email in the key", () => {
-    expect(rateLimitKeys.magicLinkEmail("anna@example.dk")).not.toContain("anna");
+    expect(rateLimitKeys.loginCodeEmail("anna@example.dk")).not.toContain("anna");
   });
 });

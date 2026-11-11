@@ -1,10 +1,10 @@
 import "server-only";
 import { BRAND } from "@/lib/i18n/da";
-import { createHash } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { APIError, createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { magicLink, oAuthProxy, organization } from "better-auth/plugins";
+import { emailOTP, oAuthProxy, organization } from "better-auth/plugins";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
 import type { PrismaClient } from "@/generated/prisma/client";
 import { serverEnv } from "@/lib/env";
@@ -17,6 +17,7 @@ import { db } from "@/server/db";
 import { sendServiceEmail } from "@/server/email/send";
 import { consumeRateLimit, RATE_LIMITS, rateLimitKeys } from "@/server/security/rate-limit";
 import { allowedHosts, trustedOrigins } from "./hosts";
+import { LOGIN_CODE_ATTEMPTS, LOGIN_CODE_LENGTH } from "@/lib/login-code";
 import { ac, roles } from "./roles";
 
 // Better Auth configuration (docs/02-arkitektur.md § 3). Organizations are created by our own services
@@ -83,9 +84,11 @@ export function buildAuthOptions(deps: { db: PrismaClient; env: ServerEnv }) {
       window: 60,
       max: 100,
       customRules: {
-        "/sign-in/magic-link": RATE_LIMITS.magicLinkPerIp,
+        // Direct HTTP calls to the plugin endpoints (our server actions apply the same limits themselves, since
+        // auth.api calls from the server skip Better Auth's limiter).
+        "/email-otp/send-verification-otp": RATE_LIMITS.loginCodePerIp,
+        "/sign-in/email-otp": RATE_LIMITS.loginCodeVerifyPerIp,
         "/sign-in/social": { window: 60, max: 20 },
-        "/magic-link/verify": { window: 60, max: 20 },
       },
       customStorage: { consume: (key: string, rule: { window: number; max: number }) => consumeRateLimit(prisma, `ba:${key}`, rule) },
     },
@@ -124,16 +127,24 @@ export function buildAuthOptions(deps: { db: PrismaClient; env: ServerEnv }) {
       }),
     },
     plugins: [
-      magicLink({
+      // Sign-in and sign-up with a 6-digit code by email (Marco 11 Nov 2026; replaces the magic link). A new
+      // address creates the user on the first correct code. Codes are stored hashed and die after 5 wrong tries.
+      emailOTP({
+        otpLength: LOGIN_CODE_LENGTH,
         expiresIn: env.MAGIC_LINK_EXPIRES_MIN * 60,
-        sendMagicLink: async ({ email, url, token }) => {
-          const limited = await consumeRateLimit(prisma, rateLimitKeys.magicLinkEmail(email), RATE_LIMITS.magicLinkPerEmail);
+        allowedAttempts: LOGIN_CODE_ATTEMPTS,
+        storeOTP: "hashed",
+        sendVerificationOTP: async ({ email, otp, type }) => {
+          // Only the sign-in flow is used; password reset / email change / verification are not offered.
+          if (type !== "sign-in") throw new APIError("BAD_REQUEST", { message: "UNSUPPORTED_OTP_TYPE" });
+          const limited = await consumeRateLimit(prisma, rateLimitKeys.loginCodeEmail(email), RATE_LIMITS.loginCodePerEmail);
           if (!limited.allowed) throw new APIError("TOO_MANY_REQUESTS", { message: "RATE_LIMITED" });
           await sendServiceEmail(prisma, {
-            template: "magic-link",
+            template: "login-code",
             to: email,
-            vars: { url, expiresMin: env.MAGIC_LINK_EXPIRES_MIN },
-            idempotencyKey: `magic-link:${createHash("sha256").update(token).digest("hex").slice(0, 32)}`,
+            vars: { code: otp, expiresMin: env.MAGIC_LINK_EXPIRES_MIN },
+            // Every request rotates the code, so each mail is its own message.
+            idempotencyKey: `login-code:${randomUUID()}`,
           });
         },
       }),

@@ -28,13 +28,19 @@ function hashIdentifier(value: string): string {
 }
 
 export const rateLimitKeys = {
-  magicLinkEmail: (email: string) => `magic-link:email:${hashIdentifier(email)}`,
+  loginCodeEmail: (email: string) => `login-code:email:${hashIdentifier(email)}`,
+  loginCodeVerifyEmail: (email: string) => `login-code:verify:${hashIdentifier(email)}`,
+  loginCodeIp: (ip: string) => `login-code:ip:${hashIdentifier(ip)}`,
+  loginCodeVerifyIp: (ip: string) => `login-code:verify-ip:${hashIdentifier(ip)}`,
 };
 
 export const RATE_LIMITS = {
-  /** docs/02 § 7: 5 / 15 min per email. The per-IP rule (20 / hour) is a Better Auth custom rule. */
-  magicLinkPerEmail: { window: 15 * 60, max: 5 },
-  magicLinkPerIp: { window: 60 * 60, max: 20 },
+  /** docs/02 § 7 (was the magic link): 5 codes / 15 min per email, 20 / hour per IP. */
+  loginCodePerEmail: { window: 15 * 60, max: 5 },
+  loginCodePerIp: { window: 60 * 60, max: 20 },
+  /** Typing the code: 10 tries / 15 min per email and 30 / 15 min per IP (each code also dies after 5 wrong tries). */
+  loginCodeVerifyPerEmail: { window: 15 * 60, max: 10 },
+  loginCodeVerifyPerIp: { window: 15 * 60, max: 30 },
 } satisfies Record<string, RateLimitRule>;
 
 export async function consumeRateLimit(
@@ -54,4 +60,11 @@ export async function consumeRateLimit(
   const row = rows[0];
   if (!row) throw new Error("rate limit upsert returned no row");
   return evaluateWindow({ count: Number(row.count), windowStartMs: Number(row.lastRequest) }, nowMs, rule);
+}
+
+/** Would one more request be allowed? Reads the window without counting (for showing a friendly message first). */
+export async function peekRateLimit(db: PrismaClient, key: string, rule: RateLimitRule, nowMs: number = Date.now()): Promise<RateLimitResult> {
+  const row = await db.rateLimit.findUnique({ where: { key }, select: { count: true, lastRequest: true } });
+  if (!row || Number(row.lastRequest) <= nowMs - rule.window * 1000) return { allowed: true, retryAfter: null };
+  return evaluateWindow({ count: row.count + 1, windowStartMs: Number(row.lastRequest) }, nowMs, rule);
 }

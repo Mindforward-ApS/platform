@@ -47,7 +47,7 @@ function defaultTransport(): EmailTransport {
 
 const DONE: EmailMessage["status"][] = ["SENT", "DELIVERED", "SUPPRESSED"];
 /** Login/security mails go out even after a hard bounce (the user may have fixed their inbox). */
-const SERVICE_BYPASS_SUPPRESSION = new Set<string>(["magic-link"]);
+const SERVICE_BYPASS_SUPPRESSION = new Set<string>(["login-code"]);
 
 export async function sendServiceEmail<K extends TemplateKey>(db: PrismaClient, args: SendArgs<K>, opts: SendOptions = {}): Promise<EmailMessage> {
   const def = TEMPLATES[args.template];

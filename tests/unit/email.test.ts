@@ -25,7 +25,7 @@ const marketingSamples = {
 } as const;
 
 const sampleVars = {
-  "magic-link": { url: "https://greb.example/api/auth/magic-link/verify?token=abc", expiresMin: 15 },
+  "login-code": { code: "123456", expiresMin: 15 },
   invitation: { url: "https://greb.example/invitation/inv_1", organizationName: "Nordisk Test A/S", inviterName: "Mette" },
   "order-confirmation": {
     url: "https://greb.example/konto/abonnement",
@@ -70,15 +70,24 @@ describe("email templates", () => {
   for (const key of Object.keys(TEMPLATES) as (keyof typeof TEMPLATES)[]) {
     it(`${key}: renders html + text with the link and no offer language`, async () => {
       const t = TEMPLATES[key];
-      const out = await renderTemplate(key, sampleVars[key]);
+      const vars = sampleVars[key];
+      const out = await renderTemplate(key, vars);
+      // The login-code mail carries a code instead of a link.
+      const needle = "url" in vars ? vars.url : vars.code;
       expect(out.subject.length).toBeGreaterThan(3);
-      expect(out.html).toContain(sampleVars[key].url);
-      expect(out.text).toContain(sampleVars[key].url);
+      expect(out.html).toContain(needle);
+      expect(out.text).toContain(needle);
       if (t.category === "SERVICE") {
         for (const re of FORBIDDEN_IN_SERVICE) expect(`${out.subject}\n${out.text}`).not.toMatch(re);
       }
     });
   }
+
+  it("login-code: the code is in the mail but never in the stored subject", async () => {
+    const out = await renderTemplate("login-code", { code: "482913", expiresMin: 15 });
+    expect(out.text).toContain("482913");
+    expect(out.subject).not.toContain("482913");
+  });
 
   it("escapes HTML in variables", async () => {
     const out = await renderTemplate("invitation", { ...sampleVars.invitation, organizationName: "<script>x</script>" });

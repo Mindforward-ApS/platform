@@ -5,7 +5,7 @@ import { getMessages } from "@/lib/i18n";
 
 async function Content({ searchParams }: { searchParams: Promise<{ fejl?: string; next?: string; error?: string }> }) {
   const sp = await searchParams;
-  return <LoginForm mode="log-ind" error={sp.fejl ?? (sp.error ? "link" : undefined)} next={sp.next} />;
+  return <LoginForm error={sp.fejl ?? (sp.error ? "link" : undefined)} next={sp.next} />;
 }
 
 export default function LoginPage(props: PageProps<"/log-ind">) {

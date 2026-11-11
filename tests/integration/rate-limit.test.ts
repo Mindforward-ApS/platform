@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { consumeRateLimit } from "@/server/security/rate-limit";
+import { consumeRateLimit, peekRateLimit } from "@/server/security/rate-limit";
 import { testDb } from "./helpers";
 
 const rule = { window: 900, max: 5 };
@@ -25,5 +25,17 @@ describe("consumeRateLimit (Postgres)", () => {
     const key = `t:${randomUUID()}`;
     const results = await Promise.all(Array.from({ length: 20 }, () => consumeRateLimit(testDb(), key, rule, 2_000_000)));
     expect(results.filter((r) => r.allowed)).toHaveLength(5);
+  });
+});
+
+describe("peekRateLimit", () => {
+  it("says whether one more request would pass, without counting", async () => {
+    const key = `p:${randomUUID()}`;
+    expect((await peekRateLimit(testDb(), key, rule, 1_000_000)).allowed).toBe(true);
+    for (let i = 0; i < 5; i++) await consumeRateLimit(testDb(), key, rule, 1_000_000);
+    expect(await peekRateLimit(testDb(), key, rule, 1_000_000)).toEqual({ allowed: false, retryAfter: 900 });
+    expect(await peekRateLimit(testDb(), key, rule, 1_000_000)).toEqual({ allowed: false, retryAfter: 900 });
+    expect((await peekRateLimit(testDb(), key, rule, 1_000_000 + 900_001)).allowed).toBe(true);
+    expect((await testDb().rateLimit.findUniqueOrThrow({ where: { key } })).count).toBe(5);
   });
 });

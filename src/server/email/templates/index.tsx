@@ -3,7 +3,7 @@ import type { ReactElement } from "react";
 import type { EmailCategory } from "@/generated/prisma/enums";
 import * as billing from "./billing";
 import { InvitationEmail, invitationSubject, type InvitationVars } from "./invitation";
-import { MagicLinkEmail, magicLinkSubject, type MagicLinkVars } from "./magic-link";
+import { LoginCodeEmail, loginCodeSubject, type LoginCodeVars } from "./login-code";
 import * as orgAdmin from "./org-admin";
 import { MarketingConfirmEmail, marketingConfirmSubject, type MarketingConfirmVars } from "./marketing-confirm";
 import * as marketing from "./marketing";
@@ -19,7 +19,7 @@ interface TemplateDef<V> {
 }
 
 export const TEMPLATES = {
-  "magic-link": { category: "SERVICE", version: "1", subject: magicLinkSubject, component: MagicLinkEmail } satisfies TemplateDef<MagicLinkVars>,
+  "login-code": { category: "SERVICE", version: "1", subject: loginCodeSubject, component: LoginCodeEmail } satisfies TemplateDef<LoginCodeVars>,
   invitation: { category: "SERVICE", version: "1", subject: invitationSubject, component: InvitationEmail } satisfies TemplateDef<InvitationVars>,
   // M6 — billing
   "order-confirmation": { category: "SERVICE", version: "1", subject: billing.orderConfirmationSubject, component: billing.OrderConfirmationEmail } satisfies TemplateDef<billing.OrderConfirmationVars>,

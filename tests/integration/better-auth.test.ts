@@ -4,6 +4,7 @@ import { testUtils } from "better-auth/plugins";
 import { beforeAll, describe, expect, it } from "vitest";
 import { parseServerEnv } from "@/lib/env.schema";
 import { buildAuthOptions } from "@/server/auth/better-auth";
+import { openPendingLogin, sealPendingLogin, sendLoginCode, verifyLoginCode } from "@/server/auth/login-code";
 import { addMember, makeOrg, makeUser, testDb } from "./helpers";
 
 function makeTestAuth() {
@@ -105,11 +106,78 @@ describe("role changes", () => {
   });
 });
 
-describe("magic link", () => {
-  it("limits requests per email (5 / 15 min) regardless of case", async () => {
-    const email = `ml-${randomUUID()}@example.test`;
-    for (let i = 0; i < 5; i++) await auth.api.signInMagicLink({ body: { email: i % 2 ? email.toUpperCase() : email, callbackURL: "/start" }, headers: new Headers() });
-    await expect(auth.api.signInMagicLink({ body: { email, callbackURL: "/start" }, headers: new Headers() })).rejects.toThrow();
-    expect(await testDb().emailMessage.count({ where: { toEmail: email, template: "magic-link" } })).toBe(5);
+describe("email code (emailOTP, replaced the magic link 11 Nov 2026)", () => {
+  const headers = () => new Headers({ "x-forwarded-for": `10.${Math.floor(Math.random() * 250)}.${Math.floor(Math.random() * 250)}.${Math.floor(Math.random() * 250)}` });
+  // A fresh client IP per call: the per-IP limits live in the shared test database across runs.
+  const rip = () => `198.51.100.${randomUUID()}`;
+  const code = (email: string) => auth.api.createVerificationOTP({ body: { email, type: "sign-in" } });
+
+  it("limits code mails per email (5 / 15 min) regardless of case, also for direct plugin calls", async () => {
+    const email = `otp-${randomUUID()}@example.test`;
+    for (let i = 0; i < 5; i++) await auth.api.sendVerificationOTP({ body: { email: i % 2 ? email.toUpperCase() : email, type: "sign-in" }, headers: new Headers() });
+    // The plugin swallows the callback's error (no mail is sent); the app's own flow tells the user.
+    await auth.api.sendVerificationOTP({ body: { email, type: "sign-in" }, headers: new Headers() });
+    expect(await testDb().emailMessage.count({ where: { toEmail: email, template: "login-code" } })).toBe(5);
+    expect(await sendLoginCode(testDb(), auth.api, { email, ip: rip(), headers: new Headers() })).toEqual({ ok: false, error: "RATE_LIMITED" });
+  });
+
+  it("never stores the code: the mail subject has no digits and the verification value is hashed", async () => {
+    const email = `otp-${randomUUID()}@example.test`;
+    await auth.api.sendVerificationOTP({ body: { email, type: "sign-in" }, headers: new Headers() });
+    const mail = await testDb().emailMessage.findFirstOrThrow({ where: { toEmail: email, template: "login-code" } });
+    expect(mail.subject).not.toMatch(/\d{6}/);
+    const row = await testDb().verification.findFirstOrThrow({ where: { identifier: { contains: email } } });
+    expect(row.value).not.toMatch(/^\d{6}:/);
+  });
+
+  it("signs up a new address on the first correct code (verified email, name from the form)", async () => {
+    const email = `new-${randomUUID()}@example.test`;
+    const otp = await code(email);
+    const res = await verifyLoginCode(testDb(), auth.api, { email, code: otp, ip: rip(), headers: headers(), name: "Sofie Hansen" });
+    expect(res).toMatchObject({ ok: true, created: true });
+    const user = await testDb().user.findUniqueOrThrow({ where: { email } });
+    expect(user).toMatchObject({ name: "Sofie Hansen", emailVerified: true });
+  });
+
+  it("signs in an existing user without creating a new one", async () => {
+    const existing = await makeUser();
+    const otp = await code(existing.email);
+    const res = await verifyLoginCode(testDb(), auth.api, { email: existing.email, code: otp, ip: rip(), headers: headers() });
+    expect(res).toEqual({ ok: true, userId: existing.id, created: false });
+  });
+
+  it("rejects a wrong code, and the code dies after 5 wrong tries", async () => {
+    const email = `wrong-${randomUUID()}@example.test`;
+    const otp = await code(email);
+    const wrong = otp === "000000" ? "111111" : "000000";
+    expect(await verifyLoginCode(testDb(), auth.api, { email, code: wrong, ip: rip(), headers: headers() })).toEqual({ ok: false, error: "INVALID" });
+    for (let i = 0; i < 4; i++) await verifyLoginCode(testDb(), auth.api, { email, code: wrong, ip: rip(), headers: headers() });
+    expect(await verifyLoginCode(testDb(), auth.api, { email, code: otp, ip: rip(), headers: headers() })).toEqual({ ok: false, error: "EXPIRED" });
+    expect(await testDb().user.count({ where: { email } })).toBe(0);
+  });
+
+  it("limits code checks per email (10 / 15 min)", async () => {
+    const email = `brute-${randomUUID()}@example.test`;
+    await code(email);
+    for (let i = 0; i < 10; i++) await verifyLoginCode(testDb(), auth.api, { email, code: "999999", ip: rip(), headers: headers() });
+    expect(await verifyLoginCode(testDb(), auth.api, { email, code: "999999", ip: rip(), headers: headers() })).toEqual({ ok: false, error: "RATE_LIMITED" });
+  });
+
+  it("limits code requests per IP (20 / hour) in the app's own flow", async () => {
+    const ip = `203.0.113.${Math.floor(Math.random() * 250)}-${randomUUID().slice(0, 6)}`;
+    const send = (i: number) => sendLoginCode(testDb(), auth.api, { email: `ip-${i}-${randomUUID()}@example.test`, ip, headers: new Headers() });
+    for (let i = 0; i < 20; i++) expect(await send(i)).toEqual({ ok: true });
+    expect(await send(20)).toEqual({ ok: false, error: "RATE_LIMITED" });
+  });
+
+  it("seals the pending sign-up in the cookie and refuses a tampered or foreign value", () => {
+    const secret = "integration-test-secret-integration-test";
+    const sealed = sealPendingLogin({ email: "a@example.test", next: "/deltag/abc", kind: "privat", signup: { firstName: "A", lastName: "B", phone: "+4512345678" } }, secret);
+    expect(sealed).not.toContain("a@example.test");
+    expect(openPendingLogin(sealed, secret)).toMatchObject({ email: "a@example.test", next: "/deltag/abc", kind: "privat" });
+    expect(openPendingLogin(`${sealed.slice(0, -2)}xx`, secret)).toBeNull();
+    expect(openPendingLogin(sealed, "another-secret-another-secret-another")).toBeNull();
+    // An unsafe next path is dropped.
+    expect(openPendingLogin(sealPendingLogin({ email: "a@example.test", next: "//evil.example" }, secret), secret)?.next).toBeNull();
   });
 });
