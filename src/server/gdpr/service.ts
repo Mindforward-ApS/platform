@@ -29,7 +29,12 @@ export async function exportUserData(db: PrismaClient, userId: string, opts: { s
   }
   const user = await db.user.findUniqueOrThrow({
     where: { id: userId },
-    select: { id: true, name: true, email: true, emailVerified: true, locale: true, trainingRemindersEnabled: true, createdAt: true, lastActiveAt: true },
+    select: { id: true, name: true, firstName: true, lastName: true, phone: true, email: true, emailVerified: true, locale: true, trainingRemindersEnabled: true, createdAt: true, lastActiveAt: true },
+  });
+  // Sign-up onboarding answers (Marco 11 Nov 2026), incl. a friend's email / study mail the user typed.
+  const onboardingProfiles = await db.onboardingProfile.findMany({
+    where: { userId },
+    select: { personalPlan: true, friendEmail: true, studentEmail: true, teamSizeBand: true, startPath: true, completedAt: true, createdAt: true, track: { select: { displayName: true } }, organization: { select: { name: true } } },
   });
   const [memberships, trackEnrollments, placementResults, assignments, attempts, certificates, consentRecords, emailMessages, supportConversations, sandboxSessions, workProfiles, connectorDemoRuns, certificateShares, credentialTransfers] = await Promise.all([
     db.membership.findMany({ where: { userId }, select: { role: true, jobRole: true, createdAt: true, deactivatedAt: true, organization: { select: { name: true, type: true } } } }),
@@ -59,6 +64,7 @@ export async function exportUserData(db: PrismaClient, userId: string, opts: { s
     exportedAt: new Date().toISOString(),
     format: "mindforward-user-export.v1",
     profile: user,
+    onboardingProfiles,
     memberships,
     trackEnrollments,
     placementResults,

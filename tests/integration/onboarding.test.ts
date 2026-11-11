@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import { seedCourses } from "@/server/courses/seed";
+import { exportUserData } from "@/server/gdpr/service";
 import {
   applySignupProfile,
   completeOnboarding,
@@ -182,5 +183,16 @@ describe("Din plan er klar", () => {
     expect(plan?.lessons.length).toBeGreaterThan(0);
     expect(plan?.lessons.length).toBeLessThanOrEqual(3);
     expect(plan?.firstLessonHref).toMatch(/^\/forloeb\/chatgpt(\/[\w-]+)?$/);
+  });
+});
+
+describe("GDPR", () => {
+  it("the user's own export contains the phone and the onboarding answers", async () => {
+    const owner = await privat();
+    await testDb().user.update({ where: { id: owner.userId }, data: { phone: "+4512345678", firstName: "Sofie" } });
+    await savePersonalPlan(testDb(), owner, { plan: "FRIEND", friendEmail: "ven@example.test" });
+    const out = await exportUserData(testDb(), owner.userId, { skipRateLimit: true });
+    expect(out.profile).toMatchObject({ phone: "+4512345678", firstName: "Sofie" });
+    expect(out.onboardingProfiles).toEqual([expect.objectContaining({ personalPlan: "FRIEND", friendEmail: "ven@example.test" })]);
   });
 });
