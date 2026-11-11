@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Kalender } from "@/components/platform/kalender/Kalender";
+import { Normal } from "@/components/platform/kalender/Normal";
 import { requireActiveMembership } from "@/server/auth/authz";
 import { guardPage } from "@/server/auth/page-guard";
 
 export const metadata: Metadata = { title: "Kalender" };
 
-// Kalender = the approved version K "Uge" (mindforward-platform /plan). Greb's own /plan ("Min plan" from the
-// niveautest) is unchanged and still reachable. Example week until there is a calendar backend.
+// Kalender = an ordinary calendar app layout (Marco 2026-11-11: "God kalender"), replacing version K. Greb's own /plan
+// ("Min plan" from the niveautest) is unchanged and still reachable. Example data until there is a calendar backend.
 async function Content() {
   await guardPage(() => requireActiveMembership(["OWNER", "ADMIN", "LEARNER"]), "/kalender");
-  return <Kalender />;
+  return <Normal />;
 }
 
 export default function CalendarPage() {

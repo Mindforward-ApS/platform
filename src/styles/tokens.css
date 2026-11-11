@@ -533,6 +533,15 @@
   --ink: #201613; /* the website's brown (hero stage + footer) */
   --ink-2: #2e1f1c;
   --pf-cream: #f7f2ee;
+  /* Kalender (Normal), ported 2026-11-11 */
+  --pf-3f9c6e: #3f9c6e;
+  --pf-6b625d: #6b625d;
+  --pf-8a6a5e: #8a6a5e;
+  --pf-c4bab4: #c4bab4;
+  --pf-e8664a: #e8664a;
+  --pf-ece5e0: #ece5e0;
+  --pf-f3d9cf: #f3d9cf;
+  --pf-f6c9b6: #f6c9b6;
   background: #fff;
   color: var(--text);
   color-scheme: light;
