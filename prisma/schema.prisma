@@ -443,6 +443,10 @@ model User {
   trainingRemindersEnabled Boolean      @default(true) // SERVICE reminders day 1/14/25 opt-out
   lastActiveAt             DateTime?
   deletionRequestedAt      DateTime? // GDPR erasure: hard-deleted by job within 30 days
+  // Sign-up form (onboarding, Marco 11 Nov 2026). `name` keeps "Fornavn Efternavn" for Better Auth and emails.
+  firstName                String?
+  lastName                 String?
+  phone                    String? // E.164, e.g. +4512345678
 
   sessions                Session[]
   accounts                Account[]
@@ -472,6 +476,7 @@ model User {
   certificateShares       CertificateShare[]
   workProfiles            WorkProfile[]
   connectorDemoRuns       ConnectorDemoRun[]
+  onboardingProfiles      OnboardingProfile[]
 
   @@map("user")
 }
@@ -606,6 +611,7 @@ model Organization {
   certificateShares       CertificateShare[]
   workProfiles            WorkProfile[]
   connectorDemoRuns       ConnectorDemoRun[]
+  onboardingProfiles      OnboardingProfile[]
 
   @@index([type])
   @@map("organization")
@@ -775,6 +781,7 @@ model Track {
   sandboxSessions  SandboxSession[]
   enrollments      TrackEnrollment[]
   courses          Course[]
+  onboardingProfiles OnboardingProfile[]
 
   @@map("track")
 }
@@ -879,6 +886,49 @@ model TrackEnrollment {
   @@unique([organizationId, userId, trackId])
   @@index([trackId, active])
   @@map("track_enrollment")
+}
+
+/// Privat membership chosen in onboarding (Marco 11 Nov 2026). Only SINGLE has Stripe billing today (B2C_MONTHLY).
+enum PersonalPlanChoice {
+  SINGLE // Enkelt bruger
+  FRIEND // Med en ven
+  STUDENT // Studerende eller jobsøgende
+}
+
+/// Erhverv team size chosen in onboarding.
+enum TeamSizeBand {
+  SIZE_1_9
+  SIZE_10_PLUS
+  ENTERPRISE
+}
+
+enum OnboardingStartPath {
+  PLACEMENT_TEST // Tag niveautesten
+  FROM_SCRATCH // Start fra bunden
+}
+
+/// Answers from the sign-up onboarding, per user per organization, so the platform can personalise.
+/// The track itself also lives in TrackEnrollment and the test result in PlacementResult.
+model OnboardingProfile {
+  id             String               @id @default(cuid())
+  userId         String
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  personalPlan   PersonalPlanChoice? // Privat only
+  friendEmail    String? // FRIEND: the friend to invite (no billing support yet)
+  studentEmail   String? // STUDENT: proof by study mail (upload not built yet)
+  teamSizeBand   TeamSizeBand? // Erhverv (OWNER) only
+  startPath      OnboardingStartPath?
+  trackId        String?
+  track          Track?               @relation(fields: [trackId], references: [id], onDelete: SetNull)
+  completedAt    DateTime? // set when "Din plan er klar" is shown
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@map("onboarding_profile")
 }
 
 model PlacementResult {
