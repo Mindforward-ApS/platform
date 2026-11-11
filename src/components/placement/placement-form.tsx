@@ -32,12 +32,15 @@ export function PlacementForm({
   action,
   startToken,
   slug,
+  returnTo,
 }: {
   test: ClientTest;
   t: Strings;
   action: (formData: FormData) => Promise<void>;
   startToken: string;
   slug: string;
+  /** "kom-i-gang": a signed-in user taking the test inside onboarding goes back to "Din plan er klar". */
+  returnTo?: "kom-i-gang";
 }) {
   const total = test.questions.length;
   const [answered, setAnswered] = useState(0);
@@ -51,6 +54,7 @@ export function PlacementForm({
     <form action={action} onChange={onChange} className="flex flex-col gap-8">
       <input type="hidden" name="track" value={slug} />
       <input type="hidden" name="startToken" value={startToken} />
+      {returnTo && <input type="hidden" name="fra" value={returnTo} />}
       {/* Honeypot: invisible to people, tempting for bots. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <label>

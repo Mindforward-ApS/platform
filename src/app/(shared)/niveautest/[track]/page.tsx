@@ -13,7 +13,7 @@ import { submitPlacementTest } from "./actions";
 
 const ERRORS = { mangler: "incomplete", hurtig: "tooFast", udloebet: "expired", graense: "rateLimited", generel: "generic" } as const;
 
-async function Content({ params, searchParams }: { params: Promise<{ track: string }>; searchParams: Promise<{ fejl?: string }> }) {
+async function Content({ params, searchParams }: { params: Promise<{ track: string }>; searchParams: Promise<{ fejl?: string; fra?: string }> }) {
   const [{ track: slug }, sp] = await Promise.all([params, searchParams]);
   const track = trackFromSlug(slug);
   if (!track) notFound();
@@ -50,6 +50,7 @@ async function Content({ params, searchParams }: { params: Promise<{ track: stri
           action={submitPlacementTest}
           slug={slug}
           startToken={issueStartToken(track, serverEnv().BETTER_AUTH_SECRET)}
+          returnTo={ctx && sp.fra === "kom-i-gang" ? "kom-i-gang" : undefined}
         />
       </div>
     </>
@@ -60,7 +61,7 @@ export default function PlacementTestPage(props: PageProps<"/niveautest/[track]"
   return (
     <main className="mf-v3 mf-spots mx-auto grid w-full max-w-app flex-1 grid-cols-1 content-start gap-8 px-4 pt-10 pb-20 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-16 lg:px-10">
       <Suspense>
-        <Content params={props.params} searchParams={props.searchParams as Promise<{ fejl?: string }>} />
+        <Content params={props.params} searchParams={props.searchParams as Promise<{ fejl?: string; fra?: string }>} />
       </Suspense>
     </main>
   );

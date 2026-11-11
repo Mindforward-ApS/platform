@@ -49,7 +49,7 @@ export async function submitPlacementTest(formData: FormData) {
   }
   if (!outcome.ok) {
     if (outcome.error === "BOT") logger.warn("placement.bot_rejected", {});
-    redirect(`/niveautest/${slug}?fejl=${ERROR_PARAM[outcome.error]}`);
+    redirect(`/niveautest/${slug}?fejl=${ERROR_PARAM[outcome.error]}${fields.fra === "kom-i-gang" ? "&fra=kom-i-gang" : ""}`);
   }
   if (outcome.anonymousToken) {
     (await cookies()).set(PLACEMENT_COOKIE, outcome.anonymousToken, {
@@ -60,5 +60,7 @@ export async function submitPlacementTest(formData: FormData) {
       maxAge: placementConfig.resultCookieMaxAgeSeconds,
     });
   }
+  // Onboarding (signed in): back to "Din plan er klar" instead of the public result page.
+  if (user && fields.fra === "kom-i-gang") redirect("/kom-i-gang?trin=plan");
   redirect("/niveautest/resultat");
 }

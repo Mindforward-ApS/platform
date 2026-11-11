@@ -1,6 +1,7 @@
 // Typed audit actions (docs/02-arkitektur.md § 2). Extend the union; never store prompt text or secrets in metadata.
 export const AUDIT_ACTIONS = [
   "ORG_CREATED",
+  "ORG_RENAMED", // onboarding: OWNER corrects the company name
   "MEMBER_JOINED",
   "MEMBER_ROLE_CHANGED",
   "INVITATION_CREATED",

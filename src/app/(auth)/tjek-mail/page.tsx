@@ -1,16 +1,19 @@
 import { cookies } from "next/headers";
 import { Suspense } from "react";
-import { requestMagicLink } from "@/app/(auth)/log-ind/actions";
 import { AuthCard, AuthMain } from "@/components/auth/auth-shell";
+import { CodeForm } from "@/components/onboarding/forms";
 import { TextLink } from "@/components/ui/primitives";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { PENDING_EMAIL_COOKIE } from "@/lib/auth-cookies";
 import { serverEnv } from "@/lib/env";
 import { format, getMessages } from "@/lib/i18n";
+import { openPendingLogin, PENDING_LOGIN_COOKIE } from "@/server/auth/login-code";
+import { resendCode, verifyCode } from "./actions";
 
+// "Log ind" step 2: type the 6-digit code from the mail (Better Auth emailOTP; replaced the magic link 11 Nov 2026).
 async function Content() {
-  const t = getMessages().auth;
-  const email = (await cookies()).get(PENDING_EMAIL_COOKIE)?.value;
+  const m = getMessages();
+  const t = m.auth;
+  const pending = openPendingLogin((await cookies()).get(PENDING_LOGIN_COOKIE)?.value, serverEnv().BETTER_AUTH_SECRET);
+  const back = pending?.next ? `/log-ind?next=${encodeURIComponent(pending.next)}` : "/log-ind";
   // Show the address in bold inside the sentence: split the template around {email}.
   const [before, after = ""] = format(t.checkMailBody, { minutes: serverEnv().MAGIC_LINK_EXPIRES_MIN }).split("{email}");
   return (
@@ -20,32 +23,14 @@ async function Content() {
       lead={
         <p role="status">
           {before}
-          <strong className="font-semibold text-ink [overflow-wrap:anywhere]">{email ?? t.fallbackEmail}</strong>
+          <strong className="font-semibold text-ink [overflow-wrap:anywhere]">{pending?.email ?? t.fallbackEmail}</strong>
           {after}
         </p>
       }
-      footer={<TextLink href="/log-ind">{t.otherEmail}</TextLink>}
+      footer={<TextLink href={back}>{t.otherEmail}</TextLink>}
     >
-      <div className="flex flex-col gap-3 rounded-md border border-line bg-sunken px-4 py-4">
-        <p className="text-label text-ink">{t.checkMailNextTitle}</p>
-        <ol className="flex flex-col gap-2">
-          {t.checkMailSteps.map((step, i) => (
-            <li key={step} className="flex items-start gap-3 text-body-sm text-ink-muted">
-              <span className="grid size-5 shrink-0 place-items-center rounded-full border border-line-strong bg-surface text-caption text-ink tabular-nums">{i + 1}</span>
-              {step}
-            </li>
-          ))}
-        </ol>
-      </div>
+      <CodeForm t={m.onboarding.code} action={verifyCode} resend={resendCode} />
       <p className="text-body-sm text-ink-muted">{t.checkMailSpam}</p>
-      {email && (
-        <form action={requestMagicLink}>
-          <input type="hidden" name="email" value={email} />
-          <SubmitButton variant="secondary" className="w-full">
-            {t.resend}
-          </SubmitButton>
-        </form>
-      )}
     </AuthCard>
   );
 }

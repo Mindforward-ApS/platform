@@ -4,6 +4,7 @@ import { daContent } from "./da-content";
 import { daCourses } from "./da-courses";
 import { daMarketing } from "./da-marketing";
 import { daMonthly } from "./da-monthly";
+import { daOnboarding } from "./da-onboarding";
 import { daPlacement } from "./da-placement";
 import { daProfile } from "./da-profile";
 import { daPlatform } from "./da-platform";
@@ -24,6 +25,7 @@ export const da = {
   courses: daCourses,
   platform: daPlatform,
   placement: daPlacement,
+  onboarding: daOnboarding,
   profile: daProfile,
   billing: daBilling,
   contentEngine: daContent,
@@ -86,40 +88,34 @@ export const da = {
   },
   auth: {
     loginTitle: "Log ind på Mindforward",
-    signupTitle: "Opret bruger på Mindforward",
     emailLabel: "Email",
-    sendLink: "Send login-link",
+    sendCode: "Send kode",
     or: "eller",
     microsoft: "Fortsæt med Microsoft",
     google: "Fortsæt med Google",
     toSignup: "Ny her? Opret bruger",
     toLogin: "Har du allerede en bruger? Log ind",
     checkMailTitle: "Tjek din mail",
-    checkMailBody: "Vi har sendt et login-link til {email}. Linket virker i {minutes} minutter.",
-    resend: "Send linket igen",
-    otherEmail: "Brug en anden email",
+    checkMailBody: "Vi har sendt en kode på 6 cifre til {email}. Koden virker i {minutes} minutter.",
+    otherEmail: "Brug en anden e-mail",
     errors: {
       invalidEmail: "Skriv en gyldig email.",
-      rateLimited: "Du har bedt om mange links. Prøv igen om lidt.",
+      rateLimited: "Du har bedt om mange koder. Prøv igen om lidt.",
       generic: "Noget gik galt. Prøv igen.",
-      linkExpired: "Linket er udløbet eller allerede brugt. Bed om et nyt.",
+      linkExpired: "Login mislykkedes eller er udløbet. Prøv igen.",
       providerUnavailable: "Den loginmetode er ikke sat op endnu.",
     },
     logout: "Log ud",
-    loginLead: "Vi sender et login-link til din email. Du skal ikke huske en adgangskode.",
-    signupLead: "Skriv din email, så sender vi et link, der opretter din bruger.",
+    loginLead: "Vi sender en kode på 6 cifre til din e-mail. Du skal ikke huske en adgangskode.",
     emailPlaceholder: "dig@eksempel.dk",
     welcomeBack: "Hej, klar til at komme i gang?",
-    welcomeNew: "Hej, velkommen til!",
     valueTitle: "Lær AI ved at gøre det.",
     valuePoints: [
       "Korte, praktiske opgaver i et øvemiljø med en fiktiv virksomhed.",
       "En personlig plan ud fra en kort niveautest.",
       "Score og feedback på hver opgave, så du ved, hvor du står.",
     ],
-    checkMailNextTitle: "Sådan logger du ind",
-    checkMailSteps: ["Åbn mailen fra Mindforward.", "Klik på Log ind. Så er du inde."],
-    checkMailSpam: "Kan du ikke finde mailen? Kig i spam eller uønsket post, eller send linket igen.",
+    checkMailSpam: "Kan du ikke finde mailen? Kig i spam eller uønsket post, eller send koden igen.",
     fallbackEmail: "din email",
   },
   invitation: {
@@ -303,13 +299,12 @@ export const da = {
   email: {
     footer: "Mindforward · Esther Gruppen ApS",
     ignoreNote: "Har du ikke bedt om denne mail, kan du se bort fra den.",
-    magicLink: {
-      subject: "Dit login-link til Mindforward",
-      preview: "Log ind på Mindforward",
-      heading: "Log ind på Mindforward",
-      body: "Klik på knappen for at logge ind. Linket virker i {minutes} minutter og kan kun bruges én gang.",
-      button: "Log ind",
-      fallback: "Virker knappen ikke, så kopiér dette link ind i din browser:",
+    loginCode: {
+      subject: "Din kode til Mindforward",
+      preview: "Din kode er {code}",
+      heading: "Din kode til Mindforward",
+      body: "Skriv koden på siden, hvor du bad om den:",
+      expires: "Koden virker i {minutes} minutter og kan kun bruges én gang.",
     },
     invitation: {
       subject: "{inviter} har inviteret dig til {organization} på Mindforward",
