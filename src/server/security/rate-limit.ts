@@ -35,12 +35,15 @@ export const rateLimitKeys = {
 };
 
 export const RATE_LIMITS = {
-  /** docs/02 § 7 (was the magic link): 5 codes / 15 min per email, 20 / hour per IP. */
+  /**
+   * docs/02 § 7 (was the magic link): 5 codes / 15 min per email. Per IP 50 / hour (the magic link's 20 / hour only
+   * ever applied to direct /api/auth calls; a whole team signing up from one office IP must still get through).
+   */
   loginCodePerEmail: { window: 15 * 60, max: 5 },
-  loginCodePerIp: { window: 60 * 60, max: 20 },
-  /** Typing the code: 10 tries / 15 min per email and 30 / 15 min per IP (each code also dies after 5 wrong tries). */
+  loginCodePerIp: { window: 60 * 60, max: 50 },
+  /** Typing the code: 10 tries / 15 min per email and 100 / 15 min per IP (each code also dies after 5 wrong tries). */
   loginCodeVerifyPerEmail: { window: 15 * 60, max: 10 },
-  loginCodeVerifyPerIp: { window: 15 * 60, max: 30 },
+  loginCodeVerifyPerIp: { window: 15 * 60, max: 100 },
 } satisfies Record<string, RateLimitRule>;
 
 export async function consumeRateLimit(

@@ -40,11 +40,11 @@ export function openPendingLogin(raw: string | undefined, secret: string): Pendi
 /** The two Better Auth endpoints we use (auth.api in the app; the same object in tests). */
 export interface OtpApi {
   sendVerificationOTP(args: { body: { email: string; type: "sign-in" }; headers: Headers }): Promise<unknown>;
-  signInEmailOTP(args: { body: { email: string; otp: string; name?: string }; headers: Headers }): Promise<{ user: { id: string } }>;
+  signInEmailOTP(args: { body: { email: string; otp: string; name?: string }; headers: Headers }): Promise<{ token: string; user: { id: string } }>;
 }
 
 export type SendCodeResult = { ok: true } | { ok: false; error: "RATE_LIMITED" };
-export type VerifyCodeResult = { ok: true; userId: string; created: boolean } | { ok: false; error: "INVALID" | "EXPIRED" | "RATE_LIMITED" };
+export type VerifyCodeResult = { ok: true; userId: string; sessionToken: string; created: boolean } | { ok: false; error: "INVALID" | "EXPIRED" | "RATE_LIMITED" };
 
 const ipKey = (ip: string | null) => ip ?? "unknown";
 
@@ -79,7 +79,7 @@ export async function verifyLoginCode(
   const existed = await db.user.count({ where: { email: args.email.toLowerCase() } });
   try {
     const res = await api.signInEmailOTP({ body: { email: args.email, otp: args.code, ...(args.name ? { name: args.name } : {}) }, headers: args.headers });
-    return { ok: true, userId: res.user.id, created: existed === 0 };
+    return { ok: true, userId: res.user.id, sessionToken: res.token, created: existed === 0 };
   } catch (err) {
     const code = otpErrorCode(err);
     if (code === "INVALID_OTP") return { ok: false, error: "INVALID" };

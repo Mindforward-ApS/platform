@@ -11,8 +11,7 @@ import { openPendingLogin, PENDING_LOGIN_COOKIE, sendLoginCode, verifyLoginCode 
 import { db } from "@/server/db";
 import { logger } from "@/server/observability/logger";
 import { applySignupProfile } from "@/server/onboarding/service";
-import { runStart } from "@/server/orgs/service";
-import { claimPlacement } from "@/server/placement/service";
+import { resolvePostLogin } from "@/server/orgs/post-login";
 import { PLACEMENT_COOKIE } from "@/server/placement/tokens";
 import { requestMeta } from "@/server/security/request-meta";
 
@@ -51,29 +50,27 @@ export async function verifyCode(_prev: FormState | null, formData: FormData): P
   const jar = await cookies();
   jar.delete(PENDING_LOGIN_COOKIE);
   if (signup) await applySignupProfile(db(), result.userId, signup);
+  // Erhverv sign-up: the company is created on "Om jeres virksomhed", so no PERSONAL org now.
+  if (signup && p.kind === "virksomhed" && !p.next) redirect("/kom-i-gang?type=virksomhed&trin=velkommen");
 
-  // Invitations and "Gem resultat" carry a next path: the existing post-login landing handles those.
-  if (p.next) redirect(`/start?next=${encodeURIComponent(p.next)}`);
-  if (!signup) redirect("/start");
-  // Erhverv: the company is created on the "Om jeres virksomhed" step, so no PERSONAL org now.
-  if (p.kind === "virksomhed") redirect("/kom-i-gang?type=virksomhed&trin=velkommen");
-
-  // Privat: pick or create the organization now (the new session cookie is not readable in this request).
-  const session = await db().session.findFirst({ where: { userId: result.userId }, orderBy: { createdAt: "desc" }, select: { id: true, activeOrganizationId: true } });
-  const user = await db().user.findUniqueOrThrow({ where: { id: result.userId }, select: { id: true, email: true, name: true } });
-  if (!session) redirect("/start");
-  const start = await runStart(db(), { user, sessionId: session.id, activeOrganizationId: session.activeOrganizationId });
-  if (start.redirectTo.startsWith("/invitation/")) redirect(start.redirectTo);
-  const placementToken = jar.get(PLACEMENT_COOKIE)?.value;
-  if (placementToken && start.organizationId) {
-    try {
-      await claimPlacement(db(), { token: placementToken, userId: user.id, organizationId: start.organizationId });
-    } catch (err) {
-      logger.error("placement.claim_failed", { err });
-    }
-    jar.delete(PLACEMENT_COOKIE);
-  }
-  redirect("/kom-i-gang?trin=velkommen");
+  // Everyone else: pick or create the organization now, like /start does after SSO. The new session cookie is not
+  // readable in this request, so the session is looked up by its token. A server-action redirect must land on a page
+  // (not the /start route handler), so the final target is resolved here.
+  const [session, user] = await Promise.all([
+    db().session.findUnique({ where: { token: result.sessionToken }, select: { id: true, activeOrganizationId: true } }),
+    db().user.findUniqueOrThrow({ where: { id: result.userId }, select: { id: true, email: true, name: true } }),
+  ]);
+  if (!session) redirect("/log-ind?fejl=generel");
+  const { target, placementConsumed } = await resolvePostLogin(db(), {
+    user,
+    sessionId: session.id,
+    activeOrganizationId: session.activeOrganizationId,
+    next: p.next ?? null,
+    placementToken: jar.get(PLACEMENT_COOKIE)?.value ?? null,
+  });
+  if (placementConsumed) jar.delete(PLACEMENT_COOKIE);
+  // A new private sign-up continues in the onboarding unless an invitation or a saved result is waiting.
+  redirect(signup && !p.next && target === "/hjem" ? "/kom-i-gang?trin=velkommen" : target);
 }
 
 /** "Send igen": a fresh code to the pending address. */

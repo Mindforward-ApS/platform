@@ -143,7 +143,8 @@ describe("email code (emailOTP, replaced the magic link 11 Nov 2026)", () => {
     const existing = await makeUser();
     const otp = await code(existing.email);
     const res = await verifyLoginCode(testDb(), auth.api, { email: existing.email, code: otp, ip: rip(), headers: headers() });
-    expect(res).toEqual({ ok: true, userId: existing.id, created: false });
+    expect(res).toMatchObject({ ok: true, userId: existing.id, created: false });
+    if (res.ok) expect(await testDb().session.count({ where: { token: res.sessionToken, userId: existing.id } })).toBe(1);
   });
 
   it("rejects a wrong code, and the code dies after 5 wrong tries", async () => {
@@ -163,11 +164,11 @@ describe("email code (emailOTP, replaced the magic link 11 Nov 2026)", () => {
     expect(await verifyLoginCode(testDb(), auth.api, { email, code: "999999", ip: rip(), headers: headers() })).toEqual({ ok: false, error: "RATE_LIMITED" });
   });
 
-  it("limits code requests per IP (20 / hour) in the app's own flow", async () => {
+  it("limits code requests per IP (50 / hour) in the app's own flow", async () => {
     const ip = `203.0.113.${Math.floor(Math.random() * 250)}-${randomUUID().slice(0, 6)}`;
     const send = (i: number) => sendLoginCode(testDb(), auth.api, { email: `ip-${i}-${randomUUID()}@example.test`, ip, headers: new Headers() });
-    for (let i = 0; i < 20; i++) expect(await send(i)).toEqual({ ok: true });
-    expect(await send(20)).toEqual({ ok: false, error: "RATE_LIMITED" });
+    for (let i = 0; i < 50; i++) expect(await send(i)).toEqual({ ok: true });
+    expect(await send(50)).toEqual({ ok: false, error: "RATE_LIMITED" });
   });
 
   it("seals the pending sign-up in the cookie and refuses a tampered or foreign value", () => {
