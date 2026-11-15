@@ -12,7 +12,7 @@ import { db } from "@/server/db";
 // full-height brown sidebar flush left with rounded right corners, and the page to its right under a white top bar
 // card. Phones: the top bar gets a menu button and the sidebar opens as a drawer.
 // Greb's routes behind the approved menu: Oversigt = /hjem, Mine kurser = /forloeb, Øvemiljø = /sandkasse,
-// Kursusbeviser = /certifikater, Kalender = /kalender, Beskeder = /beskeder, Mit hold = /hold (company admins only),
+// Certifikater = /certifikater, Kalender = /kalender, Beskeder = /beskeder, Mit hold = /hold (company admins only),
 // Indstillinger = /konto, Hjælp = /hjaelp. Company admins also get "Virksomhed" (/virksomhed) so the admin pages stay
 // reachable.
 

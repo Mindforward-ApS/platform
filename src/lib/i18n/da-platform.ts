@@ -4,7 +4,7 @@ export const daPlatform = {
     home: "Oversigt",
     courses: "Mine kurser",
     sandbox: "Øvemiljø",
-    certificates: "Kursusbeviser",
+    certificates: "Certifikater",
     calendar: "Kalender",
     messages: "Beskeder",
     team: "Mit hold",
