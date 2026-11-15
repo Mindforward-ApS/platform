@@ -213,15 +213,15 @@ function Streak({ streak }: { streak: OversigtData["streak"] }) {
 
 export function Oversigt({ data }: { data: OversigtData }) {
   return (
-    // Cream page background like the website (var(--pf-f7f2ee)) behind the whole dashboard, so the white cards stand out
-    // with a clear edge, and the cards fill the full width (Marco 2026-11-02).
-    // xl: the dashboard fills the window from under the top bar to the bottom (Marco: "fra bunden til toppen"), but on
-    // short screens the rows grow to their content and the page scrolls instead of cutting cards off (Marco 2026-11-15).
-    <div data-pf-cream data-pf-fill className="flex flex-col gap-3 xl:grid xl:min-h-[max(720px,calc(100svh-5.9rem))] xl:grid-rows-[minmax(min-content,284fr)_minmax(min-content,230fr)_minmax(min-content,200fr)_auto]">
+    <>
+    <style>{`/* Short laptop screens (Marco 2026-11-15): the whole dashboard is scaled down so every card fits under the top bar without scrolling or cutting anything off. */ .oversigt-fit{--fit:1} @media (min-width:1280px){.oversigt-fit{zoom:var(--fit);min-height:calc((100svh - 5.9rem) / var(--fit)) !important}} @media (min-width:1280px) and (max-height:980px){.oversigt-fit{--fit:0.974}} @media (min-width:1280px) and (max-height:960px){.oversigt-fit{--fit:0.952}} @media (min-width:1280px) and (max-height:940px){.oversigt-fit{--fit:0.929}} @media (min-width:1280px) and (max-height:920px){.oversigt-fit{--fit:0.907}} @media (min-width:1280px) and (max-height:900px){.oversigt-fit{--fit:0.884}} @media (min-width:1280px) and (max-height:880px){.oversigt-fit{--fit:0.862}} @media (min-width:1280px) and (max-height:860px){.oversigt-fit{--fit:0.839}} @media (min-width:1280px) and (max-height:840px){.oversigt-fit{--fit:0.817}} @media (min-width:1280px) and (max-height:820px){.oversigt-fit{--fit:0.794}} @media (min-width:1280px) and (max-height:800px){.oversigt-fit{--fit:0.772}} @media (min-width:1280px) and (max-height:780px){.oversigt-fit{--fit:0.749}} @media (min-width:1280px) and (max-height:760px){.oversigt-fit{--fit:0.727}} @media (min-width:1280px) and (max-height:740px){.oversigt-fit{--fit:0.704}} @media (min-width:1280px) and (max-height:720px){.oversigt-fit{--fit:0.682}} @media (min-width:1280px) and (max-height:700px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:680px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:660px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:640px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:620px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:600px){.oversigt-fit{--fit:0.66}}`}</style>
+    {/* Cream page background like the website (var(--pf-f7f2ee)) behind the whole dashboard, so the white cards stand out with a clear edge, and the cards fill the full width (Marco 2026-11-02). xl: the dashboard fills the window from under the top bar to the bottom (Marco: "fra bunden til toppen"), but on short screens the rows grow to their content and the page scrolls instead of cutting cards off (Marco 2026-11-15). */}
+    <div data-pf-cream data-pf-fill className="oversigt-fit flex flex-col gap-3 xl:grid xl:min-h-[max(720px,calc(100svh-5.9rem))] xl:grid-rows-[minmax(min-content,284fr)_minmax(min-content,230fr)_minmax(min-content,200fr)_auto]">
       <section className="grid min-h-0 gap-3 xl:grid-cols-[2.45fr_1fr] [&>*]:min-h-[284px]"><Hero greeting={data.greeting} href={data.continueHref} /><Calendar today={data.today} /></section>
       <section className="grid min-h-0 gap-3 xl:grid-cols-[1fr_1.76fr] [&>*]:min-h-[230px]"><Oevetid nextTask={data.nextTask} /><MineKurser courses={data.courses} className="min-h-[230px]" /></section>
       <section className="grid min-h-0 gap-3 xl:grid-cols-[1.76fr_1fr] [&>*]:min-h-[200px]"><Fokuskort feedback={data.feedback} /><Praestation progress={data.progress} /></section>
       <Streak streak={data.streak} />
     </div>
+    </>
   );
 }
