@@ -66,13 +66,15 @@ function Calendar({ today }: { today: string }) {
   return (
     <div className="relative min-h-[284px] overflow-hidden rounded-[16px] bg-gradient-to-b from-[var(--pf-2a211e)] to-[var(--pf-1f1916)] px-4 py-[18px] text-pf-white">
       <div className="relative z-[2] flex items-center justify-between">
-        <strong className="flex items-center gap-2 text-[14px] font-semibold">{today}<Demo dark /></strong>
-        <div className="flex items-center gap-1.5">
-          <Link href="/kalender" className="h-[26px] rounded-full border border-pf-white/20 px-3.5 text-[11px] leading-[24px] text-[var(--pf-ddd)] hover:bg-pf-white/10">I dag</Link>
-          <button type="button" aria-label="Forrige dag" className="grid size-[26px] place-items-center rounded-full bg-pf-white/10 text-[var(--pf-ddd)] hover:bg-pf-white/20"><CaretLeftIcon size={13} weight="bold" /></button>
-          <button type="button" aria-label="Næste dag" className="grid size-[26px] place-items-center rounded-full bg-pf-white/10 text-[var(--pf-ddd)] hover:bg-pf-white/20"><CaretRightIcon size={13} weight="bold" /></button>
+        <strong className="flex min-w-0 items-center gap-2 whitespace-nowrap text-[14px] font-semibold">{today}<span className="hidden 2xl:contents"><Demo dark /></span></strong>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <Link href="/kalender" className="h-[26px] whitespace-nowrap rounded-full border border-pf-white/20 px-3.5 text-[11px] leading-[24px] text-[var(--pf-ddd)] hover:bg-pf-white/10">I dag</Link>
+          <button type="button" aria-label="Forrige dag" className="grid size-8 place-items-center rounded-full bg-pf-white/10 text-[var(--pf-ddd)] hover:bg-pf-white/20"><CaretLeftIcon size={13} weight="bold" /></button>
+          <button type="button" aria-label="Næste dag" className="grid size-8 place-items-center rounded-full bg-pf-white/10 text-[var(--pf-ddd)] hover:bg-pf-white/20"><CaretRightIcon size={13} weight="bold" /></button>
         </div>
       </div>
+      {/* Below 2xl the "Eksempeldata" badge sits bottom-left, so it never runs into "I dag" (Marco 2026-11-15). */}
+      <span className="absolute bottom-3 left-4 z-[3] 2xl:hidden"><Demo dark /></span>
       <div className="absolute inset-x-4 bottom-0 top-[58px] z-[1]">
         <div className="relative z-[2] flex justify-between pl-1 pr-1.5 text-[10px] text-pf-white/70">{["8", "10", "12", "14", "16", "18"].map((x) => <span key={x}>{x}</span>)}</div>
         <div className="absolute bottom-[30px] left-1 right-1.5 top-5 flex justify-between">{Array.from({ length: 6 }, (_, i) => <i key={i} className="border-l border-dashed border-pf-white/[0.08]" />)}</div>
@@ -141,7 +143,7 @@ function Fokuskort({ feedback }: { feedback: OversigtData["feedback"] }) {
         <div><h4 className="text-[15.5px] font-semibold leading-[1.2] tracking-[-0.01em] text-heading">Seneste feedback</h4><small className="mt-px block text-[11.5px] text-pf-muted">Fra øvemiljøet · {f.when}</small></div>
         <div className="flex items-center gap-2">
           {!feedback && <Demo />}
-          <Link href={f.href} className="inline-flex h-7 items-center gap-1 rounded-[8px] bg-[var(--pf-f3eeeb)] px-3 text-[11.5px] font-medium text-heading hover:bg-[var(--pf-ebe4e0)]">Se opgaven <ArrowRightIcon size={12} /></Link>
+          <Link href={f.href} className="inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-[8px] bg-[var(--pf-f3eeeb)] px-3 text-[11.5px] font-medium text-heading hover:bg-[var(--pf-ebe4e0)]">Se opgaven <ArrowRightIcon size={12} /></Link>
         </div>
       </div>
       <div className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-[170px_1fr_1fr]">
@@ -213,11 +215,12 @@ export function Oversigt({ data }: { data: OversigtData }) {
   return (
     // Cream page background like the website (var(--pf-f7f2ee)) behind the whole dashboard, so the white cards stand out
     // with a clear edge, and the cards fill the full width (Marco 2026-11-02).
-    // xl: the dashboard fills the window from under the top bar to the bottom (Marco: "fra bunden til toppen").
-    <div data-pf-cream data-pf-fill className="flex flex-col gap-3 xl:grid xl:h-[max(720px,calc(100svh-5.9rem))] xl:grid-rows-[284fr_230fr_200fr_auto]">
-      <section className="grid min-h-0 gap-3 xl:grid-cols-[2.45fr_1fr] [&>*]:min-h-[284px] xl:[&>*]:min-h-0"><Hero greeting={data.greeting} href={data.continueHref} /><Calendar today={data.today} /></section>
-      <section className="grid min-h-0 gap-3 xl:grid-cols-[1fr_1.76fr] [&>*]:min-h-[230px] xl:[&>*]:min-h-0"><Oevetid nextTask={data.nextTask} /><MineKurser courses={data.courses} className="min-h-[230px] xl:min-h-0" /></section>
-      <section className="grid min-h-0 gap-3 xl:grid-cols-[1.76fr_1fr] [&>*]:min-h-[200px] xl:[&>*]:min-h-0"><Fokuskort feedback={data.feedback} /><Praestation progress={data.progress} /></section>
+    // xl: the dashboard fills the window from under the top bar to the bottom (Marco: "fra bunden til toppen"), but on
+    // short screens the rows grow to their content and the page scrolls instead of cutting cards off (Marco 2026-11-15).
+    <div data-pf-cream data-pf-fill className="flex flex-col gap-3 xl:grid xl:min-h-[max(720px,calc(100svh-5.9rem))] xl:grid-rows-[minmax(min-content,284fr)_minmax(min-content,230fr)_minmax(min-content,200fr)_auto]">
+      <section className="grid min-h-0 gap-3 xl:grid-cols-[2.45fr_1fr] [&>*]:min-h-[284px]"><Hero greeting={data.greeting} href={data.continueHref} /><Calendar today={data.today} /></section>
+      <section className="grid min-h-0 gap-3 xl:grid-cols-[1fr_1.76fr] [&>*]:min-h-[230px]"><Oevetid nextTask={data.nextTask} /><MineKurser courses={data.courses} className="min-h-[230px]" /></section>
+      <section className="grid min-h-0 gap-3 xl:grid-cols-[1.76fr_1fr] [&>*]:min-h-[200px]"><Fokuskort feedback={data.feedback} /><Praestation progress={data.progress} /></section>
       <Streak streak={data.streak} />
     </div>
   );
