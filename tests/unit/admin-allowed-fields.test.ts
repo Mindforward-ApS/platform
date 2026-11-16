@@ -6,7 +6,7 @@ import { ADMIN_FORBIDDEN_KEYS, assertAdminSafe, findForbiddenKeys } from "@/serv
 // Roadmap M7: no admin query/endpoint/export contains prompt text. The source scan below fails if anyone
 // writes a forbidden field name in the admin query module, the report builder or the org data export.
 
-const ADMIN_SOURCES = ["src/server/admin/queries.ts", "src/server/reports/report.ts"];
+const ADMIN_SOURCES = ["src/server/admin/queries.ts", "src/server/reports/report.ts", "src/server/owner/customers.ts"];
 
 describe("allowed-fields scanner", () => {
   it("finds forbidden keys at any depth", () => {

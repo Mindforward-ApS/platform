@@ -11,6 +11,9 @@ async function Content() {
   return (
     <>
       <p data-testid="admin-ok">{ctx.user.email}</p>
+      <Link href="/admin/kunder" className="underline">
+        {getMessages().ownerCustomers.navLink}
+      </Link>
       <Link href="/admin/indhold" className="underline">
         {getMessages().contentEngine.admin.navLink}
       </Link>

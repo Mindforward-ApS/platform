@@ -2,6 +2,7 @@ import { orgAdminMessages } from "./da-admin";
 import { daBilling } from "./da-billing";
 import { daContent } from "./da-content";
 import { daMonthly } from "./da-monthly";
+import { daOwner } from "./da-owner";
 import { daPlacement } from "./da-placement";
 import { daPlayer } from "./da-player";
 import { daSandbox } from "./da-sandbox";
@@ -21,6 +22,7 @@ export const da = {
   orgAdmin: orgAdminMessages,
   monthly: daMonthly,
   support: daSupport,
+  ownerCustomers: daOwner,
   meta: {
     title: "Mindforward",
     description: "Lær AI ved at gøre det.",
