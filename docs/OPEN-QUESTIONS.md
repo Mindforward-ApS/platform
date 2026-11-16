@@ -187,3 +187,10 @@
 - [ ] **Indholdsmotoren ved ≥ 95 %:** gatewayen pauser `CONTENT_DRAFT`/`CONTENT_VERIFY` (AI_DISABLED, reason DEGRADED_PAUSE) og blokerer alle features ved 100 %. M9 skal håndtere fejlen som `PipelineRunStatus.SKIPPED_BUDGET`. · Blokerer: M9-integration.
 - [ ] **PostHog-klienten identificerer ikke brugeren** (ingen `identify` i browseren); forretningsevents sendes serverside med `distinct_id = user.id`. Klientens anonyme page views kobles derfor ikke til personer. · Forslag: OK for MVP (mindre data). · Blokerer: intet.
 - [ ] **Offentlig kontaktformular → Escalation** (docs/08 § 1) og `/admin/support/:id`, `/admin/digest/:date` er ikke bygget (admin-UI = M7-området). Eskalationsmails linker til `/admin/support/{id}`. · Blokerer: Marcos svar-flow i appen (mail virker).
+
+## Ejerens kundeoverblik `/admin/kunder` (16. nov 2026)
+- [ ] **Uden for en milestone:** bestilt direkte af Marco 16. nov 2026 (layoutretning "A: kontrolrum" — KPI'er øverst, alle kunder i én liste). Bygget efter § 10c (tempo; plan i PR'en). · Blokerer: intet.
+- [ ] **MRR bygger på prisen fra kundens `Plan`-række (ellers config), ikke på Stripe-prisen pr. abonnement.** Ændres prisen i DB, vises nye tal også for eksisterende abonnenter, selvom Stripe fortsat opkræver den gamle pris. · Forslag: gem `unitAmount` fra Stripe på `Subscription` i webhooken, når der kommer prisændringer. · Blokerer: intet ved én pris.
+- [ ] **Privatkunder vises kun samlet** (antal, MRR, gennemført, betalingsproblemer) — aldrig pr. person, af hensyn til dataminimering. · Forslag: behold; enkelt-opslag sker via support. · Blokerer: intet.
+- [ ] **"Sidste aktivitet"** = nyeste `Attempt.updatedAt` eller `User.lastActiveAt` i organisationen. `lastActiveAt` sættes ikke nogen steder i dag, så i praksis er det kun modulforsøg. · Forslag: sæt `lastActiveAt` ved login/sidevisning (maks. én skrivning pr. time). · Blokerer: intet.
+- [ ] **ARR-målet (1 mio kr) og tærskler (14 dage inaktiv/onboarding, opdatering hvert 30. sek.)** ligger i `src/lib/config/owner-dashboard.ts`. · Blokerer: intet.
