@@ -12,18 +12,18 @@ import {
   BuildingsIcon,
   CalendarBlankIcon,
   ChatCircleIcon,
-  FlaskIcon,
   GearSixIcon,
   QuestionIcon,
   SealCheckIcon,
   SquaresFourIcon,
   UsersThreeIcon,
 } from "@phosphor-icons/react";
+import { PracticeIcon } from "./practice-icon";
 
 const ICONS = {
   home: SquaresFourIcon,
   courses: BookOpenIcon,
-  sandbox: FlaskIcon,
+  sandbox: PracticeIcon,
   certificates: SealCheckIcon,
   calendar: CalendarBlankIcon,
   messages: ChatCircleIcon,
