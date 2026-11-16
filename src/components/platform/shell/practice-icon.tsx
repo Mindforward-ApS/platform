@@ -11,7 +11,7 @@ export function PracticeIcon({ size = 18, weight = "regular", className }: { siz
   if (weight === "fill") {
     return (
       <svg width={size} height={size} viewBox="0 0 256 256" aria-hidden className={className}>
-        <mask id={id}><rect width="256" height="256" fill="#fff" /><path d={spark} fill="#000" stroke="#000" strokeWidth="6" strokeLinejoin="round" /></mask>
+        <mask id={id} style={{ color: "white" }}><rect width="256" height="256" fill="currentColor" /><path d={spark} style={{ fill: "black", stroke: "black" }} strokeWidth="6" strokeLinejoin="round" /></mask>
         <path d={back} fill="none" stroke="currentColor" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" />
         <path d={front} fill="currentColor" stroke="currentColor" strokeWidth="16" strokeLinejoin="round" mask={`url(#${id})`} />
       </svg>
