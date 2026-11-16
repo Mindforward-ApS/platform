@@ -72,7 +72,7 @@ greb/
 │  │  ├─ (auth)/              login, magic-link-landing, invitation accept
 │  │  ├─ (learner)/           plan, modul-afspiller, sandkasse, certifikater, konto, "Fortryd aftale", opsig
 │  │  ├─ (org-admin)/         dashboard, medarbejdere, invitationer, rapport, abonnement
-│  │  ├─ (owner)/admin/       GREB_ADMIN: content review, kill switches, forbrug, eskalationer
+│  │  ├─ (owner)/admin/       GREB_ADMIN: kunder (live-overblik), content review, kill switches, forbrug, eskalationer
 │  │  └─ api/
 │  │     ├─ auth/[...all]/    Better Auth handler
 │  │     ├─ sandbox/[sessionId]/chat/   streaming chat (SSE)
