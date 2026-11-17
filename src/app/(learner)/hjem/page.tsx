@@ -50,19 +50,33 @@ function hours(start: Date, end: Date) {
   return { from: a.dec, to: Math.max(b.dec, a.dec + 0.25), label: `${a.txt} – ${b.txt}` };
 }
 
+/** The learner's chosen forløb: the active track enrollment, else the tool picked in onboarding. */
+async function chosenCourseSlug(owner: { userId: string; organizationId: string }): Promise<string | null> {
+  const where = { userId: owner.userId, organizationId: owner.organizationId };
+  const [enrolment, profile] = await Promise.all([
+    db().trackEnrollment.findFirst({ where: { ...where, active: true }, orderBy: { updatedAt: "desc" }, select: { track: { select: { key: true } } } }),
+    db().onboardingProfile.findFirst({ where, select: { track: { select: { key: true } } } }),
+  ]);
+  const key = enrolment?.track.key ?? profile?.track?.key;
+  return key ? key.toLowerCase() : null;
+}
+
 async function Content() {
   const ctx = await guardPage(() => requireActiveMembership(["OWNER", "ADMIN", "LEARNER"]), "/hjem");
   const owner = { userId: ctx.user.id, organizationId: ctx.membership.organizationId };
   // M7: B2B employees see once what their admin can and cannot see (docs/10 § 1.6) — same gate as /konto.
   if (await needsFirstLoginInfo(db(), ctx.user.id, owner.organizationId)) redirect("/konto/data-info");
-  const [courses, modules, feedback, streak, practice, todayItems] = await Promise.all([
+  const [allCourses, modules, feedback, streak, practice, todayItems, chosen] = await Promise.all([
     listCourseViews(db(), owner),
     listModulesForLearner(db(), owner, playableOptions()),
     latestFeedback(db(), owner),
     activityStreak(db(), owner),
     practiceTime(db(), owner),
     todayActivity(db(), owner),
+    chosenCourseSlug(owner),
   ]);
+  // Marco 2026-11-17: only the forløb the learner chose (the tool from onboarding) is shown; without a choice, all.
+  const courses = chosen ? allCourses.filter((c) => c.slug === chosen) : allCourses;
   const now = new Date();
   const visible = modules.filter((m) => m.status !== "REMOVED");
   const nextModule = visible.find((m) => m.status === "IN_PROGRESS") ?? visible.find((m) => m.status !== "PASSED");

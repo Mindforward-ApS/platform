@@ -2,9 +2,8 @@
 // his "CampusHub" reference in Mindforward colours). Real data: greeting, "Fortsæt" target, Mine kurser, next
 // module task, latest feedback, Fremskridt and the streak. Example data (marked "Eksempeldata"): the day calendar and
 // the Øvetid split per tool (no calendar or practice-time tracking exists yet).
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, CaretLeftIcon, CaretRightIcon, ClockIcon, FireIcon, GraduationCapIcon } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, CaretLeftIcon, CaretRightIcon, ClockIcon, FireIcon } from "@phosphor-icons/react/dist/ssr";
 import { Demo } from "@/components/platform/ui";
 import { MineKurser, type MineKurserCourse } from "./MineKurser";
 
@@ -40,17 +39,11 @@ function CardHead({ icon: Icon, title, sub, demo }: { icon?: typeof ClockIcon; t
 function Hero({ greeting, href }: { greeting: string; href: string }) {
   return (
     <div className="relative min-h-[284px] overflow-hidden rounded-[16px] p-[34px] text-pf-white" style={{ background: "radial-gradient(70% 85% at 58% 108%, var(--pf-ffc46e) 0%, var(--pf-f0803a) 16%, var(--pf-e2643f) 32%, var(--pf-rgba-170-62-30-9) 52%, var(--pf-rgba-60-18-4-0) 82%), radial-gradient(45% 70% at 92% 60%, var(--pf-rgba-226-100-63-55) 0%, transparent 70%), radial-gradient(70% 90% at 25% 112%, var(--pf-rgba-226-100-63-85) 0%, var(--pf-rgba-130-38-6-45) 45%, transparent 72%), linear-gradient(180deg, var(--pf-0b0806) 0%, var(--pf-1a0d06) 45%, var(--pf-3d1606) 100%)" }}>
-      <Image src="/img/mf-hero-wave.webp" alt="" width={1100} height={998} priority className="pointer-events-none absolute bottom-0 left-[61%] hidden h-[100%] w-auto -translate-x-1/2 sm:block" style={{ filter: "drop-shadow(0 0 22px var(--pf-rgba-255-140-60-45))" }} />
       <div className="relative z-[2] max-w-[300px]">
         <p className="text-[10.5px] font-medium uppercase tracking-[0.06em] text-pf-white/70">{greeting}</p>
         <h1 className="mt-[26px] text-[37px] font-bold leading-[1.08] tracking-[-0.025em] !text-pf-white">Få dagen<br />til at tælle</h1>
         <p className="mt-3 max-w-[230px] text-[12.5px] leading-[1.5] text-pf-white/80">Kurser, opgaver og dit hold, samlet ét sted.</p>
         <Link href={href} className="mt-[22px] inline-flex h-11 items-center gap-2.5 rounded-full bg-pf-white px-5 text-[14px] font-semibold text-[var(--pf-111)] transition hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,0,0,.25)]">Fortsæt hvor du slap <ArrowRightIcon size={15} weight="bold" /></Link>
-      </div>
-      <div aria-hidden className="absolute left-[42%] top-[40%] z-[2] hidden size-[108px] -rotate-[9deg] place-items-center rounded-[20px] border border-pf-white/40 bg-gradient-to-br from-pf-white/25 to-pf-white/[0.08] shadow-[0_20px_40px_rgba(0,0,0,.25),inset_0_1px_0_rgba(255,255,255,.35)] backdrop-blur-[14px] md:grid"><GraduationCapIcon size={50} weight="fill" /></div>
-      <div className="absolute left-[74.6%] top-[22%] z-[2] hidden h-[172px] w-[142px] rotate-[5deg] flex-col justify-between rounded-[18px] border border-pf-white/40 bg-gradient-to-br from-pf-white/25 to-pf-white/[0.08] px-4 py-[18px] shadow-[0_20px_40px_rgba(0,0,0,.25),inset_0_1px_0_rgba(255,255,255,.35)] backdrop-blur-[14px] md:flex">
-        <p className="text-[17.5px] font-medium leading-[1.32] tracking-[-0.01em]">”Øv i dag, <span className="text-[var(--pf-ffb27a)]">bliv skarpere</span> i morgen.”</p>
-        <div className="relative h-[3px] rounded-[3px] bg-pf-white/30"><span className="absolute inset-y-0 left-0 w-[34%] rounded-[3px] bg-pf-white" /></div>
       </div>
     </div>
   );
@@ -91,7 +84,6 @@ function Calendar({ today, items, continueHref }: { today: string; items: Oversi
           </Link>
         ))}
       </div>
-      <svg aria-hidden viewBox="0 0 340 90" preserveAspectRatio="none" className="absolute inset-x-0 bottom-0 h-[90px] w-full"><path d="M0 60 L40 42 L70 52 L110 26 L150 48 L185 36 L220 54 L262 30 L300 50 L340 40 V90 H0z" fill="var(--pf-362c28)" /><path d="M0 74 L50 58 L95 68 L140 52 L190 70 L240 56 L290 70 L340 60 V90 H0z" fill="var(--pf-2a221f)" /></svg>
     </div>
   );
 }
