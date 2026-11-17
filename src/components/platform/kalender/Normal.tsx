@@ -348,7 +348,8 @@ export function Normal({ today: initialToday, now: initialNow, events: initial }
                     const L = lanes.get(ev.id) ?? { lane: 0, of: 1 };
                     const d = drag?.id === ev.id ? drag : null;
                     const top = (s / 60) * PX + (d?.mode === "move" ? d.dy : 0);
-                    const h = Math.max(20, ((e - s) / 60) * PX - 2 + (d?.mode === "resize" ? d.dy : 0));
+                    // Very short blocks (a 5-minute lesson) still get one readable line.
+                    const h = Math.max(24, ((e - s) / 60) * PX - 2 + (d?.mode === "resize" ? d.dy : 0));
                     const past = ev.day < TODAY || (ev.day === TODAY && e <= NOW);
                     const label = `${ev.title}, ${start}–${end}${ev.done ? ", gennemført" : ""}`;
                     return (
@@ -359,7 +360,7 @@ export function Normal({ today: initialToday, now: initialNow, events: initial }
                         className={`group absolute z-10 cursor-pointer select-none overflow-hidden rounded-[6px] px-1.5 py-0.5 text-pf-white ${d ? "z-30 shadow-lg" : ""}`}
                         style={{ top, height: h, left: `calc(${((col + L.lane / L.of) / n) * 100}% + 1px)`, width: `calc(${100 / n / L.of}% - 4px)`, transform: d?.mode === "move" ? `translateX(${d.dx}px)` : undefined, background: CAL[ev.type].c, opacity: past ? 0.55 : 1, boxShadow: "0 0 0 1px var(--pf-fff)" }}>
                         {/* Short block: title and time run on as text (two lines at most); taller block: time on its own line. */}
-                        <p className={`text-[0.75rem] font-medium leading-[1.2] ${h < 60 ? "line-clamp-2" : "line-clamp-3"}`}>{ev.done && <CheckIcon size={11} weight="bold" aria-hidden className="mr-0.5 inline align-[-1px]" />}{ev.title}{h < 60 && <span className="font-normal opacity-90">, {start}</span>}</p>
+                        <p className={`text-[0.75rem] font-medium leading-[1.2] ${h < 36 ? "truncate" : h < 60 ? "line-clamp-2" : "line-clamp-3"}`}>{ev.done && <CheckIcon size={11} weight="bold" aria-hidden className="mr-0.5 inline align-[-1px]" />}{ev.title}{h < 60 && <span className="font-normal opacity-90">, {start}</span>}</p>
                         {h >= 60 && <p className="text-[0.6875rem] tabular-nums opacity-90">{start}–{end}</p>}
                         {!ev.done && <span aria-hidden onPointerDown={(p) => { p.stopPropagation(); setDrag({ id: ev.id, mode: "resize", dx: 0, dy: 0, ox: p.clientX, oy: p.clientY }); }} className="absolute inset-x-0 bottom-0 h-2 cursor-ns-resize" />}
                       </div>
