@@ -38,7 +38,7 @@ function CardHead({ icon: Icon, title, sub, demo }: { icon?: typeof ClockIcon; t
 
 function Hero({ greeting, href }: { greeting: string; href: string }) {
   return (
-    <div className="relative min-h-[284px] overflow-hidden rounded-[16px] p-[34px] text-pf-white" style={{ background: "radial-gradient(70% 85% at 58% 108%, var(--pf-ffc46e) 0%, var(--pf-f0803a) 16%, var(--pf-e2643f) 32%, var(--pf-rgba-170-62-30-9) 52%, var(--pf-rgba-60-18-4-0) 82%), radial-gradient(45% 70% at 92% 60%, var(--pf-rgba-226-100-63-55) 0%, transparent 70%), radial-gradient(70% 90% at 25% 112%, var(--pf-rgba-226-100-63-85) 0%, var(--pf-rgba-130-38-6-45) 45%, transparent 72%), linear-gradient(180deg, var(--pf-0b0806) 0%, var(--pf-1a0d06) 45%, var(--pf-3d1606) 100%)" }}>
+    <div className="relative min-h-[284px] overflow-hidden rounded-[16px] p-[34px] text-pf-white" style={{ background: "radial-gradient(80% 95% at 62% 112%, var(--pf-e8664a) 0%, var(--pf-coral-70) 30%, var(--pf-coral-22) 58%, transparent 80%), radial-gradient(60% 80% at 18% 115%, var(--pf-coral-55) 0%, transparent 70%), var(--pf-201613)" }}>
       <div className="relative z-[2] max-w-[300px]">
         <p className="text-[10.5px] font-medium uppercase tracking-[0.06em] text-pf-white/70">{greeting}</p>
         <h1 className="mt-[26px] text-[37px] font-bold leading-[1.08] tracking-[-0.025em] !text-pf-white">Få dagen<br />til at tælle</h1>

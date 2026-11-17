@@ -745,3 +745,10 @@ html:has(.app) {
   --pf-rgba-60-18-4-0: rgba(60,18,4,0);
   --pf-rgba-92-191-143-15: rgba(92,191,143,.15);
 }
+
+/* Mindforward coral at lower opacity, for the Oversigt hero glow (Marco 2026-11-17: same orange as the brand). */
+:root {
+  --pf-coral-70: rgba(232, 102, 74, 0.7);
+  --pf-coral-55: rgba(232, 102, 74, 0.55);
+  --pf-coral-22: rgba(232, 102, 74, 0.22);
+}
