@@ -4,7 +4,7 @@
 // the Øvetid split per tool (no calendar or practice-time tracking exists yet).
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, CaretDownIcon, CaretLeftIcon, CaretRightIcon, ClockIcon, FireIcon, GraduationCapIcon } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRightIcon, ArrowUpRightIcon, CheckIcon, CaretLeftIcon, CaretRightIcon, ClockIcon, FireIcon, GraduationCapIcon } from "@phosphor-icons/react/dist/ssr";
 import { Demo } from "@/components/platform/ui";
 import { MineKurser, type MineKurserCourse } from "./MineKurser";
 
@@ -17,6 +17,8 @@ export interface OversigtData {
   feedback: { title: string; score: number; when: string; href: string; good: string[]; better: string[] } | null;
   progress: { total: number; done: number; started: number };
   streak: { days: number; week: boolean[] };
+  practice: { tools: { key: string; name: string; minutes: number }[]; total: number; changePct: number | null };
+  todayItems: { title: string; href: string; kind: "practice" | "task"; from: number; to: number; label: string }[];
 }
 
 const card = "relative min-w-0 rounded-[16px] bg-pf-white px-[18px] pb-4 pt-[18px]";
@@ -30,7 +32,6 @@ function CardHead({ icon: Icon, title, sub, demo }: { icon?: typeof ClockIcon; t
       </div>
       <div className="flex items-center gap-2">
         {demo && <Demo />}
-        <button type="button" className="inline-flex h-7 items-center gap-1.5 rounded-[8px] bg-[var(--pf-f3eeeb)] pl-3 pr-2 text-[11.5px] font-medium text-heading hover:bg-[var(--pf-ebe4e0)]">Denne uge <CaretDownIcon size={12} /></button>
       </div>
     </div>
   );
@@ -55,29 +56,35 @@ function Hero({ greeting, href }: { greeting: string; href: string }) {
   );
 }
 
-// Example events (there is no calendar backend yet); the date is today's.
-function Calendar({ today }: { today: string }) {
-  const events = [
-    { t: "AI til mails", s: "8.30 – 10.00", l: 0, w: 30, top: 34, c: "bg-[var(--coral)] text-pf-white", href: "/forloeb" },
-    { t: "Holdmøde", s: "16.00 – 17.00", l: 66, w: 33, top: 38, c: "bg-pf-white text-[var(--pf-111)]", href: "/beskeder" },
-    { t: "Frokost", s: "12.00 – 13.00", l: 34, w: 27, top: 86, c: "bg-pf-white text-[var(--pf-111)]", href: "/kalender" },
-    { t: "Øvemiljø: Mail til en kunde", s: "11.00 – 16.00", l: 28.5, w: 70, top: 134, c: "bg-[var(--pf-67c48f)] text-[var(--pf-0d2a19)]", href: "/sandkasse" },
-  ];
+// Today (Marco 2026-11-17: real data only): the learner's own øvemiljø sessions and tasks today, placed on the 8–18
+// timeline by their real time. Nothing today → a short empty state with the next step.
+const TOP = [34, 86, 134, 182];
+function Calendar({ today, items, continueHref }: { today: string; items: OversigtData["todayItems"]; continueHref: string }) {
+  const pos = (h: number) => Math.min(100, Math.max(0, ((h - 8) / 10) * 100));
+  const events = items.map((e, k) => {
+    const l = Math.min(pos(e.from), 72);
+    return { t: e.title, s: e.label, l, w: Math.max(pos(e.to) - l, 28), top: TOP[k % TOP.length], c: e.kind === "practice" ? "bg-[var(--pf-67c48f)] text-[var(--pf-0d2a19)]" : "bg-[var(--coral)] text-pf-white", href: e.href };
+  });
   return (
     <div className="relative min-h-[284px] overflow-hidden rounded-[16px] bg-gradient-to-b from-[var(--pf-2a211e)] to-[var(--pf-1f1916)] px-4 py-[18px] text-pf-white">
       <div className="relative z-[2] flex items-center justify-between">
-        <strong className="flex min-w-0 items-center gap-2 whitespace-nowrap text-[14px] font-semibold">{today}<span className="hidden 2xl:contents"><Demo dark /></span></strong>
+        <strong className="flex min-w-0 items-center gap-2 whitespace-nowrap text-[14px] font-semibold">{today}</strong>
         <div className="flex shrink-0 items-center gap-1.5">
           <Link href="/kalender" className="h-[26px] whitespace-nowrap rounded-full border border-pf-white/20 px-3.5 text-[11px] leading-[24px] text-[var(--pf-ddd)] hover:bg-pf-white/10">I dag</Link>
           <button type="button" aria-label="Forrige dag" className="grid size-8 place-items-center rounded-full bg-pf-white/10 text-[var(--pf-ddd)] hover:bg-pf-white/20"><CaretLeftIcon size={13} weight="bold" /></button>
           <button type="button" aria-label="Næste dag" className="grid size-8 place-items-center rounded-full bg-pf-white/10 text-[var(--pf-ddd)] hover:bg-pf-white/20"><CaretRightIcon size={13} weight="bold" /></button>
         </div>
       </div>
-      {/* Below 2xl the "Eksempeldata" badge sits bottom-left, so it never runs into "I dag" (Marco 2026-11-15). */}
-      <span className="absolute bottom-3 left-4 z-[3] 2xl:hidden"><Demo dark /></span>
       <div className="absolute inset-x-4 bottom-0 top-[58px] z-[1]">
         <div className="relative z-[2] flex justify-between pl-1 pr-1.5 text-[10px] text-pf-white/70">{["8", "10", "12", "14", "16", "18"].map((x) => <span key={x}>{x}</span>)}</div>
         <div className="absolute bottom-[30px] left-1 right-1.5 top-5 flex justify-between">{Array.from({ length: 6 }, (_, i) => <i key={i} className="border-l border-dashed border-pf-white/[0.08]" />)}</div>
+        {events.length === 0 && (
+          <div className="absolute inset-x-1 top-9 z-[2] rounded-[10px] bg-pf-white/[0.06] px-3 py-3 ring-1 ring-pf-white/10">
+            <b className="block text-[12px] font-semibold">Intet øvet i dag endnu</b>
+            <span className="mt-0.5 block text-[11px] text-pf-white/70">10 minutter er nok til at holde gang i det.</span>
+            <Link href={continueHref} className="mt-2.5 inline-flex h-7 items-center gap-1 rounded-full bg-pf-white px-3 text-[11px] font-semibold text-[var(--pf-111)]">Start nu <ArrowRightIcon size={11} weight="bold" /></Link>
+          </div>
+        )}
         {events.map((e) => (
           <Link key={e.t} href={e.href} className={`absolute z-[2] rounded-[6px] px-2 py-1.5 leading-[1.25] shadow-[0_6px_16px_rgba(0,0,0,.25)] transition hover:-translate-y-0.5 ${e.c}`} style={{ left: `${e.l}%`, width: `${e.w}%`, top: e.top }}>
             <b className="block truncate text-[10.5px] font-semibold">{e.t}</b><span className="mt-0.5 block whitespace-nowrap text-[9px] opacity-80">{e.s}</span>
@@ -90,23 +97,27 @@ function Calendar({ today }: { today: string }) {
 }
 
 // Øvetid · version C, chosen by Marco 2026-11-02 (no clock icon): time split by tool, plus the next task.
-function Oevetid({ nextTask }: { nextTask: OversigtData["nextTask"] }) {
-  const tools = [
-    { n: "ChatGPT", m: 95, c: "var(--pf-e2643f)" },
-    { n: "Copilot", m: 80, c: "var(--pf-8a4e3b)" },
-    { n: "Claude", m: 45, c: "var(--pf-f6b49b)" },
-  ];
-  const total = tools.reduce((n, t) => n + t.m, 0);
+const TOOL_COLOURS: Record<string, string> = { CHATGPT: "var(--pf-e2643f)", COPILOT: "var(--pf-8a4e3b)", CLAUDE: "var(--pf-f6b49b)", GEMINI: "var(--pf-8a4e3b)" };
+const hm = (m: number) => (m >= 60 ? `${Math.floor(m / 60)} t ${m % 60} m` : `${m} m`);
+// The learner's own active minutes in the øvemiljø this week, per tool (Marco 2026-11-17: no example data).
+function Oevetid({ nextTask, practice }: { nextTask: OversigtData["nextTask"]; practice: OversigtData["practice"] }) {
+  const tools = practice.tools.map((t) => ({ n: t.name, m: t.minutes, c: TOOL_COLOURS[t.key] ?? "var(--pf-e2643f)" }));
+  const total = practice.total;
   return (
     <div className={`${card} flex min-h-[230px] flex-col`}>
-      <CardHead title="Øvetid" sub="Fordelt på værktøjer" demo />
-      <p className="mt-3 flex items-baseline gap-2"><strong className="text-[28px] font-semibold tracking-[-0.03em] text-heading">3 t 40 m</strong><span className="text-[12px] font-semibold text-[var(--pf-3fae72)]">↑ 28 %</span></p>
-      <div className="mt-2 flex h-2.5 overflow-hidden rounded-full">{tools.map((t) => <span key={t.n} style={{ width: `${(t.m / total) * 100}%`, background: t.c }} />)}</div>
+      <CardHead title="Øvetid" sub="Denne uge, fordelt på værktøjer" />
+      <p className="mt-3 flex items-baseline gap-2"><strong className="text-[28px] font-semibold tracking-[-0.03em] text-heading">{hm(total)}</strong>{practice.changePct !== null && <span className={`text-[12px] font-semibold ${practice.changePct >= 0 ? "text-[var(--pf-3fae72)]" : "text-pf-muted"}`}>{practice.changePct >= 0 ? "↑" : "↓"} {Math.abs(practice.changePct)} %</span>}</p>
+      {total > 0 ? (
+        <div className="mt-2 flex h-2.5 overflow-hidden rounded-full">{tools.map((t) => <span key={t.n} style={{ width: `${(t.m / total) * 100}%`, background: t.c }} />)}</div>
+      ) : (
+        <div className="mt-2 h-2.5 rounded-full bg-[var(--pf-f3eeeb)]" />
+      )}
+      {total === 0 && <p className="mt-3 text-[12px] text-pf-muted">Du har ikke øvet endnu i denne uge. Din tid i øvemiljøet bliver vist her.</p>}
       <ul className="mt-3 grid grid-cols-3 gap-2">
         {tools.map((t) => (
           <li key={t.n}>
             <p className="flex items-center gap-1.5 text-[11px] text-pf-muted"><i className="size-2 rounded-full" style={{ background: t.c }} />{t.n}</p>
-            <p className="text-[13px] font-semibold text-heading">{Math.floor(t.m / 60)} t {t.m % 60} m</p>
+            <p className="text-[13px] font-semibold text-heading">{hm(t.m)}</p>
           </li>
         ))}
       </ul>
@@ -126,23 +137,27 @@ function Oevetid({ nextTask }: { nextTask: OversigtData["nextTask"] }) {
 
 // Seneste feedback (Marco 2026-11-02, chosen over all Fokuskort versions): the last scored task from the øvemiljø,
 // what went well and what to do better. Real: the learner's latest finished module attempt (score, step counts).
-// Without any attempt yet the approved example is shown, marked "Eksempeldata".
-const EXAMPLE_FEEDBACK: NonNullable<OversigtData["feedback"]> = {
-  title: "Hvad må du dele?",
-  score: 92,
-  when: "i går",
-  href: "/moduler",
-  good: ["Du fjernede alle navne", "Du så CPR-nummeret", "Kort og klar begrundelse"],
-  better: ["Tjek også adresser i fritekst", "Skriv hvorfor, ikke kun hvad"],
-};
-function Fokuskort({ feedback }: { feedback: OversigtData["feedback"] }) {
-  const f = feedback ?? EXAMPLE_FEEDBACK;
+// Without any finished task yet an empty state points to the first task (Marco 2026-11-17: no example data).
+function Fokuskort({ feedback, nextTask }: { feedback: OversigtData["feedback"]; nextTask: OversigtData["nextTask"] }) {
+  if (!feedback) {
+    const href = nextTask?.href ?? "/sandkasse";
+    return (
+      <div className={`${card} flex min-h-[200px] flex-col`}>
+        <div><h4 className="text-[15.5px] font-semibold leading-[1.2] tracking-[-0.01em] text-heading">Seneste feedback</h4><small className="mt-px block text-[11.5px] text-pf-muted">Fra øvemiljøet</small></div>
+        <div className="mt-3 flex flex-1 flex-col items-start justify-center rounded-[12px] bg-[var(--pf-f7f2ee)] p-4">
+          <p className="text-[13px] font-semibold text-heading">Her kommer din første feedback</p>
+          <p className="mt-1 max-w-[46ch] text-[12px] text-pf-muted">Når du har lavet en opgave i øvemiljøet, ser du din score, hvad der gik godt, og hvad du kan gøre endnu bedre.</p>
+          <Link href={href} className="mt-3 inline-flex h-8 items-center gap-1.5 rounded-[8px] bg-[var(--pf-201613)] px-3.5 text-[12px] font-semibold text-pf-white">{nextTask ? `Start: ${nextTask.title}` : "Åbn øvemiljøet"} <ArrowRightIcon size={12} weight="bold" /></Link>
+        </div>
+      </div>
+    );
+  }
+  const f = feedback;
   return (
     <div className={`${card} flex min-h-[200px] flex-col`}>
       <div className="flex items-start justify-between gap-3">
         <div><h4 className="text-[15.5px] font-semibold leading-[1.2] tracking-[-0.01em] text-heading">Seneste feedback</h4><small className="mt-px block text-[11.5px] text-pf-muted">Fra øvemiljøet · {f.when}</small></div>
         <div className="flex items-center gap-2">
-          {!feedback && <Demo />}
           <Link href={f.href} className="inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-[8px] bg-[var(--pf-f3eeeb)] px-3 text-[11.5px] font-medium text-heading hover:bg-[var(--pf-ebe4e0)]">Se opgaven <ArrowRightIcon size={12} /></Link>
         </div>
       </div>
@@ -217,9 +232,9 @@ export function Oversigt({ data }: { data: OversigtData }) {
     <style>{`/* Short laptop screens (Marco 2026-11-15): the whole dashboard is scaled down so every card fits under the top bar without scrolling or cutting anything off. */ .oversigt-fit{--fit:1} @media (min-width:1280px){.oversigt-fit{zoom:var(--fit);min-height:calc((100svh - 5.9rem) / var(--fit)) !important}} @media (min-width:1280px) and (max-height:980px){.oversigt-fit{--fit:0.974}} @media (min-width:1280px) and (max-height:960px){.oversigt-fit{--fit:0.952}} @media (min-width:1280px) and (max-height:940px){.oversigt-fit{--fit:0.929}} @media (min-width:1280px) and (max-height:920px){.oversigt-fit{--fit:0.907}} @media (min-width:1280px) and (max-height:900px){.oversigt-fit{--fit:0.884}} @media (min-width:1280px) and (max-height:880px){.oversigt-fit{--fit:0.862}} @media (min-width:1280px) and (max-height:860px){.oversigt-fit{--fit:0.839}} @media (min-width:1280px) and (max-height:840px){.oversigt-fit{--fit:0.817}} @media (min-width:1280px) and (max-height:820px){.oversigt-fit{--fit:0.794}} @media (min-width:1280px) and (max-height:800px){.oversigt-fit{--fit:0.772}} @media (min-width:1280px) and (max-height:780px){.oversigt-fit{--fit:0.749}} @media (min-width:1280px) and (max-height:760px){.oversigt-fit{--fit:0.727}} @media (min-width:1280px) and (max-height:740px){.oversigt-fit{--fit:0.704}} @media (min-width:1280px) and (max-height:720px){.oversigt-fit{--fit:0.682}} @media (min-width:1280px) and (max-height:700px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:680px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:660px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:640px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:620px){.oversigt-fit{--fit:0.66}} @media (min-width:1280px) and (max-height:600px){.oversigt-fit{--fit:0.66}}`}</style>
     {/* Cream page background like the website (var(--pf-f7f2ee)) behind the whole dashboard, so the white cards stand out with a clear edge, and the cards fill the full width (Marco 2026-11-02). xl: the dashboard fills the window from under the top bar to the bottom (Marco: "fra bunden til toppen"), but on short screens the rows grow to their content and the page scrolls instead of cutting cards off (Marco 2026-11-15). */}
     <div data-pf-cream data-pf-fill className="oversigt-fit flex flex-col gap-3 xl:grid xl:min-h-[max(720px,calc(100svh-5.9rem))] xl:grid-rows-[minmax(min-content,284fr)_minmax(min-content,230fr)_minmax(min-content,200fr)_auto]">
-      <section className="grid min-h-0 gap-3 xl:grid-cols-[2.45fr_1fr] [&>*]:min-h-[284px]"><Hero greeting={data.greeting} href={data.continueHref} /><Calendar today={data.today} /></section>
-      <section className="grid min-h-0 gap-3 xl:grid-cols-[1fr_1.76fr] [&>*]:min-h-[230px]"><Oevetid nextTask={data.nextTask} /><MineKurser courses={data.courses} className="min-h-[230px]" /></section>
-      <section className="grid min-h-0 gap-3 xl:grid-cols-[1.76fr_1fr] [&>*]:min-h-[200px]"><Fokuskort feedback={data.feedback} /><Praestation progress={data.progress} /></section>
+      <section className="grid min-h-0 gap-3 xl:grid-cols-[2.45fr_1fr] [&>*]:min-h-[284px]"><Hero greeting={data.greeting} href={data.continueHref} /><Calendar today={data.today} items={data.todayItems} continueHref={data.continueHref} /></section>
+      <section className="grid min-h-0 gap-3 xl:grid-cols-[1fr_1.76fr] [&>*]:min-h-[230px]"><Oevetid nextTask={data.nextTask} practice={data.practice} /><MineKurser courses={data.courses} className="min-h-[230px]" /></section>
+      <section className="grid min-h-0 gap-3 xl:grid-cols-[1.76fr_1fr] [&>*]:min-h-[200px]"><Fokuskort feedback={data.feedback} nextTask={data.nextTask} /><Praestation progress={data.progress} /></section>
       <Streak streak={data.streak} />
     </div>
     </>

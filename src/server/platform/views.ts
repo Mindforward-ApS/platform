@@ -175,3 +175,86 @@ export async function latestFeedback(db: PrismaClient, owner: Owner): Promise<La
     failedSteps: a.stepResults.filter((s) => !s.passed).length,
   };
 }
+
+// ── Oversigt: the learner's own practice time and today's activity (Marco 2026-11-17: no more example data) ──
+
+/** Gaps between two sandbox events longer than this count as a break, not practice. */
+const IDLE_MS = 5 * 60 * 1000;
+const startOfWeek = (now: Date) => {
+  const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  return new Date(d.getTime() - ((d.getUTCDay() + 6) % 7) * DAY);
+};
+
+export interface PracticeTime {
+  /** Minutes this week per tool, only tools with time. */
+  tools: { key: "CHATGPT" | "COPILOT" | "CLAUDE" | "GEMINI"; name: string; minutes: number }[];
+  total: number;
+  /** Change against last week in %, null when there was no practice last week. */
+  changePct: number | null;
+}
+
+/** Active minutes in the øvemiljø this week (Monday to now) per tool, from the learner's own sandbox events. */
+export async function practiceTime(db: PrismaClient, owner: Owner, now = new Date()): Promise<PracticeTime> {
+  const week = startOfWeek(now);
+  const lastWeek = new Date(week.getTime() - 7 * DAY);
+  const events = await db.sandboxEvent.findMany({
+    where: { organizationId: owner.organizationId, userId: owner.userId, createdAt: { gte: lastWeek, lte: now } },
+    select: { sessionId: true, createdAt: true, session: { select: { track: { select: { key: true, displayName: true } } } } },
+    orderBy: [{ sessionId: "asc" }, { createdAt: "asc" }],
+  });
+  const thisWeek = new Map<string, { name: string; ms: number }>();
+  let prevMs = 0;
+  for (let i = 1; i < events.length; i++) {
+    const a = events[i - 1], b = events[i];
+    if (a.sessionId !== b.sessionId) continue;
+    const gap = Math.min(b.createdAt.getTime() - a.createdAt.getTime(), IDLE_MS);
+    if (b.createdAt >= week) {
+      const t = b.session.track;
+      const cur = thisWeek.get(t.key) ?? { name: t.displayName, ms: 0 };
+      cur.ms += gap;
+      thisWeek.set(t.key, cur);
+    } else prevMs += gap;
+  }
+  const order = ["CHATGPT", "COPILOT", "CLAUDE", "GEMINI"] as const;
+  const tools = order.flatMap((key) => {
+    const t = thisWeek.get(key);
+    const minutes = t ? Math.round(t.ms / 60_000) : 0;
+    return minutes > 0 ? [{ key, name: t!.name.replace(/^Microsoft 365 /, ""), minutes }] : [];
+  });
+  const total = tools.reduce((n, t) => n + t.minutes, 0);
+  const prev = Math.round(prevMs / 60_000);
+  return { tools, total, changePct: prev > 0 ? Math.round(((total - prev) / prev) * 100) : null };
+}
+
+export interface TodayItem {
+  title: string;
+  start: Date;
+  end: Date;
+  href: string;
+  kind: "practice" | "task";
+}
+
+/** What the learner did today: øvemiljø sessions and module tasks, with their real start and end time. */
+export async function todayActivity(db: PrismaClient, owner: Owner, now = new Date()): Promise<TodayItem[]> {
+  const since = new Date(now.getTime() - DAY);
+  const cphDay = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Copenhagen" }).format(d);
+  const [sessions, attempts] = await Promise.all([
+    db.sandboxSession.findMany({
+      where: { organizationId: owner.organizationId, userId: owner.userId, lastActivityAt: { gte: since }, attemptId: null },
+      select: { id: true, createdAt: true, lastActivityAt: true, track: { select: { displayName: true, key: true } } },
+      orderBy: { createdAt: "asc" },
+      take: 6,
+    }),
+    db.attempt.findMany({
+      where: { organizationId: owner.organizationId, userId: owner.userId, startedAt: { gte: since } },
+      select: { startedAt: true, completedAt: true, updatedAt: true, moduleVersion: { select: { title: true, module: { select: { slug: true } } } } },
+      orderBy: { startedAt: "asc" },
+      take: 6,
+    }),
+  ]);
+  const items: TodayItem[] = [
+    ...sessions.map((s) => ({ title: `Øvemiljø: ${s.track.displayName.replace(/^Microsoft 365 /, "")}`, start: s.createdAt, end: s.lastActivityAt, href: "/sandkasse", kind: "practice" as const })),
+    ...attempts.map((a) => ({ title: a.moduleVersion.title, start: a.startedAt, end: a.completedAt ?? a.updatedAt, href: `/modul/${a.moduleVersion.module.slug}`, kind: "task" as const })),
+  ];
+  return items.filter((i) => cphDay(i.end) === cphDay(now)).sort((a, b) => a.start.getTime() - b.start.getTime()).slice(0, 4);
+}

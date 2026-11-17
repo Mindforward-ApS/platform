@@ -8,7 +8,7 @@ import { needsFirstLoginInfo } from "@/server/admin/first-login";
 import { db } from "@/server/db";
 import { listModulesForLearner } from "@/server/modules/catalog";
 import { playableOptions } from "@/server/modules/deps";
-import { activityStreak, latestFeedback, listCourseViews, type LatestFeedback } from "@/server/platform/views";
+import { activityStreak, latestFeedback, listCourseViews, practiceTime, todayActivity, type LatestFeedback } from "@/server/platform/views";
 
 // Oversigt = the approved platform dashboard (mindforward-platform "/", Marco Nov 2026), on greb's real data.
 // Only the learner's own data; no comparison with colleagues (docs/01 § 7). The old modules stay reachable via the
@@ -40,16 +40,28 @@ function feedbackView(f: LatestFeedback, now: Date): NonNullable<OversigtData["f
   return { title: f.title, score: f.scorePct, when: when(f.completedAt, now), href: `/modul/${f.moduleSlug}`, good, better: better.length ? better : ["Alle trin bestået uden hint"] };
 }
 
+// Copenhagen clock time as decimal hours and as "8.30" text, for the calendar card.
+function hours(start: Date, end: Date) {
+  const parts = (d: Date) => {
+    const [h, m] = new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: TZ }).format(d).split(/[.:]/).map(Number);
+    return { dec: h + m / 60, txt: `${h}.${String(m).padStart(2, "0")}` };
+  };
+  const a = parts(start), b = parts(end);
+  return { from: a.dec, to: Math.max(b.dec, a.dec + 0.25), label: `${a.txt} – ${b.txt}` };
+}
+
 async function Content() {
   const ctx = await guardPage(() => requireActiveMembership(["OWNER", "ADMIN", "LEARNER"]), "/hjem");
   const owner = { userId: ctx.user.id, organizationId: ctx.membership.organizationId };
   // M7: B2B employees see once what their admin can and cannot see (docs/10 § 1.6) — same gate as /konto.
   if (await needsFirstLoginInfo(db(), ctx.user.id, owner.organizationId)) redirect("/konto/data-info");
-  const [courses, modules, feedback, streak] = await Promise.all([
+  const [courses, modules, feedback, streak, practice, todayItems] = await Promise.all([
     listCourseViews(db(), owner),
     listModulesForLearner(db(), owner, playableOptions()),
     latestFeedback(db(), owner),
     activityStreak(db(), owner),
+    practiceTime(db(), owner),
+    todayActivity(db(), owner),
   ]);
   const now = new Date();
   const visible = modules.filter((m) => m.status !== "REMOVED");
@@ -81,6 +93,8 @@ async function Content() {
       started: courses.filter((c) => c.done > 0).reduce((s, c) => s + c.lessons.filter((l) => l.ready && !l.done).length, 0),
     },
     streak: { days: streak.streak, week: streak.week },
+    practice,
+    todayItems: todayItems.map((i) => ({ title: i.title, href: i.href, kind: i.kind, ...hours(i.start, i.end) })),
   };
 
   return (
