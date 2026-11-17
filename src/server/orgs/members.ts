@@ -103,6 +103,7 @@ export async function eraseMemberFromOrg(db: PrismaClient, scope: Scope, memberI
     // Work profile, connector demo log and results the person brought along into this org.
     await tx.workProfile.deleteMany({ where });
     await tx.connectorDemoRun.deleteMany({ where });
+    await tx.calendarEvent.deleteMany({ where }); // own Kalender blocks in this org
     await tx.certificateShare.deleteMany({ where });
     await tx.credentialTransfer.deleteMany({ where: { userId: member.userId, OR: [{ toOrganizationId: scope.organizationId }, { fromOrganizationId: scope.organizationId }] } });
     await tx.session.updateMany({ where: { userId: member.userId, activeOrganizationId: scope.organizationId }, data: { activeOrganizationId: null } });

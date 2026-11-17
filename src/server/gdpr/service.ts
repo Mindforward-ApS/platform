@@ -36,7 +36,7 @@ export async function exportUserData(db: PrismaClient, userId: string, opts: { s
     where: { userId },
     select: { personalPlan: true, friendEmail: true, studentEmail: true, teamSizeBand: true, startPath: true, completedAt: true, createdAt: true, track: { select: { displayName: true } }, organization: { select: { name: true } } },
   });
-  const [memberships, trackEnrollments, placementResults, assignments, attempts, certificates, consentRecords, emailMessages, supportConversations, sandboxSessions, workProfiles, connectorDemoRuns, certificateShares, credentialTransfers] = await Promise.all([
+  const [memberships, trackEnrollments, placementResults, assignments, attempts, certificates, consentRecords, emailMessages, supportConversations, sandboxSessions, workProfiles, connectorDemoRuns, certificateShares, credentialTransfers, calendarEvents] = await Promise.all([
     db.membership.findMany({ where: { userId }, select: { role: true, jobRole: true, createdAt: true, deactivatedAt: true, organization: { select: { name: true, type: true } } } }),
     db.trackEnrollment.findMany({ where: { userId }, select: { licenseTier: true, level: true, active: true, createdAt: true, track: { select: { displayName: true } } } }),
     db.placementResult.findMany({ where: { userId }, select: { testVersion: true, answers: true, scorePct: true, level: true, licenseTier: true, jobRole: true, createdAt: true, track: { select: { displayName: true } } } }),
@@ -58,6 +58,7 @@ export async function exportUserData(db: PrismaClient, userId: string, opts: { s
     db.connectorDemoRun.findMany({ where: { userId }, select: { connectorId: true, platform: true, promptEdited: true, status: true, createdAt: true } }),
     db.certificateShare.findMany({ where: { userId }, select: { createdAt: true, certificate: { select: { verificationCode: true } }, organization: { select: { name: true } } } }),
     db.credentialTransfer.findMany({ where: { userId }, select: { fromOrganizationId: true, decision: true, modulesCarried: true, certificatesShared: true, decidedAt: true, toOrganization: { select: { name: true } } } }),
+    db.calendarEvent.findMany({ where: { userId }, select: { title: true, type: true, startsAt: true, endsAt: true, href: true, createdAt: true, updatedAt: true, organization: { select: { name: true } } }, orderBy: { startsAt: "asc" } }),
   ]);
   await writeAudit(db, { action: "USER_DATA_EXPORTED", actorUserId: userId, targetType: "user", targetId: userId });
   return {
@@ -79,6 +80,7 @@ export async function exportUserData(db: PrismaClient, userId: string, opts: { s
     connectorDemoRuns,
     certificateShares,
     credentialTransfers,
+    calendarEvents,
   };
 }
 
@@ -125,7 +127,7 @@ export async function confirmAccountDeletion(db: PrismaClient, userId: string, t
 
 /**
  * gdpr.erase-user: hard-deletes the user. Cascades learning data (memberships, assignments, attempts + step
- * results, certificates, enrollments, sandbox, support, placement); ConsentRecord, WithdrawalRequest,
+ * results, certificates, enrollments, sandbox, support, placement, calendar events); ConsentRecord, WithdrawalRequest,
  * EmailMessage and AuditLog keep their rows with userId = null (evidence). The user's PERSONAL org is
  * soft-deleted (Stripe customer stays for bookkeeping). An only-OWNER of a BUSINESS org is never erased.
  */

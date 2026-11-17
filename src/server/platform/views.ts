@@ -180,6 +180,8 @@ export async function latestFeedback(db: PrismaClient, owner: Owner): Promise<La
 
 /** Gaps between two sandbox events longer than this count as a break, not practice. */
 const IDLE_MS = 5 * 60 * 1000;
+/** Tool name as shown in the platform ("Copilot", not "Microsoft 365 Copilot"). */
+export const toolName = (displayName: string) => displayName.replace(/^Microsoft 365 /, "");
 const startOfWeek = (now: Date) => {
   const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
   return new Date(d.getTime() - ((d.getUTCDay() + 6) % 7) * DAY);
@@ -219,7 +221,7 @@ export async function practiceTime(db: PrismaClient, owner: Owner, now = new Dat
   const tools = order.flatMap((key) => {
     const t = thisWeek.get(key);
     const minutes = t ? Math.round(t.ms / 60_000) : 0;
-    return minutes > 0 ? [{ key, name: t!.name.replace(/^Microsoft 365 /, ""), minutes }] : [];
+    return minutes > 0 ? [{ key, name: toolName(t!.name), minutes }] : [];
   });
   const total = tools.reduce((n, t) => n + t.minutes, 0);
   const prev = Math.round(prevMs / 60_000);
@@ -253,7 +255,7 @@ export async function todayActivity(db: PrismaClient, owner: Owner, now = new Da
     }),
   ]);
   const items: TodayItem[] = [
-    ...sessions.map((s) => ({ title: `Øvemiljø: ${s.track.displayName.replace(/^Microsoft 365 /, "")}`, start: s.createdAt, end: s.lastActivityAt, href: "/sandkasse", kind: "practice" as const })),
+    ...sessions.map((s) => ({ title: `Øvemiljø: ${toolName(s.track.displayName)}`, start: s.createdAt, end: s.lastActivityAt, href: "/sandkasse", kind: "practice" as const })),
     ...attempts.map((a) => ({ title: a.moduleVersion.title, start: a.startedAt, end: a.completedAt ?? a.updatedAt, href: `/modul/${a.moduleVersion.module.slug}`, kind: "task" as const })),
   ];
   return items.filter((i) => cphDay(i.end) === cphDay(now)).sort((a, b) => a.start.getTime() - b.start.getTime()).slice(0, 4);

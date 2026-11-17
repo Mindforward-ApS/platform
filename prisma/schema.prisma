@@ -477,6 +477,7 @@ model User {
   workProfiles            WorkProfile[]
   connectorDemoRuns       ConnectorDemoRun[]
   onboardingProfiles      OnboardingProfile[]
+  calendarEvents          CalendarEvent[]
 
   @@map("user")
 }
@@ -612,6 +613,7 @@ model Organization {
   workProfiles            WorkProfile[]
   connectorDemoRuns       ConnectorDemoRun[]
   onboardingProfiles      OnboardingProfile[]
+  calendarEvents          CalendarEvent[]
 
   @@index([type])
   @@map("organization")
@@ -1946,4 +1948,30 @@ model CourseLessonCompletion {
   @@unique([organizationId, userId, lessonId])
   @@index([organizationId, userId, courseId])
   @@map("course_lesson_completion")
+}
+
+/// Kalender (/kalender): the learner's own planned blocks. Completed lessons and øvemiljø sessions are computed, not stored.
+enum CalendarEventType {
+  LESSON // "Lektion"
+  PRACTICE // "Øvelse"
+  MEETING // "Holdmøde"
+}
+
+model CalendarEvent {
+  id             String            @id @default(cuid())
+  userId         String
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  title          String            @db.VarChar(120)
+  type           CalendarEventType
+  startsAt       DateTime
+  endsAt         DateTime // > startsAt, at most 12 h later (enforced in src/lib/schemas/calendar.ts)
+  href           String? // internal path only
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([userId, startsAt])
+  @@index([organizationId])
+  @@map("calendar_event")
 }

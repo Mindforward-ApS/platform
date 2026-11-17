@@ -26,6 +26,7 @@
 | Email/samtykke | `EmailMessage`, `EmailSuppression`, `ConsentRecord` | M1 (`EmailMessage`) / M5 (`ConsentRecord`) / M8 |
 | Indholdsmotor | `ContentSource`, `SourceSnapshot`, `ChangeEvent`, `PipelineRun` | M9 |
 | Support | `SupportConversation`, `SupportMessage`, `Escalation` | M10 |
+| Kalender | `CalendarEvent` | Platform (Marco nov. 2026) |
 | Drift | `AuditLog` (M1), `SandboxSession`, `SandboxEvent` (M3), `AiCall`, `AiUsageDaily` (M3), `BudgetMonth` (M3; alarm M10), `WebhookEvent` (M6), `FeatureFlag` (M3) | — |
 
 `TrackEnrollment`, `Plan`, `WithdrawalRequest`, `TwoFactor`, `RateLimit`, `EmailSuppression`, `AiCall`, `AiUsageDaily`, `BudgetMonth`, `WebhookEvent` og `FeatureFlag` er **tilføjet ud over § 9** fordi beslutninger i § 2–10 kræver dem (licensniveau pr. bruger, priser i DB, fortrydelses-kvittering, 2FA for admin, rate limits, bounce-håndtering, AI-lofter, webhook-idempotens, kill switches). De er ikke nye navne for eksisterende begreber. → Tilføjes til § 9 af ejeren af `00-beslutninger.md`.
@@ -129,6 +130,14 @@ Supportagentens værktøjer er org- og bruger-scopede og kan ikke læse prompt-t
 | `SandboxSession` | Én øvesession (seed-verden + overlay-state) | `trackId`, `skinKey`, `worldVersion`, `moduleVersionId`, `sceneId`, `attemptId`, `state` (Json overlay), `nextSeq`, `status`, `expiresAt` | idx `(userId, status)`, `attemptId`, `organizationId` | Lukkes efter 7 dages inaktivitet; slettes 30 dage efter lukning (events med `matchedSandboxEventId` bevares som bevis indtil attempt slettes) |
 | `SandboxEvent` | Typet event (bedømmes af `CLICK_TASK`) | `seq` (server-tildelt), `type` (`SandboxEventType`), `actor`, `target`, `payload` (Zod pr. type, **ingen fritekst**), `contentText` (fritekst, **30 dage**), `stepId` | unik `(sessionId, seq)`, idx `(sessionId, type)`, `(organizationId, createdAt)`, `createdAt` | `contentText` → null efter 30 dage; øvrigt følger session |
 
+## 11a. Kalender (`/kalender`)
+
+| Entitet | Formål | Nøglefelter | Indekser | Opbevaring |
+|---|---|---|---|---|
+| `CalendarEvent` | Lærerens egne planlagte blokke i Kalender (Lektion/Øvelse/Holdmøde) | `userId`, `organizationId`, `title` (≤ 120), `type` (`CalendarEventType`: LESSON/PRACTICE/MEETING), `startsAt`, `endsAt` (> start, ≤ 12 t), `href` (kun intern sti) | idx `(userId, startsAt)`, `organizationId` | Brugerens egne data: med i GDPR-eksport; slettes ved `gdpr.erase-user` (cascade) og ved sletning af medarbejderens data i en org (`eraseMemberFromOrg`). Kun ejeren læser/ændrer (where `userId` + `organizationId`) |
+
+Gennemførte lektioner (`CourseLessonCompletion`) og øvemiljø-sessioner (`SandboxSession`) vises i kalenderen som skrivebeskyttet aktivitet; de beregnes ved visning og gemmes ikke som `CalendarEvent`.
+
 ## 12. Drift
 
 | Entitet | Formål | Nøglefelter | Indekser | Opbevaring |
@@ -157,4 +166,4 @@ Retention-test (M4): rækker ældre end 30 dage mister fritekst, scores er uænd
 
 ## 14. Enums (oversigt)
 
-`OrganizationType`, `MembershipRole`, `PlatformRole`, `JobRole`, `TrackKey`, `LicenseTier`, `ModuleType`, `ModuleVersionStatus`, `ModuleOrigin`, `StepType`, `AssignmentSource`, `AssignmentStatus`, `AttemptStatus`, `GradingStatus`, `MonthlyAssignmentStatus`, `PlanAudience`, `BillingInterval`, `TaxBehavior`, `SubscriptionStatus`, `WithdrawalStatus`, `ParserType`, `FetchMode`, `SourceStatus`, `SnapshotOrigin`, `ChangeKind`, `ChangeEventStatus`, `PipelineRunKind`, `PipelineRunStatus`, `ConsentChannel`, `ConsentPurpose`, `ConsentAction`, `ConsentSource`, `SuppressionReason`, `EmailCategory`, `EmailStatus`, `SupportConversationStatus`, `SupportMessageRole`, `EscalationReason`, `EscalationPriority`, `EscalationStatus`, `ActorType`, `SandboxSessionStatus`, `SandboxEventType`, `AiFeature`, `AiCallStatus`, `BudgetScope`, `WebhookProvider`, `WebhookStatus`. Værdier: se skemaet. `Invitation.status` er bevidst `String` (Better Auth skriver små bogstaver).
+`OrganizationType`, `MembershipRole`, `PlatformRole`, `JobRole`, `TrackKey`, `LicenseTier`, `ModuleType`, `ModuleVersionStatus`, `ModuleOrigin`, `StepType`, `AssignmentSource`, `AssignmentStatus`, `AttemptStatus`, `GradingStatus`, `MonthlyAssignmentStatus`, `PlanAudience`, `BillingInterval`, `TaxBehavior`, `SubscriptionStatus`, `WithdrawalStatus`, `ParserType`, `FetchMode`, `SourceStatus`, `SnapshotOrigin`, `ChangeKind`, `ChangeEventStatus`, `PipelineRunKind`, `PipelineRunStatus`, `ConsentChannel`, `ConsentPurpose`, `ConsentAction`, `ConsentSource`, `SuppressionReason`, `EmailCategory`, `EmailStatus`, `SupportConversationStatus`, `SupportMessageRole`, `EscalationReason`, `EscalationPriority`, `EscalationStatus`, `ActorType`, `SandboxSessionStatus`, `SandboxEventType`, `CalendarEventType`, `AiFeature`, `AiCallStatus`, `BudgetScope`, `WebhookProvider`, `WebhookStatus`. Værdier: se skemaet. `Invitation.status` er bevidst `String` (Better Auth skriver små bogstaver).
