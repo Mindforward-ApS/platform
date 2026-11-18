@@ -1,0 +1,15 @@
+Ydelse,Enhed,Pris 2026 (kr ex. moms),Pris 2027 (kr ex. moms),Stigning,Undtagelser og bemærkninger
+Lagerplads,pr. palle pr. uge,"32,00","33,44","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+Hyldeplads,pr. hyldemeter pr. uge,"12,00","12,54","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+Kølelager (tillæg),pr. palle pr. uge,"14,00","14,63","4,5 %",Ingen undtagelser
+Varemodtagelse,pr. palle,"85,00","88,83","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+Pluk,pr. ordrelinje,"4,50","4,70","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+Pak,pr. ordre,"9,00","9,41","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+Ekstra emballage (skrøbeligt gods),pr. ordre,"6,00","6,27","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+Returhåndtering,pr. retur,"18,00","18,81","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+Fragt zone 1 (Østjylland),pr. kolli,"59,00","61,66","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+"Fragt zone 2 (Midt-, Vest-, Nord- og Sønderjylland)",pr. kolli,"69,00","72,11","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+Fragt zone 3 (Fyn),pr. kolli,"79,00","82,56","4,5 %",Undtagelse: afventer genforhandling med Vestvind Transport; kan blive justeret
+Fragt zone 4 (Sjælland og øer),pr. kolli,"89,00","93,01","4,5 %",Undtagelse: afventer genforhandling med Vestvind Transport; kan blive justeret
+Ekstraarbejde,pr. time,"425,00","444,13","4,5 %",Kunder med fastprisaftale reguleres først ved aftalens udløb
+Onboarding af ny kunde,engangsbeløb,"4.500,00","4.702,50","4,5 %",Undtagelse: frafaldes for nye kunder med aftale før 31.12.2026

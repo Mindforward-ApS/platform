@@ -1,0 +1,658 @@
+@import "tailwindcss";
+@import "./sandbox.css";
+/* `app:` comes from the real platform's UI kit (v3 look in its app panel); it is never on inside the sandbox, so here it is off. */
+@custom-variant app (&:where(.mf-v3-app-panel *):not(:where(.mf-sandbox, .mf-sandbox *)));
+
+/* ───────────────────────── Design tokens ─────────────────────────
+   Components use only semantic tokens. To re-brand: change the
+   --brand-* hue values and the two font variables in layout.tsx. */
+:root {
+  /* Brand hue (one accent, reserved for primary actions + highlights) */
+  --brand-h: 266;
+
+  /* Neutrals: warm stone, slightly tinted, never pure grey */
+  --stone-0: oklch(0.985 0.004 85);
+  --stone-50: oklch(0.965 0.007 85);
+  --stone-100: oklch(0.935 0.01 85);
+  --stone-200: oklch(0.89 0.013 85);
+  --stone-400: oklch(0.68 0.012 85);
+  --stone-600: oklch(0.5 0.012 85);
+  --ink-900: oklch(0.21 0.035 var(--brand-h));
+  --ink-950: oklch(0.16 0.03 var(--brand-h));
+
+  --accent-300: oklch(0.82 0.08 var(--brand-h));
+  --accent-500: oklch(0.54 0.19 var(--brand-h));
+  --accent-600: oklch(0.47 0.19 var(--brand-h));
+  --accent-700: oklch(0.4 0.17 var(--brand-h));
+  --accent-50: oklch(0.96 0.025 var(--brand-h));
+
+  /* Semantic */
+  --bg: var(--stone-50);
+  --surface: var(--stone-0);
+  --surface-raised: oklch(1 0 0);
+  --surface-sunk: var(--stone-100);
+  --text: oklch(0.27 0.02 var(--brand-h));
+  --text-muted: oklch(0.47 0.015 var(--brand-h));
+  --heading: var(--ink-900);
+  --border: oklch(0.27 0.02 var(--brand-h) / 0.12);
+  --border-strong: oklch(0.27 0.02 var(--brand-h) / 0.22);
+  --accent: var(--accent-500);
+  --accent-hover: var(--accent-600);
+  --accent-active: var(--accent-700);
+  --accent-soft: var(--accent-50);
+  --on-accent: oklch(0.99 0 0);
+  --success: oklch(0.55 0.13 155);
+  --warning: oklch(0.72 0.14 80);
+  --danger: oklch(0.55 0.19 25);
+
+  /* Space (4/8 scale; no in-between values) */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px;
+  --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px; --s-20: 80px; --s-24: 96px; --s-32: 128px;
+
+  /* Layout */
+  /* Content grows on large screens instead of floating in a 1280 strip */
+  --content: clamp(1120px, 66vw, 1360px);
+  --wide: clamp(1280px, 84vw, 1680px);
+  --gutter: clamp(16px, 4vw, 40px);
+
+  /* Radius (nested = outer − padding) */
+  --r-xs: 4px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 24px; --r-2xl: 32px;
+
+  /* Depth: layered, soft */
+  --shadow-1: 0 1px 2px oklch(0.2 0.03 var(--brand-h) / 0.06);
+  --shadow-2: 0 1px 2px oklch(0.2 0.03 var(--brand-h) / 0.05), 0 4px 12px oklch(0.2 0.03 var(--brand-h) / 0.06);
+  --shadow-3: 0 1px 2px oklch(0.2 0.03 var(--brand-h) / 0.05), 0 8px 24px oklch(0.2 0.03 var(--brand-h) / 0.08), 0 24px 48px oklch(0.2 0.03 var(--brand-h) / 0.06);
+
+  /* Motion */
+  --d-instant: 100ms; --d-fast: 180ms; --d-base: 260ms; --d-slow: 420ms;
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Type: Inter for display and text (Marco 2026-10-22, see DECISIONS.md) */
+  --font-display-family: var(--font-inter), system-ui, sans-serif;
+  --font-text-family: var(--font-inter), system-ui, sans-serif;
+  --display-weight: 800;
+  --display-weight-sm: 700;
+  --display-stretch: 100%;
+  --display-tracking: -0.035em;
+  --display-tracking-hero: -0.045em;
+
+  /* Colour fields (banner, panels, CTA). Palettes below override these + the accent ramp. */
+  --field-a: oklch(0.3 0.13 268);
+  --field-b: oklch(0.4 0.18 266);
+  --field-c: oklch(0.5 0.2 262);
+  --grad-to: oklch(0.62 0.17 250);
+
+  --header-h: 72px;
+  color-scheme: light;
+}
+
+/* Palette candidates (Marco picks one; then it becomes :root). Set via <html data-pal>. */
+html[data-pal^="sort"] {
+  --brand-h: 95;
+  --accent-500: oklch(0.2 0.01 95); --accent-600: oklch(0.14 0.01 95); --accent-700: oklch(0.1 0.01 95);
+  --accent-50: oklch(0.95 0.05 120); --accent-300: oklch(0.9 0.19 125);
+  --field-a: oklch(0.13 0.01 95); --field-b: oklch(0.18 0.012 95); --field-c: oklch(0.25 0.015 95);
+  --grad-to: oklch(0.36 0.02 95);
+  --ink-900: oklch(0.18 0.01 95); --ink-950: oklch(0.13 0.01 95);
+}
+/* Detail colour on the black palette (replaces lime) */
+html[data-pal="sort-mono"] { --accent-50: oklch(0.93 0.008 85); --accent-300: oklch(0.96 0.005 85); }
+html[data-pal="sort-sand"] { --accent-50: oklch(0.93 0.045 70); --accent-300: oklch(0.85 0.085 65); } /* chosen 2026-10-21: warm sand with a touch of orange */
+html[data-pal="sort-mint"] { --accent-50: oklch(0.95 0.04 170); --accent-300: oklch(0.86 0.09 170); }
+html[data-pal="sort-koral"] { --accent-50: oklch(0.94 0.04 25); --accent-300: oklch(0.76 0.14 25); }
+html[data-pal="skov"] {
+  --brand-h: 160;
+  --accent-500: oklch(0.45 0.1 160); --accent-600: oklch(0.39 0.09 160); --accent-700: oklch(0.33 0.08 160);
+  --accent-50: oklch(0.95 0.03 160); --accent-300: oklch(0.83 0.09 160);
+  --field-a: oklch(0.25 0.05 165); --field-b: oklch(0.33 0.07 162); --field-c: oklch(0.42 0.09 158);
+  --grad-to: oklch(0.56 0.11 150);
+  --ink-900: oklch(0.21 0.03 165); --ink-950: oklch(0.16 0.025 165);
+}
+html[data-pal="petrol"] {
+  --brand-h: 215;
+  --accent-500: oklch(0.47 0.09 215); --accent-600: oklch(0.41 0.085 215); --accent-700: oklch(0.35 0.075 215);
+  --accent-50: oklch(0.95 0.02 215); --accent-300: oklch(0.83 0.07 215);
+  --field-a: oklch(0.25 0.05 220); --field-b: oklch(0.33 0.07 217); --field-c: oklch(0.43 0.085 212);
+  --grad-to: oklch(0.58 0.09 205);
+  --ink-900: oklch(0.21 0.03 220); --ink-950: oklch(0.16 0.025 220);
+}
+
+/* Dark style variant: any section can flip by remapping semantics */
+.section-dark {
+  --bg: var(--ink-950);
+  --surface: oklch(0.22 0.03 var(--brand-h));
+  --surface-raised: oklch(0.26 0.035 var(--brand-h));
+  --surface-sunk: oklch(0.19 0.03 var(--brand-h));
+  --text: oklch(0.86 0.015 var(--brand-h));
+  --text-muted: oklch(0.7 0.02 var(--brand-h));
+  --heading: oklch(0.98 0.005 var(--brand-h));
+  --border: oklch(1 0 0 / 0.1);
+  --border-strong: oklch(1 0 0 / 0.2);
+  --accent: var(--accent-300);
+  --accent-hover: oklch(0.88 0.06 var(--brand-h));
+  --accent-active: oklch(0.92 0.04 var(--brand-h));
+  --accent-soft: oklch(0.3 0.06 var(--brand-h));
+  --on-accent: var(--ink-950);
+  background: var(--bg);
+  color: var(--text);
+  color-scheme: dark;
+}
+
+/* Light scope: restore light semantics inside a dark section */
+.light-scope {
+  --bg: var(--stone-50);
+  --surface: var(--stone-0);
+  --surface-raised: oklch(1 0 0);
+  --surface-sunk: var(--stone-100);
+  --text: oklch(0.27 0.02 var(--brand-h));
+  --text-muted: oklch(0.47 0.015 var(--brand-h));
+  --heading: var(--ink-900);
+  --border: oklch(0.27 0.02 var(--brand-h) / 0.12);
+  --border-strong: oklch(0.27 0.02 var(--brand-h) / 0.22);
+  --accent: var(--accent-500);
+  --accent-hover: var(--accent-600);
+  --accent-active: var(--accent-700);
+  --accent-soft: var(--accent-50);
+  --on-accent: oklch(0.99 0 0);
+  --success: oklch(0.55 0.13 155);
+  --warning: oklch(0.72 0.14 80);
+  --danger: oklch(0.55 0.19 25);
+
+  color: var(--text);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunk: var(--surface-sunk);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-heading: var(--heading);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-display: var(--font-display-family);
+  --font-sans: var(--font-text-family);
+  --radius-xs: var(--r-xs);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-2xl: var(--r-2xl);
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
+  --shadow-3: var(--shadow-3);
+  --ease-enter: var(--ease-enter);
+  --ease-exit: var(--ease-exit);
+}
+
+@layer base {
+/* ───────────────────────── Base ───────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 24px); font-size: clamp(16px, 0.625vw + 7px, 20px); }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-text-family), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--accent); color: var(--on-accent); }
+h1, h2, h3, h4 { color: var(--heading); text-wrap: balance; hyphens: manual; }
+p { text-wrap: pretty; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-xs); }
+img, svg, video { display: block; max-width: 100%; }
+.tnum { font-variant-numeric: tabular-nums; }
+
+}
+
+@layer components {
+/* Type scale */
+.t-hero {
+  font-family: var(--font-display-family);
+  font-size: clamp(2.6rem, 1.4rem + 5vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: var(--display-tracking-hero, -0.028em);
+  font-weight: var(--display-weight, 600);
+  font-stretch: var(--display-stretch, 88%);
+}
+.t-display {
+  font-family: var(--font-display-family);
+  font-size: clamp(2rem, 1.3rem + 2.6vw, 3.25rem);
+  line-height: 1.06;
+  letter-spacing: var(--display-tracking, -0.024em);
+  font-weight: var(--display-weight, 600);
+  font-stretch: var(--display-stretch, 88%);
+}
+.t-h3 {
+  font-family: var(--font-display-family);
+  font-size: clamp(1.375rem, 1.1rem + 0.9vw, 1.875rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: var(--display-weight-sm, 600);
+  font-stretch: var(--display-stretch, 100%);
+}
+.t-h4 { font-size: 1.125rem; line-height: 1.35; font-weight: 600; letter-spacing: -0.01em; }
+.t-lead { font-size: clamp(1.125rem, 1rem + 0.45vw, 1.3125rem); line-height: 1.5; color: var(--text-muted); }
+.t-body { font-size: 1rem; line-height: 1.6; }
+.t-small { font-size: 0.875rem; line-height: 1.5; }
+.t-label {
+  font-size: 0.75rem;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Layout helpers */
+.container-content { width: 100%; max-width: calc(var(--content) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+.container-wide { width: 100%; max-width: calc(var(--wide) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+/* Section rhythm: statements get air, dense blocks less. Never uniform. */
+.pad-statement { padding-block: clamp(var(--s-20), 10vw, var(--s-32)); }
+.pad-dense { padding-block: clamp(var(--s-12), 6vw, var(--s-16)); }
+.pad-standard { padding-block: clamp(var(--s-16), 8vw, var(--s-24)); }
+
+/* ───────────────────────── Buttons: ONE system ─────────────────────────
+   Primary = the same blue everywhere (light and dark sections). Secondary = outline in the
+   current text colour. Nothing else is a button. */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+  min-height: 48px; padding: 0 var(--s-6);
+  border-radius: 999px;
+  font-weight: 700; font-size: 0.875rem; letter-spacing: 0.07em; text-transform: uppercase;
+  white-space: nowrap;
+  transition: background-color var(--d-fast) var(--ease-standard), transform var(--d-instant) var(--ease-standard), box-shadow var(--d-fast) var(--ease-standard), color var(--d-fast) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-white { background: white; color: var(--accent-600); box-shadow: var(--shadow-1); }
+.btn-white:hover { background: oklch(0.97 0.01 var(--brand-h)); }
+.btn-white:active { background: oklch(0.94 0.02 var(--brand-h)); }
+.btn:active { transform: scale(0.98); }
+.btn:focus-visible { outline: 2px solid var(--accent-500); outline-offset: 3px; border-radius: 999px; }
+.btn[aria-disabled="true"], .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.btn[data-loading="true"] { cursor: progress; }
+.btn-primary { background: var(--accent-500); color: oklch(0.99 0 0); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.16), 0 1px 2px oklch(0.2 0.05 var(--brand-h) / 0.18); }
+.btn-primary:hover { background: var(--accent-600); }
+.btn-primary:active { background: var(--accent-700); }
+.btn-secondary { background: transparent; color: var(--heading); box-shadow: inset 0 0 0 1.5px var(--border-strong); }
+.btn-secondary:hover { box-shadow: inset 0 0 0 1.5px var(--heading); }
+.btn-secondary:active { background: var(--border); }
+.btn-sm { min-height: 40px; padding: 0 var(--s-4); font-size: 0.875rem; }
+.btn-icon { width: 44px; min-height: 44px; padding: 0; }
+.link-arrow { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--heading); text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 5px; text-decoration-thickness: 1.5px; transition: text-decoration-color var(--d-fast) var(--ease-standard); }
+.link-arrow svg { transition: transform var(--d-fast) var(--ease-enter); }
+.link-arrow:hover { text-decoration-color: var(--heading); }
+.link-arrow:hover svg { transform: translateX(4px); }
+
+/* Toggles / filters are not buttons: neutral segmented style */
+.chip { min-height: 44px; padding: 0 var(--s-4); border-radius: 999px; font-size: 0.875rem; font-weight: 500; color: var(--text); box-shadow: inset 0 0 0 1px var(--border); transition: color var(--d-fast), box-shadow var(--d-fast), background-color var(--d-fast); }
+.chip:hover { color: var(--heading); }
+.chip[aria-pressed="true"], .chip[aria-checked="true"] { color: var(--bg); background: var(--heading); box-shadow: none; }
+
+/* Hairline card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+}
+
+/* ───────────────────────── Motion ───────────────────────── */
+.reveal { opacity: 1; transform: none; }
+.js .reveal:not(.is-in) { opacity: 0; transform: translateY(12px); }
+.js .reveal { transition: opacity var(--d-slow) var(--ease-enter), transform var(--d-slow) var(--ease-enter); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .js .reveal:not(.is-in) { opacity: 1; transform: none; }
+}
+
+/* Visually hidden */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.skip-link { position: absolute; left: var(--s-4); top: -100px; z-index: 100; }
+.skip-link:focus { top: var(--s-4); }
+
+/* Scrollbar-less rails */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Placeholder marker (§7): visible in dev so nobody ships fake proof */
+.ph { outline: 1px dashed var(--border-strong); outline-offset: 2px; }
+
+/* Hero product: request rows arrive (motion spec "Hero product") */
+@keyframes product-arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.js .product-arrive { animation: product-arrive var(--d-slow) var(--ease-enter) both; }
+
+/* ScrollStatement: words fill muted → ink as you scroll (CSS scroll-driven, enhancement only) */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .fill-words span {
+      animation: word-fill linear both;
+      animation-timeline: view();
+      animation-range: entry 60% cover 45%;
+    }
+  }
+}
+@keyframes word-fill { from { color: color-mix(in oklch, var(--heading) 62%, var(--bg)); } to { color: var(--heading); } }
+
+/* Explorer tabs: index-card silhouette (signature 1) */
+.tab-card {
+  position: relative;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  transition: background-color var(--d-base) var(--ease-standard), color var(--d-base) var(--ease-standard), transform var(--d-base) var(--ease-enter);
+}
+.tab-card[aria-selected="true"]::before,
+.tab-card[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: var(--r-lg);
+  height: var(--r-lg);
+  background: transparent;
+  pointer-events: none;
+}
+.tab-card[aria-selected="true"]::before { left: calc(-1 * var(--r-lg)); border-bottom-right-radius: var(--r-lg); box-shadow: calc(var(--r-lg) / 2) calc(var(--r-lg) / 2) 0 calc(var(--r-lg) / 2) var(--surface-raised); }
+.tab-card[aria-selected="true"]::after { right: calc(-1 * var(--r-lg)); border-bottom-left-radius: var(--r-lg); box-shadow: calc(var(--r-lg) / -2) calc(var(--r-lg) / 2) 0 calc(var(--r-lg) / 2) var(--surface-raised); }
+.tab-card:first-child[aria-selected="true"]::before { display: none; }
+
+@keyframes panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.panel-in { animation: panel-in var(--d-base) var(--ease-enter) both; }
+
+/* Marquee-free logo wall; bento mini-demos */
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes type-caret { 50% { opacity: 0; } }
+@keyframes bar-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.paused * { animation-play-state: paused !important; }
+
+/* Form fields */
+.field { display: grid; gap: var(--s-2); }
+.field label { font-size: 0.875rem; font-weight: 600; color: var(--heading); }
+.input {
+  min-height: 48px; width: 100%;
+  padding: 0 var(--s-4);
+  font-size: 16px; /* ≥16px: no iOS zoom */
+  background: var(--surface-raised);
+  color: var(--heading);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  transition: border-color var(--d-fast) var(--ease-standard), box-shadow var(--d-fast) var(--ease-standard);
+}
+textarea.input { padding: var(--s-3) var(--s-4); min-height: 140px; resize: vertical; }
+.input::placeholder { color: var(--text-muted); opacity: 0.8; }
+.input:hover { border-color: color-mix(in oklch, var(--heading) 40%, transparent); }
+.input:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 22%, transparent); }
+.input[aria-invalid="true"] { border-color: var(--danger); }
+.field-error { font-size: 0.875rem; color: var(--danger); }
+.field-hint { font-size: 0.8125rem; color: var(--text-muted); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+}
+
+/* GSAP split lines */
+.split-line { will-change: transform; }
+
+/* Marquee */
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee-track { animation: marquee linear infinite; }
+.group:hover .marquee-track, .marquee-track.is-paused { animation-play-state: paused; }
+.marquee-mask { mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent); }
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
+/* Spotlight card: border glow follows the pointer (desktop only) */
+.spotlight { position: relative; isolation: isolate; }
+.spotlight::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; z-index: -1; opacity: 0;
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklch, var(--accent-500) 55%, transparent), transparent 60%);
+  transition: opacity var(--d-base) var(--ease-standard);
+}
+@media (hover: hover) { .spotlight:hover::before { opacity: 1; } }
+
+/* Headlines wait for SplitHeadings (max ~1.2s fallback) so they never flash before animating */
+@media (prefers-reduced-motion: no-preference) {
+  .js main h1.t-hero:not([data-no-split]):not(.is-split) { visibility: hidden; animation: split-fallback 0s 1.2s forwards; }
+}
+@keyframes split-fallback { to { visibility: visible; } }
+
+
+/* Bento tile system (one padding, one radius, one gap — design/DNA.md) */
+@layer components {
+  .tile { border-radius: 28px; padding: 24px; }
+  @media (min-width: 768px) { .tile { padding: 32px; } }
+  .tile-gap { gap: 16px; }
+  .tile-inner { border-radius: 16px; }
+}
+
+/* Range slider (designed, not browser default) */
+@layer components {
+  .range { appearance: none; height: 44px; background: transparent; cursor: pointer; }
+  .range::-webkit-slider-runnable-track { height: 8px; border-radius: 999px; background: linear-gradient(to right, var(--accent-500) var(--pct, 0%), var(--surface-sunk) var(--pct, 0%)); }
+  .range::-moz-range-track { height: 8px; border-radius: 999px; background: var(--surface-sunk); }
+  .range::-moz-range-progress { height: 8px; border-radius: 999px; background: var(--accent-500); }
+  .range::-webkit-slider-thumb { appearance: none; width: 24px; height: 24px; margin-top: -8px; border-radius: 999px; background: white; border: 2px solid var(--heading); box-shadow: var(--shadow-2); }
+  .range::-moz-range-thumb { width: 22px; height: 22px; border-radius: 999px; background: white; border: 2px solid var(--heading); }
+  .range:focus-visible { outline: none; }
+  .range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--accent-500); outline-offset: 2px; }
+}
+
+/* Blue colour field (Docebo DNA: big saturated fields holding the product). Same hue family, no new colours.
+   Deep enough that the blue primary button still reads as the action. */
+.field-blue {
+  --heading: oklch(0.99 0.005 var(--brand-h));
+  --text: oklch(0.92 0.03 var(--brand-h));
+  --text-muted: oklch(0.84 0.05 var(--brand-h));
+  --border: oklch(1 0 0 / 0.16);
+  --border-strong: oklch(1 0 0 / 0.3);
+  --surface-sunk: oklch(1 0 0 / 0.1);
+  --accent: oklch(0.86 0.07 var(--brand-h));
+  --accent-soft: oklch(1 0 0 / 0.14);
+  background: radial-gradient(120% 140% at 0% 0%, var(--field-a) 0%, var(--field-b) 45%, var(--field-c) 100%);
+  color: var(--text);
+  color-scheme: dark;
+}
+.field-blue .btn-secondary { color: white; box-shadow: inset 0 0 0 1.5px oklch(1 0 0 / 0.5); }
+.field-blue .btn-secondary:hover { box-shadow: inset 0 0 0 1.5px white; }
+.field-blue .btn-primary { background: white; color: var(--ink-900); }
+.field-blue .btn-primary:hover { background: oklch(0.94 0.02 var(--brand-h)); }
+
+/* Gradient pill (Docebo-style primary in our blue) */
+.btn-gradient { background: linear-gradient(90deg, var(--accent-600), var(--grad-to)); color: white; box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.18); }
+.btn-gradient:hover { background: linear-gradient(90deg, var(--accent-700), var(--accent-500)); }
+/* Previews render their own nav and hide the global one */
+body:has([data-preview-nav]) .site-nav:not([data-preview-nav]) { display: none; }
+
+/* ───────────── Night theme (home, after Marco's reference "owell-ref") ─────────────
+   Near-black page, thin display type with a soft white→grey gradient, dark glass cards
+   with hairline borders, coral glows. Our tokens, our product. */
+.theme-night {
+  /* Light by default (Marco 2026-10-22: "lys baggrund, alt andet forbliver det samme").
+     .night-dark restores the dark values for things that are dark by nature (the phone). */
+  --bg: oklch(0.975 0.006 60);
+  --surface: oklch(0.995 0.003 60);
+  --surface-raised: oklch(1 0 0);
+  --surface-sunk: oklch(0.2 0.01 30 / 0.04);
+  --text: oklch(0.36 0.012 30);
+  --text-muted: oklch(0.5 0.012 30);
+  --heading: oklch(0.18 0.012 30);
+  --border: oklch(0.2 0.01 30 / 0.09);
+  --border-strong: oklch(0.2 0.01 30 / 0.16);
+  --accent: oklch(0.6 0.17 26);
+  --accent-soft: oklch(0.7 0.15 28 / 0.12);
+  --coral: oklch(0.68 0.16 28);
+  --coral-hi: oklch(0.8 0.12 40);
+  --tile: oklch(0.2 0.01 30 / 0.035);
+  --tile-deep: oklch(0.2 0.01 30 / 0.05);
+  --tile-border: oklch(0.2 0.01 30 / 0.08);
+  --hover-fill: oklch(0.2 0.01 30 / 0.05);
+  --panel: oklch(0.99 0.004 60);
+  --glass-from: oklch(1 0 0 / 0.85);
+  --glass-to: oklch(1 0 0 / 0.6);
+  --glass-border: oklch(0.2 0.01 30 / 0.09);
+  --glass-shadow: 0 1px 2px oklch(0.2 0.02 30 / 0.05), 0 20px 50px -24px oklch(0.3 0.04 30 / 0.25);
+  --display-from: oklch(0.16 0.012 30);
+  --display-to: oklch(0.42 0.012 30);
+  --glow: oklch(0.72 0.15 30 / 0.35);
+  background: var(--bg);
+  color: var(--text);
+  color-scheme: light;
+}
+.night-dark {
+  --bg: oklch(0.12 0.008 30);
+  --surface: oklch(0.165 0.008 30);
+  --surface-raised: oklch(0.19 0.009 30);
+  --surface-sunk: oklch(1 0 0 / 0.05);
+  --text: oklch(0.8 0.01 30);
+  --text-muted: oklch(0.66 0.01 30);
+  --heading: oklch(0.97 0.004 30);
+  --border: oklch(1 0 0 / 0.08);
+  --border-strong: oklch(1 0 0 / 0.16);
+  --tile: oklch(1 0 0 / 0.04);
+  --tile-deep: oklch(0 0 0 / 0.3);
+  --tile-border: oklch(1 0 0 / 0.07);
+  --hover-fill: oklch(1 0 0 / 0.06);
+  --glass-from: oklch(1 0 0 / 0.06);
+  --glass-to: oklch(1 0 0 / 0.02);
+  --glass-border: oklch(1 0 0 / 0.09);
+  --glass-shadow: inset 0 1px 0 oklch(1 0 0 / 0.06), 0 20px 60px -20px oklch(0 0 0 / 0.7);
+  --display-from: oklch(0.98 0 0);
+  --display-to: oklch(0.72 0.01 30);
+  color: var(--text);
+  color-scheme: dark;
+}
+.n-display {
+  font-family: var(--font-display-family);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  background: linear-gradient(180deg, var(--display-from) 30%, var(--display-to) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.n-glass {
+  background: linear-gradient(180deg, var(--glass-from), var(--glass-to));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(14px);
+}
+.n-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 0 26px; border-radius: 999px; font-weight: 500; font-size: 1rem; white-space: nowrap; transition: transform var(--d-instant) var(--ease-standard), box-shadow var(--d-fast) var(--ease-standard), background-color var(--d-fast) var(--ease-standard); }
+.n-btn:active { transform: scale(0.98); }
+.n-btn:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
+.n-btn-primary { color: white; background: linear-gradient(180deg, oklch(0.74 0.15 32), oklch(0.6 0.17 24)); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.3), 0 0 0 1px oklch(0.42 0.13 28 / 0.4), 0 8px 18px -8px oklch(0.4 0.12 28 / 0.45); }
+.n-btn-primary:hover { box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.36), 0 0 0 1px oklch(0.42 0.13 28 / 0.5), 0 12px 24px -8px oklch(0.4 0.12 28 / 0.55); }
+.n-btn-dark { color: var(--heading); background: var(--tile); box-shadow: 0 0 0 1px oklch(0.2 0.01 30 / 0.22), 0 8px 18px -10px oklch(0.15 0.02 30 / 0.35); }
+.n-btn-dark:hover { background: var(--hover-fill); }
+/* Same button shape everywhere (Marco 2026-10-22: the bottom "Se kurserne" design); each keeps its own colour */
+.n-btn-white { color: oklch(0.18 0.02 30); background: linear-gradient(180deg, #fff, oklch(0.96 0.008 60)); box-shadow: inset 0 1px 0 #fff, 0 0 0 1px oklch(0.2 0.02 30 / 0.22), 0 8px 18px -8px oklch(0.1 0.03 30 / 0.5); }
+.n-btn-white:hover { box-shadow: inset 0 1px 0 #fff, 0 0 0 1px oklch(0.2 0.02 30 / 0.3), 0 12px 24px -8px oklch(0.1 0.03 30 / 0.6); }
+.n-btn-cream { color: oklch(0.2 0.02 30); background: linear-gradient(180deg, oklch(0.985 0.01 60), oklch(0.94 0.02 60)); box-shadow: inset 0 1px 0 #fff, 0 0 0 1px oklch(1 0 0 / 0.45), 0 8px 18px -8px oklch(0.05 0.03 30 / 0.6); }
+.n-btn-cream:hover { background: linear-gradient(180deg, #fff, oklch(0.96 0.015 60)); }
+.n-btn-glass { color: white; background: oklch(1 0 0 / 0.06); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.1), 0 0 0 1px oklch(1 0 0 / 0.28), 0 8px 18px -8px oklch(0 0 0 / 0.5); }
+.n-btn-glass:hover { background: oklch(1 0 0 / 0.11); }
+.n-btn-ink { color: var(--bg); background: linear-gradient(180deg, oklch(0.3 0.015 30), var(--heading)); box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.14), 0 0 0 1px oklch(0.15 0.02 30 / 0.45), 0 8px 18px -8px oklch(0.1 0.02 30 / 0.45); }
+.n-btn-ink:hover { box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.2), 0 0 0 1px oklch(0.15 0.02 30 / 0.55), 0 12px 24px -8px oklch(0.1 0.02 30 / 0.55); }
+.n-glow { position: absolute; pointer-events: none; border-radius: 999px; filter: blur(80px); background: radial-gradient(closest-side, var(--glow, oklch(0.68 0.17 28 / 0.55)), transparent); }
+.n-horizon { position: absolute; inset-inline: 0; height: 1px; background: linear-gradient(90deg, transparent, oklch(0.75 0.15 30 / 0.8), transparent); }
+
+/* Italic serif accent word inside a headline */
+.font-serif-accent { font-family: var(--font-serif), Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+
+/* Silk ribbon: very slow drift (decorative; off under reduced motion) */
+@keyframes silk-drift { 0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 50% { transform: translate(-49%, -51.5%) rotate(-1.2deg) scale(1.03); } }
+.silk-drift { transform: translate(-50%, -50%); animation: silk-drift 22s var(--ease-standard) infinite; }
+@media (prefers-reduced-motion: reduce) { .silk-drift { animation: none; } }
+
+/* Mindforward brain: a soft heartbeat (two quick beats, then rest); the light inner fill glows up on each beat */
+@keyframes brain-beat {
+  0%, 40%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+  10% { transform: scale(1.08); filter: drop-shadow(0 0 6px oklch(0.7 0.17 40 / 0.6)); }
+  20% { transform: scale(1); }
+  28% { transform: scale(1.05); filter: drop-shadow(0 0 4px oklch(0.7 0.17 40 / 0.45)); }
+}
+@keyframes brain-fill { 0%, 40%, 100% { opacity: 0.45; } 10% { opacity: 0.85; } 28% { opacity: 0.7; } }
+.brain-pulse { transform-origin: center; animation: brain-beat 2.4s var(--ease-standard) infinite; }
+.brain-pulse path[opacity] { opacity: 0.45; animation: brain-fill 2.4s var(--ease-standard) infinite; }
+@media (prefers-reduced-motion: reduce) { .brain-pulse, .brain-pulse path[opacity] { animation: none; } }
+
+/* Floating AI tiles (same as mindforward.dk ny.css) */
+@keyframes ny-float { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-12px) rotate(calc(var(--r, 0deg) * -1)); } }
+.ny-float { animation: ny-float var(--float-d, 5s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
+@media (prefers-reduced-motion: reduce) { .ny-float { animation: none; } }
+
+/* Button system B3 "Kantet" (Marco 2026-10-22): soft rectangles, flat, a trailing icon that slides on hover.
+   Brand sign-in buttons (.n-btn-brand) keep their logo in front. Overrides the pill rules above. */
+.n-btn { border-radius: 14px; min-height: 56px; padding: 0 22px; font-weight: 500; }
+.n-btn:not(.n-btn-brand) > svg:first-child { order: 2; transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1); }
+.n-btn:not(.n-btn-brand):hover > svg:first-child { transform: translateX(3px); }
+.n-btn-white, .n-btn-cream { background: #fff; box-shadow: 0 0 0 1px oklch(0.2 0.02 30 / 0.12); }
+.n-btn-ink { background: oklch(0.22 0.015 30); box-shadow: none; }
+.n-btn-glass { background: oklch(1 0 0 / 0.08); box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.18); }
+
+
+/* Hero with subheading + 3 check marks (2026-10-23).
+   Retina screens (MacBooks, also on "Mere plads") and short screens (< 920 px tall): normal rem spacing and the hero may grow a little taller than
+   the screen, so nothing is squeezed. Tall non-retina monitors (>= 920 px): the fixed-height hero Marco approved on his
+   monitor, with spacing and text that scale with the screen height so the sign-in buttons clear the white card. */
+@media (min-width: 1024px) and (min-height: 920px) and (max-resolution: 1.5dppx) {
+  .hero-pts-grid { height: calc(100svh - 6rem - 14svh); }
+  .hero-pts-col { padding-top: 3.5svh; padding-bottom: 0; }
+  .hero-pts-eyebrow { margin-bottom: 1.8svh; font-size: min(1.1875rem, 2.1svh); }
+  .hero-pts-title { font-size: min(clamp(2.125rem, 0.1rem + 2.75vw, 3.75rem), 5.6svh) !important; }
+  .hero-pts-list { margin-top: 2.6svh; gap: 1.3svh; }
+  .hero-pts-list li { font-size: min(1.0625rem, 1.95svh); }
+  .hero-pts-col .hero-login { margin-top: 3.2svh; }
+}
+
+/* ───────────── Platform app (reference: Skillzone dashboard, our colours) ─────────────
+   Crisp: pure white page, neutral greys, 1px hairlines, small radii (8/6).
+   Coral is the only colour; it replaces the reference's purple. */
+.app {
+  --bg: #f5f2f0;
+  --text: #3d322e;
+  --text-muted: #7d6e68;
+  --heading: #1a0f0c;
+  --border: #e9e3df;
+  --border-strong: #d8cfca;
+  --hover-fill: #f3eeeb;
+  --accent: oklch(0.62 0.18 28);
+  --accent-soft: oklch(0.68 0.16 28 / 0.1);
+  --coral: oklch(0.66 0.18 28);
+  --ink: #201613; /* the website's brown (hero stage + footer) */
+  --ink-2: #2e1f1c;
+  background: #fff; color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+.app-side { background: radial-gradient(120% 45% at 30% 0%, oklch(0.42 0.08 32 / 0.45), transparent 70%), linear-gradient(180deg, #2e1f1c 0%, #201613 45%, #1a0f0c 100%); color: #e7dcd7; }
+.app-card { background: #fff; border: 1px solid var(--border); box-shadow: 0 1px 2px rgb(0 0 0 / 0.04); }
+.app-card-dark { background: linear-gradient(180deg, #2a1c18, #201613); border: 1px solid #2e1f1c; color: #e7dcd7; }
+.app-input { background: #fff; border: 1px solid var(--border); }
+.app-input:focus-within { border-color: var(--border-strong); }
+.app-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 2.125rem; padding: 0 0.85rem; border-radius: 6px; font-size: 0.8125rem; font-weight: 500; white-space: nowrap; transition: background-color 150ms; }
+.app-btn-light { background: #fff; color: var(--heading); border: 1px solid var(--border-strong); }
+.app-btn-light:hover { background: var(--hover-fill); }
+.app-scroll { scrollbar-width: none; }
+.app-scroll::-webkit-scrollbar { display: none; }
+.app-btn-primary { background: var(--coral); color: #fff; border: 1px solid oklch(0.58 0.18 28); }
+.app-btn-primary:hover { background: oklch(0.62 0.18 28); }
+.app-btn-ink { background: var(--ink); color: #fff; border: 1px solid var(--ink); }
+.app-btn-ink:hover { background: var(--ink-2); }
+.ev-Lektion { background: var(--accent-soft); border-left: 3px solid var(--coral); }
+.ev-Lektion .ev-time { color: var(--accent); }
+.ev-Øvelse { background: var(--ink); border-left: 3px solid var(--coral); color: #fff; }
+.ev-Øvelse .ev-time { color: #a1a1aa; }
+.ev-Holdmøde { background: #f3eeeb; border-left: 3px solid #b5a49c; }
+.ev-Holdmøde .ev-time { color: var(--text-muted); }
+
+/* EduSphere layout pass (Marco 2026-10-23: "præcis sådan"): grey page, white 12px cards, inset rounded sidebar. */
+.app-card { border-radius: 12px; }
+.app-hero { background: linear-gradient(100deg, oklch(0.95 0.03 30), oklch(0.975 0.015 40) 55%, oklch(0.93 0.04 28)); }
+.app-nav-active { background: var(--coral); color: #fff; box-shadow: 0 6px 14px -6px oklch(0.6 0.18 28 / 0.6); }

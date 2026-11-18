@@ -1,0 +1,15 @@
+Ydelse,Enhed,Pris (kr ex. moms),Bemærkning
+Lagerplads,pr. palle pr. uge,"32,00","Standardpalle (120 × 80 cm), maks. 180 cm høj"
+Hyldeplads,pr. hyldemeter pr. uge,"12,00",Til småvarer og lav volumen
+Kølelager (tillæg),pr. palle pr. uge,"14,00",2–8 °C; lægges oven i lagerplads
+Varemodtagelse,pr. palle,"85,00",Inkl. optælling og registrering i WMS
+Pluk,pr. ordrelinje,"4,50",
+Pak,pr. ordre,"9,00",Standardemballage inkluderet
+Ekstra emballage (skrøbeligt gods),pr. ordre,"6,00",Fx keramik og glas
+Returhåndtering,pr. retur,"18,00",Se returgebyr i standardkontrakten § 7
+Fragt zone 1 (Østjylland),pr. kolli,"59,00",Egne varebiler; maks. 20 kg pr. kolli
+"Fragt zone 2 (Midt-, Vest-, Nord- og Sønderjylland)",pr. kolli,"69,00",Via fragtpartner; maks. 20 kg pr. kolli
+Fragt zone 3 (Fyn),pr. kolli,"79,00",Via fragtpartner; maks. 20 kg pr. kolli
+Fragt zone 4 (Sjælland og øer),pr. kolli,"89,00",Via fragtpartner; maks. 20 kg pr. kolli
+Ekstraarbejde,pr. time,"425,00",Fx ompakning og etikettering
+Onboarding af ny kunde,engangsbeløb,"4.500,00",Opsætning af integration og lagerlokationer

@@ -1,0 +1,152 @@
+{
+  "fileId": "f15",
+  "title": "Budget 2026",
+  "columns": [
+    "Post",
+    "Q1",
+    "Q2",
+    "Q3",
+    "Q4 (prognose)",
+    "I alt",
+    "Budget",
+    "Afvigelse"
+  ],
+  "rows": [
+    {
+      "row": 2,
+      "post": "Omsætning lager",
+      "q1": 4100000,
+      "q2": 4250000,
+      "q3": 4380000,
+      "q4": 5200000,
+      "total": 17930000,
+      "totalFormula": "=SUM(B2:E2)",
+      "budget": 17500000,
+      "note": "Q4 er prognose ud fra kendte kundeaftaler."
+    },
+    {
+      "row": 3,
+      "post": "Omsætning pluk/pak",
+      "q1": 3600000,
+      "q2": 3700000,
+      "q3": 3900000,
+      "q4": 4800000,
+      "total": 16000000,
+      "totalFormula": "=SUM(B3:E3)",
+      "budget": 15600000
+    },
+    {
+      "row": 4,
+      "post": "Omsætning fragt",
+      "q1": 2100000,
+      "q2": 2150000,
+      "q3": 2300000,
+      "q4": 2900000,
+      "total": 9450000,
+      "totalFormula": "=SUM(B4:E4)",
+      "budget": 9200000
+    },
+    {
+      "row": 5,
+      "post": "Løn lager",
+      "q1": -3300000,
+      "q2": -3350000,
+      "q3": -3400000,
+      "q4": -3900000,
+      "total": -13950000,
+      "totalFormula": "=SUM(B5:E5)",
+      "budget": -13900000
+    },
+    {
+      "row": 6,
+      "post": "Løn administration",
+      "q1": -1450000,
+      "q2": -1450000,
+      "q3": -1480000,
+      "q4": -1500000,
+      "total": -5880000,
+      "totalFormula": "=SUM(B6:E6)",
+      "budget": -5900000
+    },
+    {
+      "row": 7,
+      "post": "Overtid",
+      "q1": -150000,
+      "q2": -160000,
+      "q3": -276000,
+      "q4": -320000,
+      "total": -906000,
+      "totalFormula": "=SUM(B7:E7)",
+      "budget": -800000,
+      "note": "Q3: julesæson startede tidligt, og der manglede 2 pakkere i august."
+    },
+    {
+      "row": 8,
+      "post": "Brændstof",
+      "q1": -420000,
+      "q2": -440000,
+      "q3": -505000,
+      "q4": -560000,
+      "total": -1365000,
+      "totalFormula": "=SUM(B8:D8)",
+      "budget": -1800000,
+      "note": "Prognose Q4 baseret på højsæson."
+    },
+    {
+      "row": 9,
+      "post": "Leasing varebiler",
+      "q1": -310000,
+      "q2": -310000,
+      "q3": -310000,
+      "q4": -310000,
+      "total": -1240000,
+      "totalFormula": "=SUM(B9:E9)",
+      "budget": -1240000
+    },
+    {
+      "row": 10,
+      "post": "Husleje",
+      "q1": -650000,
+      "q2": -650000,
+      "q3": -650000,
+      "q4": -650000,
+      "total": -2600000,
+      "totalFormula": "=SUM(B10:E10)",
+      "budget": -2600000
+    },
+    {
+      "row": 11,
+      "post": "IT/software",
+      "q1": -210000,
+      "q2": -215000,
+      "q3": -230000,
+      "q4": -240000,
+      "total": -895000,
+      "totalFormula": "=SUM(B11:E11)",
+      "budget": -880000
+    },
+    {
+      "row": 12,
+      "post": "Marketing",
+      "q1": -90000,
+      "q2": -120000,
+      "q3": -95000,
+      "q4": -180000,
+      "total": -485000,
+      "totalFormula": "=SUM(B12:E12)",
+      "budget": -500000
+    },
+    {
+      "row": 13,
+      "post": "Resultat",
+      "q1": 3220000,
+      "q2": 3405000,
+      "q3": 3634000,
+      "q4": 5240000,
+      "total": 16059000,
+      "totalFormula": "=SUM(F2:F12)",
+      "budget": 14680000,
+      "note": "Bemærk: summen af I alt-kolonnen arver fejlen i Brændstof."
+    }
+  ]
+}

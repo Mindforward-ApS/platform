@@ -1,0 +1,7 @@
+node_modules
+.next
+.sandbox-data/
+.vercel
+.env*
+*.tsbuildinfo
+.DS_Store

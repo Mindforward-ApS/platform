@@ -1,0 +1,108 @@
+[
+  {
+    "id": "f01",
+    "name": "AI-politik Nordlys v1.md",
+    "kind": "doc",
+    "path": "files/ai-politik-nordlys-v1.md",
+    "summary": "Nordlys' AI-politik i 6 punkter."
+  },
+  {
+    "id": "f02",
+    "name": "Prisliste 2026.csv",
+    "kind": "table",
+    "path": "files/prisliste-2026.csv",
+    "summary": "Priser på lagerplads, pluk, pak og fragtzoner i 2026."
+  },
+  {
+    "id": "f03",
+    "name": "Prisliste 2027 udkast.csv",
+    "kind": "table",
+    "path": "files/prisliste-2027-udkast.csv",
+    "summary": "Udkast til 2027-priser: generel stigning på 4,5 %.",
+    "confidential": true
+  },
+  {
+    "id": "f04",
+    "name": "Standardkontrakt 3PL.md",
+    "kind": "doc",
+    "path": "files/standardkontrakt-3pl.md",
+    "summary": "Fiktive standardvilkår. Returgebyr står i § 7."
+  },
+  {
+    "id": "f05",
+    "name": "Kundetilfredshed 2026 Q3.csv",
+    "kind": "table",
+    "path": "files/kundetilfredshed-2026-q3.csv",
+    "summary": "NPS pr. kunde i Q3 2026."
+  },
+  {
+    "id": "f06",
+    "name": "Mødereferat driftsmøde uge 40.md",
+    "kind": "doc",
+    "path": "files/moedereferat-driftsmoede-uge-40.md",
+    "summary": "Beslutninger og løse ender fra driftsmødet."
+  },
+  {
+    "id": "f07",
+    "name": "Onboarding-tjekliste pakkere.md",
+    "kind": "doc",
+    "path": "files/onboarding-tjekliste-pakkere.md",
+    "summary": "12 punkter til nye pakkere."
+  },
+  {
+    "id": "f08",
+    "name": "Salgspræsentation 2026.md",
+    "kind": "doc",
+    "path": "files/salgspraesentation-2026.md",
+    "summary": "Slide-tekst i punktform."
+  },
+  {
+    "id": "f09",
+    "name": "Sikkerhedsprocedure truck.md",
+    "kind": "doc",
+    "path": "files/sikkerhedsprocedure-truck.md",
+    "summary": "Procedure for brug af truck på lageret."
+  },
+  {
+    "id": "f10",
+    "name": "FAQ kundeservice.md",
+    "kind": "doc",
+    "path": "files/faq-kundeservice.md",
+    "summary": "15 spørgsmål og svar til kundeservice."
+  },
+  {
+    "id": "f11",
+    "name": "Tone of voice Nordlys.md",
+    "kind": "doc",
+    "path": "files/tone-of-voice-nordlys.md",
+    "summary": "Sådan skriver Nordlys: du-form, korte sætninger, konkret."
+  },
+  {
+    "id": "f12",
+    "name": "Fragtpartnere oversigt.csv",
+    "kind": "table",
+    "path": "files/fragtpartnere-oversigt.csv",
+    "summary": "4 fiktive fragtpartnere med zoner og SLA."
+  },
+  {
+    "id": "f13",
+    "name": "Lagerbelægning uge 40–52.csv",
+    "kind": "table",
+    "path": "files/lagerbelaegning-uge-40-52.csv",
+    "summary": "Belægning pr. uge i procent."
+  },
+  {
+    "id": "f14",
+    "name": "Nyhedsbrev oktober kladde.md",
+    "kind": "doc",
+    "path": "files/nyhedsbrev-oktober-kladde.md",
+    "summary": "Kladde til nyhedsbrev. Indeholder samme fejl som m09."
+  },
+  {
+    "id": "f15",
+    "name": "Budget 2026",
+    "kind": "sheet",
+    "summary": "Regneark med budget og prognose for 2026.",
+    "confidential": true
+  }
+]

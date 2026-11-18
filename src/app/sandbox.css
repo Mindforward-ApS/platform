@@ -1,0 +1,363 @@
+/* Øvemiljø (sandbox) design tokens, ported 2026-11-03 from the real platform (mindforward-brain/platform
+   src/styles/tokens.css). The sandbox mimics ChatGPT, Copilot and Claude and keeps its own look.
+   - Raw --mf-* colours: light theme only (this platform has no dark mode).
+   - Tokens this platform does not have are added to the theme.
+   - Tokens both platforms have (bg, surface, line, accent, radius …) keep this platform's values everywhere else and
+     are switched to the sandbox values only inside .mf-sandbox, by overriding the raw variables they point at. */
+
+:root {
+  color-scheme: light;
+  --mf-bg: #f5f2f0;
+  --mf-surface: #ffffff;
+  --mf-surface-sunken: #f3eeeb;
+  --mf-line: #e9e3df;
+  --mf-line-strong: #8a7d77;
+  --mf-ink: #1a0f0c;
+  --mf-ink-muted: #4d423e;
+  --mf-ink-subtle: #6b5f5a;
+  --mf-accent: #b8413a;
+  --mf-accent-hover: #9e3631;
+  --mf-accent-soft: #fbe9e6;
+  --mf-accent-ink: #9e3631;
+  --mf-on-accent: #ffffff;
+  --mf-focus: #b8413a;
+  --mf-rav: #f0b03c;
+  --mf-on-rav: #0b1b2b;
+  --mf-mark-dot: #ffa282;
+  --mf-hint: #875400;
+  --mf-hint-soft: #fdf1d8;
+  --mf-success: #13724f;
+  --mf-success-soft: #e4f4ec;
+  --mf-danger: #b3261e;
+  --mf-danger-soft: #fdecea;
+  /* Fixed dark band (marketing hero/footer): same in both themes. */
+  --mf-night: #0b1b2b;
+  --mf-night-raised: #13263a;
+  --mf-night-line: #24384f;
+  --mf-on-night: #edf2f7;
+  --mf-on-night-muted: #a8b5c4;
+  --mf-night-accent: #86a0ff;
+
+  /* Module covers: soft ground + one strong shape color each (design: "covers på modulkort", 14 Oct 2026). */
+  --mf-cover-blue: #fbe9e6;
+  --mf-cover-blue-ink: #c4473f;
+  --mf-cover-amber: #fdf0d2;
+  --mf-cover-amber-ink: #e39a1c;
+  --mf-cover-mint: #dcf3e8;
+  --mf-cover-mint-ink: #13724f;
+  --mf-cover-coral: #fde6df;
+  --mf-cover-coral-ink: #d4552e;
+  --mf-cover-sky: #f3eeeb;
+  --mf-cover-sky-ink: #4a332c;
+
+  /* App-icon tiles (icon system E, Marco 14 Oct 2026): soft top-to-bottom gradient, white glyph. The only place gradients are allowed. */
+  --mf-tile-blue-from: #fb836d;
+  --mf-tile-blue-to: #d24c4c;
+  --mf-tile-amber-from: #ffa282;
+  --mf-tile-amber-to: #ea6b5e;
+  --mf-tile-mint-from: #6b4a40;
+  --mf-tile-mint-to: #3d2c28;
+  --mf-tile-coral-from: #f58a64;
+  --mf-tile-coral-to: #d9471b;
+  --mf-tile-sky-from: #4a332c;
+  --mf-tile-sky-to: #201613;
+  --mf-tile-slate-from: #a3948e;
+  --mf-tile-slate-to: #6b5f5a;
+  --mf-tile-ink-from: #3d2c28;
+  --mf-tile-ink-to: #1a0f0c;
+  --mf-shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.12), 0 2px 6px -1px rgba(11, 27, 43, 0.25);
+
+  --mf-shadow-xs: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --mf-shadow-sm: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --mf-shadow-md: 0 1px 2px rgba(11, 27, 43, 0.05), 0 4px 8px rgba(11, 27, 43, 0.05), 0 12px 24px -8px rgba(11, 27, 43, 0.1);
+  --mf-shadow-lg: 0 1px 2px rgba(11, 27, 43, 0.05), 0 8px 16px -4px rgba(11, 27, 43, 0.08), 0 32px 64px -16px rgba(11, 27, 43, 0.22);
+  /* Soft accent light behind page headers (website hero "spots"). */
+  --mf-spot: rgba(234, 107, 94, 0.08);
+  --mf-spot-2: rgba(255, 162, 130, 0.06);
+  --mf-ring: 0 0 0 1px var(--mf-accent), 0 0 0 4px var(--mf-accent-soft);
+  --mf-object-shadow: 0 18px 22px rgba(11, 27, 43, 0.16);
+
+  /* ── Platform v3 (Marco 16 Oct 2026, mindforward-preview/platform-preview.html) ── */
+  /* Sidebar: almost-dark-grey dark blue (Marco 16 Oct 2026: muted slate blue, not saturated navy). Fixed in both themes. */
+  --mf-sidebar: #201613;
+  --mf-sidebar-raised: #2e1f1c;
+  --mf-sidebar-active: #c4473f;
+  --mf-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --mf-sidebar-icon: rgba(255, 255, 255, 0.07);
+  --mf-sidebar-line: rgba(255, 255, 255, 0.1);
+  --mf-on-sidebar: #ffffff;
+  --mf-on-sidebar-muted: #e7dcd7; /* 10.9:1 on --mf-sidebar */
+  --mf-on-sidebar-subtle: #b8a8a1; /* 6.9:1 */
+  --mf-on-sidebar-label: #98908f; /* 5.0:1 — group labels */
+  /* Logo mark (head + forward arrow). On the dark sidebar the navy parts turn white. */
+  --mf-logo-navy: #071b60;
+  --mf-logo-blue: #2858c4;
+  /* Public pages (niveautest, hjælp, login/signup, legal) in the new website's palette (:3400, Oct 2026): cream page,
+     chocolate for dark buttons, coral as the accent. Was blue/navy; retinted 26 Oct 2026 ("har stadig det gamle design"). */
+  --mf-site-bg: #faf6f3;
+  --mf-site-navy: #201613;
+  --mf-site-navy-hover: #2e1f1c;
+  --mf-site-ink: #17100e;
+  --mf-site-body: #433b39;
+  --mf-site-blue: #c2453f;
+  --mf-site-blue-light: #ea6b5e;
+  --mf-site-blue-deep: #a8372f;
+  --mf-site-soft: #fffdfb;
+  --mf-site-brain: #c2453f;
+  --mf-site-line: rgb(26 20 19 / 0.09);
+  --mf-site-shadow: rgb(48 30 24 / 0.35);
+  --mf-site-navy-shadow: rgb(32 22 19 / 0.6);
+  /* Website "bezel" buttons and fields: grey 3px edge, dark hairline inside, grey icon tile. */
+  --mf-site-bezel: #e5e5e5;
+  --mf-site-bezel-hover: #d6d6d6;
+  --mf-site-hairline: rgb(11 13 31 / 0.2);
+  --mf-site-lift: rgb(11 13 31 / 0.1);
+  --mf-site-tile: #f3ece8;
+  /* New website on :3400 (web-skabelon, Oct 2026): chocolate stage, cream page, coral accent. Used by forløb. */
+  --mf-web-bg: #faf6f3;
+  --mf-web-surface: #fffdfb;
+  --mf-web-ink: #17100e;
+  --mf-web-body: #433b39;
+  --mf-web-muted: #6a615f;
+  --mf-web-line: rgb(26 20 19 / 0.09);
+  --mf-web-line-strong: rgb(26 20 19 / 0.16);
+  --mf-web-coral: #ea6b5e;
+  --mf-web-coral-ink: #c2453f;
+  --mf-web-coral-soft: rgb(237 118 104 / 0.12);
+  --mf-web-coral-from: #fb836d;
+  --mf-web-coral-to: #d24c4c;
+  --mf-web-stage: #201613;
+  --mf-web-stage-deep: #1a0f0c;
+  --mf-web-stage-raised: #2e1f1c;
+  --mf-web-stage-text: #c4bbba;
+  --mf-web-stage-muted: #98908f;
+  --mf-web-stage-line: rgb(255 255 255 / 0.1);
+  --mf-web-stage-glass: rgb(255 255 255 / 0.06);
+  --mf-web-glow: rgb(244 124 107 / 0.35);
+  --mf-web-shadow: rgb(48 30 24 / 0.25);
+  --mf-web-white: #ffffff;
+  /* Hero card for the current entity (:3500 look: chocolate stage with a coral glow). White text ≥ 5:1 everywhere. */
+  --mf-hero-from: #201613;
+  --mf-hero-mid: #2a1c18;
+  --mf-hero-to: #1a0f0c;
+  --mf-hero-glow: rgba(244, 124, 107, 0.45);
+  --mf-hero-shine: rgba(255, 255, 255, 0.06);
+  --mf-hero-chip-line: rgba(255, 255, 255, 0.25);
+  --mf-hero-pill: rgba(255, 255, 255, 0.1);
+  --mf-hero-pill-line: rgba(255, 255, 255, 0.25);
+  --mf-on-hero: #ffffff;
+  /* Pill tabs and soft tags. */
+  --mf-tint: #fbe9e6;
+  --mf-tint-ink: #9e3631;
+  --mf-tag-learner: #e8f7ef;
+  --mf-tag-learner-ink: #16794a;
+  /* Charts and segmented progress. */
+  --mf-chart-bar: #c9ecd3;
+  --mf-chart-bar-hot: #3fbf6a;
+  --mf-chart-tip: #201613;
+  --mf-on-chart-tip: #ffffff;
+  --mf-seg-on: #c4473f;
+  --mf-seg-off: #efe9e6;
+  --mf-panel-radius: 28px;
+}
+
+@theme inline {
+  --color-sunken: var(--mf-surface-sunken);
+  --color-ink: var(--mf-ink);
+  --color-ink-muted: var(--mf-ink-muted);
+  --color-ink-subtle: var(--mf-ink-subtle);
+  --color-accent-ink: var(--mf-accent-ink);
+  --color-focus: var(--mf-focus);
+  --color-rav: var(--mf-rav);
+  --color-on-rav: var(--mf-on-rav);
+  --color-mark-dot: var(--mf-mark-dot);
+  --color-hint: var(--mf-hint);
+  --color-hint-soft: var(--mf-hint-soft);
+  --color-success-soft: var(--mf-success-soft);
+  --color-spot: var(--mf-spot);
+  --color-spot-2: var(--mf-spot-2);
+  --color-danger-soft: var(--mf-danger-soft);
+  --color-night: var(--mf-night);
+  --color-night-raised: var(--mf-night-raised);
+  --color-night-line: var(--mf-night-line);
+  --color-on-night: var(--mf-on-night);
+  --color-on-night-muted: var(--mf-on-night-muted);
+  --color-night-accent: var(--mf-night-accent);
+  --color-cover-blue: var(--mf-cover-blue);
+  --color-cover-blue-ink: var(--mf-cover-blue-ink);
+  --color-cover-amber: var(--mf-cover-amber);
+  --color-cover-amber-ink: var(--mf-cover-amber-ink);
+  --color-cover-mint: var(--mf-cover-mint);
+  --color-cover-mint-ink: var(--mf-cover-mint-ink);
+  --color-cover-coral: var(--mf-cover-coral);
+  --color-cover-coral-ink: var(--mf-cover-coral-ink);
+  --color-cover-sky: var(--mf-cover-sky);
+  --color-cover-sky-ink: var(--mf-cover-sky-ink);
+  --color-tile-blue-from: var(--mf-tile-blue-from);
+  --color-tile-blue-to: var(--mf-tile-blue-to);
+  --color-tile-amber-from: var(--mf-tile-amber-from);
+  --color-tile-amber-to: var(--mf-tile-amber-to);
+  --color-tile-mint-from: var(--mf-tile-mint-from);
+  --color-tile-mint-to: var(--mf-tile-mint-to);
+  --color-tile-coral-from: var(--mf-tile-coral-from);
+  --color-tile-coral-to: var(--mf-tile-coral-to);
+  --color-tile-sky-from: var(--mf-tile-sky-from);
+  --color-tile-sky-to: var(--mf-tile-sky-to);
+  --color-tile-slate-from: var(--mf-tile-slate-from);
+  --color-tile-slate-to: var(--mf-tile-slate-to);
+  --color-tile-ink-from: var(--mf-tile-ink-from);
+  --color-tile-ink-to: var(--mf-tile-ink-to);
+  --color-sidebar: var(--mf-sidebar);
+  --color-site-bg: var(--mf-site-bg);
+  --color-site-navy: var(--mf-site-navy);
+  --color-site-navy-hover: var(--mf-site-navy-hover);
+  --color-site-ink: var(--mf-site-ink);
+  --color-site-body: var(--mf-site-body);
+  --color-site-blue: var(--mf-site-blue);
+  --color-site-blue-light: var(--mf-site-blue-light);
+  --color-site-blue-deep: var(--mf-site-blue-deep);
+  --color-site-soft: var(--mf-site-soft);
+  --color-site-brain: var(--mf-site-brain);
+  --color-site-line: var(--mf-site-line);
+  --color-site-shadow: var(--mf-site-shadow);
+  --color-site-navy-shadow: var(--mf-site-navy-shadow);
+  --color-site-bezel: var(--mf-site-bezel);
+  --color-site-bezel-hover: var(--mf-site-bezel-hover);
+  --color-site-hairline: var(--mf-site-hairline);
+  --color-site-lift: var(--mf-site-lift);
+  --color-site-tile: var(--mf-site-tile);
+  --color-web-bg: var(--mf-web-bg);
+  --color-web-surface: var(--mf-web-surface);
+  --color-web-ink: var(--mf-web-ink);
+  --color-web-body: var(--mf-web-body);
+  --color-web-muted: var(--mf-web-muted);
+  --color-web-line: var(--mf-web-line);
+  --color-web-line-strong: var(--mf-web-line-strong);
+  --color-web-coral: var(--mf-web-coral);
+  --color-web-coral-ink: var(--mf-web-coral-ink);
+  --color-web-coral-soft: var(--mf-web-coral-soft);
+  --color-web-coral-from: var(--mf-web-coral-from);
+  --color-web-coral-to: var(--mf-web-coral-to);
+  --color-web-stage: var(--mf-web-stage);
+  --color-web-stage-deep: var(--mf-web-stage-deep);
+  --color-web-stage-raised: var(--mf-web-stage-raised);
+  --color-web-stage-text: var(--mf-web-stage-text);
+  --color-web-stage-muted: var(--mf-web-stage-muted);
+  --color-web-stage-line: var(--mf-web-stage-line);
+  --color-web-stage-glass: var(--mf-web-stage-glass);
+  --color-web-glow: var(--mf-web-glow);
+  --color-web-shadow: var(--mf-web-shadow);
+  --color-web-white: var(--mf-web-white);
+  --color-sidebar-raised: var(--mf-sidebar-raised);
+  --color-sidebar-active: var(--mf-sidebar-active);
+  --color-sidebar-hover: var(--mf-sidebar-hover);
+  --color-sidebar-icon: var(--mf-sidebar-icon);
+  --color-sidebar-line: var(--mf-sidebar-line);
+  --color-on-sidebar: var(--mf-on-sidebar);
+  --color-on-sidebar-muted: var(--mf-on-sidebar-muted);
+  --color-on-sidebar-subtle: var(--mf-on-sidebar-subtle);
+  --color-on-sidebar-label: var(--mf-on-sidebar-label);
+  --color-logo-navy: var(--mf-logo-navy);
+  --color-logo-blue: var(--mf-logo-blue);
+  --color-hero-pill: var(--mf-hero-pill);
+  --color-hero-pill-line: var(--mf-hero-pill-line);
+  --color-hero-chip-line: var(--mf-hero-chip-line);
+  --color-on-hero: var(--mf-on-hero);
+  --color-tint: var(--mf-tint);
+  --color-tint-ink: var(--mf-tint-ink);
+  --color-tag-learner: var(--mf-tag-learner);
+  --color-tag-learner-ink: var(--mf-tag-learner-ink);
+  --color-chart-bar: var(--mf-chart-bar);
+  --color-chart-bar-hot: var(--mf-chart-bar-hot);
+  --color-chart-tip: var(--mf-chart-tip);
+  --color-on-chart-tip: var(--mf-on-chart-tip);
+  --color-seg-on: var(--mf-seg-on);
+  --color-seg-off: var(--mf-seg-off);
+  --color-fg: var(--mf-ink);
+  --color-border: var(--mf-line);
+  --color-accent-fg: var(--mf-on-accent);
+  --text-display-xl: clamp(3rem, 7vw, 6rem);
+  --text-display-xl--line-height: 0.98;
+  --text-display-xl--letter-spacing: -0.04em;
+  --text-display-xl--font-weight: 500;
+  --text-display: clamp(2.5rem, 4.5vw, 4rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 500;
+  --text-title-1: clamp(2rem, 3vw, 2.75rem);
+  --text-title-1--line-height: 1.06;
+  --text-title-1--letter-spacing: -0.032em;
+  --text-title-1--font-weight: 500;
+  --text-title-2: clamp(1.5rem, 2vw, 1.75rem);
+  --text-title-2--line-height: 1.15;
+  --text-title-2--letter-spacing: -0.025em;
+  --text-title-2--font-weight: 500;
+  --text-title-3: 1.1875rem;
+  --text-title-3--line-height: 1.35;
+  --text-title-3--letter-spacing: -0.015em;
+  --text-title-3--font-weight: 500;
+  --text-body-lg: 1.25rem;
+  --text-body-lg--line-height: 1.5;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.55;
+  --text-body-sm: 0.9375rem;
+  --text-body-sm--line-height: 1.5;
+  --text-label: 0.9375rem;
+  --text-label--line-height: 1.4;
+  --text-label--font-weight: 500;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.333;
+  --text-caption--letter-spacing: 0.01em;
+  --text-caption--font-weight: 500;
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1.333;
+  --text-overline--letter-spacing: 0.06em;
+  --text-overline--font-weight: 500;
+  --text-mono: 0.8125rem;
+  --text-mono--line-height: 1.538;
+  --text-mono--font-weight: 500;
+  --radius-card: 22px;
+  --radius-panel: 28px;
+  --shadow-xs: var(--mf-shadow-xs);
+  --shadow-sm: var(--mf-shadow-sm);
+  --shadow-md: var(--mf-shadow-md);
+  --shadow-lg: var(--mf-shadow-lg);
+  --shadow-ring: var(--mf-ring);
+  --drop-shadow-object: var(--mf-object-shadow);
+  --shadow-tile: var(--mf-shadow-tile);
+  --container-read: 42.5rem;
+  --container-app: 80rem;
+  --container-wide: 100rem;
+}
+
+/* Shared token names → sandbox values inside the sandbox only. */
+.mf-sandbox {
+  --bg: var(--mf-bg);
+  --surface: var(--mf-surface);
+  --border: var(--mf-line);
+  --border-strong: var(--mf-line-strong);
+  --accent: var(--mf-accent);
+  --accent-hover: var(--mf-accent-hover);
+  --accent-soft: var(--mf-accent-soft);
+  --on-accent: var(--mf-on-accent);
+  --success: var(--mf-success);
+  --danger: var(--mf-danger);
+  --text-muted: var(--mf-ink-muted);
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-2xl: 24px;
+  color: var(--mf-ink);
+}
+.mf-sandbox h1, .mf-sandbox h2, .mf-sandbox h3, .mf-sandbox h4 { color: inherit; }
+.mf-sandbox :focus-visible { outline: 2px solid var(--mf-focus); outline-offset: 2px; }
+
+@utility mf-hero {
+  color: var(--mf-on-hero);
+  background:
+    radial-gradient(500px 260px at 55% 120%, var(--mf-hero-shine), transparent 60%),
+    radial-gradient(400px 300px at 100% 0%, var(--mf-hero-glow) 0%, transparent 60%),
+    linear-gradient(120deg, var(--mf-hero-from) 0%, var(--mf-hero-mid) 55%, var(--mf-hero-to) 100%);
+}

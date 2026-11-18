@@ -1,0 +1,21 @@
+{
+  "name": "Nordlys Logistik ApS",
+  "description": "3PL-lager og distribution for webshops og mindre producenter i Jylland.",
+  "address": "Kajgade 0, 8000 Aarhus C (fiktiv)",
+  "cvr": "00000000 (fiktivt)",
+  "employeeCount": 40,
+  "facts": [
+    "6.500 m² lager",
+    "12 varebiler",
+    "ca. 2.400 ordrer pr. dag i højsæson",
+    "Fragt via egne biler i Østjylland og via fragtpartnere i resten af landet"
+  ],
+  "values": "Til tiden. Hver gang.",
+  "currentThemes": [
+    "ny kunde-onboarding",
+    "julesæson",
+    "forsinkelser fra en fragtpartner",
+    "budgetopfølgning Q3",
+    "ny AI-politik"
+  ]
+}
