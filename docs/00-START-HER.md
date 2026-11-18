@@ -9,7 +9,7 @@ Opret med firma-mail under Esther Gruppen ApS. Brug 2FA overalt. Gem nøgler i e
 | Konto | Bruges til | Bemærkning |
 |---|---|---|
 | GitHub | Repo `greb`, PR'er, CI (GitHub Actions), issues fra indholdsmotoren | Privat repo |
-| Vercel | Hosting, preview pr. PR | Forbind til GitHub-repo; function region `fra1` |
+| Vercel | Hosting; `main` deployer til produktion | Forbind til GitHub-repo; function region `fra1` |
 | Neon | Postgres | Region AWS Frankfurt (`eu-central-1`); separat branch til preview/test |
 | Anthropic API | Sandkassens øvemodel, bedømmelse, indholdsmotor, support | Sæt forbrugsgrænse i konsollen fra dag 1 |
 | Stripe | Abonnementer (kort) | Testmode indtil launch; Customer Portal på dansk; MobilePay kan ikke bruges til abonnementer |
@@ -29,8 +29,8 @@ SSO kræver også app-registreringer hos Microsoft Entra ID og Google Cloud (OAu
 3. **Godkend** — læs planen. Svar "Godkendt" eller ret til. Besvar åbne spørgsmål (eller opdatér `docs/00-beslutninger.md`).
 4. **Byg** — tests først for logik, derefter kode, små commits.
 5. **Checks** — `pnpm typecheck && pnpm lint && pnpm test` (+ `pnpm e2e` for berørte flows) skal være grønne.
-6. **PR** — én PR pr. milestone med rapport: hvert acceptkriterie + bevis, åbne spørgsmål.
-7. **Du tester på Vercel preview** — følg "Sådan tester Marco"-punkterne i rapporten. Fejl → bug-skabelon (§ 5). Til sidst review-skabelon (§ 6), derefter merge.
+6. **Push til `main`** — rapport i chatten pr. milestone: hvert acceptkriterie + bevis, åbne spørgsmål.
+7. **Du tester på Vercel-deployet fra `main`** — følg "Sådan tester Marco"-punkterne i rapporten. Fejl → bug-skabelon (§ 5). Til sidst review-skabelon (§ 6).
 
 Designsessioner: før M3, M4, M5 (offentlig testside) og M7 (admin-UI) skal du vælge design. Se `docs/11-roadmap.md`. Claude Code laver flere visuelle versioner af én skærm ad gangen; du vælger. Indtil da bruges neutrale placeholders.
 
@@ -120,7 +120,7 @@ Gør sådan:
 ## 6. Review-skabelon (før merge)
 
 ```
-Review PR'en for M<N> mod CLAUDE.md, docs/00-beslutninger.md og M<N> i docs/11-roadmap.md.
+Review ændringerne for M<N> (commits på main) mod CLAUDE.md, docs/00-beslutninger.md og M<N> i docs/11-roadmap.md.
 Skriv ikke ny kode — rapportér kun.
 
 Tjek og rapportér med fil:linje:
