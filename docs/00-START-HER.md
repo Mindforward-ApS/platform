@@ -86,15 +86,15 @@ FASE 1 — PLAN (ingen kode):
 Stop og vent på "Godkendt".
 
 FASE 2 — BYG (efter godkendelse):
-- Tests først for logik, så implementation. Små conventional commits på branch m<N>-<navn>.
+- Tests først for logik, så implementation. Små conventional commits direkte på main (checks grønne før hvert push).
 - Hold dig inden for scope. Ser du noget uden for scope: notér det, byg det ikke.
 
 FASE 3 — RAPPORT:
 - Kør pnpm typecheck, pnpm lint, pnpm test (+ pnpm e2e hvis relevant). Indsæt output-resumé.
 - For HVERT acceptkriterie: [x]/[ ] + bevis (testnavn, output, fil:linje eller preview-trin).
-- "Sådan tester Marco": 3–8 konkrete klik-trin på Vercel preview.
+- "Sådan tester Marco": 3–8 konkrete klik-trin på Vercel-deployet fra main.
 - Alt du er usikker på eller har antaget.
-- Opret PR med rapporten som beskrivelse.
+- Push til main og giv rapporten i chatten.
 ```
 
 ## 5. Bug-skabelon

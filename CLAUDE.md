@@ -46,7 +46,7 @@ pnpm db:seed      # seed: spor, moduler, Nordlys Logistik
 pnpm e2e          # Playwright
 pnpm content:validate  # validér content/ mod schema (fra M2)
 ```
-Før hver PR: `pnpm typecheck && pnpm lint && pnpm test` grønne; `pnpm e2e` for berørte flows.
+Før hvert push til `main`: `pnpm typecheck && pnpm lint && pnpm test` grønne; `pnpm e2e` for berørte flows.
 
 ## Mappestruktur (detaljer i docs/02-arkitektur.md)
 ```
@@ -102,7 +102,7 @@ docs/               # spec + OPEN-QUESTIONS.md
 - [ ] Migrationer committet; seed virker på tom database.
 - [ ] `.env.example` og relevante docs opdateret, hvis adfærd/konfiguration er ændret.
 - [ ] Usikkerheder skrevet i `docs/OPEN-QUESTIONS.md`.
-- [ ] Vercel preview virker, så Marco kan teste.
+- [ ] Vercel-deploy fra `main` virker, så Marco kan teste.
 
 ## Usikkerhedsregel
 Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installation eller brug — din viden kan være forældet. Virker en beslutning forkert, umulig eller modstridende: **stop**, tilføj den til `docs/OPEN-QUESTIONS.md` (spørgsmål, kontekst, dit forslag, hvad der er blokeret) og spørg Marco. Improvisér ikke.
@@ -115,8 +115,8 @@ Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installat
 
 ## Git
 - Små commits med Conventional Commits (`feat:`, `fix:`, `test:`, `chore:`, `docs:`, `refactor:`).
-- Én milestone pr. PR, branch `m<N>-<kort-navn>`. Aldrig direkte push til `main`.
-- PR-beskrivelse: acceptkriterier som tjekliste med bevis + åbne spørgsmål.
+- Der arbejdes og pushes direkte på `main` (push til `main` deployer til produktion på Vercel). Kør checks før hvert push.
+- Milestone-rapport (i chatten): acceptkriterier som tjekliste med bevis + åbne spørgsmål.
 
 ## ALDRIG
 - Hardcode priser (49 kr m.fl. kommer fra config/DB).
