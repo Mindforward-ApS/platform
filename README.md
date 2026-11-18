@@ -1,6 +1,6 @@
-# Greb — byggespecifikation til Claude Code
+# MindForward — byggespecifikation til Claude Code
 
-Komplet spec-pakke til at bygge **Greb**: dansk SaaS hvor medarbejdere lærer ChatGPT, Microsoft 365 Copilot og Claude ved at gøre ting i en sandkasse. Ingen kode endnu — Claude Code bygger den milestone for milestone (M0–M10).
+Komplet spec-pakke til at bygge **MindForward**: dansk SaaS hvor medarbejdere lærer ChatGPT, Microsoft 365 Copilot og Claude ved at gøre ting i en sandkasse. Ingen kode endnu — Claude Code bygger den milestone for milestone (M0–M10).
 
 **Start:** læs `docs/00-START-HER.md` og indsæt kickoff-prompten i Claude Code.
 

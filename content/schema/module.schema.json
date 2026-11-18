@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://greb.dk/schema/module.schema.json",
-  "title": "Greb ModuleVersion content",
+  "title": "MindForward ModuleVersion content",
   "description": "Contract for one module version (ModuleVersion.content). Spec: docs/05-moduler-og-scoring.md. Word limits (READ <= 120 words) are enforced additionally in Zod.",
   "type": "object",
   "additionalProperties": false,

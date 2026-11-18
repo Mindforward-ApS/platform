@@ -1,4 +1,4 @@
-// Greb — Prisma schema (Prisma 7, PostgreSQL on Neon AWS Frankfurt).
+// MindForward — Prisma schema (Prisma 7, PostgreSQL on Neon AWS Frankfurt).
 // Canonical entity names: docs/00-beslutninger.md §9. Field docs: docs/03-datamodel.md.
 //
 // Conventions
@@ -228,7 +228,7 @@ enum ConsentChannel {
 
 /// Marketing consent (MFL § 10) and B2C checkout declarations (forbrugeraftaleloven § 18 stk. 2 nr. 13).
 enum ConsentPurpose {
-  MARKETING_EMAIL // tips, Greb news and offers by email (one specific consent text, docs/09 § 2)
+  MARKETING_EMAIL // tips, MindForward news and offers by email (one specific consent text, docs/09 § 2)
   IMMEDIATE_ACCESS_REQUEST // B2C checkout: "I want access immediately"
   WITHDRAWAL_LOSS_ACK // B2C checkout: acknowledges loss/limitation of right of withdrawal
 }
@@ -429,7 +429,7 @@ model User {
   // Better Auth twoFactor plugin (required for GREB_ADMIN)
   twoFactorEnabled Boolean? @default(false)
 
-  // Greb fields
+  // MindForward fields
   platformRole             PlatformRole @default(USER)
   locale                   String       @default("da")
   trainingRemindersEnabled Boolean      @default(true) // SERVICE reminders day 1/14/25 opt-out
@@ -547,7 +547,7 @@ model Organization {
   metadata  String?
   createdAt DateTime @default(now())
 
-  // Greb fields (declared as additionalFields in the plugin config; all have defaults or are optional)
+  // MindForward fields (declared as additionalFields in the plugin config; all have defaults or are optional)
   updatedAt               DateTime         @updatedAt
   type                    OrganizationType @default(PERSONAL) // BUSINESS set explicitly on B2B create
   seatLimit               Int              @default(1) // = Subscription.quantity (webhook), trial: 5
@@ -596,7 +596,7 @@ model Membership {
   role           MembershipRole @default(LEARNER)
   createdAt      DateTime       @default(now())
 
-  // Greb fields
+  // MindForward fields
   updatedAt     DateTime  @updatedAt
   jobRole       JobRole? // drives ROLE modules
   deactivatedAt DateTime? // seat freed; data kept for org report until user deletion

@@ -72,7 +72,7 @@ Hver parser har fixture-tests (`tests/content/parsers/*.test.ts`) med gemte rå-
 ## 2. Høflig hentning (fetch)
 
 - **Frekvens:** én gang dagligt pr. kilde (Inngest cron `15 5 * * *` TZ Europe/Copenhagen). Concurrency 1 pr. host. Ingen manuel "hent nu" oftere end 1 gang/time (admin-knap med rate limit).
-- **User-Agent (ærlig):** `GrebContentBot/1.0 (+https://<domæne>/bot; kontakt@<domæne>)`. `/bot`-side forklarer formål og frekvens.
+- **User-Agent (ærlig):** `MindForwardContentBot/1.0 (+https://<domæne>/bot; kontakt@<domæne>)`. `/bot`-side forklarer formål og frekvens.
 - **robots.txt** hentes og respekteres (cache 24 t). Disallow → kilden sættes `MANUAL_ONLY` + alarm.
 - **Betinget hentning:** gem `etag` og `lastModified` på `ContentSource`; send `If-None-Match` / `If-Modified-Since`. `304` → ingen snapshot, `PipelineRun.status = NO_CHANGE`.
 - **Timeouts/limits:** connect 10 s, total 30 s, maks body 5 MB, følg maks 3 redirects (kun samme registrerbare domæne).
@@ -146,7 +146,7 @@ const Classification = z.object({
 ### 5.1 Prompt — classify (system)
 
 ```
-Du er redaktør hos Greb, en dansk læringsplatform hvor medarbejdere i danske virksomheder lærer at bruge AI-værktøjer (ChatGPT, Microsoft 365 Copilot, Claude, Gemini) ved at øve sig.
+Du er redaktør hos MindForward, en dansk læringsplatform hvor medarbejdere i danske virksomheder lærer at bruge AI-værktøjer (ChatGPT, Microsoft 365 Copilot, Claude, Gemini) ved at øve sig.
 
 Du får ÉN entry fra en officiel release note. Klassificér den med værktøjet `classify`. Regler:
 
@@ -156,7 +156,7 @@ Du får ÉN entry fra en officiel release note. Klassificér den med værktøjet
 4. plans: angiv kun abonnementer der står i teksten. Står der intet: status "unknown" og tom liste.
 5. region: status "known" KUN hvis teksten eksplicit nævner lande eller regioner. Citér den præcise sætning i evidenceQuote. Gæt ALDRIG — "rolling out to all users" er IKKE en regionsangivelse → "unknown".
 6. requiresTier (kun Copilot): "COPILOT_CHAT" hvis teksten siger Copilot Chat / uden licens; "COPILOT_M365" hvis den kræver Microsoft 365 Copilot-licens; ellers "unknown".
-7. features: funktionsnavne præcis som de står (fx "custom GPTs", "Agent Builder"). concepts: de begreber i Grebs pensum funktionen hører under.
+7. features: funktionsnavne præcis som de står (fx "custom GPTs", "Agent Builder"). concepts: de begreber i MindForwards pensum funktionen hører under.
 8. deprecations: hver funktion der udfases/fjernes/erstattes, med dato hvis nævnt og citat.
 9. needsNewSandboxUi: true hvis man ikke kan øve funktionen med en generisk chat-, fil-, indbakke-, kalender- eller indstillingsvisning — dvs. der kræves en ny type skærm.
 10. affectsCore: true hvis ændringen gør noget forkert eller forældet i grundpensum (egne assistenter, forbindelser, planlagte opgaver, agenter, datasikkerhed).
@@ -181,14 +181,14 @@ User-besked: `Kilde: {source.key} ({track})\nURL: {entry.url}\nDato: {entry.date
 ```
   `kind = GUIDANCE` (fx "Spørg jeres IT-ansvarlige, før I slår det til") kræver ikke sourceRef, men må ikke indeholde fakta om værktøjet.
 - **Egne ord + link:** ingen sætning må dele > 12 sammenhængende ord med kilden (deterministisk check i verify). Citater vises kun i admin, ikke for brugeren. Hvert modul viser: "Automatisk opdateret [dato] — kilde: [link]".
-- **Microsoft Learn (CC BY 4.0):** moduler med sourceRef til `ms-learn-copilot-rn` får fast kreditering: "Bygger på 'Microsoft 365 Copilot release notes', Microsoft Learn, licenseret under CC BY 4.0 (link). Oversat og omskrevet af Greb." Feltet sættes af kode ud fra `ContentSource.license`, ikke af modellen.
+- **Microsoft Learn (CC BY 4.0):** moduler med sourceRef til `ms-learn-copilot-rn` får fast kreditering: "Bygger på 'Microsoft 365 Copilot release notes', Microsoft Learn, licenseret under CC BY 4.0 (link). Oversat og omskrevet af MindForward." Feltet sættes af kode ud fra `ContentSource.license`, ikke af modellen.
 - `featureRefs` (feature-id'er fra `content/features/registry.json`, se §12) og `requiresTier` (COPILOT) sættes fra classify-output, ikke af modellen.
-- Produktnavne kun beskrivende. Ingen logoer/skærmbilleder. Aldrig "GPT" i Grebs egne navne/titler.
+- Produktnavne kun beskrivende. Ingen logoer/skærmbilleder. Aldrig "GPT" i MindForwards egne navne/titler.
 
 ### 6.1 Prompt — draft (system)
 
 ```
-Du skriver et kort nyhedsmodul til Greb, en dansk læringsplatform for medarbejdere der bruger AI-værktøjer på arbejdet. Målgruppen er travle kontormedarbejdere uden teknisk baggrund. Du returnerer KUN et modul via værktøjet `draft_module` (JSON efter schemaet).
+Du skriver et kort nyhedsmodul til MindForward, en dansk læringsplatform for medarbejdere der bruger AI-værktøjer på arbejdet. Målgruppen er travle kontormedarbejdere uden teknisk baggrund. Du returnerer KUN et modul via værktøjet `draft_module` (JSON efter schemaet).
 
 Indhold:
 - 1–2 READ-trin, hver maks 120 ord. Struktur: Hvad er nyt → hvad betyder det i dit arbejde → hvad skal du gøre (evt. "ingenting").
@@ -200,7 +200,7 @@ Faktaregler (brydes de, afvises modulet):
 3. Region: {regionInstruction}  ← indsættes af kode: enten "Kilden siger: {values}" eller "Kilden oplyser ikke region. Skriv præcis: 'Tjek om funktionen er tilgængelig hos jer — udbyderen oplyser ikke region.' Skriv ALDRIG at funktionen er tilgængelig i Danmark eller EU."
 4. Abonnement: {plansInstruction}
 5. Skriv med dine egne ord på naturligt dansk. Kopiér ikke sætninger fra kilden. Funktionsnavne må stå på engelsk som i værktøjet (fx "custom GPTs").
-6. Brug produktnavne beskrivende ("i ChatGPT", "i Microsoft 365 Copilot"). Påstå aldrig at Greb er tilknyttet, godkendt eller anbefalet af en udbyder.
+6. Brug produktnavne beskrivende ("i ChatGPT", "i Microsoft 365 Copilot"). Påstå aldrig at MindForward er tilknyttet, godkendt eller anbefalet af en udbyder.
 7. Ingen omtale af AI-forordningen, lovkrav, certificeringskrav eller bøder.
 8. Ingen superlativer ("revolutionerende", "den bedste"), ingen sammenligning mellem udbydere.
 9. Råd (kind "GUIDANCE") skal være forsigtige og generelle: følg virksomhedens retningslinjer, del ikke persondata, spørg IT.
@@ -220,7 +220,7 @@ Rækkefølge (stop ved første hårde fejl; alle resultater gemmes på `Pipeline
    - READ ≤ 120 ord; quiz: præcis ét korrekt svar, 3–4 muligheder, ingen duplikater.
    - Ingen 12-ords-overlap med kilden (n-gram-check).
    - Region: hvis classification.region.status = unknown → standardsætningen findes ordret; ingen af ordene "Danmark", "EU", "Europa", "EØS" ellers.
-   - Links: kun til `ContentSource`-hosts og Grebs eget domæne.
+   - Links: kun til `ContentSource`-hosts og MindForwards eget domæne.
    - **Forbudte påstande** (`src/server/content-engine/banned-claims.ts`, regex + ordlister, case-insensitive): `lovkrav`, `påkrævet niveau`, `certificeringskrav`, `bøde`, `AI-forordningen kræver`, `godkendt af (OpenAI|Microsoft|Anthropic|Google)`, `officiel(t)? (partner|kursus)`, `garanti`, `100 % sikker`, `tilgængelig i (Danmark|EU)` uden region-evidens, `gratis` om tredjepartsprodukt uden sourceRef.
 3. **Verifikator-model (uafhængig):** `CONTENT_VERIFY_MODEL` ≠ `CONTENT_DRAFT_MODEL` — her er en større model tilladt (eneste undtagelse fra lille-model-reglen i `CLAUDE.md`; lav volumen, maks 20 kald/døgn). Ser KUN kildeteksten + liste af claims — ikke draft-prompten, ikke classification. Ét kald med alle claims, struktureret output pr. claim: `SUPPORTED | PARTIAL | NOT_SUPPORTED | CONTRADICTED` + begrundelse. Modulet består kun hvis alle FACT-claims er `SUPPORTED`.
 4. **Dansk kvalitets-QA** (samme verifikator-kald, separat felt): sprog = dansk; ingen engelske sætninger (kun funktionsnavne); grammatik/stavning; tone (ikke markedsføring); forståelig for ikke-tekniker; quiz entydig. Returnerer `PASS | FIX_NEEDED` + konkrete rettelser.
@@ -230,7 +230,7 @@ Ved fejl: ét automatisk re-draft med verifikatorens feedback. Fejler det igen �
 ### 7.1 Prompt — verify (system)
 
 ```
-Du er faktatjekker for Greb. Du er uafhængig af forfatteren og skal være skeptisk.
+Du er faktatjekker for MindForward. Du er uafhængig af forfatteren og skal være skeptisk.
 
 Du får (A) en kildetekst fra en officiel release note og (B) en liste af påstande på dansk, hver med id og det citat forfatteren påstår understøtter den.
 

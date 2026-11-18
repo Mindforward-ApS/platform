@@ -1,10 +1,10 @@
 # 01 — Produkt: hvem, hvad, flows og skærme
 
-> Kanonisk: `docs/00-beslutninger.md` (§ 10, 10a og 10b går forud; nyeste vinder). Fakta/lov: `docs/research-fund.md`. Dybde: moduler/scoring `docs/05-moduler-og-scoring.md`, pensum `content/curriculum.md`, sandkasse `docs/04-sandkasse.md`, betaling `docs/07-betaling.md`, mails/samtykke `docs/09-email-og-marketing.md`, support `docs/08-support.md`, compliance `docs/10-compliance.md`, milestones `docs/11-roadmap.md`.
+> Kanonisk: `docs/00-beslutninger.md` (§ 10, 10a, 10b og 10c går forud; nyeste vinder). Fakta/lov: `docs/research-fund.md`. Dybde: moduler/scoring `docs/05-moduler-og-scoring.md`, pensum `content/curriculum.md`, sandkasse `docs/04-sandkasse.md`, betaling `docs/07-betaling.md`, mails/samtykke `docs/09-email-og-marketing.md`, support `docs/08-support.md`, compliance `docs/10-compliance.md`, milestones `docs/11-roadmap.md`.
 > Denne fil beskriver **funktion**, ikke visuelt design. Alle skærme bygges med placeholder-tokens; design laves skærm for skærm med Marco (beslutning § 8).
 
 ## 1. Vision
-1. Greb gør almindelige danske medarbejdere trygge og dygtige til AI på arbejdet — ved at **gøre ting**, ikke se videoer.
+1. MindForward gør almindelige danske medarbejdere trygge og dygtige til AI på arbejdet — ved at **gøre ting**, ikke se videoer.
 2. Man øver i en neutral sandkasse med en fiktiv virksomhed (Nordlys Logistik ApS), så fejl er gratis og ingen rigtige data er i spil.
 3. Hvert modul tager 5–12 minutter, giver en forklaret score og slutter med en færdighed, man kan bruge samme dag.
 4. Indholdet holder sig selv ajour med værktøjerne (ChatGPT, Microsoft 365 Copilot og Claude — senere Gemini) via indholdsmotoren.
@@ -13,7 +13,7 @@
 
 ## 2. Personas
 
-| Persona | Hvem | Mål | Frygt/barriere | Hvad Greb skal gøre |
+| Persona | Hvem | Mål | Frygt/barriere | Hvad MindForward skal gøre |
 |---|---|---|---|---|
 | **Medarbejder uden AI-erfaring** ("Lene", 52, lagerdisponent) | Har prøvet ChatGPT 2 gange, er usikker på hvad hun må | Spare tid på mails og planlægning uden at lave fejl | At dumme sig, at bryde regler, at blive "målt" | Korte trin, dansk hverdagssprog, tydelig "må jeg?"-træning, ros ved fremskridt, ingen tidspres |
 | **Power user** ("Jonas", 31, salg) | Bruger AI dagligt, kender prompts | Lære assistenter, forbindelser, automationer, agenter | Kedes ved basics | Niveautest der lader ham springe over; Niveau 3; månedlige nyheder |
@@ -33,25 +33,26 @@
 Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde-admin ligger under `/virksomhed/*`; `/admin/*` er Marcos interne drift (docs/06, 08, 09).
 
 ### 4.1 Offentlig niveautest → signup → spor → plan → modul → certifikat
-1. **Landingsside** (`/`) → CTA "Tag den gratis AI-niveautest (5 min)".
+1. **Landingsside** (`/`) → CTA "Tag den gratis AI-niveautest (5 min)". Siden viser de fem indgange i pensum: Fundamental AI · AI Act og ansvarlig brug · ChatGPT · Microsoft 365 Copilot · Claude (§ 10c). De to første er fælles for alle og ligger først i planen; værktøjet vælges i næste trin.
 2. **Vælg værktøj** (`/niveautest`): ChatGPT · Microsoft 365 Copilot · Claude · "Ved ikke/flere" (→ ChatGPT-spor, kan skiftes). Copilot → spørg: "Har I Microsoft 365 Copilot-licens?" Ja / Nej, kun Copilot Chat / Ved ikke (→ `COPILOT_CHAT`). Valgfrit: rolle (salg, HR, økonomi, kundeservice, ledelse, drift/håndværk, andet).
 3. **Testen:** 12 spørgsmål (QUIZ/SPOT_ERROR/JUDGMENT, ingen LLM-kald), statuslinje, ingen tidsgrænse, kan gennemføres på mobil. Svar gemmes anonymt (`PlacementResult` med `anonymousId`), rate limit + bot-beskyttelse.
-4. **Resultatside** (vises **uden** krav om email/samtykke): niveau pr. område (model-forståelse, prompting, faktatjek, datasikkerhed, avancerede begreber), 3 konkrete anbefalinger, forslag til plan. Under: **ikke-forudafkrydset** checkbox "Ja tak, send mig tips og tilbud om AI-træning fra Greb på email" (frivillig, specifik) + email-felt → `ConsentRecord` + dobbelt opt-in (docs/09). Separat knap "Gem resultat og fortsæt gratis" → signup.
+4. **Resultatside** (vises **uden** krav om email/samtykke): niveau pr. område (model-forståelse, prompting, faktatjek, datasikkerhed, avancerede begreber), 3 konkrete anbefalinger, forslag til plan. Under: **ikke-forudafkrydset** checkbox "Ja tak, send mig tips og tilbud om AI-træning fra MindForward på email" (frivillig, specifik) + email-felt → `ConsentRecord` + dobbelt opt-in (docs/09). Separat knap "Gem resultat og fortsæt gratis" → signup.
 5. **Signup** (`/opret`): magic link, Microsoft eller Google. Resultatet flyttes fra `anonymousId` til brugeren. Ingen marketingsamtykke i signup ud over den samme frivillige, ikke-forudafkrydsede checkbox.
-6. **Læringsplan** (`/plan`): moduler i rækkefølge (curriculum.md "Niveautest → plan"), status pr. modul (ikke startet / i gang / bestået / "kan springes over"), estimeret tid, næste modul fremhævet. Øverst: **anbefalet tempo** (fx "2 moduler om ugen → Niveau 1 færdig ca. [dato]"; kan ændres eller slås fra — intet fast forløb), **ugentlig streak** (kun synlig for brugeren selv), **"Ugens genopfriskning"** (forfaldne spørgsmål, ca. 2 min) og **ugentligt tjek-ind** (2 klik, frivilligt). B2C gratis: de 3 gratis moduler åbne, resten med lås + "Lås op" (→ 4.4).
-7. **Modul** (`/modul/[slug]`): intro (mål, minutter, spor) → trin ét ad gangen (READ/DEMO/CLICK_TASK/PROMPT_TASK/QUIZ/SPOT_ERROR/JUDGMENT). Sandkasse-trin åbner sandkassen i opgavevisning (opgavepanel + sandkasse).
-8. **Hints:** knap "Brug for hjælp?" → hint 1 (nudge) → hint 2 (konkret, ×0,75) → hint 3 "Vis løsning" med bekræftelse "Trinnet giver 0 point" (docs/05 § 5).
-9. **Svar/feedback:** pr. trin straks feedback; PROMPT_TASK viser rubric-kriterier med scorer og 1-linjes feedback pr. kriterium, derefter øvemodellens svar på prompten; op til 3 indsendelser.
-10. **Resultat** (`/modul/[slug]/resultat`): score i %, bestået/ikke bestået (≥ 80 % + must-pass), hvilke trin der trak ned, "Prøv igen" (bedste forsøg tæller), "Næste modul". Ved bestået: **"Brug det i dit eget job"** — modulets skabelon (`takeaway`) med kopiér-knap og påmindelsen "Indsæt aldrig persondata eller fortrolige oplysninger i et værktøj, I ikke har godkendt". Skabelonen gemmes i "Mine skabeloner".
-11. **Sluttjek:** når alle påkrævede moduler i et niveau er bestået, tilbydes et sluttjek (12 spørgsmål, samme områder som niveautesten, andre spørgsmål, ingen LLM-kald) → før/efter pr. område. Frivilligt; ikke en betingelse for certifikat.
-12. **Certifikat:** når alle påkrævede moduler i et spor-niveau er bestået → besked + PDF-download (`/certifikater`) + valgfri offentlig verifikationsside (`/certifikat/[id]`). Tekst: dokumenterer gennemført træning, ikke juridisk certificering (docs/05 § 8).
+6. **Fortæl om dit arbejde** (valgfrit, kan springes over og udfyldes senere): rolle, branche, typiske opgaver, værktøjer og mål → brugerens kontekstbibliotek (§ 4.6). Bruges til at gøre planen og modulerne personlige.
+7. **Læringsplan** (`/plan`): moduler grupperet i Fundamental AI, AI Act og ansvarlig brug og brugerens værktøj, i rækkefølge (curriculum.md "Niveautest → plan"), status pr. modul (ikke startet / i gang / bestået / "kan springes over"), estimeret tid, næste modul fremhævet. Øverst: **anbefalet tempo** (fx "2 moduler om ugen → Niveau 1 færdig ca. [dato]"; kan ændres eller slås fra — intet fast forløb), **ugentlig streak** (kun synlig for brugeren selv), **"Ugens genopfriskning"** (forfaldne spørgsmål, ca. 2 min) og **ugentligt tjek-ind** (2 klik, frivilligt). B2C gratis: de 3 gratis moduler åbne, resten med lås + "Lås op" (→ 4.4).
+8. **Modul** (`/modul/[slug]`): intro (mål, minutter, spor) → trin ét ad gangen (READ/DEMO/CLICK_TASK/PROMPT_TASK/QUIZ/SPOT_ERROR/JUDGMENT). Sandkasse-trin åbner sandkassen i opgavevisning (opgavepanel + sandkasse).
+9. **Hints:** knap "Brug for hjælp?" → hint 1 (nudge) → hint 2 (konkret, ×0,75) → hint 3 "Vis løsning" med bekræftelse "Trinnet giver 0 point" (docs/05 § 5).
+10. **Svar/feedback:** pr. trin straks feedback; PROMPT_TASK viser rubric-kriterier med scorer og 1-linjes feedback pr. kriterium, derefter øvemodellens svar på prompten; op til 3 indsendelser.
+11. **Resultat** (`/modul/[slug]/resultat`): score i %, bestået/ikke bestået (≥ 80 % + must-pass), hvilke trin der trak ned, "Prøv igen" (bedste forsøg tæller), "Næste modul". Ved bestået: **"Brug det i dit eget job"** — modulets skabelon (`takeaway`) med kopiér-knap og påmindelsen "Indsæt aldrig persondata eller fortrolige oplysninger i et værktøj, I ikke har godkendt". Skabelonen gemmes i "Mine skabeloner".
+12. **Sluttjek:** når alle påkrævede moduler i et niveau er bestået, tilbydes et sluttjek (12 spørgsmål, samme områder som niveautesten, andre spørgsmål, ingen LLM-kald) → før/efter pr. område. Frivilligt; ikke en betingelse for certifikat.
+13. **Certifikat:** når alle påkrævede moduler i et spor-niveau er bestået → besked + PDF-download (`/certifikater`) + valgfri offentlig verifikationsside (`/certifikat/[id]`). Tekst: dokumenterer gennemført træning, ikke juridisk certificering (docs/05 § 8).
 
 ### 4.2 B2B: prøve → køb seats → invitér → følg status → rapport
 1. **Start prøve** (`/virksomhed/start`): navn, email, virksomhedsnavn, CVR (opslag), evt. EAN (fase 2), antal ansatte (bucket). Ingen kort. Opretter `Organization(BUSINESS)` + `Membership(OWNER)` + trial (14 dage, ≤ 5 brugere; docs/07 § 6). Ét trial pr. CVR/domæne.
 2. **Onboarding-tjekliste** (dashboard): ① vælg spor (ChatGPT/Copilot + licensniveau) ② invitér de første (≤ 5) ③ prøv selv et modul ④ download databehandleraftale ⑤ (valgfrit) læg jeres AI-politik og dataregler i kontekstbiblioteket (§ 4.6) ⑥ (valgfrit) sæt fælles startdato og teammål. Når de første har taget niveautesten, vises **"AI-tjek af teamet"**: niveaufordeling, svageste områder og anbefalet start — kan hentes som PDF.
 3. **Invitér** (`/virksomhed/medarbejdere`): email (flere ad gangen, CSV-indsæt), invitationslink (udløber, kan nulstilles), verificeret domæne (DNS-TXT → alle med @domæne kan joine; Entra ID/Google SSO). Pr. invitation: rolle (LEARNER/ADMIN), spor, valgfri jobrolle (→ ROLE-moduler). Over seat-loftet: afvises med forklaring + "Tilføj pladser".
 4. **Medarbejderen** modtager SERVICE-mail → accepterer → niveautest (spor forvalgt) → plan → moduler. Er der sat en fælles startdato, kan niveautesten tages med det samme; planen åbner på datoen, og alle får en SERVICE-mail ("I dag starter I"). Har virksomheden lagt AI-politik eller dataregler ind, bekræfter medarbejderen at have læst dem.
-5. **Køb** ("Fortsæt med Greb", `/virksomhed/abonnement`): måned/år, antal seats (≥ 5), pris pr. bruger ex. moms + samlet beløb, momsnummer/CVR, kort via Stripe → aktiv. Seats kan op-/nedjusteres i appen (docs/07 § 4.3). Fakturaer/kort via Stripe-kundeportal.
+5. **Køb** ("Fortsæt med MindForward", `/virksomhed/abonnement`): måned/år, antal seats (≥ 5), pris pr. bruger ex. moms + samlet beløb, momsnummer/CVR, kort via Stripe → aktiv. Seats kan op-/nedjusteres i appen (docs/07 § 4.3). Fakturaer/kort via Stripe-kundeportal.
 6. **Følg status** (`/virksomhed`): pr. medarbejder: niveautest gennemført, moduler bestået/i gang, gennemsnitsscore, certifikater, seneste aktivitet (dato), månedspakke gennemført, før/efter-resultat, bekræftet politik-version. Filtrér på spor, jobrolle, status. **Aldrig prompt-tekster** (§ 7). **Samlet for teamet** (aldrig pr. person, og kun ved mindst 5 svar): andel der brugte AI i en rigtig opgave i ugen, ca. sparet tid, fremdrift mod teammålet.
 7. **Rapport** (`/virksomhed/rapport`): vælg periode → **CSV + PDF**: "Dokumentation af AI-kompetencetiltag" — hvem er tilbudt træning, hvilke rolle- og sporspecifikke moduler, gennemførsel, grundmodul gennemført (dato), før/efter-resultat, certifikater, indholdsversioner, bekræftet version af AI-politik/dataregler (dato), dato for næste genopfriskning, jobrolle og spor/licensniveau pr. medarbejder, en oversigt der kobler tiltaget til trinnene i DS/PAS 2500-4 (ordlyd verificeres før brug — `docs/OPEN-QUESTIONS.md`), virksomhedens egne noter (fri tekst: "sådan bruger vi AI", link til AI-politik). Formulering: "dokumenteret, rollebaseret tiltag efter art. 4" — aldrig "certificering", "lovkrav", "påkrævet niveau" eller bøder (beslutning § 10). Under trial: vandmærke "Prøveperiode".
 8. **Trial-udløb uden køb:** `READ_ONLY` — admin kan se status og eksportere; medarbejdere ser "Jeres prøveperiode er slut — kontakt [admin-navn]".
@@ -88,15 +89,29 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 |---|---|---|
 | Motivation | Personlig streak + eget ugemål | Personlig streak + **fælles teammål** (samlet fremdrift, ingen navne) |
 | Tempo | Anbefalet tempo fra niveautesten | Anbefalet tempo, beregnet mod teammålets dato; valgfri **fælles startdato** |
-| Kontekst | Ingen | **Kontekstbibliotek "Hos os"** |
+| Kontekst | **Eget kontekstbibliotek** "Om mig og mit arbejde" | **Virksomhedens kontekstbibliotek** "Hos os" (vedligeholdes af OWNER/ADMIN) |
+| Personalisering | Pr. bruger | Pr. virksomhed + jobrolle |
 | Synlighed | Kun brugeren selv | Admin ser status/score/certifikater pr. person; tjek-ind og streaks kun samlet (≥ 5 svar) |
 | Dokumentation | Certifikat | Certifikat + virksomhedsrapport + AI-tjek af teamet + lederkit |
 
 **Kontekstbibliotek (erhverv):** OWNER/ADMIN vedligeholder `/virksomhed/kontekst`: AI-politik, godkendte værktøjer, dataregler (hvad må/må ikke indsættes), kontaktperson ved tvivl, kort om forretningen og typiske opgaver pr. rolle. Hvert element er tekst, link eller PDF og er versioneret.
 - Medarbejderen ser det på `/hos-os` og ved relevante moduler: `core-policy-01` og `core-data-01` (resultatskærm og JUDGMENT-feedback viser "Hos jer gælder: …" ved siden af den generelle forklaring) samt på modulintro for rollemoduler.
 - AI-politik og dataregler kræver bekræftelse ("Jeg har læst"); ny version → ny bekræftelse. Admin ser hvem der har bekræftet hvilken version.
-- **Indholdet sendes ikke til sprogmodellen i MVP.** Sandkasse og bedømmelse er uændrede (Nordlys-data).
-- Må ikke indeholde persondata eller forretningshemmeligheder: advarsel i UI + PII-filter ved gem. Kun OWNER/ADMIN kan skrive; alt er org-scopet og skrives i `AuditLog`.
+- Kun OWNER/ADMIN kan skrive; alt er org-scopet og skrives i `AuditLog`.
+
+**Kontekstbibliotek (privat):** brugeren vedligeholder `/konto/kontekst` ("Om mig og mit arbejde"): rolle, branche, typiske opgaver, værktøjer, mål og egne noter (tekst; dokumenter når fillager er valgt). Kan altid rettes og slettes.
+
+**Personalisering (begge, beslutning § 10c):** sprogmodellen bruger kontekstbiblioteket til tre ting — alle uden for sandkassen:
+1. "Derfor er det relevant for dig" (1–2 sætninger) på modulintro.
+2. Modulets skabelon til eget job, tilpasset rolle, branche og virksomhed.
+3. En kort anbefaling øverst på planen (fokus og tempo).
+
+Regler:
+- **Sandkassen er uændret og får aldrig kundedata:** øvemodellen, scenerne, opgaverne og bedømmelsen kender ikke kontekstbiblioteket. Personalisering ændrer aldrig score, spørgsmål, certifikat eller rapport.
+- AI-politik og dataregler vises ordret; modellen omskriver dem ikke.
+- Personaliseret tekst mærkes "Tilpasset til dig — automatisk genereret" og falder tilbage til den generelle tekst, hvis noget fejler.
+- Biblioteket må ikke indeholde kundedata, andres persondata, CPR-/kort-/kontonumre eller forretningshemmeligheder: tydelig advarsel i UI + PII-filter ved gem og før hvert LLM-kald.
+- Sletter brugeren/virksomheden et element, slettes den afledte personaliserede tekst.
 
 **Teammål (erhverv):** ét aktivt mål ad gangen, sat af OWNER/ADMIN: andel der har bestået et niveau, antal beståede moduler eller andel aktive i ugen — med dato. Vises for alle medlemmer som samlet fremdrift. Aldrig navne, aldrig rangliste.
 
@@ -127,7 +142,7 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 | # | Skærm | Formål | Nøgleelementer |
 |---|---|---|---|
 | L1 | Min plan `/plan` | Hjem | Næste modul, anbefalet tempo, streak, ugens genopfriskning, ugentligt tjek-ind, teammål (erhverv), månedspakke-kort, moduler pr. niveau med status/tid, fremdrift pr. niveau, skift spor |
-| L2 | Modulintro `/modul/[slug]` | Forventningsafstemning | Titel, mål, minutter, spor/licensmærkat, "Udfases"-banner fra registry, "Automatisk opdateret [dato] — kilde" for NEWS, start/fortsæt |
+| L2 | Modulintro `/modul/[slug]` | Forventningsafstemning | Titel, område, mål, minutter, "Derfor er det relevant for dig" (personaliseret, mærket), spor/licensmærkat, "Udfases"-banner fra registry, "Automatisk opdateret [dato] — kilde" for NEWS, start/fortsæt |
 | L3 | Trinvisning (ikke-sandkasse) | READ/QUIZ/SPOT_ERROR/JUDGMENT | Trinindikator (x af y), indhold, svar, hint-knap, feedback (aria-live), næste |
 | L4 | Opgavevisning m. sandkasse | CLICK_TASK/PROMPT_TASK/DEMO | Opgavepanel (instruktion, scenarie, hints, kriterier efter forsøg) + sandkasse (skin pr. spor, disclaimer, "Øvemodel"-mærke), tegntæller, indsend, PII-advarsel |
 | L5 | Resultat | Score og læring | %, bestået, trin-oversigt, must-pass-forklaring, prøv igen, næste modul, "Brug det i dit eget job" (skabelon), "Hos jer gælder" (erhverv, hvis relevant), certifikat-besked |
@@ -139,6 +154,7 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 | L11 | Supportagent (panel) | Hjælp | Chat, handlinger jf. docs/08, "Skriv til et menneske" |
 | L12 | Sluttjek `/sluttjek/[spor]/[niveau]` | Før/efter-måling | 12 spørgsmål, resultat pr. område sammenlignet med niveautesten |
 | L13 | Mine skabeloner `/skabeloner` | Brug i eget job | Skabeloner fra beståede moduler, kopiér-knap, filtrér på opgave |
+| L15 | Min kontekst `/konto/kontekst` (privat) | Personlig undervisning | Rolle, branche, opgaver, værktøjer, mål, noter; advarsel om hvad der ikke må lægges ind; ret/slet |
 | L14 | Hos os `/hos-os` (kun erhverv) | Virksomhedens kontekst | AI-politik, godkendte værktøjer, dataregler, kontaktperson, om forretningen; bekræft læst |
 
 ### Betaling (B2C)
@@ -158,7 +174,7 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 | V3 | Medarbejdere `/virksomhed/medarbejdere` | Udrulning | Liste m. status/score/certifikater/seneste aktivitet, invitér (email/CSV/link), domæne, rolle/spor-tildeling, fjern, seats brugt/loft |
 | V4 | Medarbejderdetalje | Fremskridt for én | Moduler (status, bedste score, dato), certifikater, månedspakker — ingen svar/prompts |
 | V5 | Indstillinger `/virksomhed/indstillinger` | Org-opsætning | Navn, CVR, domæneverifikation, SSO, standardspor/licensniveau, påmindelsespolitik (AI-politik ligger i kontekstbiblioteket, V9) |
-| V6 | Abonnement `/virksomhed/abonnement` | Betaling | Trial-status, "Fortsæt med Greb", seats ±, måned/år, kundeportal, opsig |
+| V6 | Abonnement `/virksomhed/abonnement` | Betaling | Trial-status, "Fortsæt med MindForward", seats ±, måned/år, kundeportal, opsig |
 | V7 | Rapport `/virksomhed/rapport` | Art. 4-dokumentation | Periode, filtre, egne noter, eksport CSV + PDF, forhåndsvisning |
 | V8 | Databehandleraftale | GDPR | Download/accept, underdatabehandlere |
 | V9 | Kontekstbibliotek `/virksomhed/kontekst` | Gøre træningen konkret | Elementer pr. type (tekst/link/PDF), versioner, hvem har bekræftet, advarsel om persondata |
@@ -182,11 +198,11 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 - **Admins ser status, score, certifikater og aktivitetsdatoer — aldrig prompt-tekster, svar i fritekst eller sandkasse-indhold.** Håndhæves i datalaget (admin-queries kan ikke selecte prompt-felter) og testes (roadmap M7).
 - **Prompt-tekster slettes efter 30 dage** (Inngest-cron); scores og kriterie-scorer bevares.
 - **Streak og ugentligt tjek-ind er brugerens egne:** admin ser dem kun som samlede tal for teamet og kun ved mindst 5 svar. Tjek-ind har ingen fritekst.
-- **Kontekstbiblioteket** er virksomhedens egne oplysninger: ingen persondata, ikke til sprogmodellen i MVP, slettes med organisationen.
+- **Kontekstbiblioteket** er brugerens/virksomhedens egne oplysninger: ingen kundedata eller andres persondata; bruges kun til personalisering uden for sandkassen; teksten logges ikke og indgår ikke i analytics; slettes med brugeren/organisationen eller når ejeren sletter den.
 - **Scores er læring, ikke overvågning:** ingen ranglister mellem kolleger, ingen "langsomste medarbejder", ingen tid-pr.-trin til admin. Medarbejderen ser på `/konto/data`, præcis hvad admin kan se.
 - **Ingen rigtige data i sandkassen:** PII-filter klient + server advarer/blokerer CPR, kort- og kontonumre m.m. (docs/04). Forbindelser/automationer øves kun mod Nordlys-data.
 - **Dataminimering:** niveautesten kræver ingen email. Analytics (PostHog EU) uden prompt-indhold; session replay slået fra på sandkasse- og prompt-felter.
-- **Roller:** Greb er databehandler for B2B-kunders medarbejderdata og dataansvarlig for B2C og marketing (docs/10).
+- **Roller:** MindForward er databehandler for B2B-kunders medarbejderdata og dataansvarlig for B2C og marketing (docs/10).
 - **Samtykke** til marketing er altid separat, frivilligt og ikke forudafkrydset; påmindelser er SERVICE og indeholder aldrig tilbud.
 
 ## 8. Uden for MVP
@@ -198,7 +214,7 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 - Grundforløb som separat produkt/pris og ansøgning til kompetencefonde (indhold defineret i curriculum.md; salg senere).
 - Live websøgning, rigtig billedgenerering og rigtige connectors i sandkassen (alt simuleret/forberedt).
 - Egne virksomhedsmoduler (virksomhedens AI-politik ligger i kontekstbiblioteket, ikke som modul), LMS-integration (SCORM/xAPI), SCIM-provisionering.
-- Sprogmodel, der bruger virksomhedens kontekstbibliotek (åbent spørgsmål).
+- Kontekstbibliotek i sandkassen (øvemodel, scener eller bedømmelse, der kender brugerens kontekst).
 - AI-tutor/-coach ud over hints og bedømmelse.
 - Videoer, live-sessioner, webinarer og hold med fast start og slut.
 - Native mobilapp; offline.

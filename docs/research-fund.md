@@ -14,7 +14,7 @@
 - Håndhævelse skærpes: 4,25 mio. kr. bøde for vildledende tilbud (sep 2026).
 
 ## Lovgivning — forbrugere (forbrugeraftaleloven, LBK 1184/2025)
-- Fortrydelsesret 14 dage. Bortfalder for digitalt indhold kun ved: forudgående udtrykkeligt samtykke til levering straks + erkendelse af tab af fortrydelsesret + bekræftelse på varigt medium (§ 18 stk. 2 nr. 13, § 13 stk. 2). Mangler noget: forbrugeren kan fortryde og betaler intet (§ 25). Om Greb er "digitalt indhold" eller "tjenesteydelse" er [U] → advokat. https://www.retsinformation.dk/eli/lta/2025/1184
+- Fortrydelsesret 14 dage. Bortfalder for digitalt indhold kun ved: forudgående udtrykkeligt samtykke til levering straks + erkendelse af tab af fortrydelsesret + bekræftelse på varigt medium (§ 18 stk. 2 nr. 13, § 13 stk. 2). Mangler noget: forbrugeren kan fortryde og betaler intet (§ 25). Om MindForward er "digitalt indhold" eller "tjenesteydelse" er [U] → advokat. https://www.retsinformation.dk/eli/lta/2025/1184
 - **Fortrydelsesknap** (§ 20 a, i kraft 19. juni 2026, lov 723/2025): knap "Fortryd aftale" synlig hele fortrydelsesperioden → online formular (navn, hvilken aftale, email) → knap "Bekræft fortrydelse" → kvittering på varigt medium med dato/tid. https://www.retsinformation.dk/eli/lta/2025/723
 - Opsigelse skal kunne ske på samme medie/platform som tilmelding (§ 28 a). Løbende aftaler: opsigelse med højst 1 md. varsel efter 5 mdr. (§ 28).
 - Før køb: totalpris inkl. moms, pris pr. periode og evt. minimumspris — med fed lige over bestillingsknappen; knappen skal hedde "Køb"/"Bestil med betalingsforpligtelse" ellers er forbrugeren ikke bundet (§ 12). https://www.forbrugerombudsmanden.dk/media/46756/oplysningskrav-ved-online-salg-af-abonnementer.pdf
@@ -29,7 +29,7 @@
 - Salgsbudskab der holder: "dokumenteret, rollebaseret tiltag efter art. 4". Må IKKE sige: "lovkrav om certificering", "påkrævet niveau", bødetrusler.
 
 ## GDPR og varemærker
-- Over for B2B-kunder er Greb databehandler → databehandleraftale med hver kunde (Datatilsynets skabelon: https://www.datatilsynet.dk/regler-og-vejledning/blanketter-og-skabeloner).
+- Over for B2B-kunder er MindForward databehandler → databehandleraftale med hver kunde (Datatilsynets skabelon: https://www.datatilsynet.dk/regler-og-vejledning/blanketter-og-skabeloner).
 - Scores er almindelige persondata; fritekst-prompts kan indeholde følsomme data → PII-filter + kort opbevaring.
 - Datatilsynet 2026-fokus: arbejdsgiveres kontrol af medarbejdere → positionér scores som læring, ikke overvågning; admin ser ikke medarbejdernes prompt-tekster.
 - Microsoft og Google forbyder efterligning af deres "trade dress"/look and feel; Microsoft-skærmbilleder må ikke placeres i eget produkt-UI. OpenAI: ingen "GPT" i produktnavne, ingen antydning af godkendelse. Kilder: https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks · https://openai.com/brand/ · https://www.anthropic.com/legal/trademark-guidelines · https://partnermarketinghub.withgoogle.com/brands/google/trademarks-and-terms/trademark-guidelines-for-proper-usage/
@@ -88,4 +88,4 @@
 - Gamification har lille, positiv effekt; ranglister og offentlige badges giver oftest bagslag, især når kolleger og ledere kan se dem (Sailer og Homner 2020; Almeida m.fl.) → ugentlig streak (privat for brugeren), fælles teammål, aldrig individuelle ranglister.
 - AI-hjælp, der giver svaret, kan sænke læringen (Bastani m.fl. 2025; Liu m.fl. 2026 [U]) → coach-princip for hints og feedback; ingen AI-tutor i MVP.
 - "Kun 10 % af træning overføres til jobbet" er en myte uden kilde → bruges aldrig.
-- Egne tal fra AI Minds: et stort, generelt webinar gav 693 leads og 1 salg (ca. 0,14 %) → små, rollespecifikke indgange; i Greb: niveautest og "AI-tjek af teamet" i stedet for webinarer.
+- Egne tal fra AI Minds: et stort, generelt webinar gav 693 leads og 1 salg (ca. 0,14 %) → små, rollespecifikke indgange; i MindForward: niveautest og "AI-tjek af teamet" i stedet for webinarer.

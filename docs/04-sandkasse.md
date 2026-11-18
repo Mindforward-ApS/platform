@@ -5,7 +5,7 @@
 
 ## 1. Hvad sandkassen er
 
-En neutral øve-app med **Grebs egen visuelle identitet**, hvor brugeren arbejder som medarbejder i den fiktive **Nordlys Logistik ApS**: chatter med **"Øvemodel"**, bygger egne assistenter, forbinder (simulerede) systemer, opretter planlagte opgaver og styrer en agent — altid mod fiktive seed-data, aldrig mod rigtige systemer.
+En neutral øve-app med **MindForwards egen visuelle identitet**, hvor brugeren arbejder som medarbejder i den fiktive **Nordlys Logistik ApS**: chatter med **"Øvemodel"**, bygger egne assistenter, forbinder (simulerede) systemer, opretter planlagte opgaver og styrer en agent — altid mod fiktive seed-data, aldrig mod rigtige systemer.
 
 Faste regler:
 - Disclaimer synlig hele tiden (topbar, ikke lukkbar): **"Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google."**
@@ -41,7 +41,7 @@ Et skin er **data** i `content/sandbox-skins/<skinKey>.json`, valgt via `Track.s
 2. **Hvilke begreber/flader** der er slået til.
 3. **Generiske menubegreber** (i18n-nøgler fra en fælles, lukket liste).
 
-Det styrer **ikke** farver, fonte, ikoner, logoer eller formsprog — de kommer altid fra Grebs tokens og eget ikonsæt. Skinnet må højst vælge mellem Grebs egne token-varianter (`density: "compact" | "comfortable"`, `accentSlot: "a" | "b"`).
+Det styrer **ikke** farver, fonte, ikoner, logoer eller formsprog — de kommer altid fra MindForwards tokens og eget ikonsæt. Skinnet må højst vælge mellem MindForwards egne token-varianter (`density: "compact" | "comfortable"`, `accentSlot: "a" | "b"`).
 
 ```ts
 // src/server/sandbox/skin.ts (Zod)
@@ -208,10 +208,10 @@ Indbyggede læringspunkter: (1) **Overtid Q3** +38 % over budget (svar på m04);
 ### 5.1 System-prompt `sandbox-chat.v1` (dansk, fuld tekst)
 
 ```text
-Du er "Øvemodel" — en AI-assistent i Grebs øvemiljø, hvor medarbejdere lærer at bruge AI-værktøjer i arbejdet ved at øve sig.
+Du er "Øvemodel" — en AI-assistent i MindForwards øvemiljø, hvor medarbejdere lærer at bruge AI-værktøjer i arbejdet ved at øve sig.
 
 HVEM DU ER
-- Du hedder Øvemodel. Du er ikke ChatGPT, Microsoft Copilot, Claude, Gemini eller noget andet kommercielt produkt, og du må aldrig påstå eller antyde det. Spørger brugeren, svarer du: "Jeg er Grebs øvemodel. Jeg ligner de AI-assistenter, du bruger i arbejdet, men det her er et øvemiljø — ikke det rigtige værktøj."
+- Du hedder Øvemodel. Du er ikke ChatGPT, Microsoft Copilot, Claude, Gemini eller noget andet kommercielt produkt, og du må aldrig påstå eller antyde det. Spørger brugeren, svarer du: "Jeg er MindForwards øvemodel. Jeg ligner de AI-assistenter, du bruger i arbejdet, men det her er et øvemiljø — ikke det rigtige værktøj."
 - Øvemiljøet er ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google.
 - Du kan ikke se, hvilken rigtig AI-model der kører dig, og du skal ikke diskutere det.
 
@@ -258,7 +258,7 @@ Test: eval-sæt (mocket + live-smoke på preview) med "Er du ChatGPT?", "Hvilken
 
 Flow (alle trin udsender events):
 1. "Forbindelser" → vælg connector → `CONNECTOR_CONNECT_STARTED`.
-2. **Tilladelsesdialog** (Grebs eget design): liste over scopes med forklaring i almindeligt dansk ("Øvemodel kan læse dine mails"), afkrydsning pr. scope, link "Hvad betyder det?" (læringstekst om mindste privilegium). Brugeren giver → `CONNECTOR_PERMISSION_GRANTED { connectorId, scopes[] }` eller afviser → `CONNECTOR_PERMISSION_DENIED`.
+2. **Tilladelsesdialog** (MindForwards eget design): liste over scopes med forklaring i almindeligt dansk ("Øvemodel kan læse dine mails"), afkrydsning pr. scope, link "Hvad betyder det?" (læringstekst om mindste privilegium). Brugeren giver → `CONNECTOR_PERMISSION_GRANTED { connectorId, scopes[] }` eller afviser → `CONNECTOR_PERMISSION_DENIED`.
 3. Forbundet: modellen får kun værktøjer for tildelte scopes. Hvert værktøjskald → `TOOL_CALL_EXECUTED { tool, connectorId, argsSummary, resultCount, requiredConfirmation, confirmed }` (args uden fritekst; fx `{ query: "len:12" }` gemmes ikke — kun hvilke filtre der blev brugt).
 4. Skrivehandlinger kræver bekræftelse i UI (kort "Øvemodel vil sende denne mail — Godkend / Afvis"). Afvisning er en gyldig, ofte korrekt, handling (bedømmes i agent-/JUDGMENT-moduler).
 5. "Afbryd forbindelse" → `CONNECTOR_DISCONNECTED`.
@@ -390,7 +390,7 @@ Delt regelsæt i `src/lib/pii/` (klient + server); serveren er autoritativ (`src
 
 ## 11. Omkostningsstyring
 
-| Greb | Værdi (config, `src/config/limits.ts`) |
+| MindForward | Værdi (config, `src/config/limits.ts`) |
 |---|---|
 | Model | `AI_MODEL_DEFAULT` (lille) for chat, agent, assistenter, automationer |
 | Prompt caching | System-prompt + skin-tillæg + verdensresumé + værktøjer (+ assistent-instruktioner/viden) som cached prefix |

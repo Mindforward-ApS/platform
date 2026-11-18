@@ -23,7 +23,8 @@
 | Certifikat | `Certificate` | M7 |
 | Månedlig | `MonthlyCycle`, `MonthlyAssignment` | M8 |
 | Vane og overførsel (§ 15) | `WeeklyActivity`, `ReviewItem`, `UsageCheckIn` | M8 |
-| Team og kontekst (§ 15, kun BUSINESS) | `TeamGoal`, `OrgContextItem`, `OrgContextAcknowledgement` | M7 |
+| Team (§ 15, kun BUSINESS) | `TeamGoal`, `ContextAcknowledgement` | M7 |
+| Kontekst og personalisering (§ 15) | `ContextItem`, `PersonalizedContent` | M5 (privat) / M7 (erhverv) |
 | Betaling | `Plan`, `Subscription`, `WithdrawalRequest` | M2 (Plan-seed) / M6 |
 | Email/samtykke | `EmailMessage`, `EmailSuppression`, `ConsentRecord` | M1 (`EmailMessage`) / M5 (`ConsentRecord`) / M8 |
 | Indholdsmotor | `ContentSource`, `SourceSnapshot`, `ChangeEvent`, `PipelineRun` | M9 |
@@ -158,11 +159,11 @@ Retention-test (M4): rækker ældre end 30 dage mister fritekst, scores er uænd
 ## 14. Enums (oversigt)
 
 `OrganizationType`, `MembershipRole`, `PlatformRole`, `JobRole`, `TrackKey`, `LicenseTier`, `ModuleType`, `ModuleVersionStatus`, `ModuleOrigin`, `StepType`, `AssignmentSource`, `AssignmentStatus`, `AttemptStatus`, `GradingStatus`, `MonthlyAssignmentStatus`, `PlanAudience`, `BillingInterval`, `TaxBehavior`, `SubscriptionStatus`, `WithdrawalStatus`, `ParserType`, `FetchMode`, `SourceStatus`, `SnapshotOrigin`, `ChangeKind`, `ChangeEventStatus`, `PipelineRunKind`, `PipelineRunStatus`, `ConsentChannel`, `ConsentPurpose`, `ConsentAction`, `ConsentSource`, `SuppressionReason`, `EmailCategory`, `EmailStatus`, `SupportConversationStatus`, `SupportMessageRole`, `EscalationReason`, `EscalationPriority`, `EscalationStatus`, `ActorType`, `SandboxSessionStatus`, `SandboxEventType`, `AiFeature`, `AiCallStatus`, `BudgetScope`, `WebhookProvider`, `WebhookStatus`. Værdier: se skemaet. `Invitation.status` er bevidst `String` (Better Auth skriver små bogstaver).
-Tilføjes med § 15: `PlacementKind`, `MinutesSavedBucket`, `TeamGoalMetric`, `OrgContextKind`.
+Tilføjes med § 15: `PlacementKind`, `MinutesSavedBucket`, `TeamGoalMetric`, `ContextKind`, `PersonalizedContentKind`, `ModuleArea`; `AiFeature` får værdien `PERSONALIZATION`.
 
-## 15. Tilføjelser fra beslutning § 10b (18. nov 2026)
+## 15. Tilføjelser fra beslutning § 10b og § 10c (18. nov 2026)
 
-Tilføjes `prisma/schema.prisma` i **M2** (skemaet er ikke ændret endnu). Alle er org-scopede og følger brugerens/organisationens sletning. Ingen af dem indeholder fritekst fra lærere.
+Tilføjes `prisma/schema.prisma` i **M2** (skemaet er ikke ændret endnu). Alle er org-scopede og følger brugerens/organisationens sletning. Fritekst findes kun i `ContextItem.body` og `PersonalizedContent.text` (ejerens egne oplysninger — ikke prompt-tekster).
 
 | Entitet | Formål | Nøglefelter | Relationer / indekser | Opbevaring | Bruges fra |
 |---|---|---|---|---|---|
@@ -170,15 +171,16 @@ Tilføjes `prisma/schema.prisma` i **M2** (skemaet er ikke ændret endnu). Alle 
 | `ReviewItem` | Genopfriskningsspørgsmål fra et bestået modul | `moduleId`, `moduleVersionId`, `stepId`, `round` (1 = ca. 1 uge, 2 = ca. 3 uger), `dueAt`, `answeredAt`, `correct` | idx `(userId, dueAt)`, unik `(userId, organizationId, moduleVersionId, stepId, round)` | Som `User` | M8 (oprettes ved bestået modul) |
 | `UsageCheckIn` | Ugentligt tjek-ind (selvrapporteret) | `weekStart`, `usedAiAtWork` (bool), `minutesSaved` (enum: NONE/UNDER_30/FROM_30_TO_60/FROM_60_TO_120/OVER_120), valgfri `moduleId` ("fik du brugt det?") — **ingen fritekst** | unik `(userId, organizationId, weekStart)`, idx `(organizationId, weekStart)` | 24 mdr. | M8 |
 | `TeamGoal` | Fælles teammål (kun BUSINESS) | `metric` (LEVEL_PASSED_PCT/MODULES_PASSED/ACTIVE_MEMBERS_PCT), `targetValue`, `level`, `trackId`, `startsAt`, `dueAt`, `achievedAt`, `createdById`, `archivedAt` | idx `(organizationId, archivedAt)`; ét aktivt pr. org (partiel unik index) | Følger org | M7 |
-| `OrgContextItem` | Element i kontekstbiblioteket (kun BUSINESS) | `kind` (AI_POLICY/APPROVED_TOOLS/DATA_RULES/CONTACT/ABOUT_BUSINESS/OTHER), `title`, `body` (tekst, maks. længde i config), `linkUrl`, `fileStorageKey` (PDF), `version`, `requiresAcknowledgement`, `publishedAt`, `archivedAt`, `updatedById` | idx `(organizationId, kind, archivedAt)` | Følger org; gamle versioner bevares så længe en bekræftelse henviser til dem | M7 |
-| `OrgContextAcknowledgement` | Medarbejderens bekræftelse af en version | `itemId`, `itemVersion`, `acknowledgedAt` | unik `(userId, itemId, itemVersion)`, idx `organizationId` | Følger `Membership` (indgår i rapport) | M7 |
+| `ContextItem` | Element i kontekstbiblioteket (BUSINESS: virksomhedens; PERSONAL: brugerens eget — § 10c) | `kind` (AI_POLICY/APPROVED_TOOLS/DATA_RULES/CONTACT/ABOUT_BUSINESS/ABOUT_ME/GOALS/OTHER), `title`, `body` (tekst, maks. længde i config), `linkUrl`, `fileStorageKey` (PDF), `version`, `requiresAcknowledgement` (kun BUSINESS), `usedForPersonalization` (bool; `false` for CONTACT), `publishedAt`, `archivedAt`, `updatedById` | idx `(organizationId, kind, archivedAt)` | Følger org/bruger; ejeren kan slette når som helst; gamle versioner bevares kun så længe en bekræftelse henviser til dem | M5 (privat) / M7 (erhverv) |
+| `ContextAcknowledgement` | Medarbejderens bekræftelse af en version (kun BUSINESS) | `itemId`, `itemVersion`, `acknowledgedAt` | unik `(userId, itemId, itemVersion)`, idx `organizationId` | Følger `Membership` (indgår i rapport) | M7 |
+| `PersonalizedContent` | Gemt personaliseret tekst (genbruges til kontekst eller modul ændres) | `kind` (MODULE_RELEVANCE/TAKEAWAY/PLAN_NOTE), `userId` (null = fælles for org + jobrolle), `jobRole`, `moduleVersionId` (null for PLAN_NOTE), `contextHash`, `text`, `modelId`, `promptVersion`, `status` (READY/FAILED) | unik `(organizationId, userId, jobRole, moduleVersionId, kind, contextHash)` | Slettes når kildekonteksten slettes/ændres, og med bruger/org | M5 |
 
 Nye felter på eksisterende entiteter:
 - `PlacementResult.kind` (`ENTRY` | `EXIT`, default `ENTRY`) + `level` bruges til sluttjek. Anonyme resultater er altid `ENTRY`.
 - `TrackEnrollment.weeklyGoalModules` (nullable int) — brugerens valgte tempo; `null` = slået fra.
 - `Organization.programStartsAt` (nullable) — valgfri fælles startdato (kun BUSINESS).
-- Modul-JSON: valgfrit `takeaway` (docs/05 § 10) — ingen DB-ændring.
+- Modul-JSON: valgfrit `takeaway` og påkrævet `area` (docs/05 § 10); `Module.area` denormaliseres fra publiceret version (`ModuleArea`: AI_FUNDAMENTALS/RESPONSIBLE_AI/TOOL_SKILLS).
 
-Hvad org-admin ser af disse: `TeamGoal` og `OrgContextItem` fuldt ud; `OrgContextAcknowledgement` pr. medarbejder (version + dato); `PlacementResult` ENTRY/EXIT som `scorePct`/`level` pr. medarbejder (aldrig `answers`). `WeeklyActivity`, `UsageCheckIn` og `ReviewItem` **kun som samlede tal for organisationen og kun når mindst 5 personer indgår** — håndhæves i datalaget og testes (M8).
+Hvad org-admin ser af disse: `TeamGoal` og virksomhedens `ContextItem` fuldt ud; `ContextAcknowledgement` pr. medarbejder (version + dato); `PlacementResult` ENTRY/EXIT som `scorePct`/`level` pr. medarbejder (aldrig `answers`). `WeeklyActivity`, `UsageCheckIn` og `ReviewItem` **kun som samlede tal for organisationen og kun når mindst 5 personer indgår** — håndhæves i datalaget og testes (M8).
 
-Kontekstbiblioteket læses aldrig af `src/server/ai/` i MVP (test i M7: intet LLM-kald indeholder `OrgContextItem`-indhold).
+Kontekstbiblioteket læses kun af AI-featuren `PERSONALIZATION` (ny værdi i `AiFeature`) — aldrig af sandkasse-chat, bedømmelse, support eller indholdsmotor (test i M5: kun `PERSONALIZATION`-kald må indeholde `ContextItem`-indhold). `ContextItem.body` og `PersonalizedContent.text` er fritekst fra ejeren/modellen: de logges ikke, indgår ikke i `AiCall` eller `AuditLog.metadata`, og MindForwards interne admin kan ikke gennemse dem.

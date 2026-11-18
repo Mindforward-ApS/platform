@@ -10,7 +10,7 @@
 | Formål | Opfylde aftalen/kontoen: login, kvittering, ordrebekræftelse, fortrydelseskvittering, fakturaproblemer, træningspåmindelser, prøveperiode-info, sikkerhed, admin-rapport, eskalations-kvittering | Tilbud, nyhedsbrev, rabatter, lead-nurture, win-back, forladt checkout |
 | Retsgrundlag | Kontrakt/aftale (uden for MFL § 10) | Forudgående samtykke (MFL § 10 stk. 1) — **også over for virksomheder og navngivne medarbejdere** |
 | Indhold | **Aldrig** tilbud, rabatter, upsell, "opgrader", priser som salgsargument. Indeholder et tilbud, er det marketing. | Tydeligt markedsføring, afsender angivet, betingelser klare, afmeldingslink |
-| Afsender | `Greb <hej@mail.greb.dk>` (§8) | `Greb <nyt@news.greb.dk>` (separat subdomæne) |
+| Afsender | `MindForward <hej@mail.greb.dk>` (§8) | `MindForward <nyt@news.greb.dk>` (separat subdomæne) |
 | Afmelding | Kun hvor relevant (påmindelser kan slås fra i indstillinger) | Afmeldingslink + `List-Unsubscribe` + `List-Unsubscribe-Post` (one-click) i hver mail |
 
 Kategori er **egenskab ved templaten** (`template.category`), ikke ved kaldet. CI-test: alle `SERVICE`-templates renderes og scannes for forbudte ord (`rabat`, `tilbud`, `spar`, `kampagne`, `opgrader`, `kun i dag`, `%`-rabat-mønstre, promotion-links `?promo=`) → fejl.
@@ -36,10 +36,10 @@ Kategori er **egenskab ved templaten** (`template.category`), ikke ved kaldet. C
 ```
 
 **Samtykketekst (v1, ikke forudafkrydset, ikke betingelse for testresultat/konto):**
-> ☐ Ja tak, Greb må sende mig tips om AI på arbejdet, nyheder om Greb og tilbud på Grebs abonnementer på email. Jeg kan altid afmelde mig med ét klik.
-(Specifik: virksomhed = Greb (Esther Gruppen ApS-selskab, navn fra config), kanal = email, kategorier = AI-læring + Grebs abonnementer. Endelig ordlyd `[JURA: verificeres]`.)
+> ☐ Ja tak, MindForward må sende mig tips om AI på arbejdet, nyheder om MindForward og tilbud på MindForwards abonnementer på email. Jeg kan altid afmelde mig med ét klik.
+(Specifik: virksomhed = MindForward (Esther Gruppen ApS-selskab, navn fra config), kanal = email, kategorier = AI-læring + MindForwards abonnementer. Endelig ordlyd `[JURA: verificeres]`.)
 
-**Dobbelt opt-in:** `GRANTED` → SERVICE-agtig bekræftelsesmail `marketing-confirm` (ingen markedsføringsindhold; kun "Bekræft at du vil modtage mails fra Greb", knap, udløber 7 dage) → klik → `CONFIRMED`. Kun `CONFIRMED` = gyldigt. Ubekræftede GRANTED slettes efter 30 dage. Samtykke kan aldrig indhentes via email (vi sender kun bekræftelse af samtykke givet i UI).
+**Dobbelt opt-in:** `GRANTED` → SERVICE-agtig bekræftelsesmail `marketing-confirm` (ingen markedsføringsindhold; kun "Bekræft at du vil modtage mails fra MindForward", knap, udløber 7 dage) → klik → `CONFIRMED`. Kun `CONFIRMED` = gyldigt. Ubekræftede GRANTED slettes efter 30 dage. Samtykke kan aldrig indhentes via email (vi sender kun bekræftelse af samtykke givet i UI).
 
 **Afmelding:** link med signeret token (HMAC, ingen login) → `/afmeld?t=…` → én knap "Afmeld" (one-click POST understøttes også fra mailklient) → `WITHDRAWN` + suppression. Virker straks; ingen "er du sikker"-labyrint. Også i `/konto/indstillinger`.
 
@@ -156,7 +156,7 @@ Kun via **Stripe promotion codes** oprettet af `scripts/create-promo.ts` (eller 
 
 ## 9. Betalt annoncering — automatisering
 
-Kode: `src/server/ads/` + Inngest cron. Styrer **kun Grebs egne konti**: Google Ads API (developer token + OAuth for egen konto) og Meta Marketing API (System User-token for egen Business Manager). LinkedIn: ingen API-automatisering i MVP (Ads API kræver godkendelse `[U]`); **aldrig automatiserede LinkedIn-beskeder eller scraping**.
+Kode: `src/server/ads/` + Inngest cron. Styrer **kun MindForwards egne konti**: Google Ads API (developer token + OAuth for egen konto) og Meta Marketing API (System User-token for egen Business Manager). LinkedIn: ingen API-automatisering i MVP (Ads API kræver godkendelse `[U]`); **aldrig automatiserede LinkedIn-beskeder eller scraping**.
 
 **Hårdt månedsloft 20.000 kr** (`ADS_MONTHLY_CAP_DKK=20000`, config; håndhævet i kode):
 - Hver time: hent faktisk forbrug (Google `metrics.cost_micros`, Meta `spend`) for indeværende kalendermåned → `projected = spent + Σ(aktive dagsbudgetter × resterende dage)`.

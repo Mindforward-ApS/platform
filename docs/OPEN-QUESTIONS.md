@@ -4,21 +4,29 @@
 > Format: spørgsmål · kontekst · forslag · hvad det blokerer.
 
 ## Til Marco / advokat (før launch)
-- [ ] **Er Greb "digitalt indhold" eller en "tjenesteydelse"** efter forbrugeraftaleloven? Afgør om afkald på fortrydelsesret ved straks-adgang virker. Blokerer: endelig tekst i B2C-checkout (M6).
+- [ ] **Er MindForward "digitalt indhold" eller en "tjenesteydelse"** efter forbrugeraftaleloven? Afgør om afkald på fortrydelsesret ved straks-adgang virker. Blokerer: endelig tekst i B2C-checkout (M6).
 - [ ] **Advokatgennemgang:** handelsbetingelser, databehandleraftale, privatlivspolitik, sandkassens UI (trade dress), art. 4-tekster. Blokerer: launch gate (M10).
 - [ ] **Ansættelseskontrakt hos Færch & Co.:** klausuler om bibeskæftigelse og immaterielle rettigheder. Blokerer: pilot.
-- [ ] **Navn og domæne "Greb"** er ikke tjekket (domæne, varemærke). Blokerer: M0 (domæne).
+- [ ] **Navn og domæne "MindForward"** er ikke tjekket (domæne, varemærke). Blokerer: M0 (domæne).
 - [ ] **Dansk tilsynsmyndighed for AI-forordningens art. 4** — delvist afklaret 18. nov 2026: Digitaliseringsstyrelsen er national koordinerende myndighed (lov 467/2025), men tilsyn med art. 4 er ikke bekræftet i primær kilde (se research-fund). Tidligere note: uafklaret (L 111 bortfaldt). Påvirker kun markedsføringstekster.
 
 ## Fra § 10b (18. nov 2026) — til Marco
-- [ ] **Produktnavn og selskab:** Marco omtaler platformen som "MindForward" (afløser AI Minds); spec, UI-tekster og certifikat bruger arbejdstitlen "Greb", og 00 angiver selskabet som "under Esther Gruppen ApS", mens GitHub-organisationen hedder Mindforward ApS. · Forslag: Marco bekræfter (a) produktnavn i UI/domæne og (b) juridisk enhed til vilkår, DPA og fakturaer. Intet er omdøbt. · Blokerer: juridiske sider + landingsside (M5), certifikattekst (M7).
-- [ ] **Må sprogmodellen bruge virksomhedens kontekstbibliotek?** Marco ønsker træningen "mere kontekstuel". I MVP vises konteksten kun for medarbejderen; den sendes ikke til øvemodel eller bedømmelse, fordi sandkassen ikke må få rigtige kundedata (CLAUDE.md "ALDRIG"), og fordi det kræver tilføjelse til DPA, PII-kontrol af uploads og højere AI-omkostning. · Forslag: fase 2, tidligst efter advokatgennemgang; start med at lade JUDGMENT-feedback citere virksomhedens dataregler uden LLM. · Blokerer: intet i MVP.
+- [ ] **Selskab:** produktnavnet er besluttet (MindForward, § 10c), men den juridiske enhed er uafklaret: 00 siger "under Esther Gruppen ApS", GitHub-organisationen hedder Mindforward ApS, og `.env.example` har `COMPANY_LEGAL_NAME="MindForward (Esther Gruppen ApS)"`. Tagline "Få greb om AI" er foreløbig. Domæne/varemærke for MindForward er ikke tjekket. · Blokerer: juridiske sider + landingsside (M5), certifikattekst (M7).
+- [x] **Må sprogmodellen bruge kontekstbiblioteket?** Besluttet af Marco 18. nov 2026 (§ 10c): ja, til personalisering uden for sandkassen, for både privat og erhverv. Sandkassen får aldrig kundedata.
+- [ ] **Advokat: kontekstbibliotek + sprogmodel.** DPA-bilag og privatlivspolitik skal beskrive, at brugerens/virksomhedens egne oplysninger behandles af en sprogmodel hos en underdatabehandler for at personalisere undervisningen. · Blokerer: launch gate (M10); bygges i M5/M7.
+- [ ] **Skal øvemodellen i sandkassen kende brugerens rolle og branche?** § 10c holder sandkassen helt fri for kontekst (kun Nordlys-data). Rolle/branche er ikke kundedata, så det kunne tillades senere — men det ændrer reglen "sandkassen kender kun Nordlys". · Forslag: nej i MVP. · Blokerer: intet.
+- [ ] **Medarbejderens egen kontekst (erhverv):** i dag har medarbejderen kun virksomhedens bibliotek + sin jobrolle. Skal medarbejderen også kunne beskrive egne opgaver (som admin ikke kan se)? · Forslag: senere. · Blokerer: intet.
+- [ ] **Personalisering på gratis niveau (privat):** antaget med for de gratis moduler (lille omkostning, stærkt salgsargument). · Bekræft. · Blokerer: M5/M6.
+- [ ] **Gratis moduler efter § 10c:** forslag `core-ai-01`, `core-prompt-01`, `core-data-01` (før: `core-llm-01` i stedet for `core-ai-01`), så gratisbrugere får både Fundamental AI og en praktisk opgave i sandkassen. · Bekræft. · Blokerer: M5/M6.
+- [ ] **Skal Fundamental AI altid være påkrævet?** I dag kan niveautesten markere moduler "kan springes over" (undtagen `core-data-01` og `core-aiact-01`). · Forslag: `core-ai-01` altid påkrævet (indgår i grundmodulet); `core-ai-02` og `core-ai-03` kan springes over ved "sikker". · Blokerer: plan-generator (M5).
+- [ ] **Grundforløbet (6 timer)** skal regnes om med de fire nye moduler (+ ca. 28 min). · Blokerer: kun ansøgning til kompetencefonde.
+- [ ] **`core-ai-02` og `core-aiact-02`:** årstal/navne og juridisk indhold skal have kilder og gennemgang før publicering (ligger som `DRAFT`).
 - [ ] **Synlighed af tjek-ind og streak for admin:** Marco svarede ikke på spørgsmålet; anbefalingen (kun samlede tal, mindst 5 svar) er skrevet ind som antagelse i § 10b. · Blokerer: M8.
 - [ ] **"Tutoren anbefaler et forløb" (privat):** tolket som, at plan-generatoren foreslår et tempo ud fra niveautesten — ikke en AI-tutor. · Forslag: bekræft tolkningen; en egentlig AI-tutor er uden for MVP. · Blokerer: M5.
 - [ ] **Fælles startdato:** tolket som valgfri dato pr. virksomhed, hvor planen åbner for alle (niveautest kan tages før). · Blokerer: M7.
 - [ ] **DS/PAS 2500-4:** indholdet (de 5 trin, "gratis") er ikke verificeret — ds.dk og via.ritzau.dk er spærret i byggemiljøet. · Forslag: Marco eller jurist bekræfter ordlyden; rapportens DS/PAS-afsnit ligger bag feature-flag indtil da. · Blokerer: rapportafsnit (M7), salgsside (M5).
 - [ ] **Ugentlig påmindelsesmail:** streaks virker bedre med en ugentlig påmindelse, men § 3 siger kun mails dag 1/14/25. · Forslag: ingen nye mails i MVP; vurder én ugentlig SERVICE-mail (kan slås fra, aldrig tilbud) efter de første måneders data. · Blokerer: intet.
-- [ ] **Kontekstbibliotek — PDF-lager:** kræver fillager (samme som certifikat-PDF, fx Vercel Blob — ikke på underdatabehandlerlisten endnu). · Forslag: tekst + link i første version, PDF når lageret er valgt i M7.
+- [ ] **Kontekstbibliotek — dokumenter/PDF:** kræver fillager (samme som certifikat-PDF, fx Vercel Blob — ikke på underdatabehandlerlisten endnu). · Forslag: tekst + link i første version, PDF når lageret er valgt i M7.
 - [ ] **Researchfilerne 01–03** fra samme pakke er ikke modtaget; `docs/research/` indeholder 04–08.
 - [ ] **Kildeverifikation:** kilderne i `docs/research/08-kilder.md` er ikke efterprøvet af Claude Code (flere er sekundære). Må ikke bruges som påstande i markedsføring uden tjek.
 
@@ -58,7 +66,7 @@
 - [x] **B2C-opsigelse:** besluttet 13. okt 2026 — fra dag til dag, adgang resten af betalt løbende måned (00 § 10).
 - [ ] **B2C-årsplan (490 kr):** med reglen ovenfor skal en årskunde have resten af året refunderet ved opsigelse. · Forslag: ingen B2C-årsplan i MVP (kun 49 kr/md), eller forholdsmæssig refusion. · Blokerer: M2 plan-seed, M6. **[JURA]**
 - [ ] **Certifikat offentligt som standard:** `publicVerificationEnabled @default(true)` vs. 01 "valgfri". · Forslag: `false` (opt-in, GDPR art. 25).
-- [ ] **Kunde-admin under `/admin`:** 10 § 1.5 bruger `/admin/data`, men `/admin` er Grebs interne drift. · Forslag: `/virksomhed/data`.
+- [ ] **Kunde-admin under `/admin`:** 10 § 1.5 bruger `/admin/data`, men `/admin` er MindForwards interne drift. · Forslag: `/virksomhed/data`.
 - [ ] **`FetchMode`:** 06 `PLAIN|BROWSER_FALLBACK|MANUAL_ONLY` vs. Prisma `DIRECT|BROWSER_FALLBACK`; `license` vs. `attribution`. · Forslag: Prisma vinder, ret 06.
 - [ ] **Eksempelmoduler passer ikke til Nordlys-verdenen:** "ny på kundeservice" vs. Kim Lund (kunde-/salgskoordinator); "disponent Mette Lund" findes ikke; Hansen Byg findes ikke i CRM; faste datoer; vedhæftning af mail. · Forslag: brug eksisterende kunde (fx Bølgegrøn Kaffe) eller tilføj Hansen Byg; relative datoer. · Blokerer: M2/M4.
 - [ ] **Roadmap-rækkefølge:** M6 e2e kræver seat-loft på invitationer (M7); M8 kræver NEWS-moduler (M9); M2 kræver PII-filter (M3); M6 opretter Escalation (indbakke M10). · Forslag: seat-loft til M6; M8 tester med fixture-NEWS; regex-test i M2; simpel mail til `SUPPORT_INBOX` i M6.

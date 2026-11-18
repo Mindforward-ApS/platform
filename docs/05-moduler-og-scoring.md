@@ -119,7 +119,7 @@ Unit-tests: hver op, hver kombinator, prototype-forsøg, dybde/node-loft, tom ev
 ### 4.1 Grader-systemprompt (`src/server/ai/prompts/grade-prompt-task.v1.ts`, `graderPromptVersion = "grade-prompt-task.v1"`)
 
 ```
-Du er bedømmer i Greb, en dansk træningsplatform hvor medarbejdere øver sig i at bruge AI-værktøjer i arbejdet. Du bedømmer ÉN prompt, som en kursist har skrevet til en opgave. Du bedømmer prompten — ikke hvad en AI ville svare på den.
+Du er bedømmer i MindForward, en dansk træningsplatform hvor medarbejdere øver sig i at bruge AI-værktøjer i arbejdet. Du bedømmer ÉN prompt, som en kursist har skrevet til en opgave. Du bedømmer prompten — ikke hvad en AI ville svare på den.
 
 Du får:
 - <opgave>: opgaveteksten kursisten så.
@@ -225,7 +225,7 @@ Alle ganges med **hint-multiplikator** for højeste brugte hint-niveau: ingen/1 
 ## 8. Certifikater
 - Udstedes pr. **spor + niveau** (fx "ChatGPT · Niveau 1 Grundlag"), når alle moduler i niveauets påkrævede sæt for sporet (og evt. `requiresTier`) er bestået. Grundforløbet har eget certifikat (content/curriculum.md § Grundforløb).
 - Indhold: navn, spor (beskrivende produktnavn), niveau, beståede moduler med dato, samlet vejledende læringstid, gennemsnitsscore, udstedelsesdato, indholdsversion, unikt id + verifikations-URL `/certifikat/[id]`, disclaimer om øvemiljø.
-- Fast tekst: **"Certifikatet dokumenterer gennemført træning i Greb. Det er ikke en juridisk certificering, en offentlig godkendelse eller et krav efter AI-forordningen."** Ingen leverandør-logoer, ingen "certificeret af".
+- Fast tekst: **"Certifikatet dokumenterer gennemført træning i MindForward. Det er ikke en juridisk certificering, en offentlig godkendelse eller et krav efter AI-forordningen."** Ingen leverandør-logoer, ingen "certificeret af".
 - PDF genereres server-side; certifikater udløber ikke, men viser indholdsversion. Brugeren kan slå den offentlige verifikationsside fra (den viser kun navn, spor, niveau, dato).
 
 ## 9. Tilgængelighed (WCAG 2.2 AA)
@@ -268,3 +268,23 @@ Vises på resultatskærmen ved bestået og i "Mine skabeloner". Fast påmindelse
 
 ### 10.5 Streak og aktivitet
 En uge (mandag–søndag, København) tæller som aktiv ved mindst én af: afsluttet modulforsøg, besvaret genopfriskningsspørgsmål, gennemført del af månedspakken, sluttjek. Tjek-ind alene tæller ikke. Én uge uden aktivitet = pause; to i træk = nulstil. Værdier i config.
+
+### 10.6 `area` — fem indgange (beslutning § 10c)
+Nyt påkrævet modul-felt `area`: `AI_FUNDAMENTALS` (Fundamental AI), `RESPONSIBLE_AI` (AI Act og ansvarlig brug) eller `TOOL_SKILLS` (værktøjssporene; standard for FEATURE/ROLE/NEWS). Tilføjes `content/schema/module.schema.json` i M2. Planen og kataloget grupperer efter `area`; de to første områder er `CORE`-moduler for alle spor og ligger først i planen. Moduler i `AI_FUNDAMENTALS` og `RESPONSIBLE_AI` er værktøjsneutrale: ingen `CLICK_TASK`, og `DEMO` kun i neutral visning — de kan tages på mobil. Certifikater er uændrede (pr. spor + niveau); der findes intet "AI Act-certifikat".
+
+### 10.7 Personalisering fra kontekstbiblioteket (beslutning § 10c)
+- **Hvor:** kun AI-featuren `PERSONALIZATION` i `src/server/ai/` (prompt `personalize.v1.ts`, lille model, struktureret output valideret med Zod, prompt caching af systemprompten). Aldrig i sandkasse-chat, scener, bedømmelse eller spørgsmål.
+- **Input:** publicerede `ContextItem`s med `usedForPersonalization = true`, jobrolle, spor, modulets titel/mål/`takeaway`. Aldrig prompt-tekster, sandkasse-indhold eller andre brugeres data.
+- **Output** (gemmes i `PersonalizedContent`):
+
+| `kind` | Indhold | Grænse |
+|---|---|---|
+| `MODULE_RELEVANCE` | "Derfor er det relevant for dig" på modulintro | ≤ 2 sætninger |
+| `TAKEAWAY` | Modulets skabelon tilpasset rolle/branche/virksomhed; pladsholdere i kantede parenteser bevares for alt, der kan være persondata | samme længdegrænser som `takeaway` |
+| `PLAN_NOTE` | Anbefalet fokus og tempo øverst på planen | ≤ 3 sætninger |
+
+- **Genbrug:** nøgle = organisation + (bruger eller jobrolle) + modulversion + `contextHash`. Erhverv genereres én gang pr. virksomhed + jobrolle; privat pr. bruger. Genereres asynkront (Inngest) første gang; indtil da — og ved fejl — vises den generelle tekst. Modulet blokeres aldrig af personalisering.
+- **Værn:** konteksten behandles som data, ikke instrukser (injektionsværn som i § 4.1); output går gennem `banned-claims`; AI-politik og dataregler gengives aldrig af modellen (vises ordret fra `ContextItem`); modellen må ikke tilføje oplysninger om virksomheden, som ikke står i konteksten; teksten mærkes "Tilpasset til dig — automatisk genereret".
+- **PII:** filteret (docs/04) kører ved gem af `ContextItem` og igen før LLM-kaldet; fund blokerer.
+- **Omkostning:** eget dagligt loft pr. bruger/organisation og samlet kontekst-størrelse i config; alle kald logges i `AiCall` (uden tekst). Overskredet loft → generel tekst, ingen fejl.
+- **Påvirker aldrig** score, bestået-regler, certifikat eller virksomhedsrapport.

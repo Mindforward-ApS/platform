@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("forsiden svarer 200 og viser Greb", async ({ page }) => {
+test("forsiden svarer 200 og viser MindForward", async ({ page }) => {
   const response = await page.goto("/");
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Greb");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("MindForward");
 });
 
 test("health svarer", async ({ request }) => {

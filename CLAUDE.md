@@ -1,11 +1,12 @@
-# CLAUDE.md — Greb
+# CLAUDE.md — MindForward (kodenavn: greb)
 
-Greb er en dansk SaaS, hvor medarbejdere lærer AI-værktøjer (ChatGPT, Microsoft 365 Copilot og Claude — senere Gemini) ved at **gøre ting** i en neutral sandkasse med den fiktive virksomhed "Nordlys Logistik ApS".
+MindForward er en dansk SaaS, hvor medarbejdere lærer AI-værktøjer (ChatGPT, Microsoft 365 Copilot og Claude — senere Gemini) ved at **gøre ting** i en neutral sandkasse med den fiktive virksomhed "Nordlys Logistik ApS".
+Pensum har fem indgange: Fundamental AI, AI Act og ansvarlig brug samt de tre værktøjsspor. Et kontekstbibliotek (privat og erhverv) gør undervisningen personlig uden for sandkassen.
 Kort niveautest → personlig modulplan → praktiske opgaver med score, hints og certifikat → månedlig genopfriskning, der holdes ajour af en indholdsmotor.
 Kunder: virksomheder (seats, admin, dokumentationsrapport efter AI-forordningens art. 4) og privatpersoner. Solo-founder: Marco.
 
 ## Gyldne regler
-1. `docs/00-beslutninger.md` er sandheden. Afsnit 10 "Rettelser", 10a og 10b går forud for resten (nyeste vinder ved konflikt: 10b > 10a > 10). Er noget i strid med den, følger du den og noterer konflikten i `docs/OPEN-QUESTIONS.md`.
+1. `docs/00-beslutninger.md` er sandheden. Afsnit 10 "Rettelser", 10a, 10b og 10c går forud for resten (nyeste vinder ved konflikt: 10c > 10b > 10a > 10). Er noget i strid med den, følger du den og noterer konflikten i `docs/OPEN-QUESTIONS.md`.
 2. Byg én milestone ad gangen fra `docs/11-roadmap.md`. Ingen arbejde uden for milestonens scope.
 3. Plan før kode: filliste + tilgang → vent på Marcos godkendelse → tests først for logik → kode → checks.
 4. Ingen gætterier: er en beslutning uklar eller virker forkert, stop og skriv den i `docs/OPEN-QUESTIONS.md`. Improvisér ikke.
@@ -132,6 +133,8 @@ Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installat
 - Påstå at ChatGPT/Copilot/Claude/Gemini svarer i sandkassen.
 - Vise medarbejderes prompt-tekster til admins.
 - Vise individuelle ranglister, eller vise en medarbejders streak eller ugentlige tjek-ind til admin (kun samlede tal, mindst 5 svar).
-- Sende virksomhedens kontekstbibliotek til sprogmodellen (MVP) eller lade det indeholde persondata.
+- Sende kontekstbiblioteket til sandkassen, øvemodellen eller bedømmelsen (det bruges kun til personalisering uden for sandkassen), eller lade det indeholde kundedata, andres persondata eller CPR-/kort-/kontonumre.
+- Lade personaliseret tekst ændre score, spørgsmål, certifikat eller rapport, eller omskrive virksomhedens AI-politik/dataregler (vises ordret).
+- Kalde noget "AI Act-certifikat" — "AI Act" er navnet på et emneområde, ikke et bevis.
 - Lade hints (trin 1–2) eller feedback aflevere det færdige svar.
 - Lave falske nedtællere eller "kun i dag"-tilbud.
