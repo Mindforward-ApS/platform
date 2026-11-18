@@ -5,7 +5,7 @@ Kort niveautest → personlig modulplan → praktiske opgaver med score, hints o
 Kunder: virksomheder (seats, admin, dokumentationsrapport efter AI-forordningens art. 4) og privatpersoner. Solo-founder: Marco.
 
 ## Gyldne regler
-1. `docs/00-beslutninger.md` er sandheden. Afsnit 10 "Rettelser" og 10a går forud for resten (10a vinder ved konflikt). Er noget i strid med den, følger du den og noterer konflikten i `docs/OPEN-QUESTIONS.md`.
+1. `docs/00-beslutninger.md` er sandheden. Afsnit 10 "Rettelser", 10a og 10b går forud for resten (nyeste vinder ved konflikt: 10b > 10a > 10). Er noget i strid med den, følger du den og noterer konflikten i `docs/OPEN-QUESTIONS.md`.
 2. Byg én milestone ad gangen fra `docs/11-roadmap.md`. Ingen arbejde uden for milestonens scope.
 3. Plan før kode: filliste + tilgang → vent på Marcos godkendelse → tests først for logik → kode → checks.
 4. Ingen gætterier: er en beslutning uklar eller virker forkert, stop og skriv den i `docs/OPEN-QUESTIONS.md`. Improvisér ikke.
@@ -17,6 +17,7 @@ Kunder: virksomheder (seats, admin, dokumentationsrapport efter AI-forordningens
 |---|---|
 | Alt (altid) | `CLAUDE.md`, `docs/00-beslutninger.md`, din milestone i `docs/11-roadmap.md` |
 | Fakta, lovparagraffer, kilder | `docs/research-fund.md` |
+| Læringsresearch og erfaringer fra AI Minds (kontekst — ikke byggekrav) | `docs/research/README.md` |
 | Arbejdsgang, prompt-skabeloner | `docs/00-START-HER.md` |
 | Produkt, flows, skærme | `docs/01-produkt.md` |
 | Arkitektur, mappestruktur i detaljer, integrationer | `docs/02-arkitektur.md` |
@@ -130,4 +131,7 @@ Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installat
 - Påstå "AI Act-certificering", "lovkrav om certificering", "påkrævet niveau" eller bruge bødetrusler. Budskab: "dokumenteret, rollebaseret tiltag efter art. 4".
 - Påstå at ChatGPT/Copilot/Claude/Gemini svarer i sandkassen.
 - Vise medarbejderes prompt-tekster til admins.
+- Vise individuelle ranglister, eller vise en medarbejders streak eller ugentlige tjek-ind til admin (kun samlede tal, mindst 5 svar).
+- Sende virksomhedens kontekstbibliotek til sprogmodellen (MVP) eller lade det indeholde persondata.
+- Lade hints (trin 1–2) eller feedback aflevere det færdige svar.
 - Lave falske nedtællere eller "kun i dag"-tilbud.

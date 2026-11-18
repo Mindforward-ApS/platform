@@ -47,7 +47,10 @@ Vercel (hosting, `fra1`) · Neon (database, AWS Frankfurt) · Anthropic (LLM: sa
 
 ### 1.6 Medarbejderovervågning og DPIA
 - [ ] **Admins ser status, score og certifikater — aldrig prompt-tekster** (beslutningslog §10). Håndhævet i query-laget (admin-queries selecter aldrig fritekst-felter) + test der fejler hvis et admin-endpoint returnerer fritekst.
-- [ ] Ingen rangering/leaderboard af navngivne medarbejdere i MVP; virksomhedsrapporten viser gennemførelse og beståede moduler (dokumentation), ikke "dårligste medarbejdere".
+- [ ] **Streak og ugentligt tjek-ind (beslutning § 10b):** admin ser dem kun som samlede tal og kun når mindst 5 personer indgår; tjek-ind er frivilligt og uden fritekst; begge nævnes i info til medarbejdere ved første login og i DPIA-noten.
+- [ ] **Teammål** viser kun samlet fremdrift — aldrig navne eller rækkefølge.
+- [ ] **Kontekstbibliotek (beslutning § 10b):** Greb er databehandler for indholdet; det nævnes i DPA'ens bilag om behandlinger. Admin advares mod persondata og forretningshemmeligheder, PII-filter ved gem, kun OWNER/ADMIN kan skrive, slettes med organisationen. **Sendes ikke til sprogmodellen i MVP** (test). Bekræftelser (`OrgContextAcknowledgement`) er persondata om medarbejderen og vises for admin som version + dato.
+- [ ] Ingen rangering/leaderboard af navngivne medarbejdere — heller ikke efter MVP (beslutning § 10b); virksomhedsrapporten viser gennemførelse og beståede moduler (dokumentation), ikke "dårligste medarbejdere".
 - [ ] Positionering i UI/markedsføring: "læring", ikke "overvågning" (Datatilsynets 2026-fokus, research-fund).
 - [ ] Info til medarbejdere ved første login (B2B): hvad admin kan se, hvad admin ikke kan se, opbevaring, link til kundens + Grebs privatlivstekst.
 - [ ] **DPIA-note** `docs/legal/dpia-note.md` (intern): systematisk vurdering af scores i ansættelsesforhold + LLM-bedømmelse af fritekst; konklusion om fuld DPIA er nødvendig `[JURA: verificeres]`. Opdateres ved nye features der behandler medarbejderdata.
@@ -99,7 +102,9 @@ Vercel (hosting, `fra1`) · Neon (database, AWS Frankfurt) · Anthropic (LLM: sa
 | "Art. 4 kræver, at virksomheder tager tiltag, der understøtter medarbejdernes AI-kompetencer" | "Påkrævet niveau", "I skal bestå …" |
 | "Virksomhedsrapporten dokumenterer, hvad jeres medarbejdere har trænet" (dokumentation anbefales) | Bødetrusler, "undgå bøder", frygtretorik |
 | "Gælder virksomheder, hvis medarbejdere bruger fx ChatGPT eller Copilot i arbejdet" | "Certifikatet opfylder AI-forordningen" / "godkendt" |
-| | Navngivning af dansk tilsynsmyndighed (uafklaret) |
+| "Virksomhedsrapporten følger opbygningen i Dansk Standards vejledning DS/PAS 2500-4" (først når ordlyden er verificeret) | "Opfylder DS/PAS 2500-4" / "godkendt af Dansk Standard" |
+| | Navngivning af tilsynsmyndighed for art. 4 (Digitaliseringsstyrelsen er national koordinerende myndighed, men hvem der fører tilsyn med art. 4, er uafklaret) |
+| | "Kun 10 % af træning overføres til jobbet" og andre udokumenterede tal; opdigtede kunderesultater |
 
 - [ ] `banned-claims`-listen (`src/server/content-engine/banned-claims.ts`) bruges også på marketing-sider, i18n-filer, email-templates og support-output (CI-grep + runtime-guard).
 - [ ] Virksomhedsrapporten er en selvstændig feature, ikke "compliance-bevis".

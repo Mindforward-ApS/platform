@@ -24,7 +24,8 @@
 ## Lovgivning — AI-forordningen art. 4
 - Ændret ved forordning (EU) 2026/1744 (i kraft 27. juli 2026): virksomheder skal "tage tiltag, der understøtter udviklingen af AI-kompetencer" hos personale — ingen krav om bestemt niveau, certifikat eller test. Dokumentation anbefales, ikke krav. https://eur-lex.europa.eu/eli/reg/2026/1744/oj · Kommissionens Q&A (27. juli 2026): https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers
 - En virksomhed hvis medarbejdere bruger ChatGPT/Copilot i arbejdet er omfattet.
-- Dansk tilsynsmyndighed for art. 4 er uafklaret (L 111 bortfaldt ved valget) [U].
+- Dansk tilsynsmyndighed for art. 4 er uafklaret (L 111 bortfaldt ved valget) [U]. **Opdatering 18. nov 2026:** Digitaliseringsstyrelsen er national koordinerende tilsynsmyndighed for AI-forordningen og markedsovervågningsmyndighed for de forbudte former for AI-praksis (lov nr. 467 af 14/05/2025). Hvem der fører tilsyn med art. 4, er fortsat ikke bekræftet i en primær kilde [U] — navngiv derfor ikke en tilsynsmyndighed for art. 4 i markedsføring. Kommissionen: nationale markedsovervågningsmyndigheder fører tilsyn fra 2. august 2026. https://digital-strategy.ec.europa.eu/da/policies/ai-talent-skills-and-literacy · https://www.lovguiden.dk/loven/lov-om-supplerende-bestemmelser-til-forordningen-om-kunstig-intelligens/bilag-1-article-4
+- **DS/PAS 2500-4** (Dansk Standard, 2025): vejledning om AI-færdigheder. Dokumentet findes (https://www.ds.dk/media/0dghepwe/ds-pas-2500-4-2025-v3.pdf), men indholdet er **ikke læst af Claude Code** (ds.dk og via.ritzau.dk er spærret i byggemiljøet). Oplysningerne "gratis" og "5 trin: kortlæg, sæt mål, planlæg, gennemfør, evaluer" stammer fra `docs/research/04-ai-act.md` og er [U], indtil Marco eller en jurist har bekræftet ordlyden. Må ikke gengives i rapport eller markedsføring før da.
 - Salgsbudskab der holder: "dokumenteret, rollebaseret tiltag efter art. 4". Må IKKE sige: "lovkrav om certificering", "påkrævet niveau", bødetrusler.
 
 ## GDPR og varemærker
@@ -79,3 +80,12 @@
 - Quiz-leadmagnet: ~65 % gennemfører, ~40 % afgiver kontakt (leverandørdata).
 - Meta DK: CPC ~7 kr. LinkedIn: estimat 30–45 kr/klik [U]. Google: tjek Keyword Planner.
 - API-styring af egne annoncer er mulig (Google Ads API, Meta Marketing API). LinkedIn Ads API kræver godkendelse [U]. Automatiserede LinkedIn-beskeder/scraping er forbudt.
+
+## Læring og adfærd (tilføjet 18. nov 2026)
+> Fra `docs/research/` (leveret af Marco, hentet 18. nov 2026). Claude Code har **ikke** selv efterprøvet kilderne; flere er sekundære opsummeringer. Brug dem som begrundelse for produktvalg — ikke som påstande i markedsføring. Kildeliste: `docs/research/08-kilder.md`.
+- Aktiv læring slår passiv (Freeman m.fl. 2014); øvelse med test og gentagelse over tid er blandt de mest effektive teknikker (Dunlosky m.fl. 2013) → opgaver i sandkassen, genopfriskningsspørgsmål efter ca. 1 og 3 uger.
+- Frit tempo uden struktur giver lavest gennemførelse [U, leverandørdata] → anbefalet tempo, teammål og valgfri fælles startdato — men intet fast hold-forløb (Marcos beslutning).
+- Gamification har lille, positiv effekt; ranglister og offentlige badges giver oftest bagslag, især når kolleger og ledere kan se dem (Sailer og Homner 2020; Almeida m.fl.) → ugentlig streak (privat for brugeren), fælles teammål, aldrig individuelle ranglister.
+- AI-hjælp, der giver svaret, kan sænke læringen (Bastani m.fl. 2025; Liu m.fl. 2026 [U]) → coach-princip for hints og feedback; ingen AI-tutor i MVP.
+- "Kun 10 % af træning overføres til jobbet" er en myte uden kilde → bruges aldrig.
+- Egne tal fra AI Minds: et stort, generelt webinar gav 693 leads og 1 salg (ca. 0,14 %) → små, rollespecifikke indgange; i Greb: niveautest og "AI-tjek af teamet" i stedet for webinarer.

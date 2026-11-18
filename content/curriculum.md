@@ -57,7 +57,7 @@
 - Bestå: P required `struktur`, `ansvarlig-frist`.
 
 **core-aiact-01 · Ansvarlig brug og AI-forordningen** · CORE · ALLE · CHAT · 7 min · SECURITY_PRIVACY · false
-- Mål: Forklar kort hvad art. 4 handler om (virksomheder skal understøtte AI-kompetencer hos medarbejdere) · Genkend anvendelser hvor et menneske altid skal træffe beslutningen · Mærk AI-indhold når det er relevant.
+- Mål: Forklar kort hvad art. 4 handler om (virksomheder skal understøtte AI-kompetencer hos medarbejdere) · Genkend anvendelser hvor et menneske altid skal træffe beslutningen, og at AI-svar kan være skæve (bias) · Mærk AI-indhold når det er relevant.
 - Trin: R → Q → J (RESPONSIBLE_USE: AI vurderer ansøgere) → J (RESPONSIBLE_USE: AI-svar til kunde om forsikringsdækning uden kontrol) → Q
 - Bestå: alm. **Sprogregel:** aldrig "certificeringskrav", "påkrævet niveau" eller bøder (beslutning § 10). Juridisk gennemgang af teksten før publicering (docs/10).
 
@@ -70,6 +70,9 @@
 - Mål: Skeln mellem gratis Copilot Chat og betalt Microsoft 365 Copilot · Forstå hvornår svaret bygger på nettet vs. virksomhedens data · Ved hvordan man ser, om man er logget ind med arbejdskonto (beskyttet arbejdstilstand).
 - Trin: R → D → C (skift mellem web/arbejde-faneblad i skin) → Q → J! (DATA_SECURITY: kundedata i Copilot med privat Microsoft-konto)
 - Bestå: alm.
+
+> **Grundmodul (art. 4), beslutning § 10b:** `core-llm-01`, `core-fact-01`, `core-data-01`, `core-policy-01`, `core-aiact-01` (≈ 42 min) er grundmodulet for alle medarbejdere og vises samlet i virksomhedsrapporten med dato. Ophavsret dækkes af `core-image-01`. Har virksomheden et kontekstbibliotek, viser `core-policy-01` og `core-data-01` "Hos jer gælder: …" (docs/01 § 4.6).
+> **`takeaway`:** alle CORE- og ROLE-moduler får en skabelon til eget job, navngivet efter arbejdsopgaven (docs/05 § 10.1).
 
 > **Gratis for B2C:** niveautest + de første 3 moduler i den personlige plan (docs/07 § 7). Plan-generatoren placerer `core-llm-01`, `core-prompt-01`, `core-data-01` først, medmindre testen markerer dem "kan springes over".
 
@@ -208,6 +211,8 @@
 - 12 spørgsmål (Q, S, J — **ingen LLM-kald**), ≤ 5 min, dækker: model-forståelse (2), prompting (3), faktatjek (2), datasikkerhed (3), avancerede begreber (2).
 - Udfald pr. område: *sikker* (alle rigtige) → modulet markeres "kan springes over" (vises stadig; ikke påkrævet for niveau-certifikat **undtagen** `core-data-01` og `core-aiact-01`, som altid er påkrævet). *Usikker* → modulet prioriteres øverst.
 - Plan-rækkefølge: Niveau 1 påkrævede → rollemodul → Niveau 2 → Niveau 3. Copilot-brugere med "Ved ikke" om licens behandles som `COPILOT_CHAT`.
+- **Sluttjek** (docs/05 § 10.3): parallel spørgsmålsbank med samme fordeling på områder; tilbydes efter bestået niveau.
+- **Anbefalet tempo:** plan-generatoren foreslår moduler pr. uge ud fra niveau og samlet tid (standard 2/uge; værdier i config) og viser forventet slutdato. For erhverv med teammål beregnes tempoet mod målets dato.
 - **Niveau-certifikater** (pr. spor): Niveau 1 = alle Niveau 1-moduler for sporet (minus "kan springes over"). Niveau 2 = alle Niveau 2 CORE/FEATURE for sporet og tier + 1 rollemodul. Niveau 3 = alle Niveau 3-moduler for sporet og tier.
 
 ## Oversigt (31 moduler + 4 i Grundforløbet)

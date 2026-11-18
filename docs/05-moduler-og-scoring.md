@@ -236,3 +236,35 @@ Alle ganges med **hint-multiplikator** for højeste brugte hint-niveau: ingen/1 
 - PROMPT_TASK bevarer brugerens tekst mellem indsendelser (3.3.7); tegn-tæller annonceres ved 90 %.
 - DEMO har tekst pr. frame og pause; READ-billeder kræver `alt`.
 - CLICK_TASK i sandkassen: alle sandkasse-kontroller er rigtige knapper/links med tilgængelige navne fra skin'et, så skærmlæser-brugere kan løse dem.
+
+## 10. Tilføjelser fra beslutning § 10b (18. nov 2026)
+
+### 10.1 `takeaway` — "Brug det i dit eget job"
+Valgfrit felt på modulet (påkrævet for CORE- og ROLE-moduler fra Niveau 1, undtagen rene JUDGMENT-moduler). Tilføjes `content/schema/module.schema.json` i M2.
+
+| Felt | Type | Regel |
+|---|---|---|
+| `takeaway.title` | string ≤ 60 | Navngivet efter arbejdsopgaven ("Svar på en reklamation"), ikke værktøjet. |
+| `takeaway.template` | string ≤ 800 | Prompt-skabelon med pladsholdere i kantede parenteser (`[kundens navn]`). Ingen Nordlys-data, ingen leverandør-funktionsnavne. |
+| `takeaway.tip` | string ≤ 200 | Én sætning om, hvad man skal tjekke i svaret. |
+
+Vises på resultatskærmen ved bestået og i "Mine skabeloner". Fast påmindelse ved siden af: indsæt aldrig persondata eller fortrolige oplysninger i et værktøj, virksomheden ikke har godkendt. NEWS-moduler har ikke `takeaway`.
+
+### 10.2 Genopfriskningsspørgsmål
+- Når et modul bestås, oprettes `ReviewItem`s for op til 3 af modulets `QUIZ`/`SPOT_ERROR`/`JUDGMENT`-trin (must-pass først, derefter de trin brugeren fik lavest score i) med forfald efter 7 og 21 dage.
+- Besvares i "Ugens genopfriskning" og i månedspakken. Ingen LLM-kald. Ingen hints; forklaringen vises efter svar.
+- Resultatet påvirker ikke modulets score (§ 6: genopfriskning kan ikke sænke et bestået resultat). Forkert svar → modulet foreslås som månedens genopfriskning.
+
+### 10.3 Sluttjek
+- Samme motor og områder som niveautesten (curriculum.md "Niveautest → plan"), parallel spørgsmålsbank (andre spørgsmål), 12 spørgsmål, ingen LLM-kald.
+- Tilbydes, når et niveaus påkrævede moduler er bestået. Gemmes som `PlacementResult(kind = EXIT)`. Vises som før/efter pr. område.
+- Frivilligt. Ikke en betingelse for certifikat og sænker intet (AI-forordningen kræver ikke test — research-fund).
+
+### 10.4 Coach-princip for hints og feedback
+- Hint 1 er et spørgsmål eller en retning ("Hvem skal læse svaret?"). Hint 2 er konkret, men uden den færdige formulering. Kun hint 3 viser løsningen (0 point).
+- Grader-feedback siger, hvad der mangler — den omskriver ikke brugerens prompt (allerede regel 6 i § 4.1: "Afslør ikke den fulde løsning").
+- Indholdsregel for forfattere og indholdsmotor: et hint 1–2, der indeholder `exampleSolution` eller en parafrase af den, afvises i `content:validate` (enkel overlap-test).
+- Baggrund: AI-hjælp, der giver svaret, kan sænke læringen (docs/research/08-kilder.md, Bastani m.fl. 2025).
+
+### 10.5 Streak og aktivitet
+En uge (mandag–søndag, København) tæller som aktiv ved mindst én af: afsluttet modulforsøg, besvaret genopfriskningsspørgsmål, gennemført del af månedspakken, sluttjek. Tjek-ind alene tæller ikke. Én uge uden aktivitet = pause; to i træk = nulstil. Værdier i config.

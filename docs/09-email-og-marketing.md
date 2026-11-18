@@ -121,6 +121,8 @@ Alle flows: `step.sleepUntil` + re-check af betingelser ved hvert trin (samtykke
 | **B2B trial ending** | SERVICE | trial `trialEnd` | d11 + d13 (+ `trial_will_end`-webhook som sikkerhedsnet, dedup): faktuel info: dato for udløb, hvad der sker (læseadgang), pris pr. bruger fra config, hvordan man fortsætter. **Ingen rabat, ingen nedtæller.** | konverteret |
 | **Forladt checkout** | MARKETING | `checkout.session.expired` el. ingen `completed` 60 min efter oprettelse **og** `CONFIRMED` samtykke | 1 mail efter 4 t (påmindelse + link). Ingen rabat i denne mail. | køb, afmelding |
 | **Månedlig træning** | SERVICE | `MonthlyCycle` åbnet for bruger | d1 "Din månedspakke er klar (≈ 15 min)" · d14 hvis ikke gennemført · d25 hvis ikke gennemført. Indhold: modultitler, tid, link. Aldrig tilbud. | pakke gennemført, påmindelser slået fra, ikke længere aktivt seat |
+| **Fælles startdato** (§ 10b) | SERVICE | `Organization.programStartsAt` nået | 1 mail på dagen til medlemmer: "I dag starter I" + link til planen. Aldrig tilbud. | — |
+| **Streak, genopfriskningsspørgsmål, tjek-ind** (§ 10b) | — | — | **Ingen mails i MVP** — vises kun i appen og i månedspakkens eksisterende mails. | — |
 | **Win-back** | MARKETING | abonnement `canceled` (ikke fortrudt) **og** `CONFIRMED` samtykke | `winback-1` +30 dage (hvad er nyt: 3 NEWS-modultitler) · `winback-2` +60 dage (evt. reelt tilbud §7) | genkøb, afmelding |
 | **Admin ugerapport** | SERVICE | mandag 07:30 til OWNER/ADMIN | aktive/inaktive, beståede moduler, certifikater, månedspakke-gennemførelse. **Ingen prompt-tekster, ingen individuel "overvågnings"-rangering**; individuel status kun som i admin-UI. Kan slås fra. | — |
 | **Nyhedsbrev** | MARKETING | manuelt (Marco godkender kladde) | maks 1/md | — |

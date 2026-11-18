@@ -8,7 +8,19 @@
 - [ ] **Advokatgennemgang:** handelsbetingelser, databehandleraftale, privatlivspolitik, sandkassens UI (trade dress), art. 4-tekster. Blokerer: launch gate (M10).
 - [ ] **Ansættelseskontrakt hos Færch & Co.:** klausuler om bibeskæftigelse og immaterielle rettigheder. Blokerer: pilot.
 - [ ] **Navn og domæne "Greb"** er ikke tjekket (domæne, varemærke). Blokerer: M0 (domæne).
-- [ ] **Dansk tilsynsmyndighed for AI-forordningens art. 4** er uafklaret (L 111 bortfaldt). Påvirker kun markedsføringstekster.
+- [ ] **Dansk tilsynsmyndighed for AI-forordningens art. 4** — delvist afklaret 18. nov 2026: Digitaliseringsstyrelsen er national koordinerende myndighed (lov 467/2025), men tilsyn med art. 4 er ikke bekræftet i primær kilde (se research-fund). Tidligere note: uafklaret (L 111 bortfaldt). Påvirker kun markedsføringstekster.
+
+## Fra § 10b (18. nov 2026) — til Marco
+- [ ] **Produktnavn og selskab:** Marco omtaler platformen som "MindForward" (afløser AI Minds); spec, UI-tekster og certifikat bruger arbejdstitlen "Greb", og 00 angiver selskabet som "under Esther Gruppen ApS", mens GitHub-organisationen hedder Mindforward ApS. · Forslag: Marco bekræfter (a) produktnavn i UI/domæne og (b) juridisk enhed til vilkår, DPA og fakturaer. Intet er omdøbt. · Blokerer: juridiske sider + landingsside (M5), certifikattekst (M7).
+- [ ] **Må sprogmodellen bruge virksomhedens kontekstbibliotek?** Marco ønsker træningen "mere kontekstuel". I MVP vises konteksten kun for medarbejderen; den sendes ikke til øvemodel eller bedømmelse, fordi sandkassen ikke må få rigtige kundedata (CLAUDE.md "ALDRIG"), og fordi det kræver tilføjelse til DPA, PII-kontrol af uploads og højere AI-omkostning. · Forslag: fase 2, tidligst efter advokatgennemgang; start med at lade JUDGMENT-feedback citere virksomhedens dataregler uden LLM. · Blokerer: intet i MVP.
+- [ ] **Synlighed af tjek-ind og streak for admin:** Marco svarede ikke på spørgsmålet; anbefalingen (kun samlede tal, mindst 5 svar) er skrevet ind som antagelse i § 10b. · Blokerer: M8.
+- [ ] **"Tutoren anbefaler et forløb" (privat):** tolket som, at plan-generatoren foreslår et tempo ud fra niveautesten — ikke en AI-tutor. · Forslag: bekræft tolkningen; en egentlig AI-tutor er uden for MVP. · Blokerer: M5.
+- [ ] **Fælles startdato:** tolket som valgfri dato pr. virksomhed, hvor planen åbner for alle (niveautest kan tages før). · Blokerer: M7.
+- [ ] **DS/PAS 2500-4:** indholdet (de 5 trin, "gratis") er ikke verificeret — ds.dk og via.ritzau.dk er spærret i byggemiljøet. · Forslag: Marco eller jurist bekræfter ordlyden; rapportens DS/PAS-afsnit ligger bag feature-flag indtil da. · Blokerer: rapportafsnit (M7), salgsside (M5).
+- [ ] **Ugentlig påmindelsesmail:** streaks virker bedre med en ugentlig påmindelse, men § 3 siger kun mails dag 1/14/25. · Forslag: ingen nye mails i MVP; vurder én ugentlig SERVICE-mail (kan slås fra, aldrig tilbud) efter de første måneders data. · Blokerer: intet.
+- [ ] **Kontekstbibliotek — PDF-lager:** kræver fillager (samme som certifikat-PDF, fx Vercel Blob — ikke på underdatabehandlerlisten endnu). · Forslag: tekst + link i første version, PDF når lageret er valgt i M7.
+- [ ] **Researchfilerne 01–03** fra samme pakke er ikke modtaget; `docs/research/` indeholder 04–08.
+- [ ] **Kildeverifikation:** kilderne i `docs/research/08-kilder.md` er ikke efterprøvet af Claude Code (flere er sekundære). Må ikke bruges som påstande i markedsføring uden tjek.
 
 ## Tekniske (fra spec-arbejdet 12. okt 2026)
 - [x] **`prisma validate` er ikke kørt** (M0: kørt 13. okt 2026 — skemaet er gyldigt med Prisma 7.10) — npm var ikke tilgængeligt i miljøet hvor spec blev skrevet. Kør `npx prisma validate` + `npx prisma format` i M1 og ret fejl. Skemaet følger Prisma 7 (datasource-url i `prisma.config.ts`, driver adapter, seed køres ikke automatisk ved migrate).

@@ -29,7 +29,7 @@ Ejer: Marco (solo-founder). Selskab: under Esther Gruppen ApS.
 - Hjælp: 3-trins hint (nudge → konkret → vis løsning). Trin 3 giver 0 point for trinnet.
 - Scoring: hvert trin har point; modul bestået ved ≥ 80 %; ubegrænsede forsøg; bedste forsøg tæller. `JUDGMENT`-trin om datasikkerhed er must-pass.
 - `PROMPT_TASK`-bedømmelse: først deterministiske checks (længde, påkrævede elementer, forbudt indhold), derefter LLM-rubric (struktureret output, temperatur 0). Rubric-kriterier vises for brugeren efter forsøg. Rubric-version + model-id gemmes på hvert resultat.
-- Certifikat: PDF pr. bestået spor-niveau. Virksomhedsrapport (CSV + PDF) til dokumentation af medarbejdernes AI-kompetencer.
+- Certifikat: PDF pr. bestået spor-niveau. Virksomhedsrapport (CSV + PDF) til dokumentation af medarbejdernes AI-kompetencer (udvidet i § 10b).
 
 ## 3. Månedlig træning
 - `MonthlyCycle` pr. kalendermåned: auto-sammensat pakke (nye `NEWS`-moduler for brugerens spor + 1 genopfriskning). Mål ≤ 15 min.
@@ -104,6 +104,46 @@ Gælder forud for resten af pakken, inkl. § 10. Detaljer i `docs/OPEN-QUESTIONS
 - **Kunde-admins data-side** hedder `/virksomhed/data` (`/admin` er Grebs interne drift).
 - **Stack-versioner:** Prisma 7.10.x (ikke 8-rc), TypeScript 6.0.x, Next.js 16 (`proxy.ts` i stedet for `middleware.ts`). Env-variabler bliver påkrævede i den milestone, der bruger dem.
 - **Claude er med overalt hvor ChatGPT/Copilot nævnes** (skins, supportprompt, designsessioner).
+
+## 10b. Rettelser efter læringsresearch og erfaringer fra AI Minds (18. nov 2026) — besluttet af Marco
+Gælder forud for resten af pakken, inkl. § 10 og § 10a. Baggrund og kilder: `docs/research/` (kontekst, ikke byggekrav). Åbne punkter: `docs/OPEN-QUESTIONS.md`.
+Fundamentet er uændret: sandkasse, Nordlys-data, modulsystem, scoring, priser og stack. Punkterne her er tilføjelser.
+
+**Fælles for privat og erhverv**
+- **Sluttjek (før/efter-måling):** niveautesten er indgangstjek. Når et niveau er bestået, tilbydes et sluttjek (samme områder, andre spørgsmål, ingen LLM-kald). Resultatet vises som før/efter pr. område. Sluttjekket er frivilligt og ikke en betingelse for certifikat.
+- **Genopfriskningsspørgsmål:** spørgsmål fra beståede moduler (`QUIZ`, `SPOT_ERROR`, `JUDGMENT`) kommer igen efter ca. 1 og 3 uger — i appen ("Ugens genopfriskning", ca. 2 min) og i månedspakken. De kan ikke sænke et bestået resultat. Ingen nye mails i MVP.
+- **Brug det i dit eget job:** hvert modul kan slutte med en skabelon (`takeaway`), som brugeren kopierer til sit eget værktøj. Skabelonerne fra beståede moduler samles i "Mine skabeloner". Sandkassen rører stadig kun Nordlys-data.
+- **Ugentligt tjek-ind:** frivilligt, to klik: "Brugte du AI i en rigtig opgave i denne uge?" og ca. sparet tid (intervaller, ingen fritekst). Hovedmålet for produktet er andelen, der bruger AI ugentligt i en rigtig opgave.
+- **Ugentlig streak:** en uge tæller, når brugeren har gennemført mindst én læringsaktivitet. Én uge uden aktivitet sætter streaken på pause; to i træk nulstiller den. Ingen skyld-beskeder, ingen nedtællere. Streaken er kun synlig for brugeren selv.
+- **Anbefalet tempo, ikke fast forløb:** der er intet fast forløb med hold og slutdato. Planen foreslår et tempo ud fra niveautesten (fx 2 moduler om ugen → forventet slutdato), som brugeren kan ændre eller slå fra.
+- **Coach-princip:** hint 1–2 og al feedback hjælper brugeren videre uden at aflevere det færdige svar; kun hint 3 viser løsningen (0 point). Ingen AI-tutor/-coach i MVP. Bygges den senere, må den aldrig løse opgaven for brugeren, og den testes på én gruppe først.
+- **Aldrig individuelle ranglister** — hverken mellem kolleger eller mellem private brugere.
+
+**Kun privat (`Organization.type = PERSONAL`)**
+- Personlig streak, eget ugemål og anbefalet tempo. Ingen teamfunktioner, intet kontekstbibliotek.
+
+**Kun erhverv (`Organization.type = BUSINESS`)**
+- **Fælles teammål:** OWNER/ADMIN sætter ét mål ad gangen (fx "80 % har bestået Niveau 1 inden [dato]"). Alle medlemmer ser samlet fremdrift — aldrig navne.
+- **Fælles startdato (valgfri):** OWNER/ADMIN kan sætte en dato, hvor teamet starter. Før datoen kan medarbejderne tage niveautesten; på datoen åbner planen, og alle får en SERVICE-mail.
+- **Kontekstbibliotek ("Hos os"):** OWNER/ADMIN kan lægge virksomhedens egne oplysninger ind, så træningen bliver konkret: AI-politik, godkendte værktøjer, dataregler (hvad må/må ikke indsættes), hvem man spørger, kort om forretningen og typiske opgaver. Tekst, link eller PDF. Versioneret.
+  - Medarbejdere bekræfter, at de har læst AI-politik og dataregler; ny version kræver ny bekræftelse. Version og dato indgår i virksomhedsrapporten.
+  - Indholdet vises ved relevante moduler og på medarbejderens side "Hos os".
+  - **Indholdet sendes ikke til sprogmodellen i MVP** — sandkassen og bedømmelsen kører fortsat kun mod Nordlys-data. Om modellen senere må bruge virksomhedens kontekst, er et åbent spørgsmål.
+  - Må ikke indeholde persondata eller forretningshemmeligheder; PII-filteret kører ved gem.
+- **Tjek-ind og streaks vises kun samlet til admin** (og kun ved mindst 5 svar) — aldrig pr. person. *Antagelse: Marco har ikke svaret på dette punkt; anbefalingen er fulgt.*
+- **AI-tjek af teamet:** prøveperioden (14 dage, op til 5 brugere) + niveautesten giver admin et teamoverblik (niveaufordeling, svageste områder, anbefalet start), der kan hentes som PDF.
+- **Lederkit:** en kort side til ledere under `/virksomhed`: hvad man kan forvente, hvordan man følger op, mødeskabelon.
+- **Virksomhedsrapporten udvides:** jobrolle, spor/licensniveau, grundmodul gennemført (dato), før/efter-resultat, bekræftet politik-version, dato for næste genopfriskning og en oversigt, der kobler tiltaget til trinnene i DS/PAS 2500-4.
+- **Genopfriskning ved hændelser:** ud over månedspakken ved skift af jobrolle eller spor og én gang årligt (grundmodulets spørgsmål + ny bekræftelse af politik).
+
+**Pensum og budskaber**
+- **Grundmodul (art. 4):** `core-llm-01`, `core-fact-01`, `core-data-01`, `core-policy-01`, `core-aiact-01` (ca. 40 min) er grundmodulet for alle. Det dækker AI-forståelse, risici (hallucinationer, persondata, fortrolighed, bias, ophavsret via `core-image-01`), virksomhedens politik og hvad forordningen betyder for medarbejderen.
+- **Moduler navngives efter arbejdsopgaven**, ikke efter værktøjet (bekræfter § 10 "begrebsbaseret").
+- **Salgssiden `/virksomheder`:** problem → dokumentation (rapport-eksempel; målte resultater først når de findes) → det, de gratis akademier ikke giver (dansk, øvelse i praksis, dokumentation) → sådan foregår det → én knap. Aldrig bødetrusler, aldrig "kun 10 % af træning overføres", ingen opdigtede resultater.
+
+**Nye entiteter (tilføjes skemaet i M2):** `WeeklyActivity`, `ReviewItem`, `UsageCheckIn`, `TeamGoal`, `OrgContextItem`, `OrgContextAcknowledgement`. Nye felter: `PlacementResult.kind` (ENTRY|EXIT), `TrackEnrollment.weeklyGoalModules`, `Organization.programStartsAt`. Detaljer: `docs/03-datamodel.md` § 15.
+
+**Ikke med (bliver kontekst):** videoer, live-sessioner, webinarer, hold med fast start og slut, ambassadørprogram, pakkepriser, garanti, Skool. Ændrer ikke priser, B2C/B2B-model eller stack.
 
 ## 11. Ejer-tid (mål)
 Marco ≤ 2 timer/uge efter launch: 1-klik-godkendelse af indhold, læse daglig digest, håndtere eskalationer.

@@ -1,7 +1,7 @@
 # 11 — Roadmap (M0–M10)
 
 > Byg i rækkefølge. Én milestone = én PR. Arbejdsgang og prompt-skabeloner: `docs/00-START-HER.md`.
-> Alle milestones læser: `CLAUDE.md`, `docs/00-beslutninger.md` (afsnit 10 går forud), `docs/research-fund.md` ved juridiske/faktuelle spørgsmål.
+> Alle milestones læser: `CLAUDE.md`, `docs/00-beslutninger.md` (afsnit 10, 10a og 10b går forud; nyeste vinder), `docs/research-fund.md` ved juridiske/faktuelle spørgsmål.
 > Acceptkriterier rapporteres med bevis (testnavn, kommando-output eller preview-trin). Uklart → `docs/OPEN-QUESTIONS.md`.
 
 ## Overblik
@@ -58,7 +58,7 @@
 
 ## M2 — Datamodel + seed
 **Mål:** Fuld Prisma-model og indhold i repoet, så moduler og Nordlys-verdenen kan indlæses og valideres.
-**Ind:** Resten af entiteterne fra `prisma/schema.prisma` (00-beslutninger § 9). Seed: spor `CHATGPT` + `COPILOT` + `CLAUDE` aktive (`GEMINI` inaktiv), Copilot-niveauer `COPILOT_CHAT`/`COPILOT_M365` som data; `content/modules/*` indlæses som `Module`/`ModuleVersion`; Nordlys Logistik ApS fra `content/sandbox-world/` (indbakke, kalender, filer, CRM, økonomi-regneark — fiktivt). Zod-skemaer genereret/afstemt med `content/schema/module.schema.json`. `pnpm content:validate` i CI. Plan-/pris-config (B2C 49 kr inkl. moms, B2B 49 kr ex. moms/bruger, min. 5, årlig 490) seedes i DB fra config.
+**Ind:** Resten af entiteterne fra `prisma/schema.prisma` (00-beslutninger § 9). Seed: spor `CHATGPT` + `COPILOT` + `CLAUDE` aktive (`GEMINI` inaktiv), Copilot-niveauer `COPILOT_CHAT`/`COPILOT_M365` som data; `content/modules/*` indlæses som `Module`/`ModuleVersion`; Nordlys Logistik ApS fra `content/sandbox-world/` (indbakke, kalender, filer, CRM, økonomi-regneark — fiktivt). Zod-skemaer genereret/afstemt med `content/schema/module.schema.json`. `pnpm content:validate` i CI. Plan-/pris-config (B2C 49 kr inkl. moms, B2B 49 kr ex. moms/bruger, min. 5, årlig 490) seedes i DB fra config. **Fra § 10b:** entiteter og felter fra `docs/03-datamodel.md` § 15; valgfrit `takeaway` i `content/schema/module.schema.json`.
 **Ude:** UI for moduler (M4), sandkasse-UI (M3).
 **Leverancer:** Migrationer, `prisma/seed.ts` (idempotent), content-loader, valideringsscript.
 **Acceptkriterier:**
@@ -68,6 +68,8 @@
 - [ ] `READ`-trin over 120 ord afvises af validering.
 - [ ] Nordlys-data indeholder ingen rigtige persondata (PII-filteret fra M3 eller regex-test kører over `content/sandbox-world/`).
 - [ ] Priser findes kun i config/DB — grep for `49` i `src/components` giver intet prisfund.
+- [ ] § 10b: skemaet indeholder `WeeklyActivity`, `ReviewItem`, `UsageCheckIn`, `TeamGoal`, `OrgContextItem`, `OrgContextAcknowledgement` samt felterne `PlacementResult.kind`, `TrackEnrollment.weeklyGoalModules`, `Organization.programStartsAt`; `prisma validate` grøn.
+- [ ] § 10b: `content:validate` accepterer `takeaway` og afviser hint 1–2, der gengiver `exampleSolution` (test).
 **Læs:** `docs/03-datamodel.md`, `docs/05-moduler-og-scoring.md`, `content/schema/module.schema.json`, `content/curriculum.md`, `docs/04-sandkasse.md` (Nordlys-afsnit).
 
 ## M3 — Sandkasse-motor
@@ -92,7 +94,7 @@
 > **Designsession før M4:** modulafspiller, trin-layout, hint-panel, resultatskærm.
 
 **Mål:** Brugeren kan gennemføre et modul med alle trintyper og få en fair, forklaret score.
-**Ind:** Afspiller for `READ`, `DEMO`, `CLICK_TASK`, `PROMPT_TASK`, `QUIZ`, `SPOT_ERROR`, `JUDGMENT`. 3-trins hint (trin 3 = 0 point for trinnet). Scoring: bestået ≥ 80 %, ubegrænsede forsøg, bedste forsøg tæller, datasikkerheds-`JUDGMENT` er must-pass. `PROMPT_TASK`: deterministiske checks → LLM-rubric (struktureret output, temperatur 0); rubric-kriterier vises efter forsøg; rubric-version + model-id gemmes på `StepResult`. `Attempt`, `StepResult`, `Assignment`. Inngest-job: slet prompt-tekster efter 30 dage.
+**Ind:** Afspiller for `READ`, `DEMO`, `CLICK_TASK`, `PROMPT_TASK`, `QUIZ`, `SPOT_ERROR`, `JUDGMENT`. 3-trins hint (trin 3 = 0 point for trinnet). Scoring: bestået ≥ 80 %, ubegrænsede forsøg, bedste forsøg tæller, datasikkerheds-`JUDGMENT` er must-pass. `PROMPT_TASK`: deterministiske checks → LLM-rubric (struktureret output, temperatur 0); rubric-kriterier vises efter forsøg; rubric-version + model-id gemmes på `StepResult`. `Attempt`, `StepResult`, `Assignment`. Inngest-job: slet prompt-tekster efter 30 dage. **Fra § 10b:** resultatskærm viser modulets `takeaway` ved bestået ("Brug det i dit eget job") + "Mine skabeloner"; coach-princip for hints/feedback (docs/05 § 10).
 **Ude:** Certifikat-PDF (M7), niveautest (M5), betalingsspærre (M6).
 **Leverancer:** `src/server/scoring/`, `src/server/modules/`, afspiller-UI, e2e "gennemfør modul".
 **Acceptkriterier:**
@@ -103,13 +105,15 @@
 - [ ] Playwright: bruger gennemfører `core-prompt-01` og ser bestået-skærm med kriterier.
 - [ ] Retention-job sletter prompt-tekst ældre end 30 dage og bevarer score (test).
 - [ ] Ingen API-route returnerer prompt-tekst til andre end ejeren (test).
+- [ ] § 10b: bestået modul med `takeaway` viser skabelonen med kopiér-knap; ikke-bestået viser den ikke (e2e). "Mine skabeloner" viser kun skabeloner fra egne beståede moduler (test).
+- [ ] § 10b: hint 1–2 og grader-feedback indeholder ikke `exampleSolution` (test på eksempelmodulet + golden set).
 **Læs:** `docs/05-moduler-og-scoring.md`, `content/schema/module.schema.json`, `content/modules/core-prompt-01.json`, `docs/04-sandkasse.md`.
 
 ## M5 — Niveautest + læringsplan (inkl. offentlig leadmagnet)
 > **Designsession i M5:** offentlig testside + resultatside (første skærme ude af huset).
 
 **Mål:** 5-min niveautest giver en personlig modulplan — både for brugere og som offentlig gratis "AI-niveautest".
-**Ind:** Flow landingsside → vælg værktøj → (opret bruger) → niveautest → plan. `PlacementResult` → `Assignment`s (inkl. `ROLE`-moduler efter valgt rolle; Copilot-niveau spørges). Offentlig version uden login: resultatside + **ikke-forudafkrydset** marketing-samtykke-checkbox (frivillig, specifik) → `ConsentRecord` (tidspunkt, kilde, tekstversion, IP/user-agent) + dobbelt opt-in-mail. Konvertering offentlig test → konto bevarer resultatet.
+**Ind:** Flow landingsside → vælg værktøj → (opret bruger) → niveautest → plan. `PlacementResult` → `Assignment`s (inkl. `ROLE`-moduler efter valgt rolle; Copilot-niveau spørges). Offentlig version uden login: resultatside + **ikke-forudafkrydset** marketing-samtykke-checkbox (frivillig, specifik) → `ConsentRecord` (tidspunkt, kilde, tekstversion, IP/user-agent) + dobbelt opt-in-mail. Konvertering offentlig test → konto bevarer resultatet. **Fra § 10b:** sluttjek (`PlacementResult.kind = EXIT`, parallel spørgsmålsbank) med før/efter pr. område; anbefalet tempo i plan-generatoren (kan ændres/slås fra — intet fast forløb); kontekstvalg efter login for brugere med både privat og erhverv; salgssiden `/virksomheder` i rækkefølgen fra docs/01 P2.
 **Ude:** Marketingudsendelser (M8), betaling (M6), analytics (M10).
 **Leverancer:** Testmotor, plan-generator (ren funktion), offentlig side, samtykke-modul under `src/server/email/` (præcis placering jf. `docs/02-arkitektur.md`).
 **Acceptkriterier:**
@@ -119,6 +123,9 @@
 - [ ] `ConsentRecord` gemmer alle påkrævede felter; samtykke aktiveres først ved klik i opt-in-mail (test).
 - [ ] Kun-test-leads uden aktivt samtykke kan ikke modtage `MARKETING` (gate-test).
 - [ ] Offentligt endpoint har rate limit + bot-beskyttelse.
+- [ ] § 10b: unit-tests for anbefalet tempo (givet niveau + minutter → moduler/uge og forventet slutdato; `null` slår det fra).
+- [ ] § 10b: sluttjek bruger andre spørgsmål end brugerens niveautest, laver ingen LLM-kald og ændrer hverken modulscore eller certifikat (test).
+- [ ] § 10b: `/virksomheder` indeholder ingen bødetrusler, intet "10 %"-tal og ingen kunderesultater, der ikke findes som data (tekstgennemgang + `banned-claims`).
 **Læs:** `docs/01-produkt.md`, `docs/05-moduler-og-scoring.md`, `docs/09-email-og-marketing.md`, `docs/10-compliance.md`.
 
 ## M6 — Stripe-betaling + forbrugerretlige flows
@@ -142,7 +149,7 @@
 > **Designsession før M7-UI:** dashboard, medarbejderliste, rapport- og certifikat-layout.
 
 **Mål:** En virksomheds-admin kan invitere, følge fremskridt og dokumentere medarbejdernes AI-kompetencer.
-**Ind:** Dashboard: status, score og certifikater pr. medarbejder/spor/rolle — **aldrig prompt-tekster**. Invitation via email, link og verificeret domæne; seat-loft mod `Subscription.quantity`. Tildeling af spor/`ROLE`-moduler. Certifikat-PDF pr. bestået spor-niveau (`Certificate`, verificerbar). Virksomhedsrapport (CSV + PDF) som "dokumenteret, rollebaseret tiltag efter art. 4" — uden certificerings-/lovkravs-sprog. `AuditLog` for admin-handlinger.
+**Ind:** Dashboard: status, score og certifikater pr. medarbejder/spor/rolle — **aldrig prompt-tekster**. Invitation via email, link og verificeret domæne; seat-loft mod `Subscription.quantity`. Tildeling af spor/`ROLE`-moduler. Certifikat-PDF pr. bestået spor-niveau (`Certificate`, verificerbar). Virksomhedsrapport (CSV + PDF) som "dokumenteret, rollebaseret tiltag efter art. 4" — uden certificerings-/lovkravs-sprog. `AuditLog` for admin-handlinger. **Fra § 10b:** kontekstbibliotek (`/virksomhed/kontekst`, `/hos-os`, bekræftelser, visning ved `core-policy-01`/`core-data-01`), teammål + valgfri fælles startdato, AI-tjek af teamet (PDF), lederkit, udvidet rapport (grundmodul, før/efter, politik-version, næste genopfriskning, DS/PAS 2500-4-oversigt).
 **Ude:** Månedscyklus (M8), indholdsgodkendelse (M9).
 **Leverancer:** Admin-routes + actions, PDF-generator, CSV-eksport.
 **Acceptkriterier:**
@@ -153,11 +160,17 @@
 - [ ] Certifikat-PDF genereres ved bestået spor-niveau og kan verificeres via unik URL/ID.
 - [ ] Rapport (CSV + PDF) indeholder ikke ordene "certificering", "lovkrav", "påkrævet niveau" eller bøder (test på genereret tekst).
 - [ ] Scores præsenteres som læring (tekster godkendt af Marco på preview).
+- [ ] § 10b: kun OWNER/ADMIN kan oprette/ændre `OrgContextItem`; org A kan ikke læse org B's kontekst (test); ændringer skrives i `AuditLog`.
+- [ ] § 10b: intet LLM-kald indeholder indhold fra kontekstbiblioteket (test på `src/server/ai/`-grænsen); PII-filteret blokerer CPR m.m. ved gem (test).
+- [ ] § 10b: ny version af AI-politik/dataregler kræver ny bekræftelse; rapporten viser version + dato pr. medarbejder (test).
+- [ ] § 10b: teammål viser samlet fremdrift uden navne; PERSONAL-organisationer har hverken teammål, startdato eller kontekstbibliotek (test).
+- [ ] § 10b: fælles startdato — niveautest kan tages før datoen, moduler åbner på datoen (test med fake clock).
+- [ ] § 10b: rapportens DS/PAS 2500-4-afsnit er slået fra bag feature-flag, indtil ordlyden er verificeret (`docs/OPEN-QUESTIONS.md`).
 **Læs:** `docs/01-produkt.md`, `docs/03-datamodel.md`, `docs/10-compliance.md` (AI-forordningen, GDPR, databehandler).
 
 ## M8 — Månedlig cyklus, påmindelser, samtykke/marketing
 **Mål:** Brugerne får automatisk en kort månedspakke og påmindelser; marketing kan kun nå folk med gyldigt samtykke.
-**Ind:** `MonthlyCycle` pr. kalendermåned: nye `NEWS`-moduler for brugerens spor + 1 genopfriskning, mål ≤ 15 min (`MonthlyAssignment`). Påmindelser (`SERVICE`) dag 1, 14 og 25 hvis ikke gennemført; brugeren kan slå dem fra; **aldrig tilbud**. Marketing-motor: `MARKETING` kun via samtykke-gate, afmeld-link i hver mail, afsender + markedsføring tydeligt, rabatter reelle (maks. 10 dage eller annonceret slutdato, reel førpris, ingen nulstillende nedtællere). Resend-webhooks (bounce, complaint, unsubscribe) → `ConsentRecord`/`EmailMessage`.
+**Ind:** `MonthlyCycle` pr. kalendermåned: nye `NEWS`-moduler for brugerens spor + 1 genopfriskning, mål ≤ 15 min (`MonthlyAssignment`). Påmindelser (`SERVICE`) dag 1, 14 og 25 hvis ikke gennemført; brugeren kan slå dem fra; **aldrig tilbud**. Marketing-motor: `MARKETING` kun via samtykke-gate, afmeld-link i hver mail, afsender + markedsføring tydeligt, rabatter reelle (maks. 10 dage eller annonceret slutdato, reel førpris, ingen nulstillende nedtællere). Resend-webhooks (bounce, complaint, unsubscribe) → `ConsentRecord`/`EmailMessage`. **Fra § 10b:** ugentlig streak (`WeeklyActivity`), genopfriskningsspørgsmål efter ca. 1 og 3 uger (`ReviewItem`, i appen og i månedspakken — ingen nye mails), ugentligt tjek-ind (`UsageCheckIn`), genopfriskning ved skift af jobrolle/spor og årstjek, samlede teamtal til admin.
 **Ude:** Annonceautomatik (kun hvis `docs/09-email-og-marketing.md` kræver den i MVP — så med hårdt loft 20.000 kr/md i kode).
 **Leverancer:** Inngest-cron for cyklus + påmindelser, email-skabeloner pr. kategori, samtykke-gate.
 **Acceptkriterier:**
@@ -168,6 +181,11 @@
 - [ ] Afmeld-link virker uden login og registreres (e2e).
 - [ ] Resend-webhook verificerer signatur (test).
 - [ ] Admin ser cyklus-status pr. medarbejder (ikke prompt-tekster).
+- [ ] § 10b: unit-tests for streak (aktiv uge, pause efter én tom uge, nulstil efter to, uge-grænse i København-tid) — skrevet først.
+- [ ] § 10b: bestået modul opretter `ReviewItem`s med forfald dag 7 og 21; svar ændrer ikke modulscore (test med fake clock).
+- [ ] § 10b: admin-endpoints returnerer tjek-ind/streak kun som samlede tal og kun ved ≥ 5 personer; ellers "for få svar" (test); aldrig pr. person.
+- [ ] § 10b: skift af `Membership.jobRole` tildeler det nye rollemodul; årstjek tildeles 12 måneder efter grundmodulet (test med fake clock).
+- [ ] § 10b: ingen streak-/tjek-ind-tekst indeholder tilbud, nedtællere eller skyld-formuleringer (skabelon-/i18n-tjek).
 **Læs:** `docs/09-email-og-marketing.md`, `docs/10-compliance.md`, `docs/05-moduler-og-scoring.md` (NEWS).
 
 ## M9 — Indholdsmotor
