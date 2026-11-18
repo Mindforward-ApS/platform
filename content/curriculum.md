@@ -18,13 +18,14 @@
 
 | Indgang | Hvad det er | Moduler |
 |---|---|---|
-| **Fundamental AI** (`area: AI_FUNDAMENTALS`) | Fælles for alle — ligger først i planen | `core-ai-01`, `core-ai-02`, `core-llm-01`, `core-ai-03` (≈ 28 min) |
+| **Fundamental AI** (`area: AI_FUNDAMENTALS`) | Fælles for alle — **anbefalet, ikke påkrævet**; ligger først i planen | `core-ai-01`, `core-ai-02`, `core-llm-01`, `core-ai-03` (≈ 28 min) |
 | **AI Act og ansvarlig brug** (`area: RESPONSIBLE_AI`) | Fælles for alle | `core-data-01`, `core-policy-01`, `core-aiact-01`, `core-aiact-02` (Niveau 1) · `core-image-01` (Niveau 2) |
 | **ChatGPT** · **Microsoft 365 Copilot** · **Claude** (`area: TOOL_SKILLS`) | Spor (`Track`) med sandkasse-skin; brugeren vælger sit værktøj | Øvrige CORE-, FEATURE- og ROLE-moduler |
 
 - Fundamental AI og AI Act er **områder**, ikke spor: det er `CORE`-moduler for alle spor, og de er værktøjsneutrale (ingen `CLICK_TASK`; kan tages på mobil).
+- **Fundamental AI er en anbefaling:** modulerne mærkes "Anbefalet" (eller "Anbefalet til dig", når niveautesten viser usikkerhed om model-forståelse), kan springes over og tæller ikke med i kravene til niveau-certifikat. Gennemførte moduler vises på brugerens plan og i virksomhedsrapporten.
 - "AI Act" er navnet på emnet. Der findes intet "AI Act-certifikat" — certifikater er fortsat pr. spor + niveau.
-- Har brugeren et kontekstbibliotek, får modulerne "Derfor er det relevant for dig" og en tilpasset skabelon (docs/05 § 10.7). Modulernes indhold, spørgsmål og bedømmelse er ens for alle.
+- Alle brugere får "Derfor er det relevant for dig" og en tilpasset skabelon ud fra niveau, jobrolle og værktøj — og mere præcist, når kontekstbiblioteket er udfyldt (docs/05 § 10.7). Modulernes indhold, spørgsmål og bedømmelse er ens for alle.
 
 ---
 
@@ -32,24 +33,24 @@
 
 ### Fundamental AI
 
-**core-ai-01 · Hvad er AI — og hvad er det ikke?** · CORE · ALLE · CHAT · 7 min · Begreb OTHER · Verif. false · Område AI_FUNDAMENTALS
+**core-ai-01 · Hvad er AI — og hvad er det ikke?** · CORE · ALLE · CHAT · 7 min · Begreb OTHER · Verif. false · Område AI_FUNDAMENTALS · **Anbefalet**
 - Mål: Forklar forskellen på AI, maskinlæring og generativ AI med hverdagseksempler · Genkend AI, du allerede bruger (stavekontrol, anbefalinger, ruteplan, spamfilter) · Skeln mellem hvad AI er god til (mønstre, sprog, udkast) og dårlig til (fakta uden kilde, ansvar, dømmekraft).
 - Trin: R → Q (sortér 6 eksempler: AI / ikke AI; multi) → R → Q → S (reklametekst om et "AI-værktøj der forstår alt" — find overdrivelserne) → Q
 - Bestå: alm. Kan tages på mobil.
 
-**core-ai-02 · Hvor kommer AI fra?** · CORE · ALLE · CHAT · 6 min · OTHER · false · AI_FUNDAMENTALS
+**core-ai-02 · Hvor kommer AI fra?** · CORE · ALLE · CHAT · 6 min · OTHER · false · AI_FUNDAMENTALS · **Anbefalet**
 - Mål: Placér milepælene på en tidslinje: 1950 (Alan Turing spørger, om maskiner kan tænke), 1956 (navnet "kunstig intelligens" bruges første gang, Dartmouth-konferencen), 1997 (en skakcomputer slår verdensmesteren), 2012 (gennembrud for dyb læring), 2017 (transformer-arkitekturen bag nutidens sprogmodeller), 2022 (ChatGPT gør sprogmodeller til hvermandseje) · Forklar hvorfor det er gået hurtigt de seneste år (data, regnekraft, ny arkitektur) · Forstå at forventninger og virkelighed ikke altid følges ad ("AI-vintre").
 - Trin: R → Q (sæt milepæle i rækkefølge) → R → Q → Q
 - Bestå: alm. **Faktatjek:** hvert årstal og navn skal have en kilde i `sources`, før modulet publiceres. Kan tages på mobil.
 
-**core-ai-03 · Hvorfor er AI vigtigt for dig og dit arbejde?** · CORE · ALLE · CHAT · 7 min · OTHER · false · AI_FUNDAMENTALS
+**core-ai-03 · Hvorfor er AI vigtigt for dig og dit arbejde?** · CORE · ALLE · CHAT · 7 min · OTHER · false · AI_FUNDAMENTALS · **Anbefalet**
 - Mål: Nævn 3 typer opgaver i dit eget arbejde, hvor AI kan hjælpe, og 1 hvor den ikke skal bruges · Forklar hvorfor mennesket stadig har ansvaret for resultatet · Sæt et realistisk mål for din egen brug den kommende uge.
 - Trin: R → Q → J (RESPONSIBLE_USE: en kollega sender et AI-svar videre til en kunde uden at læse det) → Q → R (afslutning: vælg én opgave, du vil prøve AI på i denne uge)
 - Bestå: alm. `takeaway`: "Kortlæg tre opgaver, du bruger meget tid på". Ingen tal om produktivitet uden kilde. Kan tages på mobil.
 
 ### Øvrige Niveau 1-moduler (AI Act og ansvarlig brug + værktøjet)
 
-**core-llm-01 · Hvad en sprogmodel er — og ikke er** · CORE · ALLE · Copilot CHAT · 8 min · Begreb PROMPTING · Verif. false · Område AI_FUNDAMENTALS (tages efter `core-ai-02`)
+**core-llm-01 · Hvad en sprogmodel er — og ikke er** · CORE · ALLE · Copilot CHAT · 8 min · Begreb PROMPTING · Verif. false · Område AI_FUNDAMENTALS · **Anbefalet** (tages efter `core-ai-02`)
 - Mål: Forklar med egne ord at modellen forudsiger tekst og ikke slår op i en database · Genkend 4 typiske svagheder (opfinder, regner forkert, forældet viden, overbevisende tone) · Skeln mellem "chat med model" og "chat med adgang til web/filer".
 - Trin: R → D (samme spørgsmål to gange → to forskellige svar) → C (stil et spørgsmål og "Prøv igen") → Q → S (svar med forældet info) → Q
 - Bestå: S skal finde mindst 1 af 2 fejl.
@@ -109,7 +110,7 @@
 - Trin: R → D → C (skift mellem web/arbejde-faneblad i skin) → Q → J! (DATA_SECURITY: kundedata i Copilot med privat Microsoft-konto)
 - Bestå: alm.
 
-> **Grundmodul (art. 4), beslutning § 10b + § 10c:** `core-ai-01`, `core-llm-01`, `core-fact-01`, `core-data-01`, `core-policy-01`, `core-aiact-01` (≈ 49 min) er grundmodulet for alle medarbejdere og vises samlet i virksomhedsrapporten med dato. Ophavsret dækkes af `core-image-01`. Har virksomheden et kontekstbibliotek, viser `core-policy-01` og `core-data-01` "Hos jer gælder: …" (docs/01 § 4.6).
+> **Grundmodul (art. 4), beslutning § 10b + § 10c:** `core-fact-01`, `core-data-01`, `core-policy-01`, `core-aiact-01` (≈ 34 min; Fundamental AI er anbefalet ved siden af) er grundmodulet for alle medarbejdere og vises samlet i virksomhedsrapporten med dato. Ophavsret dækkes af `core-image-01`. Har virksomheden et kontekstbibliotek, viser `core-policy-01` og `core-data-01` "Hos jer gælder: …" (docs/01 § 4.6).
 > **`takeaway`:** alle CORE- og ROLE-moduler får en skabelon til eget job, navngivet efter arbejdsopgaven (docs/05 § 10.1).
 
 > **Gratis for B2C:** niveautest + de første 3 moduler i den personlige plan (docs/07 § 7). Plan-generatoren placerer `core-ai-01`, `core-prompt-01`, `core-data-01` først (forslag efter § 10c — før: `core-llm-01` i stedet for `core-ai-01`; se `docs/OPEN-QUESTIONS.md`), medmindre testen markerer dem "kan springes over".
@@ -250,10 +251,10 @@
 ## Niveautest → plan (input til M5)
 - 12 spørgsmål (Q, S, J — **ingen LLM-kald**), ≤ 5 min, dækker: model-forståelse (2), prompting (3), faktatjek (2), datasikkerhed (3), avancerede begreber (2).
 - Udfald pr. område: *sikker* (alle rigtige) → modulet markeres "kan springes over" (vises stadig; ikke påkrævet for niveau-certifikat **undtagen** `core-data-01` og `core-aiact-01`, som altid er påkrævet). *Usikker* → modulet prioriteres øverst.
-- Plan-rækkefølge: Fundamental AI → øvrige Niveau 1 påkrævede (AI Act og ansvarlig brug + værktøjet) → rollemodul → Niveau 2 → Niveau 3. De gratis moduler er dog `core-ai-01`, `core-prompt-01`, `core-data-01`. Copilot-brugere med "Ved ikke" om licens behandles som `COPILOT_CHAT`.
+- Plan-rækkefølge: Fundamental AI (anbefalet) → Niveau 1 påkrævede (AI Act og ansvarlig brug + værktøjet) → rollemodul → Niveau 2 → Niveau 3. De gratis moduler er dog `core-ai-01`, `core-prompt-01`, `core-data-01`. Copilot-brugere med "Ved ikke" om licens behandles som `COPILOT_CHAT`.
 - **Sluttjek** (docs/05 § 10.3): parallel spørgsmålsbank med samme fordeling på områder; tilbydes efter bestået niveau.
 - **Anbefalet tempo:** plan-generatoren foreslår moduler pr. uge ud fra niveau og samlet tid (standard 2/uge; værdier i config) og viser forventet slutdato. For erhverv med teammål beregnes tempoet mod målets dato.
-- **Niveau-certifikater** (pr. spor): Niveau 1 = alle Niveau 1-moduler for sporet (minus "kan springes over"). Niveau 2 = alle Niveau 2 CORE/FEATURE for sporet og tier + 1 rollemodul. Niveau 3 = alle Niveau 3-moduler for sporet og tier.
+- **Niveau-certifikater** (pr. spor): Niveau 1 = alle Niveau 1-moduler for sporet (minus "kan springes over" og minus Fundamental AI, som er anbefalet). Niveau 2 = alle Niveau 2 CORE/FEATURE for sporet og tier + 1 rollemodul. Niveau 3 = alle Niveau 3-moduler for sporet og tier.
 
 ## Oversigt (35 moduler + 4 i Grundforløbet)
 | Niveau | CORE | FEATURE | ROLE | CASE/EXAM |

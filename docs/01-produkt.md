@@ -39,7 +39,7 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 4. **Resultatside** (vises **uden** krav om email/samtykke): niveau pr. område (model-forståelse, prompting, faktatjek, datasikkerhed, avancerede begreber), 3 konkrete anbefalinger, forslag til plan. Under: **ikke-forudafkrydset** checkbox "Ja tak, send mig tips og tilbud om AI-træning fra MindForward på email" (frivillig, specifik) + email-felt → `ConsentRecord` + dobbelt opt-in (docs/09). Separat knap "Gem resultat og fortsæt gratis" → signup.
 5. **Signup** (`/opret`): magic link, Microsoft eller Google. Resultatet flyttes fra `anonymousId` til brugeren. Ingen marketingsamtykke i signup ud over den samme frivillige, ikke-forudafkrydsede checkbox.
 6. **Fortæl om dit arbejde** (valgfrit, kan springes over og udfyldes senere): rolle, branche, typiske opgaver, værktøjer og mål → brugerens kontekstbibliotek (§ 4.6). Bruges til at gøre planen og modulerne personlige.
-7. **Læringsplan** (`/plan`): moduler grupperet i Fundamental AI, AI Act og ansvarlig brug og brugerens værktøj, i rækkefølge (curriculum.md "Niveautest → plan"), status pr. modul (ikke startet / i gang / bestået / "kan springes over"), estimeret tid, næste modul fremhævet. Øverst: **anbefalet tempo** (fx "2 moduler om ugen → Niveau 1 færdig ca. [dato]"; kan ændres eller slås fra — intet fast forløb), **ugentlig streak** (kun synlig for brugeren selv), **"Ugens genopfriskning"** (forfaldne spørgsmål, ca. 2 min) og **ugentligt tjek-ind** (2 klik, frivilligt). B2C gratis: de 3 gratis moduler åbne, resten med lås + "Lås op" (→ 4.4).
+7. **Læringsplan** (`/plan`): moduler grupperet i Fundamental AI (mærket "Anbefalet" — kan springes over), AI Act og ansvarlig brug og brugerens værktøj, i rækkefølge (curriculum.md "Niveautest → plan"), status pr. modul (ikke startet / i gang / bestået / "kan springes over"), estimeret tid, næste modul fremhævet. Øverst: **anbefalet tempo** (fx "2 moduler om ugen → Niveau 1 færdig ca. [dato]"; kan ændres eller slås fra — intet fast forløb), **ugentlig streak** (kun synlig for brugeren selv), **"Ugens genopfriskning"** (forfaldne spørgsmål, ca. 2 min) og **ugentligt tjek-ind** (2 klik, frivilligt). B2C gratis: de 3 gratis moduler åbne, resten med lås + "Lås op" (→ 4.4).
 8. **Modul** (`/modul/[slug]`): intro (mål, minutter, spor) → trin ét ad gangen (READ/DEMO/CLICK_TASK/PROMPT_TASK/QUIZ/SPOT_ERROR/JUDGMENT). Sandkasse-trin åbner sandkassen i opgavevisning (opgavepanel + sandkasse).
 9. **Hints:** knap "Brug for hjælp?" → hint 1 (nudge) → hint 2 (konkret, ×0,75) → hint 3 "Vis løsning" med bekræftelse "Trinnet giver 0 point" (docs/05 § 5).
 10. **Svar/feedback:** pr. trin straks feedback; PROMPT_TASK viser rubric-kriterier med scorer og 1-linjes feedback pr. kriterium, derefter øvemodellens svar på prompten; op til 3 indsendelser.
@@ -90,7 +90,7 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 | Motivation | Personlig streak + eget ugemål | Personlig streak + **fælles teammål** (samlet fremdrift, ingen navne) |
 | Tempo | Anbefalet tempo fra niveautesten | Anbefalet tempo, beregnet mod teammålets dato; valgfri **fælles startdato** |
 | Kontekst | **Eget kontekstbibliotek** "Om mig og mit arbejde" | **Virksomhedens kontekstbibliotek** "Hos os" (vedligeholdes af OWNER/ADMIN) |
-| Personalisering | Pr. bruger | Pr. virksomhed + jobrolle |
+| Personalisering | Altid — ud fra niveau, jobrolle og værktøj; pr. bruger når "Om mig" er udfyldt | Altid — ud fra niveau, jobrolle og værktøj; pr. virksomhed når "Hos os" er udfyldt |
 | Synlighed | Kun brugeren selv | Admin ser status/score/certifikater pr. person; tjek-ind og streaks kun samlet (≥ 5 svar) |
 | Dokumentation | Certifikat | Certifikat + virksomhedsrapport + AI-tjek af teamet + lederkit |
 
@@ -101,7 +101,7 @@ Ruter er funktionelle forslag (endelig struktur: `docs/02-arkitektur.md`). Kunde
 
 **Kontekstbibliotek (privat):** brugeren vedligeholder `/konto/kontekst` ("Om mig og mit arbejde"): rolle, branche, typiske opgaver, værktøjer, mål og egne noter (tekst; dokumenter når fillager er valgt). Kan altid rettes og slettes.
 
-**Personalisering (begge, beslutning § 10c):** sprogmodellen bruger kontekstbiblioteket til tre ting — alle uden for sandkassen:
+**Personalisering (begge, beslutning § 10c):** sker for alle brugere — også gratis og uden kontekstbibliotek — ud fra brugerens udgangspunkt: niveau pr. område fra niveautesten, hvor i planen brugeren starter, den specifikke jobrolle og værktøjet. Kontekstbiblioteket gør den mere præcis. Den bruges til tre ting — alle uden for sandkassen:
 1. "Derfor er det relevant for dig" (1–2 sætninger) på modulintro.
 2. Modulets skabelon til eget job, tilpasset rolle, branche og virksomhed.
 3. En kort anbefaling øverst på planen (fokus og tempo).

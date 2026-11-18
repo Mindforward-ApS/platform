@@ -154,23 +154,25 @@ Gælder forud for resten af pakken, inkl. § 10, § 10a og § 10b.
 **Kontekstbibliotek for både privat og erhverv — og sprogmodellen må bruge det**
 - **Erhverv:** hver virksomhed har sit eget område med et kontekstbibliotek, som OWNER/ADMIN vedligeholder (som i § 10b).
 - **Privat:** den private bruger har sit eget kontekstbibliotek ("Om mig og mit arbejde"): rolle, branche, typiske opgaver, værktøjer, mål og egne noter/dokumenter.
-- **Personalisering:** sprogmodellen bruger kontekstbiblioteket til at gøre undervisningen personlig — uden for sandkassen:
+- **Personalisering sker for alle — uanset plan og uanset om kontekstbiblioteket er udfyldt** (præciseret af Marco 18. nov 2026). Den bygger på brugerens **udgangspunkt**: niveau pr. område fra niveautesten, hvor i planen brugeren starter, den specifikke jobrolle og det valgte værktøj. Kontekstbiblioteket gør den mere præcis, men er ikke en forudsætning. Gratis brugere får den også.
+- Sprogmodellen bruger udgangspunktet (og kontekstbiblioteket, når det findes) til at gøre undervisningen personlig — uden for sandkassen:
   1. "Derfor er det relevant for dig" på modulintro.
   2. Modulets skabelon til eget job (`takeaway`) tilpasset rolle, branche og virksomhed.
   3. En kort anbefaling på planen (fokus og tempo).
 - **Sandkassen får aldrig kundedata** og er uændret: øvemodellen, scenerne, opgaverne og bedømmelsen kører kun mod Nordlys-data og kender ikke kontekstbiblioteket. Personalisering ændrer aldrig score, spørgsmål, certifikat eller rapport.
 - **Hvad der må ligge i biblioteket:** egne oplysninger om rolle, opgaver og mål; virksomhedens politik, regler og beskrivelse. **Aldrig** kundedata, andres persondata, CPR-/kort-/kontonumre eller forretningshemmeligheder. PII-filteret blokerer ved gem og igen før hvert LLM-kald.
 - AI-politik og dataregler vises altid ordret — modellen omskriver dem ikke.
-- Personaliseret tekst mærkes "Tilpasset til dig — automatisk genereret", går gennem `banned-claims`-filteret og falder tilbage til den generelle tekst ved fejl. Resultatet gemmes (`PersonalizedContent`) og genbruges, til konteksten eller modulet ændres; erhverv genereres pr. virksomhed + jobrolle, privat pr. bruger.
+- Personaliseret tekst mærkes "Tilpasset til dig — automatisk genereret", går gennem `banned-claims`-filteret og falder tilbage til den generelle tekst ved fejl. Resultatet gemmes (`PersonalizedContent`) og genbruges, til konteksten eller modulet ændres; uden kontekstbibliotek deles teksten mellem alle med samme profil (værktøj + jobrolle + niveau pr. område); med kontekstbibliotek genereres den pr. virksomhed + jobrolle + niveau (erhverv) eller pr. bruger (privat). Kun niveauet bruges — aldrig testsvarene.
 - Brugeren/virksomheden kan altid slette sit indhold; afledt personaliseret tekst slettes med.
 - Dette afløser § 10b-punktet "Indholdet sendes ikke til sprogmodellen i MVP". Databehandleraftale og privatlivspolitik skal dække behandlingen (advokatgennemgang før launch).
 
 **Fem indgange i pensum**
 - **Fundamental AI** · **AI Act og ansvarlig brug** · **ChatGPT** · **Microsoft 365 Copilot** · **Claude** (Gemini i fase 2).
-- De tre værktøjer er fortsat spor (`Track`) med sandkasse-skin. Fundamental AI og AI Act er **områder** (`area` på modulet), der er fælles for alle spor og ligger først i alles plan. Ingen ny struktur: det er `CORE`-moduler for alle spor.
+- De tre værktøjer er fortsat spor (`Track`) med sandkasse-skin. Fundamental AI og AI Act er **områder** (`area` på modulet), der er fælles for alle spor og ligger først i alles plan.
+- **Fundamental AI er en anbefaling, ikke et krav** (besluttet af Marco 18. nov 2026): modulerne står øverst i planen mærket "Anbefalet", kan springes over og er ikke en betingelse for certifikat. Viser niveautesten, at brugeren er usikker på området, fremhæves de som "Anbefalet til dig". Ingen ny struktur: det er `CORE`-moduler for alle spor.
 - **Fundamental AI** (nyt): hvad AI er og ikke er, hvor det kommer fra (fra 1950'erne til i dag), hvad en sprogmodel er, og hvorfor det er vigtigt for dig og dit arbejde. Moduler: `core-ai-01`, `core-ai-02`, `core-llm-01`, `core-ai-03`.
 - **AI Act og ansvarlig brug:** `core-data-01`, `core-policy-01`, `core-aiact-01`, nyt `core-aiact-02` (roller og risikoniveauer), `core-image-01`. Navnet "AI Act" bruges om emnet — aldrig om et certifikat.
-- **Grundmodul (art. 4)** er nu: `core-ai-01`, `core-llm-01`, `core-fact-01`, `core-data-01`, `core-policy-01`, `core-aiact-01` (ca. 50 min).
+- **Grundmodul (art. 4)** er: `core-fact-01`, `core-data-01`, `core-policy-01`, `core-aiact-01` (ca. 34 min). Fundamental AI er anbefalet ved siden af og vises i virksomhedsrapporten som gennemført/ikke gennemført pr. medarbejder — aldrig som et krav. `core-llm-01` følger sit område og er dermed også anbefalet (var før påkrævet på Niveau 1).
 
 **Nye/ændrede entiteter (M2):** `ContextItem` og `ContextAcknowledgement` (omdøbt fra `OrgContext…`; gælder nu både BUSINESS og PERSONAL), ny `PersonalizedContent`, ny `AiFeature`-værdi `PERSONALIZATION`, nyt modul-felt `area`. Detaljer: `docs/03-datamodel.md` § 15, `docs/05-moduler-og-scoring.md` § 10.
 

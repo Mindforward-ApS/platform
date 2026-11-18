@@ -133,7 +133,8 @@
 - [ ] § 10c: personalisering ændrer ikke score, spørgsmål eller bestået-status (test: samme forsøg med og uden kontekst giver samme resultat).
 - [ ] § 10c: PII-filteret blokerer CPR-/kort-/kontonumre ved gem af kontekst og før LLM-kald (test); sletning af et element sletter afledt `PersonalizedContent` (test).
 - [ ] § 10c: personaliseret tekst er mærket som automatisk genereret og går gennem `banned-claims` (e2e + test).
-- [ ] § 10c: plan-generatoren placerer Fundamental AI først; rækkefølge og gratis-moduler jf. `content/curriculum.md` (unit-test).
+- [ ] § 10c: plan-generatoren placerer Fundamental AI først som **anbefalet** (ikke påkrævet): niveau-certifikat kan opnås uden, og "Anbefalet til dig" vises, når niveautesten viser usikkerhed (unit-test); rækkefølge og gratis-moduler jf. `content/curriculum.md`.
+- [ ] § 10c: personalisering virker uden kontekstbibliotek og på gratis niveau: to brugere med samme profil (spor, jobrolle, niveau pr. område) genbruger samme tekst (ét LLM-kald); forskelligt niveau giver forskellig tekst; testsvar (`answers`) sendes aldrig til modellen (test).
 **Læs:** `docs/01-produkt.md`, `docs/05-moduler-og-scoring.md`, `docs/09-email-og-marketing.md`, `docs/10-compliance.md`.
 
 ## M6 — Stripe-betaling + forbrugerretlige flows

@@ -270,11 +270,13 @@ Vises på resultatskærmen ved bestået og i "Mine skabeloner". Fast påmindelse
 En uge (mandag–søndag, København) tæller som aktiv ved mindst én af: afsluttet modulforsøg, besvaret genopfriskningsspørgsmål, gennemført del af månedspakken, sluttjek. Tjek-ind alene tæller ikke. Én uge uden aktivitet = pause; to i træk = nulstil. Værdier i config.
 
 ### 10.6 `area` — fem indgange (beslutning § 10c)
-Nyt påkrævet modul-felt `area`: `AI_FUNDAMENTALS` (Fundamental AI), `RESPONSIBLE_AI` (AI Act og ansvarlig brug) eller `TOOL_SKILLS` (værktøjssporene; standard for FEATURE/ROLE/NEWS). Tilføjes `content/schema/module.schema.json` i M2. Planen og kataloget grupperer efter `area`; de to første områder er `CORE`-moduler for alle spor og ligger først i planen. Moduler i `AI_FUNDAMENTALS` og `RESPONSIBLE_AI` er værktøjsneutrale: ingen `CLICK_TASK`, og `DEMO` kun i neutral visning — de kan tages på mobil. Certifikater er uændrede (pr. spor + niveau); der findes intet "AI Act-certifikat".
+Nyt påkrævet modul-felt `area`: `AI_FUNDAMENTALS` (Fundamental AI), `RESPONSIBLE_AI` (AI Act og ansvarlig brug) eller `TOOL_SKILLS` (værktøjssporene; standard for FEATURE/ROLE/NEWS). Tilføjes `content/schema/module.schema.json` i M2. Planen og kataloget grupperer efter `area`; de to første områder er `CORE`-moduler for alle spor og ligger først i planen. **`AI_FUNDAMENTALS` er anbefalet, ikke påkrævet:** modulerne har `required: false` i planen (`Assignment` oprettes med status som "anbefalet"), tæller ikke i kravene til niveau-certifikat og blokerer intet. Scoring og bestået-regler er de samme, når modulet tages. Moduler i `AI_FUNDAMENTALS` og `RESPONSIBLE_AI` er værktøjsneutrale: ingen `CLICK_TASK`, og `DEMO` kun i neutral visning — de kan tages på mobil. Certifikater er uændrede (pr. spor + niveau); der findes intet "AI Act-certifikat".
 
-### 10.7 Personalisering fra kontekstbiblioteket (beslutning § 10c)
+### 10.7 Personalisering ud fra udgangspunkt og kontekstbibliotek (beslutning § 10c)
 - **Hvor:** kun AI-featuren `PERSONALIZATION` i `src/server/ai/` (prompt `personalize.v1.ts`, lille model, struktureret output valideret med Zod, prompt caching af systemprompten). Aldrig i sandkasse-chat, scener, bedømmelse eller spørgsmål.
-- **Input:** publicerede `ContextItem`s med `usedForPersonalization = true`, jobrolle, spor, modulets titel/mål/`takeaway`. Aldrig prompt-tekster, sandkasse-indhold eller andre brugeres data.
+- **For hvem:** alle indloggede brugere, også på gratis niveau og uden kontekstbibliotek.
+- **Input:** brugerens **udgangspunkt** — niveau pr. område fra niveautesten (`PlacementResult.level` + områdeniveauer; aldrig `answers`), hvor i planen brugeren står, specifik jobrolle, spor og licensniveau — samt modulets titel/mål/`takeaway`. Hvis de findes: publicerede `ContextItem`s med `usedForPersonalization = true`. Aldrig prompt-tekster, sandkasse-indhold eller andre brugeres data.
+- **Effekt af niveau:** begyndere får enklere sprog og et første lille skridt; øvede får en mere avanceret vinkel og besked om, hvad de kan gå let hen over. Selve modulets indhold, spørgsmål og bedømmelse er ens for alle.
 - **Output** (gemmes i `PersonalizedContent`):
 
 | `kind` | Indhold | Grænse |
@@ -283,7 +285,7 @@ Nyt påkrævet modul-felt `area`: `AI_FUNDAMENTALS` (Fundamental AI), `RESPONSIB
 | `TAKEAWAY` | Modulets skabelon tilpasset rolle/branche/virksomhed; pladsholdere i kantede parenteser bevares for alt, der kan være persondata | samme længdegrænser som `takeaway` |
 | `PLAN_NOTE` | Anbefalet fokus og tempo øverst på planen | ≤ 3 sætninger |
 
-- **Genbrug:** nøgle = organisation + (bruger eller jobrolle) + modulversion + `contextHash`. Erhverv genereres én gang pr. virksomhed + jobrolle; privat pr. bruger. Genereres asynkront (Inngest) første gang; indtil da — og ved fejl — vises den generelle tekst. Modulet blokeres aldrig af personalisering.
+- **Genbrug:** uden kontekstbibliotek er nøglen `profileKey` (spor + licensniveau + jobrolle + niveau pr. område) + modulversion, og teksten deles på tværs af alle brugere med samme profil (få LLM-kald). Med kontekstbibliotek tilføjes `contextHash`: erhverv pr. virksomhed + `profileKey`, privat pr. bruger. Genereres asynkront (Inngest) første gang; indtil da — og ved fejl — vises den generelle tekst. Modulet blokeres aldrig af personalisering.
 - **Værn:** konteksten behandles som data, ikke instrukser (injektionsværn som i § 4.1); output går gennem `banned-claims`; AI-politik og dataregler gengives aldrig af modellen (vises ordret fra `ContextItem`); modellen må ikke tilføje oplysninger om virksomheden, som ikke står i konteksten; teksten mærkes "Tilpasset til dig — automatisk genereret".
 - **PII:** filteret (docs/04) kører ved gem af `ContextItem` og igen før LLM-kaldet; fund blokerer.
 - **Omkostning:** eget dagligt loft pr. bruger/organisation og samlet kontekst-størrelse i config; alle kald logges i `AiCall` (uden tekst). Overskredet loft → generel tekst, ingen fejl.
