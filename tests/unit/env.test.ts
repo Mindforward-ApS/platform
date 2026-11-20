@@ -5,6 +5,15 @@ const valid = {
   NODE_ENV: "test",
   APP_URL: "http://localhost:3000",
   DATABASE_URL: "postgresql://u:p@ep-x-pooler.eu-central-1.aws.neon.tech/greb?sslmode=require",
+  BETTER_AUTH_SECRET: "x".repeat(32),
+};
+
+const prodExtras = {
+  SENTRY_DSN: "https://abc@o1.ingest.de.sentry.io/1",
+  INNGEST_SIGNING_KEY: "signkey-prod-abc",
+  INNGEST_EVENT_KEY: "evt",
+  RESEND_API_KEY: "re_123",
+  ANTHROPIC_API_KEY: "sk-ant-test",
 };
 
 describe("parseServerEnv", () => {
@@ -47,14 +56,7 @@ describe("parseServerEnv", () => {
     expect(() => parseServerEnv({ ...valid, NODE_ENV: "production", VERCEL_ENV: "production" })).toThrow(
       /SENTRY_DSN|INNGEST_SIGNING_KEY|INNGEST_EVENT_KEY/,
     );
-    const env = parseServerEnv({
-      ...valid,
-      NODE_ENV: "production",
-      VERCEL_ENV: "production",
-      SENTRY_DSN: "https://abc@o1.ingest.de.sentry.io/1",
-      INNGEST_SIGNING_KEY: "signkey-prod-abc",
-      INNGEST_EVENT_KEY: "evt",
-    });
+    const env = parseServerEnv({ ...valid, ...prodExtras, NODE_ENV: "production", VERCEL_ENV: "production" });
     expect(env.VERCEL_ENV).toBe("production");
   });
 
@@ -64,11 +66,41 @@ describe("parseServerEnv", () => {
         ...valid,
         NODE_ENV: "production",
         VERCEL_ENV: "production",
-        SENTRY_DSN: "https://abc@o1.ingest.de.sentry.io/1",
-        INNGEST_SIGNING_KEY: "k",
-        INNGEST_EVENT_KEY: "e",
+        ...prodExtras,
         ENABLE_DEBUG_ROUTES: "1",
       }),
     ).toThrow(/ENABLE_DEBUG_ROUTES/);
+  });
+
+  it("requires a strong BETTER_AUTH_SECRET", () => {
+    expect(() => parseServerEnv({ ...valid, BETTER_AUTH_SECRET: "short" })).toThrow(/BETTER_AUTH_SECRET/);
+  });
+
+  it("requires OAuth client id and secret together", () => {
+    expect(() => parseServerEnv({ ...valid, GOOGLE_CLIENT_ID: "id" })).toThrow(/GOOGLE_CLIENT_SECRET/);
+    expect(() => parseServerEnv({ ...valid, MICROSOFT_CLIENT_SECRET: "s" })).toThrow(/MICROSOFT_CLIENT_ID/);
+  });
+
+  it("requires Resend in production and forbids other transports", () => {
+    const { RESEND_API_KEY: _r, ...noResend } = prodExtras;
+    expect(() => parseServerEnv({ ...valid, ...noResend, NODE_ENV: "production", VERCEL_ENV: "production" })).toThrow(/RESEND_API_KEY/);
+    expect(() =>
+      parseServerEnv({ ...valid, ...prodExtras, NODE_ENV: "production", VERCEL_ENV: "production", EMAIL_TRANSPORT: "file" }),
+    ).toThrow(/EMAIL_TRANSPORT/);
+  });
+
+  it("defaults the magic link lifetime to 15 minutes", () => {
+    expect(parseServerEnv(valid).MAGIC_LINK_EXPIRES_MIN).toBe(15);
+  });
+
+  it("AI gateway: defaults to the small model, AI on, mock off; mock forbidden and API key required in production", () => {
+    const env = parseServerEnv(valid);
+    expect(env).toMatchObject({ AI_MODEL_DEFAULT: "claude-haiku-4-5", AI_ENABLED: true, AI_MOCK: false, AI_USER_DAILY_TOKEN_CAP: 60000 });
+    expect(parseServerEnv({ ...valid, AI_ENABLED: "0", AI_MOCK: "1" })).toMatchObject({ AI_ENABLED: false, AI_MOCK: true });
+    const prod = { ...valid, ...prodExtras, NODE_ENV: "production", VERCEL_ENV: "production" };
+    expect(() => parseServerEnv({ ...prod, AI_MOCK: "1" })).toThrow(/AI_MOCK/);
+    const { ANTHROPIC_API_KEY: _k, ...noKey } = prod;
+    expect(() => parseServerEnv(noKey)).toThrow(/ANTHROPIC_API_KEY/);
+    expect(parseServerEnv({ ...noKey, AI_ENABLED: "0" }).AI_ENABLED).toBe(false);
   });
 });

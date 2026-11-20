@@ -6,14 +6,14 @@
 ## 1. GDPR
 
 ### 1.1 Roller
-| Behandling | MindForward er | Bevis |
+| Behandling | Greb er | Bevis |
 |---|---|---|
 | B2B: medarbejderes konto, fremskridt, scores, certifikater, prompts i sandkassen | **Databehandler** for kunden (research-fund: GDPR) | DPA indgået pr. kunde (§1.2) |
 | B2C-brugere, B2B-admins som kontaktpersoner, fakturering, marketing, support, sikkerhedslogs | Dataansvarlig | Privatlivspolitik |
 | Leverandører (nedenfor) | Underdatabehandlere | `/underdatabehandlere` |
 
 ### 1.2 Databehandleraftale (DPA)
-- [ ] Baseret på **Datatilsynets skabelon** (https://www.datatilsynet.dk/regler-og-vejledning/blanketter-og-skabeloner), udfyldt med MindForwards behandlinger, bilag om sikkerhed, underdatabehandlere, overførsler, sletning. Tekst i `content/legal/dpa.v1.md`.
+- [ ] Baseret på **Datatilsynets skabelon** (https://www.datatilsynet.dk/regler-og-vejledning/blanketter-og-skabeloner), udfyldt med Grebs behandlinger, bilag om sikkerhed, underdatabehandlere, overførsler, sletning. Tekst i `content/legal/dpa.v1.md`.
 - [ ] Indgås digitalt ved B2B-oprettelse (OWNER accepterer på vegne af virksomheden: navn, titel, CVR, tidspunkt, version → `AuditLog(action=DPA_ACCEPTED)`), før første invitation kan sendes. PDF-kopi sendes til OWNER (SERVICE).
 - [ ] Generel forhåndsgodkendelse af underdatabehandlere med varsel (fx 30 dage) ved ændringer via mail til OWNER + side-changelog `[JURA: verificeres — varselsperiode]`.
 
@@ -47,13 +47,9 @@ Vercel (hosting, `fra1`) · Neon (database, AWS Frankfurt) · Anthropic (LLM: sa
 
 ### 1.6 Medarbejderovervågning og DPIA
 - [ ] **Admins ser status, score og certifikater — aldrig prompt-tekster** (beslutningslog §10). Håndhævet i query-laget (admin-queries selecter aldrig fritekst-felter) + test der fejler hvis et admin-endpoint returnerer fritekst.
-- [ ] **Streak og ugentligt tjek-ind (beslutning § 10b):** admin ser dem kun som samlede tal og kun når mindst 5 personer indgår; tjek-ind er frivilligt og uden fritekst; begge nævnes i info til medarbejdere ved første login og i DPIA-noten.
-- [ ] **Teammål** viser kun samlet fremdrift — aldrig navne eller rækkefølge.
-- [ ] **Kontekstbibliotek og personalisering (beslutning § 10b + § 10c):** erhverv — MindForward er databehandler; privat — MindForward er dataansvarlig. Behandlingen (inkl. at indholdet sendes til sprogmodellen hos underdatabehandleren for at personalisere undervisningen) skal stå i DPA'ens bilag og i privatlivspolitikken `[JURA: verificeres før launch]`. Ejeren advares mod kundedata, andres persondata og forretningshemmeligheder; PII-filter ved gem og før hvert LLM-kald; erhverv: kun OWNER/ADMIN kan skrive. Teksten logges ikke og indgår ikke i analytics. Ejeren kan slette når som helst; afledt personaliseret tekst slettes med. **Sendes aldrig til sandkassen, øvemodellen eller bedømmelsen** (test).
-- [ ] Privat bruger får ved første brug af kontekstbiblioteket en kort forklaring: hvad det bruges til, at teksten behandles af en sprogmodel, og hvordan den slettes. Bekræftelser (`ContextAcknowledgement`) er persondata om medarbejderen og vises for admin som version + dato.
-- [ ] Ingen rangering/leaderboard af navngivne medarbejdere — heller ikke efter MVP (beslutning § 10b); virksomhedsrapporten viser gennemførelse og beståede moduler (dokumentation), ikke "dårligste medarbejdere".
+- [ ] Ingen rangering/leaderboard af navngivne medarbejdere i MVP; virksomhedsrapporten viser gennemførelse og beståede moduler (dokumentation), ikke "dårligste medarbejdere".
 - [ ] Positionering i UI/markedsføring: "læring", ikke "overvågning" (Datatilsynets 2026-fokus, research-fund).
-- [ ] Info til medarbejdere ved første login (B2B): hvad admin kan se, hvad admin ikke kan se, opbevaring, link til kundens + MindForwards privatlivstekst.
+- [ ] Info til medarbejdere ved første login (B2B): hvad admin kan se, hvad admin ikke kan se, opbevaring, link til kundens + Grebs privatlivstekst.
 - [ ] **DPIA-note** `docs/legal/dpia-note.md` (intern): systematisk vurdering af scores i ansættelsesforhold + LLM-bedømmelse af fritekst; konklusion om fuld DPIA er nødvendig `[JURA: verificeres]`. Opdateres ved nye features der behandler medarbejderdata.
 
 ### 1.7 Dataminimering og sikkerhed i sandkassen
@@ -88,12 +84,12 @@ Vercel (hosting, `fra1`) · Neon (database, AWS Frankfurt) · Anthropic (LLM: sa
 
 ## 4. Varemærker og UI (research-fund: GDPR og varemærker; beslutningslog §1, §10)
 - [ ] Ingen leverandør-logoer, varemærkefarver, fonte, ikoner, skærmbilleder eller "look and feel"/trade dress i produkt-UI, marketing eller certifikater. Sandkassen har egen visuel identitet; skins = layout-regioner + generiske menubegreber.
-- [ ] Produktnavne kun beskrivende ("Lær Microsoft 365 Copilot"); aldrig i MindForwards egne produkt-/plan-/modulnavne på en måde der antyder tilknytning. **Intet "GPT" i MindForwards produktnavne** (OpenAI brand-retningslinjer). Bevis: lint-regel/CI-grep på `content/` og i18n-filer for forbudte mønstre (`GPT` i titler på MindForward-produkter, "officiel", "certificeret af", "partner").
+- [ ] Produktnavne kun beskrivende ("Lær Microsoft 365 Copilot"); aldrig i Grebs egne produkt-/plan-/modulnavne på en måde der antyder tilknytning. **Intet "GPT" i Grebs produktnavne** (OpenAI brand-retningslinjer). Bevis: lint-regel/CI-grep på `content/` og i18n-filer for forbudte mønstre (`GPT` i titler på Greb-produkter, "officiel", "certificeret af", "partner").
 - [ ] Fast disclaimer i sandkassen: "Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google." Også i footer på marketing-sider og på certifikat-PDF.
 - [ ] Chatsvar mærket "Øvemodel"; aldrig påstand om at ChatGPT/Copilot svarer.
 - [ ] Microsoft Learn-indhold (CC BY 4.0): kreditering på moduler der bygger på det (`docs/06-indholdsmotor.md` §6).
 - [ ] Indholdsmotoren skriver med egne ord + link; ingen kopiering af kildetekst.
-- [ ] Varemærkesøgning på "MindForward" (DKPTO/EUIPO) + domæne før launch `[JURA: verificeres]`.
+- [ ] Varemærkesøgning på "Greb" (DKPTO/EUIPO) + domæne før launch `[JURA: verificeres]`.
 
 ## 5. AI-forordningen — budskab (research-fund: art. 4, forordning (EU) 2026/1744)
 
@@ -103,10 +99,7 @@ Vercel (hosting, `fra1`) · Neon (database, AWS Frankfurt) · Anthropic (LLM: sa
 | "Art. 4 kræver, at virksomheder tager tiltag, der understøtter medarbejdernes AI-kompetencer" | "Påkrævet niveau", "I skal bestå …" |
 | "Virksomhedsrapporten dokumenterer, hvad jeres medarbejdere har trænet" (dokumentation anbefales) | Bødetrusler, "undgå bøder", frygtretorik |
 | "Gælder virksomheder, hvis medarbejdere bruger fx ChatGPT eller Copilot i arbejdet" | "Certifikatet opfylder AI-forordningen" / "godkendt" |
-| "Virksomhedsrapporten følger opbygningen i Dansk Standards vejledning DS/PAS 2500-4" (først når ordlyden er verificeret) | "Opfylder DS/PAS 2500-4" / "godkendt af Dansk Standard" |
-| | Navngivning af tilsynsmyndighed for art. 4 (Digitaliseringsstyrelsen er national koordinerende myndighed, men hvem der fører tilsyn med art. 4, er uafklaret) |
-| "AI Act og ansvarlig brug" som navn på et emneområde | "AI Act-certifikat", "AI Act-bevis", "AI Act-godkendt" |
-| | "Kun 10 % af træning overføres til jobbet" og andre udokumenterede tal; opdigtede kunderesultater |
+| | Navngivning af dansk tilsynsmyndighed (uafklaret) |
 
 - [ ] `banned-claims`-listen (`src/server/content-engine/banned-claims.ts`) bruges også på marketing-sider, i18n-filer, email-templates og support-output (CI-grep + runtime-guard).
 - [ ] Virksomhedsrapporten er en selvstændig feature, ikke "compliance-bevis".
@@ -116,7 +109,7 @@ Vercel (hosting, `fra1`) · Neon (database, AWS Frankfurt) · Anthropic (LLM: sa
 ## 6. Tilgængelighed
 - [ ] WCAG 2.2 AA som mål (tastaturnavigation i sandkassen, fokusmarkering, kontrast via tokens, skærmlæser-labels, ingen tidsgrænser i opgaver uden mulighed for forlængelse).
 - [ ] Automatisk check: `@axe-core/playwright` i e2e på alle hovedsider; 0 "serious/critical".
-- [ ] Tilgængelighedserklæring-side `[JURA: verificeres — om EU's tilgængelighedsdirektiv/lov om tilgængelighedskrav gælder for MindForward som mikrovirksomhed]`.
+- [ ] Tilgængelighedserklæring-side `[JURA: verificeres — om EU's tilgængelighedsdirektiv/lov om tilgængelighedskrav gælder for Greb som mikrovirksomhed]`.
 - [ ] Animerede `DEMO`-trin respekterer `prefers-reduced-motion` og kan pauses.
 
 ## 7. Sikkerhed
@@ -152,10 +145,10 @@ Vercel (hosting, `fra1`) · Neon (database, AWS Frankfurt) · Anthropic (LLM: sa
 ## 9. Launch-gate (alle skal være ✅ før første betalende kunde)
 
 **Jura**
-- [ ] **Advokatgennemgang: digitalt indhold vs. tjeneste, handelsbetingelser (forbruger + virksomhed), UI/varemærker** (sandkasse-skins, produktnavne, disclaimer, navnet "MindForward").
+- [ ] **Advokatgennemgang: digitalt indhold vs. tjeneste, handelsbetingelser (forbruger + virksomhed), UI/varemærker** (sandkasse-skins, produktnavne, disclaimer, navnet "Greb").
 - [ ] Advokat har godkendt: samtykke-/erkendelsestekster ved checkout, fortrydelsesflow og refusionspraksis, marketing-samtykketekst, DPA-udfyldning, AI-forordnings-budskaber på landingsside.
 - [ ] Alle `[JURA: verificeres]` i docs 06–10 er afklaret eller bevidst udskudt med note i `docs/OPEN-QUESTIONS.md`.
-- [ ] Varemærke-/domænetjek af "MindForward".
+- [ ] Varemærke-/domænetjek af "Greb".
 
 **Produkt/kode**
 - [ ] e2e grøn: B2C-køb (fed pris, "Køb", checkbokse), "Fortryd aftale" → kvittering → refusion, opsigelse ≤ 2 klik, B2B-trial → konvertering, DPA-accept før invitation.

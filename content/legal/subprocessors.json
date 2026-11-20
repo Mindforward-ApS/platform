@@ -1,0 +1,14 @@
+{
+  "version": "0.1",
+  "updated": "2026-10-15",
+  "subprocessors": [
+    { "name": "Vercel", "purpose": "Hosting af appen og serverfunktioner", "data": "Alle forespørgsler og tekniske logs (højst 30 dage)", "location": "Frankfurt (EU) for serverfunktioner; CDN globalt", "transfer": "EU-US Data Privacy Framework og standardkontraktbestemmelser", "verified": false },
+    { "name": "Neon", "purpose": "Database", "data": "Alle data i appen", "location": "Frankfurt (EU)", "transfer": "Data opbevares i EU; databehandleraftale", "verified": false },
+    { "name": "Anthropic", "purpose": "Sprogmodel til øvemiljø, bedømmelse af skriveopgaver og support", "data": "Tekst, du skriver i øvemiljø og skriveopgaver, filtreret for personnumre og kortnumre. Ingen navne eller e-mails i instruktionerne til modellen", "location": "USA", "transfer": "EU-US Data Privacy Framework og standardkontraktbestemmelser", "verified": false },
+    { "name": "Stripe", "purpose": "Betaling og fakturaer", "data": "Navn, e-mail og betalingsoplysninger", "location": "Irland (EU) og USA", "transfer": "EU-US Data Privacy Framework og standardkontraktbestemmelser", "verified": false },
+    { "name": "Resend", "purpose": "Afsendelse af e-mails", "data": "E-mailadresse og mailens indhold", "location": "Irland (EU)", "transfer": "Databehandleraftale og standardkontraktbestemmelser", "verified": false },
+    { "name": "Inngest", "purpose": "Baggrundsjobs og planlagte opgaver", "data": "Tekniske id'er, ingen tekst fra øvelser", "location": "USA", "transfer": "EU-US Data Privacy Framework og standardkontraktbestemmelser", "verified": false },
+    { "name": "PostHog", "purpose": "Produktstatistik, kun hvis du har sagt ja til statistik", "data": "Pseudonymt bruger-id og hændelser uden personoplysninger", "location": "Frankfurt (EU)", "transfer": "Data opbevares i EU; databehandleraftale", "verified": false },
+    { "name": "Sentry", "purpose": "Fejlovervågning", "data": "Fejlbeskeder uden personoplysninger, cookies eller indhold", "location": "Frankfurt (EU)", "transfer": "Databehandleraftale og standardkontraktbestemmelser", "verified": false }
+  ]
+}

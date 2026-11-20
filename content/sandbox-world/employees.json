@@ -1,0 +1,59 @@
+[
+  {
+    "id": "e01",
+    "name": "Kim Lund",
+    "role": "Kunde- og salgskoordinator",
+    "email": "kim@nordlys.example",
+    "phone": "+45 0000 0100",
+    "isLearner": true
+  },
+  {
+    "id": "e02",
+    "name": "Mette Krogh",
+    "role": "Administrerende direktør",
+    "email": "mette@nordlys.example",
+    "phone": "+45 0000 0101"
+  },
+  {
+    "id": "e03",
+    "name": "Jonas Bak",
+    "role": "Salgschef",
+    "email": "jonas@nordlys.example",
+    "phone": "+45 0000 0102"
+  },
+  {
+    "id": "e04",
+    "name": "Sara Damgaard",
+    "role": "Økonomiansvarlig",
+    "email": "sara@nordlys.example",
+    "phone": "+45 0000 0103"
+  },
+  {
+    "id": "e05",
+    "name": "Ali Yilmaz",
+    "role": "Driftsleder, lager",
+    "email": "ali@nordlys.example",
+    "phone": "+45 0000 0104"
+  },
+  {
+    "id": "e06",
+    "name": "Line Vestergaard",
+    "role": "HR- og kontorchef",
+    "email": "line@nordlys.example",
+    "phone": "+45 0000 0105"
+  },
+  {
+    "id": "e07",
+    "name": "Peter Skov",
+    "role": "Kundeservice",
+    "email": "peter@nordlys.example",
+    "phone": "+45 0000 0106"
+  },
+  {
+    "id": "e08",
+    "name": "Freja Nørgaard",
+    "role": "Marketingkoordinator (deltid)",
+    "email": "freja@nordlys.example",
+    "phone": "+45 0000 0107"
+  }
+]

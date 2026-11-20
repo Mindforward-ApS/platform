@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-test("forsiden svarer 200 og viser MindForward", async ({ page }) => {
-  const response = await page.goto("/");
-  expect(response?.status()).toBe(200);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("MindForward");
+test("forsiden sender videre til mindforward.dk", async ({ page }) => {
+  // "/" no longer has its own landing page: signed-out visitors are sent to the website (mindforward.dk).
+  const response = await page.request.get("/", { maxRedirects: 0 });
+  expect(response.status()).toBe(307);
+  expect(response.headers().location).toMatch(/^https:\/\/mindforward\.dk\/?$/);
 });
 
 test("health svarer", async ({ request }) => {

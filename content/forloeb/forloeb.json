@@ -1,0 +1,3162 @@
+{
+  "tracks": [
+    {
+      "id": "chatgpt",
+      "toolName": "ChatGPT",
+      "toolUrl": "https://chatgpt.com",
+      "headline": "Fra helt grøn til ekspert i ChatGPT",
+      "disclaimer": "Mindforward er ikke tilknyttet eller godkendt af OpenAI.",
+      "status": "klar",
+      "levels": [
+        {
+          "id": "chatgpt-n1",
+          "nr": 1,
+          "name": "Grøn",
+          "title": "Kom trygt i gang",
+          "outcome": "Bagefter kan du bruge ChatGPT til hverdagsopgaver og ved, hvad du ikke må dele.",
+          "test": {
+            "id": "chatgpt-t1",
+            "title": "Grøn-certifikat",
+            "description": "Bestå med mindst 80 %, og få dit første certifikat.",
+            "minutes": 10,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "chatgpt-m01",
+              "nr": 1,
+              "title": "Velkommen til ChatGPT",
+              "description": "Opret en konto, find rundt, og lær, hvilken plan og hvilken konto du skal bruge.",
+              "status": "klar",
+              "lessons": [
+                {
+                  "id": "chatgpt-l01-01",
+                  "nr": "1.1",
+                  "title": "Hvad er ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "ChatGPT er et AI-program fra firmaet OpenAI. Du skriver eller taler med det, som du ville gøre med et menneske.",
+                      "Du giver det en opgave, og det svarer med det samme. Det kan fx skrive en mail, forklare noget svært, opsummere en lang tekst eller komme med idéer.",
+                      "Som udgangspunkt slår ChatGPT ikke svaret op, som Google gør. Det formulerer svaret ud fra det, det har lært. Derfor kan det lyde sikkert, også når det tager fejl. Det lærer du at håndtere i modul 4.",
+                      "ChatGPT kan også søge på nettet. Det lærer du i modul 6."
+                    ],
+                    "tryIt": {
+                      "where": "oevemiljoe",
+                      "text": "Skriv i øvemiljøet: ”Forklar i fem punkter, hvad du kan hjælpe mig med i mit job som [dit job].”",
+                      "prefill": "Forklar i fem punkter, hvad du kan hjælpe mig med i mit job som [dit job].",
+                      "fallbackText": "Åbn ChatGPT, og skriv: ”Forklar i fem punkter, hvad du kan hjælpe mig med i mit job som [dit job].”"
+                    },
+                    "quiz": {
+                      "question": "Hvad er den største forskel på ChatGPT og Google?",
+                      "options": [
+                        "ChatGPT er hurtigere",
+                        "ChatGPT formulerer et svar, mens Google finder sider",
+                        "ChatGPT er altid gratis"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                },
+                {
+                  "id": "chatgpt-l01-02",
+                  "nr": "1.2",
+                  "title": "Hvordan kommer man i gang?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Gå ind på chatgpt.com, eller hent appen ”ChatGPT” i App Store eller Google Play.",
+                      "Opret en konto med din mail, Google, Microsoft eller Apple. Du kan prøve uden konto, men med en konto bliver dine samtaler gemt.",
+                      "Bruger din arbejdsplads ChatGPT, skal du logge ind med din arbejdsmail. Det handler lektion 1.4 om.",
+                      "Skriv i skrivefeltet, og tryk Enter. Du kan ikke ødelægge noget.",
+                      "Rammer svaret ikke helt, så skriv, hvad der skal ændres, fx ”gør det kortere” eller ”skriv det mere uformelt”."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Log ind i ChatGPT, og skriv: ”Skriv et forslag til en kort tale til en kollega med 10-årsjubilæum, fem linjer.” Skriv derefter: ”Gør den lidt sjovere.”",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Svaret er ikke helt, som du ville have det. Hvad gør du?",
+                      "options": [
+                        "Starter en ny chat og skriver det samme igen",
+                        "Skriver tilbage, hvad der skal ændres",
+                        "Giver op og skriver selv"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                },
+                {
+                  "id": "chatgpt-l01-03",
+                  "nr": "1.3",
+                  "title": "Gratis eller betalt?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Gratisversionen er nok til at komme i gang. Du kan skrive, tale, sende filer og billeder og få svar.",
+                      "Betalte planer giver højere grænser for filer, billeder og værktøjer og flere funktioner. Fra Plus og opefter får du også en stærkere model.",
+                      "Et eksempel er Work, som laver større opgaver for dig. På Free og Go kan du kun bruge Work i begrænset omfang i desktopappen.",
+                      "Til privatpersoner hedder planerne Free, Go, Plus og Pro. Til virksomheder hedder de Business og Enterprise.",
+                      "Priser og funktioner skifter ofte. Tjek altid chatgpt.com/pricing, før du vælger."
+                    ],
+                    "tryIt": {
+                      "where": "offline",
+                      "text": "Skriv tre opgaver ned, som du gerne vil bruge ChatGPT til i de næste to uger. Kan gratisversionen klare dem? I starten kan den næsten altid.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvilke planer er lavet til virksomheder?",
+                      "options": [
+                        "Plus og Pro",
+                        "Business og Enterprise",
+                        "Free og Go"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                },
+                {
+                  "id": "chatgpt-l01-04",
+                  "nr": "1.4",
+                  "title": "Privat konto eller arbejdets?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Har din arbejdsplads ChatGPT Business eller Enterprise, skal du bruge den til arbejde, ikke din private konto.",
+                      "På Business og Enterprise bruger OpenAI som standard ikke jeres samtaler til at træne sine modeller.",
+                      "På en privat konto kan dine samtaler bruges til at forbedre modellerne, medmindre du slår det fra i indstillingerne.",
+                      "Arbejdsdokumenter, kundedata og interne tal hører kun hjemme på arbejdskontoen, og kun hvis jeres interne regler tillader det."
+                    ],
+                    "tryIt": {
+                      "where": "offline",
+                      "text": "Spørg din leder eller IT: Har vi en fælles ChatGPT-løsning, og hvilken mail skal jeg logge ind med?",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Din arbejdsplads har en fælles ChatGPT-løsning. Du skal opsummere et internt notat. Hvilken konto bruger du?",
+                      "options": [
+                        "Min private konto",
+                        "Arbejdets konto",
+                        "Det er lige meget"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                },
+                {
+                  "id": "chatgpt-l01-05",
+                  "nr": "1.5",
+                  "title": "Hvor finder man tingene?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Skrivefeltet er der, hvor du skriver. Med plusknappen (+) ved siden af tilføjer du filer, billeder og værktøjer.",
+                      "Mikrofonen i skrivefeltet bruger du til at diktere. Med stemmeknappen ved siden af taler du med ChatGPT.",
+                      "Sidemenuen til venstre har ny chat, søgning, dine tidligere samtaler, projekter og dit bibliotek af filer. På nogle betalte planer hedder biblioteket Space.",
+                      "Indstillingerne under dit navn styrer bl.a. hukommelse, personalisering og datakontrol.",
+                      "Placeringen kan flytte sig lidt, når OpenAI opdaterer appen. Navnene på tingene ændrer sig sjældnere."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Åbn ChatGPT på chatgpt.com eller i appen, og find tre ting: knappen til ny chat, plusknappen og indstillingerne.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvor tilføjer du en fil til din besked?",
+                      "options": [
+                        "Med plusknappen ved skrivefeltet",
+                        "I indstillingerne",
+                        "Med knappen til ny chat"
+                      ],
+                      "correctIndex": 0
+                    }
+                  }
+                },
+                {
+                  "id": "chatgpt-l01-06",
+                  "nr": "1.6",
+                  "title": "Hvordan finder man en gammel samtale?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Dine samtaler gemmes i sidemenuen med den nyeste øverst.",
+                      "Søgningen i sidemenuen leder i dine chats, projekter, billeder og dokumenter på én gang.",
+                      "Samtaler, du bruger tit, kan du fastgøre, så de altid ligger øverst.",
+                      "Giv samtaler et navn, der siger, hvad de handler om. Så er de nemmere at finde igen.",
+                      "Midlertidige chats bliver som standard ikke gemt i listen. Dem lærer du om i modul 4."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Start to chats i ChatGPT om to forskellige emner. Find derefter den første igen med søgningen.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvor leder søgningen i sidemenuen?",
+                      "options": [
+                        "Kun i titlerne på dine chats",
+                        "I chats, projekter, billeder og dokumenter",
+                        "På internettet"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                },
+                {
+                  "id": "chatgpt-l01-07",
+                  "nr": "1.7",
+                  "title": "Hvor kan man ellers bruge ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "På telefonen (iOS og Android) kan du også bruge kameraet og stemmen.",
+                      "Desktopappen findes til Mac og Windows og som prøveversion til Linux.",
+                      "I Word, Excel og PowerPoint kan du bruge ChatGPTs tilføjelsesprogram. ChatGPT findes også i Google Sheets.",
+                      "I browseren kan du bruge ChatGPTs udvidelse.",
+                      "På WhatsApp kan du skrive med ChatGPT uden konto, også i EU.",
+                      "I bilen kan du tale med ChatGPT via Apple CarPlay.",
+                      "Logger du ind med den samme konto, følger dine samtaler med på alle enheder."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Hent appen på din telefon, og log ind med den samme konto. Tjek, at samtalen fra lektion 1.2 også ligger der.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvad sker der, når du logger ind på telefonen med den samme konto?",
+                      "options": [
+                        "Du starter forfra uden samtaler",
+                        "Dine samtaler er der også",
+                        "Du skal betale for en ekstra konto"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m02",
+              "nr": 2,
+              "title": "Din første samtale",
+              "description": "Skriv din første prompt, ret svaret, og forstå, hvorfor ChatGPT nogle gange siger nej.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l02-01",
+                  "nr": "2.1",
+                  "title": "Prompting – hvad er det?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l02-02",
+                  "nr": "2.2",
+                  "title": "Hvordan retter man et svar, man ikke er tilfreds med?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l02-03",
+                  "nr": "2.3",
+                  "title": "Hvorfor vil ChatGPT nogle gange ikke svare?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l02-04",
+                  "nr": "2.4",
+                  "title": "Hvorfor siger ChatGPT, at man har nået sin grænse?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m03",
+              "nr": 3,
+              "title": "Mere end tekst",
+              "description": "Tal og diktér, send filer og billeder, og scan papirer med kameraet.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l03-01",
+                  "nr": "3.1",
+                  "title": "Hvordan taler man med ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l03-02",
+                  "nr": "3.2",
+                  "title": "Hvordan dikterer man i stedet for at skrive?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l03-03",
+                  "nr": "3.3",
+                  "title": "Hvordan giver man ChatGPT en fil eller et billede?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l03-04",
+                  "nr": "3.4",
+                  "title": "Hvordan scanner man et dokument med kameraet?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m04",
+              "nr": 4,
+              "title": "Brug det sikkert",
+              "description": "Tjek svaret, beskyt data, og brug midlertidig chat, når det gælder.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l04-01",
+                  "nr": "4.1",
+                  "title": "Kan man stole på svaret?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l04-02",
+                  "nr": "4.2",
+                  "title": "Hvad må man ikke dele?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l04-03",
+                  "nr": "4.3",
+                  "title": "Hvordan undgår man, at ens samtaler bruges til at træne ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l04-04",
+                  "nr": "4.4",
+                  "title": "Hvad er en midlertidig chat?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chatgpt-n2",
+          "nr": 2,
+          "name": "Øvet",
+          "title": "Brug det i hverdagen",
+          "outcome": "Bagefter sparer du tid på mails, tekster, tal og research hver uge.",
+          "test": {
+            "id": "chatgpt-t2",
+            "title": "Øvet-certifikat",
+            "description": "Bestå med mindst 80 %, og få dit andet certifikat.",
+            "minutes": 10,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "chatgpt-m05",
+              "nr": 5,
+              "title": "Bedre prompts",
+              "description": "Prompts, der rammer første gang, og hvornår ChatGPT skal tænke længere.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l05-01",
+                  "nr": "5.1",
+                  "title": "Hvordan bliver man bedre til at prompte?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l05-02",
+                  "nr": "5.2",
+                  "title": "Hvad er forskellen på Instant, Medium og High?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l05-03",
+                  "nr": "5.3",
+                  "title": "Hvorfor svarer ChatGPT nogle gange med grafer, knapper og små værktøjer?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m06",
+              "nr": 6,
+              "title": "Find information",
+              "description": "Søg på nettet, og lav grundig research med kilder.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l06-01",
+                  "nr": "6.1",
+                  "title": "Hvordan får man ChatGPT til at søge på nettet?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l06-02",
+                  "nr": "6.2",
+                  "title": "Hvad er deep research?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m07",
+              "nr": 7,
+              "title": "Billeder og syn",
+              "description": "Lav og redigér billeder, og vis ChatGPT, hvad du ser.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l07-01",
+                  "nr": "7.1",
+                  "title": "Hvordan viser man ChatGPT, hvad man ser med kameraet eller på skærmen?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l07-02",
+                  "nr": "7.2",
+                  "title": "Hvordan laver man billeder med ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l07-03",
+                  "nr": "7.3",
+                  "title": "Hvordan redigerer man et billede med ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m08",
+              "nr": 8,
+              "title": "Tekst, tal og lyd",
+              "description": "Lange tekster, Excel, mødeoptagelser og oversættelse.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l08-01",
+                  "nr": "8.1",
+                  "title": "Hvordan skriver man lange tekster sammen med ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l08-02",
+                  "nr": "8.2",
+                  "title": "Hvordan får man en lydoptagelse lavet om til noter?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l08-03",
+                  "nr": "8.3",
+                  "title": "Hvordan arbejder man med Excel og tal i ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l08-04",
+                  "nr": "8.4",
+                  "title": "Hvordan oversætter man og får hjælp til udtale?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m09",
+              "nr": 9,
+              "title": "ChatGPT i dit job",
+              "description": "Find dine egne opgaver, lær noget nyt, og del med kolleger.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l09-01",
+                  "nr": "9.1",
+                  "title": "Hvad kan du bruge ChatGPT til i dit job?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l09-02",
+                  "nr": "9.2",
+                  "title": "Hvordan bruger man ChatGPT til at lære noget nyt?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l09-03",
+                  "nr": "9.3",
+                  "title": "Hvordan bruger man ChatGPT til at finde produkter og booke?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l09-04",
+                  "nr": "9.4",
+                  "title": "Hvordan deler man en samtale med en kollega?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chatgpt-n3",
+          "nr": 3,
+          "name": "Avanceret",
+          "title": "Tilpas ChatGPT til dit arbejde",
+          "outcome": "Bagefter kender ChatGPT dit arbejde og hjælper dig i de programmer, du allerede bruger.",
+          "test": {
+            "id": "chatgpt-t3",
+            "title": "Avanceret-certifikat",
+            "description": "Bestå med mindst 80 %, og få dit tredje certifikat.",
+            "minutes": 10,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "chatgpt-m10",
+              "nr": 10,
+              "title": "Gør ChatGPT til din",
+              "description": "Hukommelse, instruktioner og styr på, hvad det husker.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l10-01",
+                  "nr": "10.1",
+                  "title": "Hvordan får du ChatGPT til at huske dig?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l10-02",
+                  "nr": "10.2",
+                  "title": "Hvad er brugerdefinerede instruktioner?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l10-03",
+                  "nr": "10.3",
+                  "title": "Hvordan styrer man, hvad ChatGPT husker?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l10-04",
+                  "nr": "10.4",
+                  "title": "Hvordan låser eller skjuler man en samtale?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m11",
+              "nr": 11,
+              "title": "Hold styr på dit arbejde",
+              "description": "Projekter og bibliotek til det, du vender tilbage til.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l11-01",
+                  "nr": "11.1",
+                  "title": "Hvad er projekter, og hvordan bruger man dem?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l11-02",
+                  "nr": "11.2",
+                  "title": "Hvad er biblioteket, og hvordan genbruger og deler man sine filer?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m12",
+              "nr": 12,
+              "title": "Forbind dine apps",
+              "description": "Mail, kalender og filer, og hvad ChatGPT må gøre i dem.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l12-01",
+                  "nr": "12.1",
+                  "title": "Hvad kan du give ChatGPT adgang til?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l12-02",
+                  "nr": "12.2",
+                  "title": "Hvordan forbinder man ChatGPT til mail, kalender og filer?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l12-03",
+                  "nr": "12.3",
+                  "title": "Hvordan bestemmer man, hvad ChatGPT må gøre i ens apps?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l12-04",
+                  "nr": "12.4",
+                  "title": "Hvordan sender man en mail direkte fra ChatGPT?",
+                  "minutes": 5,
+                  "badges": [
+                    "Plus og opefter"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m13",
+              "nr": 13,
+              "title": "I dine programmer",
+              "description": "Word, Excel, PowerPoint, Google Sheets, browseren og desktopappen.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l13-01",
+                  "nr": "13.1",
+                  "title": "Hvordan bruger man ChatGPT i Word, Excel, PowerPoint og Google Sheets?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l13-02",
+                  "nr": "13.2",
+                  "title": "Hvordan bruger man ChatGPT i browseren?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l13-03",
+                  "nr": "13.3",
+                  "title": "Hvad er ChatGPT-desktopappen, og hvorfor skal man have den?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m14",
+              "nr": 14,
+              "title": "Sikkerhed og regler",
+              "description": "En sikker konto og loven om AI på arbejdet.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l14-01",
+                  "nr": "14.1",
+                  "title": "Hvordan holder man sin ChatGPT-konto sikker?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l14-02",
+                  "nr": "14.2",
+                  "title": "Hvad siger loven om AI på arbejdet?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chatgpt-n4",
+          "nr": 4,
+          "name": "Ekspert",
+          "title": "Lad ChatGPT arbejde for dig",
+          "outcome": "Bagefter bygger du en arbejdsgang, der kører uden dig, og lærer dine kolleger op.",
+          "test": {
+            "id": "chatgpt-t4",
+            "title": "Ekspert-certifikat",
+            "description": "Slutprøve: byg en færdig arbejdsgang til dit eget job.",
+            "minutes": 30,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "chatgpt-m15",
+              "nr": 15,
+              "title": "Agenter",
+              "description": "Lad ChatGPT løse opgaver på nettet og på din computer.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l15-01",
+                  "nr": "15.1",
+                  "title": "Hvad er en AI-agent?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l15-02",
+                  "nr": "15.2",
+                  "title": "Hvad er forskellen på Chat og Work?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l15-03",
+                  "nr": "15.3",
+                  "title": "Hvordan lader du ChatGPT udføre opgaver på nettet for dig?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l15-04",
+                  "nr": "15.4",
+                  "title": "Hvordan lader du ChatGPT arbejde med filer og programmer på din computer?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l15-05",
+                  "nr": "15.5",
+                  "title": "Hvad er Computer History, og skal man slå det til?",
+                  "minutes": 5,
+                  "badges": [
+                    "Pro, Business og Enterprise, kun Mac",
+                    "Begrænset i EU"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m16",
+              "nr": 16,
+              "title": "Skab færdigt arbejde",
+              "description": "Præsentationer, dokumenter, hjemmesider og dataanalyse.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l16-01",
+                  "nr": "16.1",
+                  "title": "Hvordan laver man en præsentation med ChatGPT Slides?",
+                  "minutes": 5,
+                  "badges": [
+                    "Pro, Business og Enterprise"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l16-02",
+                  "nr": "16.2",
+                  "title": "Hvad er Space og Pages, og hvordan samarbejder man i dem?",
+                  "minutes": 5,
+                  "badges": [
+                    "Pro, Business og Enterprise"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l16-03",
+                  "nr": "16.3",
+                  "title": "Hvordan laver man en hjemmeside eller et lille værktøj med ChatGPT Sites?",
+                  "minutes": 5,
+                  "badges": [
+                    "Plus og opefter",
+                    "Begrænset i EU"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l16-04",
+                  "nr": "16.4",
+                  "title": "Hvordan analyserer man virksomhedens data med ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m17",
+              "nr": 17,
+              "title": "Automatisering",
+              "description": "Opgaver, der kører af sig selv, mødereferater og agenter, der altid er tændt.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l17-01",
+                  "nr": "17.1",
+                  "title": "Hvordan får man ChatGPT til at lave opgaver automatisk?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l17-02",
+                  "nr": "17.2",
+                  "title": "Hvordan får man ChatGPT til at reagere, når der sker noget i ens apps?",
+                  "minutes": 5,
+                  "badges": [
+                    "Plus og opefter"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l17-03",
+                  "nr": "17.3",
+                  "title": "Hvordan tager ChatGPT referat af ens møder?",
+                  "minutes": 5,
+                  "badges": [
+                    "Pro og Business, kun Mac"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l17-04",
+                  "nr": "17.4",
+                  "title": "Hvad er en dot, og hvad kan den gøre for dig?",
+                  "minutes": 5,
+                  "badges": [
+                    "Pro og Business Premium",
+                    "Begrænset i EU"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l17-05",
+                  "nr": "17.5",
+                  "title": "Hvordan lader man flere agenter arbejde på samme opgave?",
+                  "minutes": 5,
+                  "badges": [
+                    "Pro"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m18",
+              "nr": 18,
+              "title": "Byg dine egne værktøjer",
+              "description": "Plugins, skills og Codex.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l18-01",
+                  "nr": "18.1",
+                  "title": "Hvad er plugins og skills, og hvordan laver man sine egne?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l18-02",
+                  "nr": "18.2",
+                  "title": "Hvordan flytter man sine GPT'er over til plugins?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l18-03",
+                  "nr": "18.3",
+                  "title": "Hvad er workspace agents, og hvordan bygger man en til teamet?",
+                  "minutes": 5,
+                  "badges": [
+                    "Business og Enterprise"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l18-04",
+                  "nr": "18.4",
+                  "title": "Hvad er Codex, og skal man bruge det, hvis man ikke er udvikler?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "chatgpt-m19",
+              "nr": 19,
+              "title": "Rul det ud",
+              "description": "Hele arbejdsgange, deling, administration og oplæring af kolleger.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "chatgpt-l19-01",
+                  "nr": "19.1",
+                  "title": "Hvordan bygger man en hel arbejdsgang med ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l19-02",
+                  "nr": "19.2",
+                  "title": "Hvordan deler man plugins, projekter og opgaver med sine kolleger?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l19-03",
+                  "nr": "19.3",
+                  "title": "Hvordan styrer en administrator ChatGPT i virksomheden?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "chatgpt-l19-04",
+                  "nr": "19.4",
+                  "title": "Hvordan lærer man sine kolleger at bruge ChatGPT?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "claude",
+      "toolName": "Claude",
+      "toolUrl": "https://claude.ai",
+      "headline": "Fra helt grøn til ekspert i Claude",
+      "disclaimer": "Mindforward er ikke tilknyttet eller godkendt af Anthropic.",
+      "status": "klar",
+      "levels": [
+        {
+          "id": "claude-n1",
+          "nr": 1,
+          "name": "Grøn",
+          "title": "Kom trygt i gang",
+          "outcome": "Bagefter kan du bruge Claude til hverdagsopgaver og ved, hvad du ikke må dele.",
+          "test": {
+            "id": "claude-t1",
+            "title": "Grøn-certifikat",
+            "description": "Bestå med mindst 80 %, og få dit første certifikat.",
+            "minutes": 10,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "claude-m01",
+              "nr": 1,
+              "title": "Velkommen til Claude",
+              "description": "Opret en konto, find rundt, og lær, hvilken plan og hvilken konto du skal bruge.",
+              "status": "klar",
+              "lessons": [
+                {
+                  "id": "claude-l01-01",
+                  "nr": "1.1",
+                  "title": "Hvad er Claude?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Claude er et AI-program fra firmaet Anthropic. Du skriver eller taler med det, som du ville gøre med et menneske.",
+                      "Du giver Claude en opgave, og det svarer med det samme. Det kan fx skrive en mail, forklare noget svært, opsummere et langt dokument eller komme med idéer.",
+                      "Claude kan også lave færdigt arbejde som dokumenter, præsentationer og regneark, som du kan rette i bagefter.",
+                      "Som udgangspunkt formulerer Claude svaret ud fra det, det har lært. Derfor kan det lyde sikkert, også når det tager fejl. Det lærer du at håndtere i modul 4.",
+                      "Claude kan også søge på nettet. Det lærer du i modul 6."
+                    ],
+                    "tryIt": {
+                      "where": "oevemiljoe",
+                      "text": "Skriv i øvemiljøet: ”Forklar i fem punkter, hvad du kan hjælpe mig med i mit job som [dit job].”",
+                      "prefill": "Forklar i fem punkter, hvad du kan hjælpe mig med i mit job som [dit job].",
+                      "fallbackText": "Åbn Claude, og skriv: ”Forklar i fem punkter, hvad du kan hjælpe mig med i mit job som [dit job].”"
+                    },
+                    "quiz": {
+                      "question": "Hvilket firma står bag Claude?",
+                      "options": [
+                        "OpenAI",
+                        "Anthropic",
+                        "Microsoft"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                },
+                {
+                  "id": "claude-l01-02",
+                  "nr": "1.2",
+                  "title": "Hvordan kommer man i gang?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Gå ind på claude.ai, eller hent appen ”Claude” i App Store eller Google Play. Der findes også en desktopapp til Mac og Windows.",
+                      "Opret en konto med din mail eller din Google-konto. Du skal have en konto for at bruge Claude.",
+                      "Bruger din arbejdsplads Claude, skal du logge ind med din arbejdsmail. Det handler lektion 1.4 om.",
+                      "Skriv i skrivefeltet, og tryk Enter. Du kan ikke ødelægge noget.",
+                      "Rammer svaret ikke helt, så skriv, hvad der skal ændres, fx ”gør det kortere” eller ”skriv det mere uformelt”."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Log ind i Claude, og skriv: ”Skriv et forslag til en kort tale til en kollega med 10-årsjubilæum, fem linjer.” Skriv derefter: ”Gør den lidt sjovere.”",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Svaret er ikke helt, som du ville have det. Hvad gør du?",
+                      "options": [
+                        "Starter en ny chat og skriver det samme igen",
+                        "Skriver tilbage, hvad der skal ændres",
+                        "Giver op og skriver selv"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                },
+                {
+                  "id": "claude-l01-03",
+                  "nr": "1.3",
+                  "title": "Gratis eller betalt?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Gratisversionen er nok til at komme i gang. Du kan skrive, sende filer og billeder, søge på nettet og lave dokumenter.",
+                      "Betalte planer giver mere forbrug, adgang til de stærkeste modeller og flere funktioner, fx Research, Claude i Excel og PowerPoint og Claude in Chrome.",
+                      "Til privatpersoner hedder planerne Free, Pro og Max. Til virksomheder hedder de Team og Enterprise.",
+                      "Priser og funktioner skifter ofte. Tjek altid claude.com/pricing, før du vælger."
+                    ],
+                    "tryIt": {
+                      "where": "offline",
+                      "text": "Skriv tre opgaver ned, som du gerne vil bruge Claude til i de næste to uger. Kan gratisversionen klare dem? I starten kan den næsten altid.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvilke planer er lavet til virksomheder?",
+                      "options": [
+                        "Pro og Max",
+                        "Team og Enterprise",
+                        "Free og Pro"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                },
+                {
+                  "id": "claude-l01-04",
+                  "nr": "1.4",
+                  "title": "Privat konto eller arbejdets?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Har din arbejdsplads Claude Team eller Enterprise, skal du bruge den til arbejde, ikke din private konto.",
+                      "På Team og Enterprise bruger Anthropic som standard ikke jeres samtaler til at træne sine modeller.",
+                      "På en privat konto (Free, Pro og Max) vælger du selv i indstillingerne for privatliv, om dine samtaler må bruges til at forbedre Claude.",
+                      "På Team og Enterprise er hukommelse som standard slået fra. Jeres administrator bestemmer, om den må bruges, og derefter slår du den selv til i indstillingerne.",
+                      "Arbejdsdokumenter, kundedata og interne tal hører kun hjemme på arbejdskontoen, og kun hvis jeres interne regler tillader det."
+                    ],
+                    "tryIt": {
+                      "where": "offline",
+                      "text": "Spørg din leder eller IT: Har vi en fælles Claude-løsning, og hvilken mail skal jeg logge ind med?",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Din arbejdsplads har en fælles Claude-løsning. Du skal opsummere et internt notat. Hvilken konto bruger du?",
+                      "options": [
+                        "Min private konto",
+                        "Arbejdets konto",
+                        "Det er lige meget"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                },
+                {
+                  "id": "claude-l01-05",
+                  "nr": "1.5",
+                  "title": "Hvor finder man tingene?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Skrivefeltet er der, hvor du skriver. Med plusknappen (+) tilføjer du filer og billeder og slår dine apps til. Har du ingen knap til websøgning, søger Claude selv på nettet, når det giver mening.",
+                      "Mikrofonen i skrivefeltet bruger du til at diktere.",
+                      "Modelvælgeren ved skrivefeltet bestemmer, hvilken Claude-model der svarer, og hvor meget den tænker.",
+                      "Sidemenuen til venstre har ny chat, dine tidligere samtaler, projekter og artifacts.",
+                      "Indstillingerne under dit navn styrer bl.a. instruktioner til Claude, hukommelse, privatliv og dit forbrug.",
+                      "Placeringen kan flytte sig lidt, når Anthropic opdaterer appen. Navnene på tingene ændrer sig sjældnere."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Åbn Claude på claude.ai eller i appen, og find tre ting: knappen til ny chat, plusknappen og indstillingerne.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvor tilføjer du en fil til din besked?",
+                      "options": [
+                        "Med plusknappen ved skrivefeltet",
+                        "I sidemenuen",
+                        "Med knappen til ny chat"
+                      ],
+                      "correctIndex": 0
+                    }
+                  }
+                },
+                {
+                  "id": "claude-l01-06",
+                  "nr": "1.6",
+                  "title": "Hvordan finder man en gammel samtale?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Dine samtaler ligger i sidemenuen med den nyeste øverst.",
+                      "Du kan søge i dine samtaler fra sidemenuen.",
+                      "På en betalt plan kan du også bede Claude om at finde en tidligere samtale, fx ”find vores chat om budgettet”. Det virker, når søgning i tidligere chats er slået til i indstillingerne. Det er den som standard.",
+                      "Samtaler, du bruger tit, kan du stjernemarkere, så du hurtigt finder dem igen.",
+                      "Inkognito-chats bliver ikke gemt i din historik. Dem lærer du om i modul 4."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Start to chats i Claude om to forskellige emner. Find derefter den første igen med søgningen i sidemenuen. Har du en betalt plan, så bed også Claude i en ny chat om at finde den.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvordan kan du finde en gammel samtale i Claude?",
+                      "options": [
+                        "Kun ved at scrolle ned gennem listen",
+                        "Ved at søge eller bede Claude om at finde den",
+                        "Det kan man ikke"
+                      ],
+                      "correctIndex": 1
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "claude-m02",
+              "nr": 2,
+              "title": "Din første samtale",
+              "description": "Skriv din første prompt, ret svaret, og forstå, hvorfor Claude nogle gange siger nej.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l02-01",
+                  "nr": "2.1",
+                  "title": "Prompting – hvad er det?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l02-02",
+                  "nr": "2.2",
+                  "title": "Hvordan retter man et svar, man ikke er tilfreds med?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l02-03",
+                  "nr": "2.3",
+                  "title": "Hvordan forgrener man en samtale?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l02-04",
+                  "nr": "2.4",
+                  "title": "Hvorfor vil Claude nogle gange ikke svare?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l02-05",
+                  "nr": "2.5",
+                  "title": "Hvorfor siger Claude, at man har nået sin grænse?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m03",
+              "nr": 3,
+              "title": "Mere end tekst",
+              "description": "Tal og diktér, send filer og billeder, og brug Claude på telefonen.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l03-01",
+                  "nr": "3.1",
+                  "title": "Hvordan taler man med Claude?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l03-02",
+                  "nr": "3.2",
+                  "title": "Hvordan dikterer man i stedet for at skrive?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l03-03",
+                  "nr": "3.3",
+                  "title": "Hvordan giver man Claude en fil eller et billede?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l03-04",
+                  "nr": "3.4",
+                  "title": "Hvad kan Claude på telefonen?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m04",
+              "nr": 4,
+              "title": "Brug det sikkert",
+              "description": "Tjek svaret, beskyt data, og brug inkognito-chat, når det gælder.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l04-01",
+                  "nr": "4.1",
+                  "title": "Kan man stole på svaret?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l04-02",
+                  "nr": "4.2",
+                  "title": "Hvad må man ikke dele?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l04-03",
+                  "nr": "4.3",
+                  "title": "Hvordan styrer man, om ens samtaler bruges til træning?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l04-04",
+                  "nr": "4.4",
+                  "title": "Hvad er en inkognito-chat?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "claude-n2",
+          "nr": 2,
+          "name": "Øvet",
+          "title": "Brug det i hverdagen",
+          "outcome": "Bagefter laver du færdige dokumenter, præsentationer og analyser med Claude.",
+          "test": {
+            "id": "claude-t2",
+            "title": "Øvet-certifikat",
+            "description": "Bestå med mindst 80 %, og få dit andet certifikat.",
+            "minutes": 10,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "claude-m05",
+              "nr": 5,
+              "title": "Bedre prompts og modeller",
+              "description": "Prompts, der rammer første gang, og hvilken model du skal vælge.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l05-01",
+                  "nr": "5.1",
+                  "title": "Hvordan bliver man bedre til at prompte?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l05-02",
+                  "nr": "5.2",
+                  "title": "Hvad er forskellen på Opus, Sonnet og Haiku?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l05-03",
+                  "nr": "5.3",
+                  "title": "Hvad gør tænkning og effort?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l05-04",
+                  "nr": "5.4",
+                  "title": "Hvad er skrivestile, og hvordan bruger man dem?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m06",
+              "nr": 6,
+              "title": "Find information",
+              "description": "Søg på nettet, og lav grundig research med kilder.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l06-01",
+                  "nr": "6.1",
+                  "title": "Hvordan får man Claude til at søge på nettet?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l06-02",
+                  "nr": "6.2",
+                  "title": "Hvad er Research?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m07",
+              "nr": 7,
+              "title": "Få det visuelt",
+              "description": "Grafer, diagrammer, artifacts og design direkte i samtalen.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l07-01",
+                  "nr": "7.1",
+                  "title": "Hvordan får man grafer og diagrammer direkte i chatten?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l07-02",
+                  "nr": "7.2",
+                  "title": "Hvad er artifacts?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l07-03",
+                  "nr": "7.3",
+                  "title": "Hvordan laver man design med Claude Design?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m08",
+              "nr": 8,
+              "title": "Lav færdigt arbejde",
+              "description": "Dokumenter, præsentationer, filer og dataanalyse.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l08-01",
+                  "nr": "8.1",
+                  "title": "Hvordan skriver man dokumenter med Claude Docs?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l08-02",
+                  "nr": "8.2",
+                  "title": "Hvordan laver man præsentationer med Claude Slides?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l08-03",
+                  "nr": "8.3",
+                  "title": "Hvordan laver Claude Word-, Excel-, PowerPoint- og PDF-filer?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l08-04",
+                  "nr": "8.4",
+                  "title": "Hvordan retter man direkte i et udkast?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l08-05",
+                  "nr": "8.5",
+                  "title": "Hvordan analyserer man data med Claude?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m09",
+              "nr": 9,
+              "title": "Claude i hverdagen",
+              "description": "Find dine egne opgaver, lær noget nyt, og del med kolleger.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l09-01",
+                  "nr": "9.1",
+                  "title": "Hvad kan du bruge Claude til i dit job?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l09-02",
+                  "nr": "9.2",
+                  "title": "Hvordan bruger man Claude til at lære noget nyt?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l09-03",
+                  "nr": "9.3",
+                  "title": "Hvordan deler man samtaler og artifacts med kolleger?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "claude-n3",
+          "nr": 3,
+          "name": "Avanceret",
+          "title": "Tilpas Claude til dit arbejde",
+          "outcome": "Bagefter kender Claude dit arbejde, dine programmer og dine faste arbejdsgange.",
+          "test": {
+            "id": "claude-t3",
+            "title": "Avanceret-certifikat",
+            "description": "Bestå med mindst 80 %, og få dit tredje certifikat.",
+            "minutes": 10,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "claude-m10",
+              "nr": 10,
+              "title": "Gør Claude til din",
+              "description": "Instruktioner, hukommelse og styr på, hvad Claude husker.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l10-01",
+                  "nr": "10.1",
+                  "title": "Hvad er instruktioner til Claude?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l10-02",
+                  "nr": "10.2",
+                  "title": "Hvordan virker Claudes hukommelse?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l10-03",
+                  "nr": "10.3",
+                  "title": "Hvad er følsomme emner i hukommelsen?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l10-04",
+                  "nr": "10.4",
+                  "title": "Hvordan flytter man fra ChatGPT til Claude?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l10-05",
+                  "nr": "10.5",
+                  "title": "Hvad er den månedlige opsummering og pausepåmindelser?",
+                  "minutes": 5,
+                  "badges": [
+                    "Beta"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m11",
+              "nr": 11,
+              "title": "Projekter",
+              "description": "Faste arbejdsrum med viden, instruktioner og hukommelse.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l11-01",
+                  "nr": "11.1",
+                  "title": "Hvad er projekter, og hvordan opretter man dem?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l11-02",
+                  "nr": "11.2",
+                  "title": "Hvordan giver man et projekt viden og instruktioner?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l11-03",
+                  "nr": "11.3",
+                  "title": "Hvordan virker hukommelse i projekter?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l11-04",
+                  "nr": "11.4",
+                  "title": "Hvordan deler man et projekt med kolleger?",
+                  "minutes": 5,
+                  "badges": [
+                    "Team og Enterprise"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m12",
+              "nr": 12,
+              "title": "Forbind dine apps",
+              "description": "Mail, kalender og filer, og hvilke apps Claude må bruge.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l12-01",
+                  "nr": "12.1",
+                  "title": "Hvad er connectors, og hvordan forbinder de Claude med dine apps?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l12-02",
+                  "nr": "12.2",
+                  "title": "Hvordan forbinder man Claude til mail, kalender og filer?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l12-03",
+                  "nr": "12.3",
+                  "title": "Hvad er interaktive apps i chatten?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l12-04",
+                  "nr": "12.4",
+                  "title": "Hvordan vælger man, hvilke apps Claude må bruge i en samtale?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m13",
+              "nr": 13,
+              "title": "Claude i dine programmer",
+              "description": "Excel, PowerPoint, Word, Google Workspace, Chrome og desktopappen.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l13-01",
+                  "nr": "13.1",
+                  "title": "Hvordan bruger man Claude i Excel og PowerPoint?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l13-02",
+                  "nr": "13.2",
+                  "title": "Hvordan bruger man Claude i Word?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l13-03",
+                  "nr": "13.3",
+                  "title": "Hvordan bruger man Claude i Google Workspace?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l13-04",
+                  "nr": "13.4",
+                  "title": "Hvad er Claude in Chrome?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l13-05",
+                  "nr": "13.5",
+                  "title": "Hvad er desktopappen, og hvorfor skal man have den?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m14",
+              "nr": 14,
+              "title": "Skills",
+              "description": "Lær Claude dine faste arbejdsgange, så du ikke skal forklare dem hver gang.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l14-01",
+                  "nr": "14.1",
+                  "title": "Hvad er skills?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l14-02",
+                  "nr": "14.2",
+                  "title": "Hvordan bruger man færdige skills?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l14-03",
+                  "nr": "14.3",
+                  "title": "Hvordan laver man sine egne skills?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m15",
+              "nr": 15,
+              "title": "Sikkerhed og regler",
+              "description": "En sikker konto og loven om AI på arbejdet.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l15-01",
+                  "nr": "15.1",
+                  "title": "Hvordan holder man sin Claude-konto sikker?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l15-02",
+                  "nr": "15.2",
+                  "title": "Hvad siger loven om AI på arbejdet?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "claude-n4",
+          "nr": 4,
+          "name": "Ekspert",
+          "title": "Lad Claude arbejde for dig",
+          "outcome": "Bagefter bygger du en arbejdsgang, der kører uden dig, og lærer dine kolleger op.",
+          "test": {
+            "id": "claude-t4",
+            "title": "Ekspert-certifikat",
+            "description": "Slutprøve: byg en færdig arbejdsgang til dit eget job.",
+            "minutes": 30,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "claude-m16",
+              "nr": 16,
+              "title": "Lad Claude arbejde selv",
+              "description": "Større opgaver, der kører videre, også når du ikke er der.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l16-01",
+                  "nr": "16.1",
+                  "title": "Hvad er en AI-agent?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l16-02",
+                  "nr": "16.2",
+                  "title": "Hvordan giver man Claude en større opgave?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l16-03",
+                  "nr": "16.3",
+                  "title": "Hvordan arbejder Claude videre, når computeren er lukket?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l16-04",
+                  "nr": "16.4",
+                  "title": "Hvordan giver man Claude opgaver fra telefonen?",
+                  "minutes": 5,
+                  "badges": [
+                    "Pro og Max"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l16-05",
+                  "nr": "16.5",
+                  "title": "Hvordan laver man planlagte opgaver?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m17",
+              "nr": 17,
+              "title": "Claude på din computer og i browseren",
+              "description": "Lad Claude klikke, skrive og navigere for dig.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l17-01",
+                  "nr": "17.1",
+                  "title": "Hvordan lader du Claude styre din computer?",
+                  "minutes": 5,
+                  "badges": [
+                    "Pro og Max"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l17-02",
+                  "nr": "17.2",
+                  "title": "Hvordan løser Claude opgaver i Chrome?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l17-03",
+                  "nr": "17.3",
+                  "title": "Hvordan lærer man Claude en arbejdsgang ved at optage den?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l17-04",
+                  "nr": "17.4",
+                  "title": "Hvordan logger Claude sikkert ind for dig med 1Password?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan, kun Mac"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m18",
+              "nr": 18,
+              "title": "Data og levende overblik",
+              "description": "Dashboards, animationer og virksomhedens eget design.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l18-01",
+                  "nr": "18.1",
+                  "title": "Hvad er Claude Dashboards?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l18-02",
+                  "nr": "18.2",
+                  "title": "Hvordan laver du live artifacts med data fra dine apps?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l18-03",
+                  "nr": "18.3",
+                  "title": "Hvad er Claude Motion?",
+                  "minutes": 5,
+                  "badges": [
+                    "Team og Enterprise"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l18-04",
+                  "nr": "18.4",
+                  "title": "Hvordan bruger man virksomhedens designsystem i Claude?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m19",
+              "nr": 19,
+              "title": "Byg dine egne værktøjer",
+              "description": "Plugins, Claude Code og Claude Platform.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l19-01",
+                  "nr": "19.1",
+                  "title": "Hvad er plugins, og hvordan installerer man dem?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l19-02",
+                  "nr": "19.2",
+                  "title": "Hvordan bygger og deler man sit eget plugin?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l19-03",
+                  "nr": "19.3",
+                  "title": "Hvad er Claude Code, og kan man bruge det uden at være udvikler?",
+                  "minutes": 5,
+                  "badges": [
+                    "Betalt plan"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l19-04",
+                  "nr": "19.4",
+                  "title": "Hvad er API'et og Claude Platform?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "claude-m20",
+              "nr": 20,
+              "title": "Claude i teamet",
+              "description": "Claude i Slack, deling, administration og oplæring af kolleger.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "claude-l20-01",
+                  "nr": "20.1",
+                  "title": "Hvad er Claude Tag i Slack?",
+                  "minutes": 5,
+                  "badges": [
+                    "Team og Enterprise"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l20-02",
+                  "nr": "20.2",
+                  "title": "Hvordan deler man skills, plugins og projekter med kolleger?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l20-03",
+                  "nr": "20.3",
+                  "title": "Hvordan styrer en administrator Claude i virksomheden?",
+                  "minutes": 5,
+                  "badges": [
+                    "Team og Enterprise"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l20-04",
+                  "nr": "20.4",
+                  "title": "Hvordan bygger man en hel arbejdsgang med Claude?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "claude-l20-05",
+                  "nr": "20.5",
+                  "title": "Hvordan lærer man sine kolleger at bruge Claude?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "copilot",
+      "toolName": "Copilot",
+      "toolUrl": "https://copilot.cloud.microsoft",
+      "headline": "Fra helt grøn til ekspert i Copilot",
+      "disclaimer": "Mindforward er ikke tilknyttet eller godkendt af Microsoft.",
+      "status": "klar",
+      "levels": [
+        {
+          "id": "copilot-n1",
+          "nr": 1,
+          "name": "Grøn",
+          "title": "Kom trygt i gang",
+          "outcome": "Bagefter ved du, hvilken Copilot du har, og kan bruge den trygt i hverdagen.",
+          "test": {
+            "id": "copilot-t1",
+            "title": "Grøn-certifikat",
+            "description": "Bestå med mindst 80 %, og få dit første certifikat.",
+            "minutes": 10,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "copilot-m01",
+              "nr": 1,
+              "title": "Velkommen til Copilot",
+              "description": "Find ud af, hvilken Copilot du har, og hvor du finder den.",
+              "status": "klar",
+              "lessons": [
+                {
+                  "id": "copilot-l01-01",
+                  "nr": "1.1",
+                  "title": "Hvad er Copilot?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Copilot er Microsofts AI-assistent. Du skriver eller taler med den, som du ville gøre med et menneske.",
+                      "Copilot findes der, hvor du allerede arbejder: i Word, Excel, PowerPoint, Outlook, Teams, Edge og Windows og i sin egen app.",
+                      "Copilot bruger AI-modeller fra blandt andre OpenAI og Anthropic, og ofte kan du selv vælge model. I EU skal din virksomhed selv slå modellerne fra Anthropic til.",
+                      "Copilot formulerer svaret ud fra det, den har lært, og ud fra det, den finder på nettet. Den kan lyde sikker, også når den tager fejl. Det lærer du at håndtere i modul 4.",
+                      "Med en Microsoft 365 Copilot-licens kan Copilot også bruge dine mails, filer, møder og chats. Det lærer du om i lektion 1.2."
+                    ],
+                    "tryIt": {
+                      "where": "oevemiljoe",
+                      "text": "Skriv i øvemiljøet: ”Forklar i fem punkter, hvad du kan hjælpe mig med i mit job som [dit job].”",
+                      "prefill": "Forklar i fem punkter, hvad du kan hjælpe mig med i mit job som [dit job].",
+                      "fallbackText": "Åbn Copilot, og skriv: ”Forklar i fem punkter, hvad du kan hjælpe mig med i mit job som [dit job].”"
+                    },
+                    "quiz": {
+                      "question": "Hvilket firma står bag Copilot?",
+                      "options": [
+                        "Microsoft",
+                        "Google",
+                        "Apple"
+                      ],
+                      "correctIndex": 0
+                    }
+                  }
+                },
+                {
+                  "id": "copilot-l01-02",
+                  "nr": "1.2",
+                  "title": "Hvilken Copilot har du?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Der findes tre slags Copilot, og de kan forskellige ting.",
+                      "Gratis Copilot er til privatpersoner og bruges med en personlig Microsoft-konto. Har du Microsoft 365 Personal eller Family, får du også Copilot i Word, Excel og PowerPoint.",
+                      "Copilot Chat følger gratis med virksomhedens Microsoft 365-abonnement. Den henter viden fra nettet og fra de filer, du selv giver den. I Outlook kan den også bruge din indbakke og kalender, men den kan ikke søge bredt i alle dine mails, filer, møder og chats.",
+                      "Microsoft 365 Copilot kræver en ekstra licens. Så får du Copilot fuldt ud i Word, Excel, PowerPoint, Outlook og Teams, og den kan bruge dine mails, filer, møder og chats.",
+                      "De nyeste agenter, fx Cowork, betales efter forbrug oven i licensen.",
+                      "Er du i tvivl, så spørg din IT-afdeling, hvilken Copilot du har."
+                    ],
+                    "tryIt": {
+                      "where": "offline",
+                      "text": "Spørg din leder eller IT: Har jeg Copilot Chat, eller har jeg en Microsoft 365 Copilot-licens?",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvilken Copilot kan søge bredt i alle dine mails, filer, møder og chats?",
+                      "options": [
+                        "Gratis Copilot",
+                        "Copilot Chat",
+                        "Microsoft 365 Copilot med licens"
+                      ],
+                      "correctIndex": 2
+                    }
+                  }
+                },
+                {
+                  "id": "copilot-l01-03",
+                  "nr": "1.3",
+                  "title": "Privat konto eller arbejdets?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Copilot-appen kan rumme både din private Microsoft-konto og din arbejdskonto. Du skifter mellem dem med kontoskifteren i sidemenuen.",
+                      "Arbejdskontoen er mærket ”Arbejde” eller ”Work” og har et grønt skjold. Skjoldet betyder, at virksomhedens databeskyttelse er slået til.",
+                      "Med arbejdskontoen bliver dine spørgsmål og svar ikke brugt til at træne de AI-modeller, Copilot bygger på.",
+                      "Data flyder ikke mellem din private konto og din arbejdskonto.",
+                      "Arbejdsdokumenter, kundedata og interne tal hører kun hjemme på arbejdskontoen, og kun hvis jeres interne regler tillader det."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Åbn Copilot, og tjek, at du er logget ind med din arbejdskonto. Kig efter det grønne skjold og mærket ”Arbejde” eller ”Work” under dit navn.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvordan kan du se, at du bruger arbejdskontoen?",
+                      "options": [
+                        "Der er et grønt skjold",
+                        "Skærmen bliver mørk",
+                        "Der står ”Gratis” øverst"
+                      ],
+                      "correctIndex": 0
+                    }
+                  }
+                },
+                {
+                  "id": "copilot-l01-04",
+                  "nr": "1.4",
+                  "title": "Hvor finder man Copilot?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "I appen Microsoft Copilot til Windows, Mac, iPhone og Android.",
+                      "På nettet på copilot.cloud.microsoft. Med en privat konto kan du også bruge copilot.microsoft.com.",
+                      "Inde i Outlook og Teams. I Word, Excel og PowerPoint afhænger det af jeres licens. Med en licens kan Copilot arbejde direkte i dine dokumenter og mails.",
+                      "I browseren Edge og i Windows."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Åbn Copilot to steder: først i appen eller på nettet, derefter inde i Teams eller Outlook. Læg mærke til, hvor knappen til Copilot sidder.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvor kan du bruge Copilot?",
+                      "options": [
+                        "Kun i Word",
+                        "Kun på nettet",
+                        "I appen, på nettet og inde i Microsoft 365-programmerne"
+                      ],
+                      "correctIndex": 2
+                    }
+                  }
+                },
+                {
+                  "id": "copilot-l01-05",
+                  "nr": "1.5",
+                  "title": "Hvor finder man tingene?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Skrivefeltet er der, hvor du skriver. Med knappen ved skrivefeltet tilføjer du filer og billeder.",
+                      "Med mikrofonen kan du tale i stedet for at skrive.",
+                      "Modelvælgeren bestemmer, hvilken AI-model der svarer.",
+                      "Har du en licens, og har din virksomhed slået Cowork til, kan du skifte mellem Chat og Cowork øverst. Chat er til spørgsmål og svar, mens Cowork løser større opgaver for dig.",
+                      "Sidemenuen har dine chats, dine notesbøger og dine agenter. I nyere udgaver finder du agenterne under Plugins.",
+                      "Knapperne kan flytte sig lidt, når Microsoft opdaterer appen, og nogle gange skifter de navn."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Åbn Copilot, og find tre ting: skrivefeltet, modelvælgeren og listen med dine chats.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvad bruger du modelvælgeren til?",
+                      "options": [
+                        "At vælge, hvilken AI-model der svarer",
+                        "At skifte sprog",
+                        "At slette dine chats"
+                      ],
+                      "correctIndex": 0
+                    }
+                  }
+                },
+                {
+                  "id": "copilot-l01-06",
+                  "nr": "1.6",
+                  "title": "Hvordan finder man en gammel samtale?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "klar",
+                  "content": {
+                    "know": [
+                      "Dine samtaler ligger i listen med chats i sidemenuen.",
+                      "Du kan give en chat et nyt navn, så den er nem at finde igen. Vælg de tre prikker ved chatten.",
+                      "Fra samme menu kan du flytte en chat til en notesbog eller slette den.",
+                      "Chats fra din private konto og din arbejdskonto holdes adskilt. Skift konto for at se den anden liste."
+                    ],
+                    "tryIt": {
+                      "where": "tool",
+                      "text": "Start to chats i Copilot om to forskellige emner. Giv den første et nyt navn, og find den igen i listen med chats.",
+                      "prefill": null
+                    },
+                    "quiz": {
+                      "question": "Hvor finder du dine tidligere samtaler i Copilot?",
+                      "options": [
+                        "I listen med chats i sidemenuen",
+                        "I Outlook",
+                        "Du kan ikke finde dem igen"
+                      ],
+                      "correctIndex": 0
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "copilot-m02",
+              "nr": 2,
+              "title": "Din første samtale",
+              "description": "Skriv din første prompt, ret svaret, og forstå, hvorfor Copilot nogle gange siger nej.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l02-01",
+                  "nr": "2.1",
+                  "title": "Prompting – hvad er det?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l02-02",
+                  "nr": "2.2",
+                  "title": "Hvad er Prompt Gallery?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l02-03",
+                  "nr": "2.3",
+                  "title": "Hvordan retter man et svar, man ikke er tilfreds med?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l02-04",
+                  "nr": "2.4",
+                  "title": "Hvorfor vil Copilot nogle gange ikke svare?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l02-05",
+                  "nr": "2.5",
+                  "title": "Hvorfor siger Copilot, at man har nået sin grænse?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m03",
+              "nr": 3,
+              "title": "Mere end tekst",
+              "description": "Tal og diktér, send filer og billeder, og lav billeder.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l03-01",
+                  "nr": "3.1",
+                  "title": "Hvordan taler man med Copilot?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l03-02",
+                  "nr": "3.2",
+                  "title": "Hvordan giver man Copilot en fil eller et billede?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l03-03",
+                  "nr": "3.3",
+                  "title": "Hvordan laver man billeder med Copilot?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m04",
+              "nr": 4,
+              "title": "Brug Copilot sikkert",
+              "description": "Tjek svaret og kilderne, og beskyt virksomhedens data.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l04-01",
+                  "nr": "4.1",
+                  "title": "Kan man stole på svaret?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l04-02",
+                  "nr": "4.2",
+                  "title": "Hvordan bruger man kildehenvisningerne?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l04-03",
+                  "nr": "4.3",
+                  "title": "Hvad må man ikke dele?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l04-04",
+                  "nr": "4.4",
+                  "title": "Hvordan beskytter Copilot virksomhedens data?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "copilot-n2",
+          "nr": 2,
+          "name": "Øvet",
+          "title": "Brug Copilot i dine programmer",
+          "outcome": "Bagefter sparer du tid i Word, Excel, PowerPoint, Outlook og Teams hver uge.",
+          "test": {
+            "id": "copilot-t2",
+            "title": "Øvet-certifikat",
+            "description": "Bestå med mindst 80 %, og få dit andet certifikat.",
+            "minutes": 10,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "copilot-m05",
+              "nr": 5,
+              "title": "Bedre prompts og modeller",
+              "description": "Prompts, der rammer første gang, og hvilken model du skal vælge.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l05-01",
+                  "nr": "5.1",
+                  "title": "Hvordan bliver man bedre til at prompte?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l05-02",
+                  "nr": "5.2",
+                  "title": "Hvad er Prompt Coach?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l05-03",
+                  "nr": "5.3",
+                  "title": "Hvordan vælger man model?",
+                  "minutes": 5,
+                  "badges": [
+                    "Claude kræver tilvalg i EU"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l05-04",
+                  "nr": "5.4",
+                  "title": "Hvordan skifter man model undervejs?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m06",
+              "nr": 6,
+              "title": "Find information",
+              "description": "Søg på nettet og i dine filer, og lav grundig research.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l06-01",
+                  "nr": "6.1",
+                  "title": "Hvordan søger Copilot på nettet?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l06-02",
+                  "nr": "6.2",
+                  "title": "Hvad er Copilot Search?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l06-03",
+                  "nr": "6.3",
+                  "title": "Hvad er Researcher?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m07",
+              "nr": 7,
+              "title": "Copilot i Word og PowerPoint",
+              "description": "Skriv, omskriv, og lav præsentationer ud fra dine egne filer.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l07-01",
+                  "nr": "7.1",
+                  "title": "Hvordan skriver og omskriver man med Copilot i Word?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l07-02",
+                  "nr": "7.2",
+                  "title": "Hvordan får man kildehenvisninger i Word?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l07-03",
+                  "nr": "7.3",
+                  "title": "Hvordan laver man en præsentation ud fra sine egne filer?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l07-04",
+                  "nr": "7.4",
+                  "title": "Hvordan laver man egne skills i PowerPoint?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m08",
+              "nr": 8,
+              "title": "Copilot i Excel og Outlook",
+              "description": "Formler, analyse og en indbakke, der er til at overskue.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l08-01",
+                  "nr": "8.1",
+                  "title": "Hvordan bruger man Copilot til formler og analyse i Excel?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l08-02",
+                  "nr": "8.2",
+                  "title": "Hvad er Analyst?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l08-03",
+                  "nr": "8.3",
+                  "title": "Hvordan opsummerer og skriver man mails i Outlook?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l08-04",
+                  "nr": "8.4",
+                  "title": "Hvordan rydder man op i indbakken med Copilot?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m09",
+              "nr": 9,
+              "title": "Copilot i Teams",
+              "description": "Mødereferater, opsummeringer og hjælp i chats og kanaler.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l09-01",
+                  "nr": "9.1",
+                  "title": "Hvordan får man et referat af et møde i Teams?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l09-02",
+                  "nr": "9.2",
+                  "title": "Hvad er video-recap?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l09-03",
+                  "nr": "9.3",
+                  "title": "Hvad er Facilitator?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l09-04",
+                  "nr": "9.4",
+                  "title": "Hvordan bruger man Copilot i chats og kanaler?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "copilot-n3",
+          "nr": 3,
+          "name": "Avanceret",
+          "title": "Tilpas Copilot til dit arbejde",
+          "outcome": "Bagefter samler du dit arbejde i notesbøger, og Copilot kender dine mails, filer og møder.",
+          "test": {
+            "id": "copilot-t3",
+            "title": "Avanceret-certifikat",
+            "description": "Bestå med mindst 80 %, og få dit tredje certifikat.",
+            "minutes": 10,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "copilot-m10",
+              "nr": 10,
+              "title": "Gør Copilot til din",
+              "description": "Hukommelse og personlige indstillinger.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l10-01",
+                  "nr": "10.1",
+                  "title": "Hvordan får du Copilot til at huske dig?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l10-02",
+                  "nr": "10.2",
+                  "title": "Hvordan tilpasser man Copilots svar?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m11",
+              "nr": 11,
+              "title": "Notesbøger og Pages",
+              "description": "Saml filer, møder og noter ét sted, og lav færdigt arbejde ud fra dem.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l11-01",
+                  "nr": "11.1",
+                  "title": "Hvad er Copilot Notebooks?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l11-02",
+                  "nr": "11.2",
+                  "title": "Hvordan tilføjer man filer, møder og mails til en notesbog?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l11-03",
+                  "nr": "11.3",
+                  "title": "Hvordan laver man dokumenter, regneark og præsentationer ud fra en notesbog?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l11-04",
+                  "nr": "11.4",
+                  "title": "Hvordan laver man infografikker, mindmaps og studieguides?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l11-05",
+                  "nr": "11.5",
+                  "title": "Hvad er Copilot Pages, og hvordan samarbejder man i dem?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l11-06",
+                  "nr": "11.6",
+                  "title": "Hvordan optager man lyd og billeder til en notesbog på iPhone?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m12",
+              "nr": 12,
+              "title": "Copilot kender dit arbejde",
+              "description": "Mails, filer, møder, SharePoint og dine andre systemer.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l12-01",
+                  "nr": "12.1",
+                  "title": "Hvad er Work IQ?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l12-02",
+                  "nr": "12.2",
+                  "title": "Hvordan bruger man Copilot i SharePoint og OneDrive?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l12-03",
+                  "nr": "12.3",
+                  "title": "Hvordan bygger man sites og lister ved at beskrive dem?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l12-04",
+                  "nr": "12.4",
+                  "title": "Hvordan forbinder man Copilot til andre systemer?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m13",
+              "nr": 13,
+              "title": "Copilot i dine programmer",
+              "description": "Edge, Windows, mobilappen og OneNote.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l13-01",
+                  "nr": "13.1",
+                  "title": "Hvordan bruger man Copilot i Edge?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l13-02",
+                  "nr": "13.2",
+                  "title": "Hvordan bruger man Copilot i Windows?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l13-03",
+                  "nr": "13.3",
+                  "title": "Hvordan bruger man Copilot på telefonen og i bilen?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l13-04",
+                  "nr": "13.4",
+                  "title": "Hvordan bruger man Copilot i OneNote?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m14",
+              "nr": 14,
+              "title": "Sikkerhed og regler",
+              "description": "Følsomhedsmærkater og loven om AI på arbejdet.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l14-01",
+                  "nr": "14.1",
+                  "title": "Hvad er følsomhedsmærkater, og hvorfor betyder de noget?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l14-02",
+                  "nr": "14.2",
+                  "title": "Hvad siger loven om AI på arbejdet?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "copilot-n4",
+          "nr": 4,
+          "name": "Ekspert",
+          "title": "Lad Copilot arbejde for dig",
+          "outcome": "Bagefter bygger du en arbejdsgang, der kører uden dig, og lærer dine kolleger op.",
+          "test": {
+            "id": "copilot-t4",
+            "title": "Ekspert-certifikat",
+            "description": "Slutprøve: byg en færdig arbejdsgang til dit eget job.",
+            "minutes": 30,
+            "passPercent": 80,
+            "status": "kommer-snart"
+          },
+          "modules": [
+            {
+              "id": "copilot-m15",
+              "nr": 15,
+              "title": "Copilot Cowork",
+              "description": "Lad Copilot løse større opgaver, også mens du laver noget andet.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l15-01",
+                  "nr": "15.1",
+                  "title": "Hvad er en AI-agent?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l15-02",
+                  "nr": "15.2",
+                  "title": "Hvad er forskellen på Chat og Cowork?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens",
+                    "Betales efter forbrug"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l15-03",
+                  "nr": "15.3",
+                  "title": "Hvordan giver man Cowork en opgave?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens",
+                    "Betales efter forbrug"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l15-04",
+                  "nr": "15.4",
+                  "title": "Hvordan laver man planlagte opgaver?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens",
+                    "Betales efter forbrug"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l15-05",
+                  "nr": "15.5",
+                  "title": "Hvordan starter en opgave af sig selv, når der kommer en mail eller en besked?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens",
+                    "Betales efter forbrug"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l15-06",
+                  "nr": "15.6",
+                  "title": "Hvordan holder man overblik over sine opgaver?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens",
+                    "Betales efter forbrug"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m16",
+              "nr": 16,
+              "title": "Tilpas Copilot",
+              "description": "Færdige agenter, plugins og dine egne skills.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l16-01",
+                  "nr": "16.1",
+                  "title": "Hvordan bruger man de færdige agenter som Researcher og Analyst?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l16-02",
+                  "nr": "16.2",
+                  "title": "Hvordan installerer man plugins?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l16-03",
+                  "nr": "16.3",
+                  "title": "Hvordan laver man sine egne skills?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m17",
+              "nr": 17,
+              "title": "Byg dine egne agenter",
+              "description": "Agent Builder, Copilot Studio og agenter til SharePoint.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l17-01",
+                  "nr": "17.1",
+                  "title": "Hvad er Agent Builder?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l17-02",
+                  "nr": "17.2",
+                  "title": "Hvad er Copilot Studio?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l17-03",
+                  "nr": "17.3",
+                  "title": "Hvad er SharePoint-agenter?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l17-04",
+                  "nr": "17.4",
+                  "title": "Hvad er Copilot Tuning?",
+                  "minutes": 5,
+                  "badges": [
+                    "Kræver licens"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m18",
+              "nr": 18,
+              "title": "Code og Autopilot",
+              "description": "Byg små apps, og lad agenter arbejde i baggrunden.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l18-01",
+                  "nr": "18.1",
+                  "title": "Hvordan bygger man apps og dashboards med Code?",
+                  "minutes": 5,
+                  "badges": [
+                    "Prøveversion",
+                    "Betales efter forbrug"
+                  ],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l18-02",
+                  "nr": "18.2",
+                  "title": "Hvad er Autopilot?",
+                  "minutes": 5,
+                  "badges": [
+                    "Prøveversion",
+                    "Betales efter forbrug"
+                  ],
+                  "status": "kommer-snart"
+                }
+              ]
+            },
+            {
+              "id": "copilot-m19",
+              "nr": 19,
+              "title": "Copilot i virksomheden",
+              "description": "Licenser, administration, måling og oplæring af kolleger.",
+              "status": "kommer-snart",
+              "lessons": [
+                {
+                  "id": "copilot-l19-01",
+                  "nr": "19.1",
+                  "title": "Hvordan fungerer licenser og forbrugsbetaling?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l19-02",
+                  "nr": "19.2",
+                  "title": "Hvordan styrer en administrator Copilot?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l19-03",
+                  "nr": "19.3",
+                  "title": "Hvordan måler man brugen af Copilot?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l19-04",
+                  "nr": "19.4",
+                  "title": "Hvordan styrer man adgangen til modeller?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l19-05",
+                  "nr": "19.5",
+                  "title": "Hvordan bygger man en hel arbejdsgang med Copilot?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                },
+                {
+                  "id": "copilot-l19-06",
+                  "nr": "19.6",
+                  "title": "Hvordan lærer man sine kolleger at bruge Copilot?",
+                  "minutes": 5,
+                  "badges": [],
+                  "status": "kommer-snart"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

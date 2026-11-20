@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>tag:blogger.com,1999:blog-123</id>
+  <title>Google Workspace Updates</title>
+  <updated>2026-10-07T17:00:00Z</updated>
+  <entry>
+    <id>tag:blogger.com,1999:blog-123.post-777</id>
+    <published>2026-10-07T17:00:00Z</published>
+    <updated>2026-10-07T17:00:00Z</updated>
+    <title type="text">Gems become Skills in the Gemini app</title>
+    <content type="html">&lt;p&gt;Gems are now called &lt;b&gt;Skills&lt;/b&gt; in the Gemini app.&lt;/p&gt;&lt;p&gt;Available to Business and Enterprise customers.&lt;/p&gt;</content>
+    <link rel="alternate" type="text/html" href="https://workspaceupdates.googleblog.com/2026/10/gems-skills.html"/>
+  </entry>
+</feed>

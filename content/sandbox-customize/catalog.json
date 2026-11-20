@@ -1,0 +1,34 @@
+{
+  "source": "claude.ai → Tilpasning (Skills og Plugins), set 26.10.2026. Navne som tekst; beskrivelser skrevet af Mindforward.",
+  "skills": [
+    { "id": "pdf", "name": "pdf", "madeBy": "Anthropic", "section": "forYou", "icon": "file", "description": "Læs, udfyld og saml PDF-filer, og træk tekst og tabeller ud af dem." },
+    { "id": "docx", "name": "docx", "madeBy": "Anthropic", "section": "forYou", "icon": "file", "description": "Lav og redigér Word-dokumenter med overskrifter, tabeller og kommentarer." },
+    { "id": "xlsx", "name": "xlsx", "madeBy": "Anthropic", "section": "forYou", "icon": "table", "description": "Byg regneark med formler, diagrammer og pæn formatering." },
+    { "id": "pptx", "name": "pptx", "madeBy": "Anthropic", "section": "forYou", "icon": "grid", "description": "Lav præsentationer med slides, layout og talenoter." },
+    { "id": "skill-creator", "name": "skill-creator", "madeBy": "Anthropic", "section": "forYou", "icon": "sparkle", "description": "Byg din egen skill trin for trin: hvad den skal kunne, og hvordan den testes." },
+    { "id": "internal-comms", "name": "internal-comms", "madeBy": "Anthropic", "section": "forYou", "icon": "mail", "description": "Skriv statusopdateringer, nyhedsbreve og interne beskeder i en fast form." },
+    { "id": "doc-coauthoring", "name": "doc-coauthoring", "madeBy": "Anthropic", "section": "new", "icon": "file", "description": "Skriv et dokument sammen i faser: kontekst, udkast, forbedring og test." },
+    { "id": "web-artifacts-builder", "name": "web-artifacts-builder", "madeBy": "Anthropic", "section": "new", "icon": "grid", "description": "Byg større artefakter i HTML med flere komponenter." },
+    { "id": "learn", "name": "learn", "madeBy": "Anthropic", "section": "new", "icon": "sparkle", "description": "Lær et emne grundigt i stedet for bare at få svaret." },
+    { "id": "brand-guidelines", "name": "brand-guidelines", "madeBy": "Anthropic", "section": "new", "icon": "sparkle", "description": "Brug virksomhedens farver, skrifter og tone i alt, der laves." },
+    { "id": "frontend-design", "name": "frontend-design", "madeBy": "Anthropic", "section": "popular", "icon": "grid", "description": "Design skærme og sider, der ser gennemarbejdede ud." },
+    { "id": "canvas-design", "name": "canvas-design", "madeBy": "Anthropic", "section": "popular", "icon": "sparkle", "description": "Lav plakater og grafik som billede eller PDF." },
+    { "id": "theme-factory", "name": "theme-factory", "madeBy": "Anthropic", "section": "popular", "icon": "sparkle", "description": "Giv slides, dokumenter og sider et samlet tema." },
+    { "id": "mcp-builder", "name": "mcp-builder", "madeBy": "Anthropic", "section": "popular", "icon": "lightning", "description": "Byg din egen forbindelse til et system, der ikke findes i kataloget." }
+  ],
+  "plugins": [
+    { "id": "plugin-management", "name": "Plugin Management", "madeBy": "Anthropic", "section": "forYou", "icon": "grid", "description": "Opret, tilpas og styr plugins til organisationens værktøjer." },
+    { "id": "product-management", "name": "Product Management", "madeBy": "Anthropic", "section": "forYou", "icon": "plan", "description": "Skriv specifikationer, planlæg roadmaps og saml brugerindsigt." },
+    { "id": "operations", "name": "Operations", "madeBy": "Anthropic", "section": "forYou", "icon": "building", "description": "Styr leverandører, processer og dokumentation i driften." },
+    { "id": "small-business", "name": "Small Business", "madeBy": "Anthropic", "section": "forYou", "icon": "building", "description": "Færdige arbejdsgange til den lille virksomhed: tilbud, kunder og opfølgning." },
+    { "id": "enterprise-search", "name": "Enterprise Search", "madeBy": "Anthropic", "section": "forYou", "icon": "search", "description": "Søg på tværs af mail, filer og chat på ét sted." },
+    { "id": "human-resources", "name": "Human Resources", "madeBy": "Anthropic", "section": "forYou", "icon": "users", "description": "Rekruttering, onboarding og medarbejdersamtaler." },
+    { "id": "netsuite-suiteskills", "name": "NetSuite SuiteSkills", "madeBy": "Anthropic Directory", "section": "new", "icon": "chart", "description": "Indsigt og arbejdsgange på tværs af virksomhedens økonomisystem." },
+    { "id": "verisk-underwriting", "name": "Verisk Underwriting Intelligence", "madeBy": "Anthropic Directory", "section": "new", "icon": "chart", "description": "Udvalgt forsikringsviden direkte i chatten." },
+    { "id": "eddyter", "name": "Eddyter", "madeBy": "Anthropic Directory", "section": "new", "icon": "file", "description": "Styr en teksteditor i din egen app fra chatten." },
+    { "id": "productivity", "name": "Productivity", "madeBy": "Anthropic", "section": "popular", "icon": "check", "description": "Styr opgaver, planlæg dagen og husk det vigtige fra din arbejdsdag." },
+    { "id": "postiz", "name": "Postiz", "madeBy": "Nevo David", "section": "popular", "icon": "calendar", "description": "Planlæg opslag på sociale medier og hold styr på kanalerne." },
+    { "id": "pdf-viewer", "name": "PDF Viewer", "madeBy": "Anthropic", "section": "popular", "icon": "file", "description": "Vis og gennemgå PDF-filer direkte i chatten." },
+    { "id": "sales", "name": "Sales", "madeBy": "Anthropic", "section": "popular", "icon": "users", "description": "Forbered salgsmøder, følg op på kunder og skriv tilbud." }
+  ]
+}

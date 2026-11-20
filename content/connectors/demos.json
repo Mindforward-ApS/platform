@@ -1,0 +1,164 @@
+[
+  {
+    "slug": "landbrug-microsoft-365", "connector": "microsoft-365", "industry": "landbrug",
+    "title": "Frister og svar fra ugens mails",
+    "data": { "mails": [
+      { "fra": "Planteavlskonsulent Lone Kjær", "emne": "Gødningsplan 2027", "tekst": "Hej Jens. Jeg mangler jeres sædskifte for mark 7–12, før jeg kan lave gødningsplanen. Senest fredag 23. oktober." },
+      { "fra": "Maskinstation Vestbo", "emne": "Pløjning uge 44", "tekst": "Vi kan komme tirsdag eller torsdag i uge 44. Hvilken dag passer jer? Pris 640 kr. pr. ha som sidst." },
+      { "fra": "Kommunen, Natur og Miljø", "emne": "Høring om vandløb", "tekst": "Høringssvar om oprensning af Tange Bæk skal være os i hænde senest 30. oktober." },
+      { "fra": "Grovvareselskabet Midt", "emne": "Afregning for vårbyg", "tekst": "Vedhæftet afregning for 48,2 tons vårbyg, i alt 87.240 kr. Betales 15. november." },
+      { "fra": "Dyrlæge Søren Holm", "emne": "Besætningsbesøg", "tekst": "Næste rådgivningsbesøg er planlagt 4. november kl. 9. Sig til, hvis det ikke passer." } ] },
+    "prompt": "Gennemgå mine mails fra ugen. Lav en liste over frister og ting, jeg skal svare på, sorteret efter dato. Skriv hvem, hvad og hvornår.",
+    "outputKind": "LIST"
+  },
+  {
+    "slug": "landbrug-google-drive", "connector": "google-drive", "industry": "landbrug",
+    "title": "Markplanen før mødet med konsulenten",
+    "data": { "dokumenter": [
+      { "fil": "Markplan 2026.xlsx", "indhold": "Mark 7: vinterhvede 14,2 ha. Mark 8: vårbyg 9,8 ha. Mark 9: vinterraps 11,0 ha. Mark 10: græs 6,5 ha. Mark 11: vårbyg 8,1 ha. Mark 12: majs 12,4 ha." },
+      { "fil": "Udbytter 2025.xlsx", "indhold": "Vinterhvede 8,9 t/ha. Vårbyg 6,1 t/ha. Vinterraps 4,2 t/ha. Majs 13,5 t ts/ha." },
+      { "fil": "Noter fra markvandring.docx", "indhold": "Mark 9 har haft problemer med snegle i kanten mod skoven. Mark 12 står vådt i nordenden efter regn." } ] },
+    "prompt": "Lav en kort opsummering af markplanen og sidste års udbytter til mødet med min planteavlskonsulent. Tilføj tre spørgsmål, jeg bør stille.",
+    "outputKind": "SUMMARY"
+  },
+  {
+    "slug": "landbrug-e-conomic", "connector": "e-conomic", "industry": "landbrug",
+    "title": "Manglende bilag i kvartalet",
+    "data": { "posteringer": [
+      { "dato": "2026-07-04", "tekst": "Diesel, brændstofkort", "beloeb": -14650, "bilag": true },
+      { "dato": "2026-07-19", "tekst": "Reservedele, Maskincenter Nord", "beloeb": -8320, "bilag": false },
+      { "dato": "2026-08-02", "tekst": "Udsæd vinterhvede", "beloeb": -42100, "bilag": true },
+      { "dato": "2026-08-27", "tekst": "Dyrlæge Søren Holm", "beloeb": -3875, "bilag": false },
+      { "dato": "2026-09-15", "tekst": "Afregning vårbyg", "beloeb": 87240, "bilag": true } ] },
+    "prompt": "Find posteringer i kvartalet, hvor bilaget mangler, og skriv en kort huskeliste til mig med beløb og hvem jeg skal bede om bilaget.",
+    "outputKind": "LIST"
+  },
+  {
+    "slug": "haandvaerk-microsoft-365", "connector": "microsoft-365", "industry": "haandvaerk",
+    "title": "Fra kundens mails til et tilbud",
+    "data": { "mails": [
+      { "fra": "Anne og Mikkel Dahl", "emne": "Nyt badeværelse", "tekst": "Vi vil gerne have et tilbud på et nyt badeværelse på ca. 6 m². Gulvvarme, walk-in bruser og nye fliser. Vi har vedhæftet billeder og mål." },
+      { "fra": "Anne Dahl", "emne": "Re: Nyt badeværelse", "tekst": "Vi glemte at skrive, at toilettet skal være væghængt. Vi håber, I kan starte i januar." },
+      { "fra": "Grossisten Byg & VVS", "emne": "Priser på fliser", "tekst": "Klinker 60x60 grå: 389 kr./m². Vægfliser 30x60 hvid: 279 kr./m². Levering 3–5 dage." } ] },
+    "prompt": "Lav et kort udkast til et tilbud til familien Dahl ud fra deres mails. Skriv arbejdet i punkter, det de skal tage stilling til, og en forventet opstart. Opfind ikke priser, der ikke står i mailene.",
+    "outputKind": "DRAFT"
+  },
+  {
+    "slug": "haandvaerk-gmail", "connector": "gmail", "industry": "haandvaerk",
+    "title": "Nye forespørgsler i indbakken",
+    "data": { "mails": [
+      { "fra": "Peter Jessen", "emne": "Skiftet tagrender?", "tekst": "Hej. Kan I skifte tagrender på et parcelhus i Viby? Ca. 32 meter. Hvornår kan I komme forbi?" },
+      { "fra": "Boligforeningen Lærkehaven", "emne": "Vedligehold opgang 3", "tekst": "Vi skal have malet opgang 3 og udskiftet to hoveddøre. Kan I give en pris før generalforsamlingen 12. november?" },
+      { "fra": "Lise Frandsen", "emne": "Utæt vindue", "tekst": "Det trækker fra vinduet i stuen. Kan det repareres, eller skal det skiftes?" },
+      { "fra": "Nyhedsbrev Byggeri", "emne": "Ugens nyheder", "tekst": "Læs om nye regler for byggeaffald." } ] },
+    "prompt": "Find de mails, der er nye kundeforespørgsler. Skriv et kort, venligt svar til hver med forslag til en besigtigelse i næste uge.",
+    "outputKind": "DRAFT"
+  },
+  {
+    "slug": "haandvaerk-google-calendar", "connector": "google-calendar", "industry": "haandvaerk",
+    "title": "Ugens besigtigelser og opgaver",
+    "data": { "aftaler": [
+      { "dag": "Mandag", "tid": "08:00", "hvad": "Badeværelse, Dahl", "sted": "Risskov" },
+      { "dag": "Mandag", "tid": "14:00", "hvad": "Besigtigelse tagrender, Jessen", "sted": "Viby" },
+      { "dag": "Tirsdag", "tid": "08:00", "hvad": "Badeværelse, Dahl", "sted": "Risskov" },
+      { "dag": "Onsdag", "tid": "10:00", "hvad": "Besigtigelse vindue, Frandsen", "sted": "Tilst" },
+      { "dag": "Torsdag", "tid": "13:00", "hvad": "Møde i Lærkehaven", "sted": "Brabrand" } ] },
+    "prompt": "Se på min uge. Er der steder, hvor kørslen kan blive kortere, hvis jeg bytter rundt? Foreslå en ny rækkefølge og forklar kort hvorfor.",
+    "outputKind": "SUMMARY"
+  },
+  {
+    "slug": "revision-microsoft-365", "connector": "microsoft-365", "industry": "revision",
+    "title": "Hvad mangler klienten?",
+    "data": { "mails": [
+      { "fra": "Henrik Lund, Lund Tømrer ApS", "emne": "Årsregnskab 2025/26", "tekst": "Hej. Kontoudtog for driftskontoen er vedhæftet. Billedet af kassebeholdningen kommer i morgen." },
+      { "fra": "Henrik Lund", "emne": "Re: Spørgsmål", "tekst": "Varevognen blev solgt i maj for 95.000 kr. Slutsedlen finder jeg frem." },
+      { "fra": "Bogholder Maja Friis", "emne": "Debitorliste", "tekst": "Debitorlisten pr. 30. juni er lagt i den delte mappe. Der er to fakturaer, der nok skal afskrives." } ] },
+    "prompt": "Lav en liste over de bilag og svar, vi stadig mangler fra Lund Tømrer ApS til årsregnskabet, og et kort, venligt mailudkast til Henrik.",
+    "outputKind": "DRAFT"
+  },
+  {
+    "slug": "revision-google-drive", "connector": "google-drive", "industry": "revision",
+    "title": "Klientmappen før mødet",
+    "data": { "dokumenter": [
+      { "fil": "Planlægning 2025-26.docx", "indhold": "Væsentlighed 120.000 kr. Fokus: varelager, igangværende arbejder, salg af anlægsaktiv." },
+      { "fil": "Noter fra sidste år.docx", "indhold": "Varelageret blev ikke optalt ved årsskiftet. Aftalt at det sker i år. Debitorer over 90 dage: 64.500 kr." },
+      { "fil": "Lønafstemning.xlsx", "indhold": "Løn bogført 2.184.000 kr. Indberettet til eIndkomst 2.179.500 kr. Forskel 4.500 kr. ikke forklaret." } ] },
+    "prompt": "Opsummér klientmappen i fem punkter til mødet med klienten i morgen, og skriv de spørgsmål, vi skal have svar på.",
+    "outputKind": "SUMMARY"
+  },
+  {
+    "slug": "revision-e-conomic", "connector": "e-conomic", "industry": "revision",
+    "title": "Usædvanlige posteringer",
+    "data": { "posteringer": [
+      { "dato": "2026-03-31", "konto": "Kontorartikler", "tekst": "Bon fra elektronikbutik", "beloeb": 18990 },
+      { "dato": "2026-05-12", "konto": "Salg af anlæg", "tekst": "Varevogn", "beloeb": 95000 },
+      { "dato": "2026-06-30", "konto": "Repræsentation", "tekst": "Julefrokost", "beloeb": 42300 },
+      { "dato": "2026-06-30", "konto": "Debitorer", "tekst": "Afskrivning", "beloeb": -31200 } ] },
+    "prompt": "Gennemgå posteringerne og peg på dem, der ser usædvanlige ud. Formulér et spørgsmål til klienten for hver.",
+    "outputKind": "TABLE"
+  },
+  {
+    "slug": "webshop-shopify", "connector": "shopify", "industry": "webshop",
+    "title": "Forsinkede ordrer og svar til kunderne",
+    "data": { "ordrer": [
+      { "ordre": "#10482", "kunde": "Mette Holm", "vare": "Uldplaid, grå", "status": "Ikke afsendt", "dage": 6 },
+      { "ordre": "#10487", "kunde": "Jonas Krag", "vare": "Kaffekande, 1,5 l", "status": "Afsendt", "dage": 2 },
+      { "ordre": "#10491", "kunde": "Sofie Lind", "vare": "Hørdug, sand", "status": "Ikke afsendt", "dage": 5 },
+      { "ordre": "#10495", "kunde": "Ali Demir", "vare": "Puder, 2 stk.", "status": "Leveret", "dage": 1 } ] },
+    "prompt": "Find ordrer, der er mere end 4 dage forsinkede, og skriv et kort, personligt svar til hver kunde med en undskyldning og en forventet afsendelse i morgen.",
+    "outputKind": "DRAFT"
+  },
+  {
+    "slug": "webshop-gmail", "connector": "gmail", "industry": "webshop",
+    "title": "Kundeservice sorteret efter emne",
+    "data": { "mails": [
+      { "fra": "Camilla B.", "emne": "Hvor er min pakke?", "tekst": "Jeg bestilte for en uge siden, ordre 10482, og har intet hørt." },
+      { "fra": "Thomas R.", "emne": "Bytte", "tekst": "Plaiden er for lille. Kan jeg bytte til den store?" },
+      { "fra": "Ida N.", "emne": "Forkert vare", "tekst": "Jeg har fået en blå pude i stedet for en grøn." },
+      { "fra": "Lars P.", "emne": "Gavekort", "tekst": "Kan jeg købe et gavekort på 500 kr.?" },
+      { "fra": "Hanne S.", "emne": "Levering", "tekst": "Leverer I til pakkeshop i Odder?" } ] },
+    "prompt": "Sortér mailene efter emne (levering, bytte og retur, andet) og skriv et kort svar til hver.",
+    "outputKind": "TABLE"
+  },
+  {
+    "slug": "webshop-hubspot", "connector": "hubspot", "industry": "webshop",
+    "title": "Kunder, der ikke har købt længe",
+    "data": { "kunder": [
+      { "navn": "Rikke Bach", "seneste_koeb": "2026-02-11", "koeb_i_alt": 4, "beloeb_i_alt": 2890 },
+      { "navn": "Morten Lauridsen", "seneste_koeb": "2025-11-30", "koeb_i_alt": 2, "beloeb_i_alt": 1240 },
+      { "navn": "Nanna Juul", "seneste_koeb": "2026-09-20", "koeb_i_alt": 6, "beloeb_i_alt": 5110 },
+      { "navn": "Kasper Wind", "seneste_koeb": "2025-12-18", "koeb_i_alt": 1, "beloeb_i_alt": 649 } ] },
+    "prompt": "Find kunder, der ikke har købt i over et halvt år (i dag er 15. oktober 2026), og skriv et kort nyhedsbrev til dem om efterårets nyheder. Ingen rabatter.",
+    "outputKind": "DRAFT"
+  },
+  {
+    "slug": "raadgivning-microsoft-365", "connector": "microsoft-365", "industry": "raadgivning",
+    "title": "Referat af kundemødet",
+    "data": { "moedenoter": [
+      { "moede": "Styregruppe, Fjordbyen Kommune", "dato": "2026-10-13", "noter": "Analysen af borgerservice forsinkes 2 uger pga. manglende data fra IT. Anne skaffer data inden fredag. Ønske om ekstra workshop med frontpersonalet. Budget uændret. Næste møde 3. november." },
+      { "moede": "Opfølgning med IT", "dato": "2026-10-14", "noter": "Data kan leveres som udtræk fra sagssystemet. Kræver databehandleraftale-tillæg. Kim tjekker med jura." } ] },
+    "prompt": "Lav et kort referat til kunden med beslutninger, aftaler med ansvarlig og frist, og hvad der påvirker tidsplanen.",
+    "outputKind": "SUMMARY"
+  },
+  {
+    "slug": "raadgivning-hubspot", "connector": "hubspot", "industry": "raadgivning",
+    "title": "Pipeline før salgsmødet",
+    "data": { "muligheder": [
+      { "kunde": "Havnefronten A/S", "fase": "Tilbud sendt", "vaerdi": 240000, "sidste_kontakt": "2026-09-22" },
+      { "kunde": "Region Øst", "fase": "Behovsafklaring", "vaerdi": 480000, "sidste_kontakt": "2026-10-09" },
+      { "kunde": "Grøn Energi ApS", "fase": "Forhandling", "vaerdi": 125000, "sidste_kontakt": "2026-08-30" },
+      { "kunde": "Byggefirmaet Kant", "fase": "Tilbud sendt", "vaerdi": 90000, "sidste_kontakt": "2026-10-01" } ] },
+    "prompt": "Giv mig et overblik over pipelinen til ugens salgsmøde. Fremhæv de muligheder, hvor vi ikke har haft kontakt i over 3 uger, og foreslå næste skridt.",
+    "outputKind": "TABLE"
+  },
+  {
+    "slug": "raadgivning-notion", "connector": "notion", "industry": "raadgivning",
+    "title": "Statusrapport fra projektnoterne",
+    "data": { "noter": [
+      { "side": "Projekt: Digital kundeservice", "indhold": "Fase 2 af 3. Interviews gennemført med 14 medarbejdere. Workshop 1 afholdt 8. oktober." },
+      { "side": "Beslutninger", "indhold": "Chatbot fravalgt i første omgang. Fokus på bedre selvbetjening på hjemmesiden." },
+      { "side": "Risici", "indhold": "Data fra IT kommer sent. Nøgleperson på barsel fra december." } ] },
+    "prompt": "Skriv en kort statusrapport til kunden ud fra projektnoterne: hvor vi er, hvad der er besluttet, og hvad der kan forsinke os.",
+    "outputKind": "SUMMARY"
+  }
+]

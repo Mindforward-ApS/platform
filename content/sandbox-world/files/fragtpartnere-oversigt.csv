@@ -1,0 +1,5 @@
+Partner,Zoner,Område,SLA levering,Afhentning hos Nordlys,Til tiden Q3 (%),Kontakt,Telefon,Status
+Vestvind Transport,"3, 4",Sjælland og Fyn,Næste hverdag (D+1),Hverdage kl. 16:30,91,drift@vestvind-transport.example,+45 0000 0201,Forsinkelser: +1 dag på Sjælland i 2 uger
+Kystlinje Kurér,2,Nordjylland,Næste hverdag (D+1),Hverdage kl. 16:00,97,booking@kystlinje-kurer.example,+45 0000 0202,Normal drift
+Grænseland Distribution,2,Sønderjylland og Vestjylland,Næste hverdag (D+1),Hverdage kl. 16:00,96,kundeservice@graenseland-distribution.example,+45 0000 0203,Normal drift
+Moseløb Pakkeservice,1,Østjylland (spidsbelastning),Samme dag ved afhentning før kl. 12,"Efter aftale, uge 46–52",98,planlaegning@moseloeb-pakkeservice.example,+45 0000 0204,Aftale om ekstra kapacitet i julesæsonen

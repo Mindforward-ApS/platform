@@ -1,4 +1,5 @@
-// MindForward — Prisma schema (Prisma 7, PostgreSQL on Neon AWS Frankfurt).
+// Greb (product: Mindforward) — Prisma schema. Spec source: prisma/spec/schema.full.prisma; deviations follow
+// docs/00-beslutninger.md § 10a (ModuleTrack join, certificate opt-in, invitation/org fields). Prisma 7, PostgreSQL on Neon AWS Frankfurt).
 // Canonical entity names: docs/00-beslutninger.md §9. Field docs: docs/03-datamodel.md.
 //
 // Conventions
@@ -103,6 +104,12 @@ enum AssignmentSource {
   ADMIN
   MONTHLY
   SELF
+  CARRIED_OVER // passed in another account, brought along by the learner (CredentialTransfer)
+}
+
+enum CredentialTransferDecision {
+  ACCEPTED
+  DECLINED
 }
 
 enum AssignmentStatus {
@@ -228,7 +235,7 @@ enum ConsentChannel {
 
 /// Marketing consent (MFL § 10) and B2C checkout declarations (forbrugeraftaleloven § 18 stk. 2 nr. 13).
 enum ConsentPurpose {
-  MARKETING_EMAIL // tips, MindForward news and offers by email (one specific consent text, docs/09 § 2)
+  MARKETING_EMAIL // tips, Greb news and offers by email (one specific consent text, docs/09 § 2)
   IMMEDIATE_ACCESS_REQUEST // B2C checkout: "I want access immediately"
   WITHDRAWAL_LOSS_ACK // B2C checkout: acknowledges loss/limitation of right of withdrawal
 }
@@ -384,6 +391,7 @@ enum AiFeature {
   CONTENT_CLASSIFY
   CONTENT_DRAFT
   CONTENT_VERIFY
+  CONNECTOR_DEMO // "Prøv den": live demo of a connector on fictional data
 }
 
 enum AiCallStatus {
@@ -429,36 +437,47 @@ model User {
   // Better Auth twoFactor plugin (required for GREB_ADMIN)
   twoFactorEnabled Boolean? @default(false)
 
-  // MindForward fields
+  // Greb fields
   platformRole             PlatformRole @default(USER)
   locale                   String       @default("da")
   trainingRemindersEnabled Boolean      @default(true) // SERVICE reminders day 1/14/25 opt-out
   lastActiveAt             DateTime?
   deletionRequestedAt      DateTime? // GDPR erasure: hard-deleted by job within 30 days
+  // Sign-up form (onboarding, Marco 11 Nov 2026). `name` keeps "Fornavn Efternavn" for Better Auth and emails.
+  firstName                String?
+  lastName                 String?
+  phone                    String? // E.164, e.g. +4512345678
 
-  sessions             Session[]
-  accounts             Account[]
-  twoFactors           TwoFactor[]
-  memberships          Membership[]
-  invitationsSent      Invitation[]
-  assignments          Assignment[]          @relation("AssignmentLearner")
-  assignmentsCreated   Assignment[]          @relation("AssignmentAssigner")
-  attempts             Attempt[]
-  certificates         Certificate[]
-  monthlyAssignments   MonthlyAssignment[]
-  placementResults     PlacementResult[]
-  consentRecords       ConsentRecord[]
-  emailMessages        EmailMessage[]
-  supportConversations SupportConversation[]
-  escalations          Escalation[]          @relation("EscalationUser")
-  escalationsResolved  Escalation[]          @relation("EscalationResolver")
-  auditLogs            AuditLog[]
-  sandboxSessions      SandboxSession[]
-  sandboxEvents        SandboxEvent[]
-  aiUsageDaily         AiUsageDaily[]
-  aiCalls              AiCall[]
-  withdrawalRequests   WithdrawalRequest[]
-  trackEnrollments     TrackEnrollment[]
+  sessions                Session[]
+  accounts                Account[]
+  twoFactors              TwoFactor[]
+  memberships             Membership[]
+  invitationsSent         Invitation[]
+  assignments             Assignment[]             @relation("AssignmentLearner")
+  assignmentsCreated      Assignment[]             @relation("AssignmentAssigner")
+  attempts                Attempt[]
+  certificates            Certificate[]
+  courseLessonCompletions CourseLessonCompletion[]
+  monthlyAssignments      MonthlyAssignment[]
+  placementResults        PlacementResult[]
+  consentRecords          ConsentRecord[]
+  emailMessages           EmailMessage[]
+  supportConversations    SupportConversation[]
+  escalations             Escalation[]             @relation("EscalationUser")
+  escalationsResolved     Escalation[]             @relation("EscalationResolver")
+  auditLogs               AuditLog[]
+  sandboxSessions         SandboxSession[]
+  sandboxEvents           SandboxEvent[]
+  aiUsageDaily            AiUsageDaily[]
+  aiCalls                 AiCall[]
+  withdrawalRequests      WithdrawalRequest[]
+  trackEnrollments        TrackEnrollment[]
+  credentialTransfers     CredentialTransfer[]
+  certificateShares       CertificateShare[]
+  workProfiles            WorkProfile[]
+  connectorDemoRuns       ConnectorDemoRun[]
+  onboardingProfiles      OnboardingProfile[]
+  calendarEvents          CalendarEvent[]
 
   @@map("user")
 }
@@ -476,6 +495,9 @@ model Session {
 
   // organization plugin
   activeOrganizationId String?
+
+  // Greb: GREB_ADMIN TOTP step-up for this session (requirePlatformAdmin). Better Auth's twoFactor plugin needs passwords.
+  twoFactorVerifiedAt DateTime?
 
   @@index([userId])
   @@map("session")
@@ -547,7 +569,7 @@ model Organization {
   metadata  String?
   createdAt DateTime @default(now())
 
-  // MindForward fields (declared as additionalFields in the plugin config; all have defaults or are optional)
+  // Greb fields (declared as additionalFields in the plugin config; all have defaults or are optional)
   updatedAt               DateTime         @updatedAt
   type                    OrganizationType @default(PERSONAL) // BUSINESS set explicitly on B2B create
   seatLimit               Int              @default(1) // = Subscription.quantity (webhook), trial: 5
@@ -562,25 +584,36 @@ model Organization {
   domainVerifiedAt        DateTime?
   joinLinkTokenHash       String?          @unique // invite-by-link (M7); store hash only
   joinLinkEnabled         Boolean          @default(false)
+  aiPolicyUrl             String? // link to the customer's own AI policy (docs/01 V5)
+  defaultTrackId          String?
+  defaultTrack            Track?           @relation("OrgDefaultTrack", fields: [defaultTrackId], references: [id], onDelete: SetNull)
+  defaultLicenseTier      LicenseTier?
   dpaAcceptedAt           DateTime? // databehandleraftale (B2B)
   dpaVersion              String?
   deletedAt               DateTime? // soft delete → hard delete job after 30 days (legal records kept)
 
-  members              Membership[]
-  invitations          Invitation[]
-  subscriptions        Subscription[]
-  assignments          Assignment[]
-  attempts             Attempt[]
-  certificates         Certificate[]
-  monthlyAssignments   MonthlyAssignment[]
-  placementResults     PlacementResult[]
-  emailMessages        EmailMessage[]
-  supportConversations SupportConversation[]
-  escalations          Escalation[]
-  auditLogs            AuditLog[]
-  sandboxSessions      SandboxSession[]
-  withdrawalRequests   WithdrawalRequest[]
-  trackEnrollments     TrackEnrollment[]
+  members                 Membership[]
+  invitations             Invitation[]
+  subscriptions           Subscription[]
+  assignments             Assignment[]
+  attempts                Attempt[]
+  certificates            Certificate[]
+  courseLessonCompletions CourseLessonCompletion[]
+  monthlyAssignments      MonthlyAssignment[]
+  placementResults        PlacementResult[]
+  emailMessages           EmailMessage[]
+  supportConversations    SupportConversation[]
+  escalations             Escalation[]
+  auditLogs               AuditLog[]
+  sandboxSessions         SandboxSession[]
+  withdrawalRequests      WithdrawalRequest[]
+  trackEnrollments        TrackEnrollment[]
+  credentialTransfersIn   CredentialTransfer[]
+  certificateShares       CertificateShare[]
+  workProfiles            WorkProfile[]
+  connectorDemoRuns       ConnectorDemoRun[]
+  onboardingProfiles      OnboardingProfile[]
+  calendarEvents          CalendarEvent[]
 
   @@index([type])
   @@map("organization")
@@ -596,7 +629,7 @@ model Membership {
   role           MembershipRole @default(LEARNER)
   createdAt      DateTime       @default(now())
 
-  // MindForward fields
+  // Greb fields
   updatedAt     DateTime  @updatedAt
   jobRole       JobRole? // drives ROLE modules
   deactivatedAt DateTime? // seat freed; data kept for org report until user deletion
@@ -619,6 +652,12 @@ model Invitation {
   inviterId      String
   inviter        User            @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 
+  // Greb: what the invitee gets on accept (docs/01 § 4.2.3)
+  trackId     String?
+  track       Track?       @relation(fields: [trackId], references: [id], onDelete: SetNull)
+  jobRole     JobRole?
+  licenseTier LicenseTier?
+
   @@index([organizationId, status])
   @@index([email])
   @@map("invitation")
@@ -629,21 +668,21 @@ model Invitation {
 /// DB mirror of src/lib/config/plans.ts (docs/07-betaling.md). Amount shown to users comes from the Stripe Price;
 /// unitAmountOre = expectedUnitAmountOre cross-check. Never hardcode prices in components.
 model Plan {
-  id               String          @id @default(cuid())
-  code             String          @unique // B2C_MONTHLY | B2C_ANNUAL | B2B_MONTHLY | B2B_ANNUAL (FREE has no row)
-  audience         PlanAudience
-  interval         BillingInterval
-  unitAmountOre    Int // 4900 = 49 kr
-  currency         String          @default("dkk")
-  taxBehavior      TaxBehavior
-  minSeats         Int             @default(1) // B2B: 5
-  trialDays        Int             @default(0) // B2B: 14
-  trialMaxSeats    Int? // B2B: 5
-  stripePriceId    String?         @unique
-  active           Boolean         @default(true)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  subscriptions    Subscription[]
+  id            String          @id @default(cuid())
+  code          String          @unique // B2C_MONTHLY | B2C_ANNUAL | B2B_MONTHLY | B2B_ANNUAL (FREE has no row)
+  audience      PlanAudience
+  interval      BillingInterval
+  unitAmountOre Int // 4900 = 49 kr
+  currency      String          @default("dkk")
+  taxBehavior   TaxBehavior
+  minSeats      Int             @default(1) // B2B: 5
+  trialDays     Int             @default(0) // B2B: 14
+  trialMaxSeats Int? // B2B: 5
+  stripePriceId String?         @unique
+  active        Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  subscriptions Subscription[]
 
   @@map("plan")
 }
@@ -675,12 +714,12 @@ model Subscription {
   lastStripeEventId    String
 
   // Consumer-law (B2C) — copied from Checkout Session metadata set server-side before redirect
-  immediateAccessConsentAt          DateTime? // "Jeg ønsker adgang straks …" checkbox
-  withdrawalWaiverAcknowledgedAt    DateTime? // erkendelse: fortrydelsesret bortfalder/begrænses
-  withdrawalConsentTextVersion      String? // e.g. "withdrawal-consent.v1"
-  withdrawalDeadlineAt              DateTime? // purchase + 14 days → "Fortryd aftale" button visible until then
-  orderConfirmationEmailMessageId   String? // durable-medium confirmation (EmailMessage.id)
-  cancellationRequestedInAppAt      DateTime? // § 28 a: in-app cancellation
+  immediateAccessConsentAt        DateTime? // "Jeg ønsker adgang straks …" checkbox
+  withdrawalWaiverAcknowledgedAt  DateTime? // erkendelse: fortrydelsesret bortfalder/begrænses
+  withdrawalConsentTextVersion    String? // e.g. "withdrawal-consent.v1"
+  withdrawalDeadlineAt            DateTime? // purchase + 14 days → "Fortryd aftale" button visible until then
+  orderConfirmationEmailMessageId String? // durable-medium confirmation (EmailMessage.id)
+  cancellationRequestedInAppAt    DateTime? // § 28 a: in-app cancellation
 
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -723,50 +762,65 @@ model WithdrawalRequest {
 // ───────────────────────────── Curriculum ─────────────────────────────
 
 model Track {
-  id              String        @id @default(cuid())
-  key             TrackKey      @unique
-  displayName     String // descriptive only, e.g. "Microsoft 365 Copilot"
-  vendorName      String // "Microsoft" — used in disclaimer copy only
-  skinKey         String // content/sandbox-skins/<skinKey>.json
-  isActive        Boolean       @default(false) // MVP: CHATGPT + COPILOT + CLAUDE
-  sortOrder       Int           @default(0)
-  licenseTiers    LicenseTier[] @default([]) // COPILOT: [COPILOT_CHAT, COPILOT_M365]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id           String        @id @default(cuid())
+  key          TrackKey      @unique
+  displayName  String // descriptive only, e.g. "Microsoft 365 Copilot"
+  vendorName   String // "Microsoft" — used in disclaimer copy only
+  skinKey      String // content/sandbox-skins/<skinKey>.json
+  isActive     Boolean       @default(false) // MVP: CHATGPT + COPILOT + CLAUDE
+  sortOrder    Int           @default(0)
+  licenseTiers LicenseTier[] @default([]) // COPILOT: [COPILOT_CHAT, COPILOT_M365]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
-  modules          Module[]
+  modules          ModuleTrack[]
+  invitations      Invitation[]
+  defaultForOrgs   Organization[]    @relation("OrgDefaultTrack")
   certificates     Certificate[]
   monthlyCycles    MonthlyCycle[]
   placementResults PlacementResult[]
   contentSources   ContentSource[]
   sandboxSessions  SandboxSession[]
   enrollments      TrackEnrollment[]
+  courses          Course[]
+  onboardingProfiles OnboardingProfile[]
 
   @@map("track")
 }
 
 model Module {
-  id                 String       @id @default(cuid())
-  slug               String       @unique // = module JSON "id", e.g. "core-prompt-01"
-  trackId            String
-  track              Track        @relation(fields: [trackId], references: [id])
+  id                 String         @id @default(cuid())
+  slug               String         @unique // = module JSON "id", e.g. "core-prompt-01"
+  tracks             ModuleTrack[] // a CORE module runs on several tracks (§ 10a)
   type               ModuleType
   jobRole            JobRole? // only for type ROLE
   requiredLicense    LicenseTier? // denormalized from published version (module JSON requiresTier)
-  sortOrder          Int          @default(0) // curriculum order; "first 3 free" is computed from config + order
-  publishedVersionId String?      @unique
+  sortOrder          Int            @default(0) // curriculum order; "first 3 free" is computed from config + order
+  publishedVersionId String?        @unique
   publishedVersion   ModuleVersion? @relation("PublishedVersion", fields: [publishedVersionId], references: [id])
-  isStale            Boolean      @default(false) // freshness audit flag
+  isStale            Boolean        @default(false) // freshness audit flag
   retiringAt         DateTime? // feature-registry retire date → banner
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 
-  versions           ModuleVersion[]     @relation("ModuleVersions")
-  assignments        Assignment[]
-  refresherFor       MonthlyAssignment[]
+  versions     ModuleVersion[]     @relation("ModuleVersions")
+  assignments  Assignment[]
+  refresherFor MonthlyAssignment[]
 
-  @@index([trackId, type])
+  @@index([type])
   @@map("module")
+}
+
+/// Which tracks a module belongs to (module JSON `tracks`). Replaces the single Module.trackId from the spec (§ 10a).
+model ModuleTrack {
+  moduleId String
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  trackId  String
+  track    Track  @relation(fields: [trackId], references: [id])
+
+  @@id([moduleId, trackId])
+  @@index([trackId])
+  @@map("module_track")
 }
 
 /// Immutable once PUBLISHED. Steps live in `content` (JSON validated by content/schema/module.schema.json).
@@ -788,24 +842,24 @@ model ModuleVersion {
   contentHash      String // sha256 of canonical JSON
 
   // Content-engine provenance (origin = AUTO)
-  changeEventId    String?
-  changeEvent      ChangeEvent?        @relation(fields: [changeEventId], references: [id], onDelete: SetNull)
-  pipelineRunId    String?
-  pipelineRun      PipelineRun?        @relation(fields: [pipelineRunId], references: [id], onDelete: SetNull)
-  draftAttempt     Int                 @default(0)
-  promptVersions   Json? // { draft: "content-draft.v1", verify: "content-verify.v1" }
-  modelIds         Json?
-  verifyReport     Json?
+  changeEventId  String?
+  changeEvent    ChangeEvent? @relation(fields: [changeEventId], references: [id], onDelete: SetNull)
+  pipelineRunId  String?
+  pipelineRun    PipelineRun? @relation(fields: [pipelineRunId], references: [id], onDelete: SetNull)
+  draftAttempt   Int          @default(0)
+  promptVersions Json? // { draft: "content-draft.v1", verify: "content-verify.v1" }
+  modelIds       Json?
+  verifyReport   Json?
 
-  publishedAt      DateTime?
-  publishedById    String? // User.id or null for auto-publish
-  archivedAt       DateTime?
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
+  publishedAt   DateTime?
+  publishedById String? // User.id or null for auto-publish
+  archivedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  publishedIn      Module?             @relation("PublishedVersion")
-  attempts         Attempt[]
-  sandboxSessions  SandboxSession[]
+  publishedIn     Module?          @relation("PublishedVersion")
+  attempts        Attempt[]
+  sandboxSessions SandboxSession[]
 
   @@unique([moduleId, version])
   @@unique([changeEventId, draftAttempt])
@@ -836,6 +890,49 @@ model TrackEnrollment {
   @@map("track_enrollment")
 }
 
+/// Privat membership chosen in onboarding (Marco 11 Nov 2026). Only SINGLE has Stripe billing today (B2C_MONTHLY).
+enum PersonalPlanChoice {
+  SINGLE // Enkelt bruger
+  FRIEND // Med en ven
+  STUDENT // Studerende eller jobsøgende
+}
+
+/// Erhverv team size chosen in onboarding.
+enum TeamSizeBand {
+  SIZE_1_9
+  SIZE_10_PLUS
+  ENTERPRISE
+}
+
+enum OnboardingStartPath {
+  PLACEMENT_TEST // Tag niveautesten
+  FROM_SCRATCH // Start fra bunden
+}
+
+/// Answers from the sign-up onboarding, per user per organization, so the platform can personalise.
+/// The track itself also lives in TrackEnrollment and the test result in PlacementResult.
+model OnboardingProfile {
+  id             String               @id @default(cuid())
+  userId         String
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  personalPlan   PersonalPlanChoice? // Privat only
+  friendEmail    String? // FRIEND: the friend to invite (no billing support yet)
+  studentEmail   String? // STUDENT: proof by study mail (upload not built yet)
+  teamSizeBand   TeamSizeBand? // Erhverv (OWNER) only
+  startPath      OnboardingStartPath?
+  trackId        String?
+  track          Track?               @relation(fields: [trackId], references: [id], onDelete: SetNull)
+  completedAt    DateTime? // set when "Din plan er klar" is shown
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+  @@map("onboarding_profile")
+}
+
 model PlacementResult {
   id                   String        @id @default(cuid())
   userId               String?
@@ -862,26 +959,27 @@ model PlacementResult {
 }
 
 model Assignment {
-  id             String           @id @default(cuid())
-  organizationId String
-  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  userId         String
-  user           User             @relation("AssignmentLearner", fields: [userId], references: [id], onDelete: Cascade)
-  moduleId       String
-  module         Module           @relation(fields: [moduleId], references: [id])
-  source         AssignmentSource
-  assignedById   String?
-  assignedBy     User?            @relation("AssignmentAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
-  sortOrder      Int              @default(0)
-  status         AssignmentStatus @default(ASSIGNED)
-  dueAt          DateTime?
-  bestAttemptId  String?
-  bestScorePct   Decimal?         @db.Decimal(5, 2)
-  passedAt       DateTime?
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  id                      String           @id @default(cuid())
+  organizationId          String
+  organization            Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId                  String
+  user                    User             @relation("AssignmentLearner", fields: [userId], references: [id], onDelete: Cascade)
+  moduleId                String
+  module                  Module           @relation(fields: [moduleId], references: [id])
+  source                  AssignmentSource
+  assignedById            String?
+  assignedBy              User?            @relation("AssignmentAssigner", fields: [assignedById], references: [id], onDelete: SetNull)
+  sortOrder               Int              @default(0)
+  status                  AssignmentStatus @default(ASSIGNED)
+  dueAt                   DateTime?
+  bestAttemptId           String?
+  bestScorePct            Decimal?         @db.Decimal(5, 2)
+  passedAt                DateTime?
+  carriedFromAssignmentId String? // source = CARRIED_OVER: the passed assignment in the learner's other account (no FK; that org may be deleted)
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
 
-  attempts       Attempt[]
+  attempts Attempt[]
 
   @@unique([organizationId, userId, moduleId])
   @@index([userId, status])
@@ -920,33 +1018,33 @@ model Attempt {
 }
 
 model StepResult {
-  id                  String        @id @default(cuid())
-  attemptId           String
-  attempt             Attempt       @relation(fields: [attemptId], references: [id], onDelete: Cascade)
-  stepId              String // step id inside ModuleVersion.content
-  stepType            StepType
-  points              Int           @default(0)
-  maxPoints           Int
-  passed              Boolean       @default(false)
-  hintLevelUsed       Int           @default(0) // 0–3; 3 = solution shown → 0 points
-  tryCount            Int           @default(1)
-  answer              Json? // structured answers only (option ids, spot-error selection) — never free text
-  gradingStatus       GradingStatus @default(GRADED)
-  checksReport        Json? // deterministic PROMPT_TASK checks (ids + pass/fail)
-  rubricScores        Json? // [{ criterionId, met, points }] — no quotes of the learner's text
-  rubricVersion       String?
-  modelId             String?
-  promptVersion       String?
+  id                    String        @id @default(cuid())
+  attemptId             String
+  attempt               Attempt       @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  stepId                String // step id inside ModuleVersion.content
+  stepType              StepType
+  points                Int           @default(0)
+  maxPoints             Int
+  passed                Boolean       @default(false)
+  hintLevelUsed         Int           @default(0) // 0–3; 3 = solution shown → 0 points
+  tryCount              Int           @default(1)
+  answer                Json? // structured answers only (option ids, spot-error selection) — never free text
+  gradingStatus         GradingStatus @default(GRADED)
+  checksReport          Json? // deterministic PROMPT_TASK checks (ids + pass/fail)
+  rubricScores          Json? // [{ criterionId, met, points }] — no quotes of the learner's text
+  rubricVersion         String?
+  modelId               String?
+  promptVersion         String?
   matchedSandboxEventId String? // CLICK_TASK: the SandboxEvent that satisfied the assertion
-  flags               Json? // statistics only, e.g. { fastAnswer: true } (docs/05 § 7) — no sanctions
+  flags                 Json? // statistics only, e.g. { fastAnswer: true } (docs/05 § 7) — no sanctions
 
   // Free text — owner-only, purged after 30 days (retention.purge-prompt-text)
-  promptText          String?       @db.Text
-  aiFeedback          String?       @db.Text
-  promptTextPurgedAt  DateTime?
+  promptText         String?   @db.Text
+  aiFeedback         String?   @db.Text
+  promptTextPurgedAt DateTime?
 
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([attemptId, stepId])
   @@index([createdAt]) // retention scan
@@ -954,24 +1052,25 @@ model StepResult {
 }
 
 model Certificate {
-  id               String       @id @default(cuid())
-  verificationCode String       @unique // public verify URL /certifikat/<code>
-  userId           String
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organizationId   String
-  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  trackId          String
-  track            Track        @relation(fields: [trackId], references: [id])
-  level            Int
-  levelLabel       String // snapshot of the label at issue time
-  licenseTier      LicenseTier?
-  holderName       String // snapshot
-  moduleVersionIds String[]     @default([]) // evidence snapshot
-  pdfStorageKey    String?
-  contentVersion   String // curriculum/content version shown on the certificate
-  publicVerificationEnabled Boolean @default(true) // learner can turn the public page off
-  issuedAt         DateTime     @default(now())
-  revokedAt        DateTime?
+  id                        String             @id @default(cuid())
+  verificationCode          String             @unique // public verify URL /certifikat/<code>
+  userId                    String
+  user                      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId            String
+  organization              Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  trackId                   String
+  track                     Track              @relation(fields: [trackId], references: [id])
+  level                     Int
+  levelLabel                String // snapshot of the label at issue time
+  licenseTier               LicenseTier?
+  holderName                String // snapshot
+  moduleVersionIds          String[]           @default([]) // evidence snapshot
+  pdfStorageKey             String?
+  contentVersion            String // curriculum/content version shown on the certificate
+  publicVerificationEnabled Boolean            @default(false) // opt-in by the learner (GDPR art. 25, § 10a)
+  issuedAt                  DateTime           @default(now())
+  revokedAt                 DateTime?
+  shares                    CertificateShare[]
 
   @@unique([userId, organizationId, trackId, level])
   @@index([organizationId])
@@ -980,14 +1079,14 @@ model Certificate {
 
 /// One per (calendar month, track): the NEWS package shared by all learners on that track.
 model MonthlyCycle {
-  id          String              @id @default(cuid())
-  month       String // "2026-11"
-  trackId     String
-  track       Track               @relation(fields: [trackId], references: [id])
-  moduleIds   String[]            @default([]) // NEWS modules (ordered)
-  composedAt  DateTime            @default(now())
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  id         String   @id @default(cuid())
+  month      String // "2026-11"
+  trackId    String
+  track      Track    @relation(fields: [trackId], references: [id])
+  moduleIds  String[] @default([]) // NEWS modules (ordered)
+  composedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   assignments MonthlyAssignment[]
 
@@ -997,24 +1096,24 @@ model MonthlyCycle {
 
 /// Personal monthly package: cycle NEWS modules filtered by license tier + 1 refresher. Target ≤ 15 min.
 model MonthlyAssignment {
-  id                 String                  @id @default(cuid())
-  cycleId            String
-  cycle              MonthlyCycle            @relation(fields: [cycleId], references: [id], onDelete: Cascade)
-  organizationId     String
-  organization       Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  userId             String
-  user               User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  moduleIds          String[]                @default([])
-  refresherModuleId  String?
-  refresherModule    Module?                 @relation(fields: [refresherModuleId], references: [id], onDelete: SetNull)
-  estimatedMinutes   Int
-  status             MonthlyAssignmentStatus @default(PENDING)
-  completedAt        DateTime?
+  id                  String                  @id @default(cuid())
+  cycleId             String
+  cycle               MonthlyCycle            @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  organizationId      String
+  organization        Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId              String
+  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moduleIds           String[]                @default([])
+  refresherModuleId   String?
+  refresherModule     Module?                 @relation(fields: [refresherModuleId], references: [id], onDelete: SetNull)
+  estimatedMinutes    Int
+  status              MonthlyAssignmentStatus @default(PENDING)
+  completedAt         DateTime?
   reminderDay1SentAt  DateTime?
   reminderDay14SentAt DateTime?
   reminderDay25SentAt DateTime?
-  createdAt          DateTime                @default(now())
-  updatedAt          DateTime                @updatedAt
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
 
   @@unique([cycleId, userId, organizationId])
   @@index([organizationId, status])
@@ -1044,9 +1143,9 @@ model ContentSource {
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
 
-  snapshots          SourceSnapshot[]
-  changeEvents       ChangeEvent[]
-  pipelineRuns       PipelineRun[]
+  snapshots    SourceSnapshot[]
+  changeEvents ChangeEvent[]
+  pipelineRuns PipelineRun[]
 
   @@map("content_source")
 }
@@ -1066,7 +1165,7 @@ model SourceSnapshot {
   entries       Json // ParsedEntry[] — kept while a PUBLISHED module cites it
   createdAt     DateTime       @default(now())
 
-  changeEvents  ChangeEvent[]
+  changeEvents ChangeEvent[]
 
   @@unique([sourceId, contentHash])
   @@index([sourceId, fetchedAt])
@@ -1097,7 +1196,7 @@ model ChangeEvent {
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
 
-  moduleVersions    ModuleVersion[]
+  moduleVersions ModuleVersion[]
 
   @@unique([sourceId, entryKey, entryHash])
   @@index([status])
@@ -1137,16 +1236,16 @@ model PipelineRun {
 /// Checkout declarations: two GRANTED rows (IMMEDIATE_ACCESS_REQUEST, WITHDRAWAL_LOSS_ACK) written BEFORE payment.
 /// confirmedAt / withdrawnAt are denormalized onto the GRANTED row for fast lookups; the action rows are the evidence.
 model ConsentRecord {
-  id                    String         @id @default(cuid())
+  id                    String          @id @default(cuid())
   userId                String?
-  user                  User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user                  User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
   organizationId        String?
   subjectEmail          String // normalized: lowercase + trim
-  channel               ConsentChannel @default(EMAIL)
+  channel               ConsentChannel  @default(EMAIL)
   purpose               ConsentPurpose
   action                ConsentAction
   grantId               String? // CONFIRMED/WITHDRAWN rows point to the GRANTED row they act on
-  grant                 ConsentRecord? @relation("ConsentGrant", fields: [grantId], references: [id], onDelete: SetNull)
+  grant                 ConsentRecord?  @relation("ConsentGrant", fields: [grantId], references: [id], onDelete: SetNull)
   followUps             ConsentRecord[] @relation("ConsentGrant")
   textVersion           String // e.g. "marketing-consent.v1" (content/legal/)
   textHash              String // sha256 of the exact text shown
@@ -1154,13 +1253,13 @@ model ConsentRecord {
   ip                    String?
   userAgent             String?
   checkoutSessionId     String? // checkout declarations only
-  confirmationTokenHash String?        @unique // double opt-in token (hash), on GRANTED row; expires after 7 days
+  confirmationTokenHash String?         @unique // double opt-in token (hash), on GRANTED row; expires after 7 days
   confirmationSentAt    DateTime?
   confirmedAt           DateTime? // double opt-in completed (set on GRANTED row)
   withdrawnAt           DateTime? // withdrawn (set on GRANTED row)
-  createdAt             DateTime       @default(now()) // = timestamp of this action
+  createdAt             DateTime        @default(now()) // = timestamp of this action
 
-  emailMessages         EmailMessage[]
+  emailMessages EmailMessage[]
 
   @@index([subjectEmail, purpose, channel, createdAt])
   @@index([userId])
@@ -1169,27 +1268,27 @@ model ConsentRecord {
 }
 
 model EmailMessage {
-  id                String        @id @default(cuid())
-  category          EmailCategory
-  template          String // e.g. "service/reminder-day-14"
-  templateVersion   String
-  toEmail           String
-  userId            String?
-  user              User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
-  organizationId    String?
-  organization      Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  consentRecordId   String? // REQUIRED by code when category = MARKETING
-  consentRecord     ConsentRecord? @relation(fields: [consentRecordId], references: [id], onDelete: SetNull)
-  idempotencyKey    String        @unique // e.g. "reminder:{monthlyAssignmentId}:14"
-  resendId          String?       @unique
-  status            EmailStatus   @default(QUEUED)
-  subject           String
-  sentAt            DateTime?
-  deliveredAt       DateTime?
-  lastEventAt       DateTime?
-  error             String?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  id              String         @id @default(cuid())
+  category        EmailCategory
+  template        String // e.g. "service/reminder-day-14"
+  templateVersion String
+  toEmail         String
+  userId          String?
+  user            User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId  String?
+  organization    Organization?  @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  consentRecordId String? // REQUIRED by code when category = MARKETING
+  consentRecord   ConsentRecord? @relation(fields: [consentRecordId], references: [id], onDelete: SetNull)
+  idempotencyKey  String         @unique // e.g. "reminder:{monthlyAssignmentId}:14"
+  resendId        String?        @unique
+  status          EmailStatus    @default(QUEUED)
+  subject         String
+  sentAt          DateTime?
+  deliveredAt     DateTime?
+  lastEventAt     DateTime?
+  error           String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   withdrawalReceipt WithdrawalRequest?
 
@@ -1227,8 +1326,8 @@ model SupportConversation {
   createdAt      DateTime                  @default(now())
   updatedAt      DateTime                  @updatedAt
 
-  messages       SupportMessage[]
-  escalations    Escalation[]
+  messages    SupportMessage[]
+  escalations Escalation[]
 
   @@index([userId, lastMessageAt])
   @@index([organizationId])
@@ -1321,7 +1420,7 @@ model SandboxSession {
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
 
-  events          SandboxEvent[]
+  events SandboxEvent[]
 
   @@index([userId, status])
   @@index([attemptId])
@@ -1330,21 +1429,21 @@ model SandboxSession {
 }
 
 model SandboxEvent {
-  id               String           @id @default(cuid())
-  sessionId        String
-  session          SandboxSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  userId           String
-  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  organizationId   String
-  seq              Int // monotonically increasing per session (server-assigned)
-  type             SandboxEventType
-  actor            String           @default("USER") // USER | MODEL | AUTOMATION | SYSTEM
-  target           String? // stable UI/object target, e.g. "nav.newChat", "mail:m08" (Predicate `target`, docs/05 § 3)
-  payload          Json // Zod-validated per type; NO free text here
-  contentText      String?          @db.Text // free text (chat prompt/reply, drafts) — purged after 30 days
-  contentPurgedAt  DateTime?
-  stepId           String? // module step active when emitted
-  createdAt        DateTime         @default(now())
+  id              String           @id @default(cuid())
+  sessionId       String
+  session         SandboxSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId  String
+  seq             Int // monotonically increasing per session (server-assigned)
+  type            SandboxEventType
+  actor           String           @default("USER") // USER | MODEL | AUTOMATION | SYSTEM
+  target          String? // stable UI/object target, e.g. "nav.newChat", "mail:m08" (Predicate `target`, docs/05 § 3)
+  payload         Json // Zod-validated per type; NO free text here
+  contentText     String?          @db.Text // free text (chat prompt/reply, drafts) — purged after 30 days
+  contentPurgedAt DateTime?
+  stepId          String? // module step active when emitted
+  createdAt       DateTime         @default(now())
 
   @@unique([sessionId, seq])
   @@index([sessionId, type])
@@ -1376,24 +1475,24 @@ model AiUsageDaily {
 
 /// One row per LLM call (no prompt/response text). Kept 13 months.
 model AiCall {
-  id               String       @id @default(cuid())
-  userId           String?
-  user             User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
-  organizationId   String?
-  feature          AiFeature
-  model            String
-  promptKey        String // e.g. "sandbox-chat"
-  promptVersion    String // e.g. "v3"
-  inputTokens      Int          @default(0)
-  outputTokens     Int          @default(0)
-  cacheReadTokens  Int          @default(0)
-  cacheWriteTokens Int          @default(0)
-  costDkk          Decimal      @default(0) @db.Decimal(12, 4)
-  latencyMs        Int?
-  status           AiCallStatus
-  errorCode        String?
+  id                String       @id @default(cuid())
+  userId            String?
+  user              User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId    String?
+  feature           AiFeature
+  model             String
+  promptKey         String // e.g. "sandbox-chat"
+  promptVersion     String // e.g. "v3"
+  inputTokens       Int          @default(0)
+  outputTokens      Int          @default(0)
+  cacheReadTokens   Int          @default(0)
+  cacheWriteTokens  Int          @default(0)
+  costDkk           Decimal      @default(0) @db.Decimal(12, 4)
+  latencyMs         Int?
+  status            AiCallStatus
+  errorCode         String?
   providerRequestId String?
-  createdAt        DateTime     @default(now())
+  createdAt         DateTime     @default(now())
 
   @@index([createdAt])
   @@index([feature, createdAt])
@@ -1403,16 +1502,16 @@ model AiCall {
 
 /// Monthly budget state per scope. alert80SentAt guarantees exactly one 80 % alert per month.
 model BudgetMonth {
-  id            String      @id @default(cuid())
-  scope         BudgetScope
-  month         String // "2026-11" (Europe/Copenhagen)
-  limitDkk      Decimal     @db.Decimal(12, 2)
-  spentDkk      Decimal     @default(0) @db.Decimal(12, 4)
-  alert80SentAt DateTime?
+  id             String      @id @default(cuid())
+  scope          BudgetScope
+  month          String // "2026-11" (Europe/Copenhagen)
+  limitDkk       Decimal     @db.Decimal(12, 2)
+  spentDkk       Decimal     @default(0) @db.Decimal(12, 4)
+  alert80SentAt  DateTime?
   alert100SentAt DateTime?
-  degradedAt    DateTime? // graceful degradation switched on
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  degradedAt     DateTime? // graceful degradation switched on
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 
   @@unique([scope, month])
   @@map("budget_month")
@@ -1448,4 +1547,431 @@ model FeatureFlag {
   createdAt   DateTime @default(now())
 
   @@map("feature_flag")
+}
+
+/// The learner's own choice to bring passed modules and certificates from one of their accounts into another
+/// (private → company when joining, company → private when leaving). One decision per (user, from, to); logged.
+model CredentialTransfer {
+  id                 String                     @id @default(cuid())
+  userId             String
+  user               User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fromOrganizationId String // no FK: the source account may be deleted later
+  toOrganizationId   String
+  toOrganization     Organization               @relation(fields: [toOrganizationId], references: [id], onDelete: Cascade)
+  decision           CredentialTransferDecision
+  modulesCarried     Int                        @default(0)
+  certificatesShared Int                        @default(0)
+  decidedAt          DateTime                   @default(now())
+
+  @@unique([userId, fromOrganizationId, toOrganizationId])
+  @@index([toOrganizationId])
+  @@map("credential_transfer")
+}
+
+/// A certificate issued in another account that the holder chose to show in this organization.
+/// The certificate itself is never re-issued: same code, date and content version.
+model CertificateShare {
+  id             String       @id @default(cuid())
+  certificateId  String
+  certificate    Certificate  @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@unique([certificateId, organizationId])
+  @@index([organizationId])
+  @@map("certificate_share")
+}
+
+// ───────────────────────── Connector recommendations (branche → opgaver → systemer → connectors) ─────────────────────────
+// All mapping is data (content/connectors/*.json, seeded); the scoring in src/server/connectors/scoring.ts is pure.
+
+enum IndustryCodeSystem {
+  DB25 // Dansk Branchekode 2025 (CVR since 1 Jan 2025)
+  DB07
+}
+
+enum ConnectorPlatform {
+  CLAUDE
+  CHATGPT
+  COPILOT
+}
+
+enum AvailabilityStatus {
+  OFFICIAL
+  THIRD_PARTY
+  NONE
+  UNVERIFIED // never shown as a recommendation
+}
+
+/// User-friendly industry ("Revision & regnskab"). Raw codes never reach the UI.
+model Industry {
+  id        String  @id @default(cuid())
+  slug      String  @unique
+  name      String
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  codes        IndustryCode[]
+  tasks        IndustryTask[]
+  systems      IndustrySystem[]
+  useCases     IndustryConnectorUseCase[]
+  demos        ConnectorDemo[]
+  workProfiles WorkProfile[]
+
+  @@map("industry")
+}
+
+/// Official code prefix → Industry. Longest prefix wins (src/server/connectors/industry-match.ts).
+model IndustryCode {
+  id         String             @id @default(cuid())
+  system     IndustryCodeSystem
+  prefix     String // digits only
+  industryId String
+  industry   Industry           @relation(fields: [industryId], references: [id], onDelete: Cascade)
+
+  @@unique([system, prefix])
+  @@map("industry_code")
+}
+
+model Task {
+  id         String          @id @default(cuid())
+  slug       String          @unique
+  name       String
+  industries IndustryTask[]
+  connectors ConnectorTask[]
+
+  @@map("task")
+}
+
+model IndustryTask {
+  industryId String
+  industry   Industry @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  taskId     String
+  task       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  weight     Int // 1–5
+
+  @@id([industryId, taskId])
+  @@map("industry_task")
+}
+
+model SystemCategory {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  sortOrder Int      @default(0)
+  systems   System[]
+
+  @@map("system_category")
+}
+
+/// A business system people use (e-conomic, Microsoft 365, Shopify …).
+model System {
+  id         String            @id @default(cuid())
+  slug       String            @unique
+  name       String
+  categoryId String
+  category   SystemCategory    @relation(fields: [categoryId], references: [id])
+  industries IndustrySystem[]
+  connectors ConnectorSystem[]
+
+  @@map("system")
+}
+
+model IndustrySystem {
+  industryId  String
+  industry    Industry @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  systemId    String
+  system      System   @relation(fields: [systemId], references: [id], onDelete: Cascade)
+  preselected Boolean  @default(false)
+
+  @@id([industryId, systemId])
+  @@map("industry_system")
+}
+
+model Connector {
+  id           String                     @id @default(cuid())
+  slug         String                     @unique
+  name         String
+  category     String
+  systems      ConnectorSystem[]
+  tasks        ConnectorTask[]
+  availability ConnectorAvailability[]
+  useCases     IndustryConnectorUseCase[]
+  demos        ConnectorDemo[]
+
+  @@map("connector")
+}
+
+model ConnectorSystem {
+  connectorId String
+  connector   Connector @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  systemId    String
+  system      System    @relation(fields: [systemId], references: [id], onDelete: Cascade)
+
+  @@id([connectorId, systemId])
+  @@map("connector_system")
+}
+
+model ConnectorTask {
+  connectorId String
+  connector   Connector @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  taskId      String
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@id([connectorId, taskId])
+  @@map("connector_task")
+}
+
+/// Connector × platform. OFFICIAL/THIRD_PARTY only with a source URL from the vendor's own catalogue.
+model ConnectorAvailability {
+  id             String             @id @default(cuid())
+  connectorId    String
+  connector      Connector          @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  platform       ConnectorPlatform
+  status         AvailabilityStatus
+  sourceUrl      String?
+  lastVerifiedAt DateTime?
+  note           String?
+
+  @@unique([connectorId, platform])
+  @@map("connector_availability")
+}
+
+model IndustryConnectorUseCase {
+  industryId  String
+  industry    Industry  @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  connectorId String
+  connector   Connector @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  text        String
+
+  @@id([industryId, connectorId])
+  @@map("industry_connector_use_case")
+}
+
+/// "Prøv den": fictional input data + Danish example prompt. industryId null = generic demo.
+model ConnectorDemo {
+  id          String             @id @default(cuid())
+  slug        String             @unique
+  connectorId String
+  connector   Connector          @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+  industryId  String?
+  industry    Industry?          @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  title       String
+  data        Json // fictional mails, invoices, calendar … shown to the user and sent to the model
+  prompt      String
+  outputKind  String
+  runs        ConnectorDemoRun[]
+
+  @@index([connectorId, industryId])
+  @@map("connector_demo")
+}
+
+/// One demo run (which connectors get tried most). The prompt text is not stored; tokens/cost live in AiCall.
+model ConnectorDemoRun {
+  id             String            @id @default(cuid())
+  demoId         String
+  demo           ConnectorDemo     @relation(fields: [demoId], references: [id], onDelete: Cascade)
+  connectorId    String
+  userId         String
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  platform       ConnectorPlatform
+  promptEdited   Boolean           @default(false)
+  status         String // OK | BLOCKED_* | ERROR
+  createdAt      DateTime          @default(now())
+
+  @@index([connectorId, createdAt])
+  @@map("connector_demo_run")
+}
+
+/// The learner's work profile in one organization: industry, optional CVR and the systems they use.
+model WorkProfile {
+  id                 String              @id @default(cuid())
+  organizationId     String
+  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  industryId         String?
+  industry           Industry?           @relation(fields: [industryId], references: [id], onDelete: SetNull)
+  cvr                String?
+  companyName        String?
+  industryCode       String?
+  industryCodeSystem IndustryCodeSystem?
+  selectedSystemIds  String[]            @default([])
+  completedAt        DateTime?
+  skippedAt          DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@unique([organizationId, userId])
+  @@map("work_profile")
+}
+
+/// CVR lookups (only name + main industry code), 30-day TTL. Provider behind CompanyLookupProvider.
+model CompanyLookupCache {
+  id        String   @id @default(cuid())
+  cvr       String   @unique
+  provider  String
+  payload   Json
+  fetchedAt DateTime @default(now())
+
+  @@map("company_lookup_cache")
+}
+
+// ───────────────────────────── Forløb (courses) ─────────────────────────────
+// Step-by-step courses per tool (ChatGPT, Claude, Copilot): levels → modules → lessons, plus a test per level.
+// Separate from Module/ModuleVersion on purpose: those feed the module catalog, placement plans, monthly packages and
+// the content engine; course modules must not appear there. Content comes from content/forloeb/forloeb.json via
+// `pnpm db:seed:forloeb` (idempotent upserts on the JSON ids, stored in `slug`). Additive tables only.
+
+/// "klar" = can be opened; "kommer-snart" = visible, greyed out, cannot be opened. Unlocked per row without code changes.
+enum CourseContentStatus {
+  READY       @map("klar")
+  COMING_SOON @map("kommer-snart")
+}
+
+model Course {
+  id         String              @id @default(cuid())
+  slug       String              @unique // JSON id, also the URL segment: /forloeb/<slug>
+  trackId    String
+  track      Track               @relation(fields: [trackId], references: [id])
+  toolName   String // "ChatGPT" — text only, never a logo
+  toolUrl    String
+  headline   String
+  disclaimer String
+  status     CourseContentStatus @default(COMING_SOON)
+  sortOrder  Int                 @default(0)
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+
+  levels      CourseLevel[]
+  completions CourseLessonCompletion[]
+
+  @@index([trackId])
+  @@map("course")
+}
+
+model CourseLevel {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  nr        Int
+  name      String // "Grøn"
+  title     String
+  outcome   String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  modules CourseModule[]
+  test    CourseTest?
+
+  @@index([courseId, sortOrder])
+  @@map("course_level")
+}
+
+model CourseModule {
+  id          String              @id @default(cuid())
+  slug        String              @unique
+  levelId     String
+  level       CourseLevel         @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  nr          Int
+  title       String
+  description String
+  status      CourseContentStatus @default(COMING_SOON)
+  sortOrder   Int                 @default(0)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  lessons CourseLesson[]
+
+  @@index([levelId, sortOrder])
+  @@map("course_module")
+}
+
+model CourseLesson {
+  id        String              @id @default(cuid())
+  slug      String              @unique
+  moduleId  String
+  module    CourseModule        @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  nr        String // "1.1"
+  title     String
+  minutes   Int
+  badges    String[]            @default([]) // shown in JSON order
+  status    CourseContentStatus @default(COMING_SOON)
+  content   Json? // { know, tryIt, quiz } — only for READY lessons; validated by src/lib/schemas/course.ts
+  sortOrder Int                 @default(0)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  completions CourseLessonCompletion[]
+
+  @@index([moduleId, sortOrder])
+  @@map("course_lesson")
+}
+
+/// One test after each level. The questions come later; only title/description/time/pass mark for now.
+model CourseTest {
+  id          String              @id @default(cuid())
+  slug        String              @unique
+  levelId     String              @unique
+  level       CourseLevel         @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  minutes     Int
+  passPercent Int                 @default(80)
+  status      CourseContentStatus @default(COMING_SOON)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@map("course_test")
+}
+
+/// A lesson is completed when its check question was answered correctly. Per user, per org (like Assignment), per course.
+model CourseLessonCompletion {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId       String
+  course         Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId       String
+  lesson         CourseLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completedAt    DateTime     @default(now())
+
+  @@unique([organizationId, userId, lessonId])
+  @@index([organizationId, userId, courseId])
+  @@map("course_lesson_completion")
+}
+
+/// Kalender (/kalender): the learner's own planned blocks. Completed lessons and øvemiljø sessions are computed, not stored.
+enum CalendarEventType {
+  LESSON // "Lektion"
+  PRACTICE // "Øvelse"
+  MEETING // "Holdmøde"
+}
+
+model CalendarEvent {
+  id             String            @id @default(cuid())
+  userId         String
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  title          String            @db.VarChar(120)
+  type           CalendarEventType
+  startsAt       DateTime
+  endsAt         DateTime // > startsAt, at most 12 h later (enforced in src/lib/schemas/calendar.ts)
+  href           String? // internal path only
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([userId, startsAt])
+  @@index([organizationId])
+  @@map("calendar_event")
 }

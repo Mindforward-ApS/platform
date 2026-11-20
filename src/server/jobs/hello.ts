@@ -4,7 +4,7 @@ import { inngest } from "./client";
 export const helloJob = inngest.createFunction(
   { id: "system.hello", retries: 3, triggers: { event: "system/hello" } },
   async ({ event, step }) => {
-    const greeting = await step.run("build-greeting", () => `Hej fra MindForward (${String(event.data?.source ?? "ukendt")})`);
+    const greeting = await step.run("build-greeting", () => `Hej fra Greb (${String(event.data?.source ?? "ukendt")})`);
     return { greeting };
   },
 );

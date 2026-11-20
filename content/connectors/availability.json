@@ -1,0 +1,535 @@
+[
+ {
+  "connector": "microsoft-365",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/microsoft-365",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "One connector covering SharePoint, OneDrive, Outlook and Teams"
+ },
+ {
+  "connector": "microsoft-365",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/microsoft-sharepoint/",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Separate apps: SharePoint, Outlook email, Outlook calendar, Teams"
+ },
+ {
+  "connector": "microsoft-365",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/microsoft-365-copilot-overview",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Native: grounded in emails, files, meetings, calendars and Teams via Microsoft Graph"
+ },
+ {
+  "connector": "google-drive",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/google-drive",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "google-drive",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/google-drive/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "google-drive",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Microsoft-built Google Drive connector"
+ },
+ {
+  "connector": "gmail",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/gmail",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "gmail",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/gmail/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "gmail",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Federated connector, publisher Microsoft"
+ },
+ {
+  "connector": "google-calendar",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/google-calendar",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "google-calendar",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/google-calendar/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "google-calendar",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Federated connector, publisher Microsoft"
+ },
+ {
+  "connector": "slack",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/slack",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "slack",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/slack/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "slack",
+  "platform": "COPILOT",
+  "status": "THIRD_PARTY",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-partners",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Only partner-built Slack connectors"
+ },
+ {
+  "connector": "notion",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/notion",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "notion",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/notion/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "notion",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Federated connector, publisher Microsoft"
+ },
+ {
+  "connector": "dropbox",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/dropbox",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "dropbox",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/dropbox/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "dropbox",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "box",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/box",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "box",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/box/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "box",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Federated connector, publisher Box"
+ },
+ {
+  "connector": "hubspot",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/hubspot",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "hubspot",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/hubspot/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "hubspot",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Federated connector, publisher Microsoft"
+ },
+ {
+  "connector": "salesforce",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/salesforce-headless-360",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Listed as 'Salesforce - Beta', author Salesforce"
+ },
+ {
+  "connector": "salesforce",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/salesforce/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "salesforce",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "shopify",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/shopify",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "shopify",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/shopify/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "shopify",
+  "platform": "COPILOT",
+  "status": "NONE",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Absent from both Microsoft-built and partner galleries"
+ },
+ {
+  "connector": "asana",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/asana",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "asana",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/asana/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "asana",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "monday",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/monday",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "monday",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/monday-com/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "monday",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "jira",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/atlassian",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Via Atlassian (Rovo): Jira, Confluence"
+ },
+ {
+  "connector": "jira",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/atlassian-rovo/",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Via Atlassian Rovo"
+ },
+ {
+  "connector": "jira",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "canva",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/canva",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "canva",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/canva/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "canva",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Federated connector, publisher Canva"
+ },
+ {
+  "connector": "stripe",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/stripe",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "stripe",
+  "platform": "CHATGPT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://openai.com/business/plugins/stripe/",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "stripe",
+  "platform": "COPILOT",
+  "status": "NONE",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-microsoft",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Absent from both galleries"
+ },
+ {
+  "connector": "e-conomic",
+  "platform": "CLAUDE",
+  "status": "NONE",
+  "sourceUrl": "https://claude.com/connectors",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Not in the directory"
+ },
+ {
+  "connector": "e-conomic",
+  "platform": "CHATGPT",
+  "status": "NONE",
+  "sourceUrl": "https://openai.com/business/plugins/",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Not in the directory; chatgpt.com/apps not readable"
+ },
+ {
+  "connector": "e-conomic",
+  "platform": "COPILOT",
+  "status": "NONE",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-partners",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Absent from both galleries"
+ },
+ {
+  "connector": "dinero",
+  "platform": "CLAUDE",
+  "status": "NONE",
+  "sourceUrl": "https://claude.com/connectors",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "dinero",
+  "platform": "CHATGPT",
+  "status": "NONE",
+  "sourceUrl": "https://openai.com/business/plugins/",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "chatgpt.com/apps not readable"
+ },
+ {
+  "connector": "dinero",
+  "platform": "COPILOT",
+  "status": "NONE",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-partners",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "billy",
+  "platform": "CLAUDE",
+  "status": "NONE",
+  "sourceUrl": "https://claude.com/connectors",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "billy",
+  "platform": "CHATGPT",
+  "status": "NONE",
+  "sourceUrl": "https://openai.com/business/plugins/",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "chatgpt.com/apps not readable"
+ },
+ {
+  "connector": "billy",
+  "platform": "COPILOT",
+  "status": "NONE",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-partners",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "business-central",
+  "platform": "CLAUDE",
+  "status": "NONE",
+  "sourceUrl": "https://claude.com/connectors",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Only Microsoft Dataverse is listed"
+ },
+ {
+  "connector": "business-central",
+  "platform": "CHATGPT",
+  "status": "NONE",
+  "sourceUrl": "https://openai.com/business/plugins/",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Only Microsoft Dataverse is listed"
+ },
+ {
+  "connector": "business-central",
+  "platform": "COPILOT",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/create-agent-in-copilot-studio",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Not in the connector galleries; via a Copilot Studio agent with the Business Central connector"
+ },
+ {
+  "connector": "ordrestyring",
+  "platform": "CLAUDE",
+  "status": "NONE",
+  "sourceUrl": "https://claude.com/connectors",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "ordrestyring",
+  "platform": "CHATGPT",
+  "status": "NONE",
+  "sourceUrl": "https://openai.com/business/plugins/",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "chatgpt.com/apps not readable"
+ },
+ {
+  "connector": "ordrestyring",
+  "platform": "COPILOT",
+  "status": "NONE",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-partners",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "minuba",
+  "platform": "CLAUDE",
+  "status": "NONE",
+  "sourceUrl": "https://claude.com/connectors",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "minuba",
+  "platform": "CHATGPT",
+  "status": "NONE",
+  "sourceUrl": "https://openai.com/business/plugins/",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "chatgpt.com/apps not readable"
+ },
+ {
+  "connector": "minuba",
+  "platform": "COPILOT",
+  "status": "NONE",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-partners",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "apacta",
+  "platform": "CLAUDE",
+  "status": "NONE",
+  "sourceUrl": "https://claude.com/connectors",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "apacta",
+  "platform": "CHATGPT",
+  "status": "NONE",
+  "sourceUrl": "https://openai.com/business/plugins/",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "chatgpt.com/apps not readable"
+ },
+ {
+  "connector": "apacta",
+  "platform": "COPILOT",
+  "status": "NONE",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-partners",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "zapier",
+  "platform": "CLAUDE",
+  "status": "OFFICIAL",
+  "sourceUrl": "https://claude.com/marketplace/connectors/zapier",
+  "lastVerifiedAt": "2026-10-15"
+ },
+ {
+  "connector": "zapier",
+  "platform": "CHATGPT",
+  "status": "UNVERIFIED",
+  "sourceUrl": "https://developers.openai.com/cookbook/examples/chatgpt/gpt_actions_library/gpt_action_zapier",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Not in the openai.com plugins directory; only a GPT Actions cookbook recipe"
+ },
+ {
+  "connector": "zapier",
+  "platform": "COPILOT",
+  "status": "NONE",
+  "sourceUrl": "https://learn.microsoft.com/en-us/microsoft-365/copilot/connectors/connectors-gallery-partners",
+  "lastVerifiedAt": "2026-10-15",
+  "note": "Absent from both galleries"
+ }
+]

@@ -1,0 +1,27 @@
+{
+  "source": "learn.microsoft.com (Cowork: indbyggede skills og plugins i App Store), set 26.10.2026. Navne som tekst; beskrivelser skrevet af Mindforward.",
+  "skills": [
+    { "id": "word", "name": "Word", "madeBy": "Microsoft", "section": "forYou", "icon": "file", "description": "Lav og redigér Word-dokumenter." },
+    { "id": "excel", "name": "Excel", "madeBy": "Microsoft", "section": "forYou", "icon": "table", "description": "Byg og ret regneark med formler og diagrammer." },
+    { "id": "powerpoint", "name": "PowerPoint", "madeBy": "Microsoft", "section": "forYou", "icon": "grid", "description": "Lav præsentationer i jeres egen skabelon." },
+    { "id": "pdf", "name": "PDF", "madeBy": "Microsoft", "section": "forYou", "icon": "file", "description": "Læs, saml og udfyld PDF-filer." },
+    { "id": "email", "name": "Mail", "madeBy": "Microsoft", "section": "new", "icon": "mail", "description": "Læs, sortér og skriv udkast til mails." },
+    { "id": "scheduling", "name": "Planlægning", "madeBy": "Microsoft", "section": "new", "icon": "calendar", "description": "Find tider og book møder." },
+    { "id": "daily-briefing", "name": "Dagligt overblik", "madeBy": "Microsoft", "section": "new", "icon": "check", "description": "Saml dagens møder, mails og opgaver i ét overblik." },
+    { "id": "enterprise-search", "name": "Virksomhedssøgning", "madeBy": "Microsoft", "section": "popular", "icon": "search", "description": "Søg på tværs af mails, filer og chats." },
+    { "id": "deep-research", "name": "Dybdegående research", "madeBy": "Microsoft", "section": "popular", "icon": "search", "description": "Lav grundig research med kilder." },
+    { "id": "meetings", "name": "Møder", "madeBy": "Microsoft", "section": "popular", "icon": "users", "description": "Forbered møder og følg op bagefter." }
+  ],
+  "plugins": [
+    { "id": "dynamics-365-sales", "name": "Dynamics 365 Sales", "madeBy": "Microsoft", "section": "forYou", "icon": "users", "description": "Kunder, salgsmuligheder og opfølgning." },
+    { "id": "dynamics-365-customer-service", "name": "Dynamics 365 Customer Service", "madeBy": "Microsoft", "section": "forYou", "icon": "chat", "description": "Sager og kundeservice." },
+    { "id": "dynamics-365-erp", "name": "Dynamics 365 ERP", "madeBy": "Microsoft", "section": "forYou", "icon": "building", "description": "Økonomi, lager og indkøb." },
+    { "id": "fabric-iq", "name": "Fabric IQ", "madeBy": "Microsoft", "section": "forYou", "icon": "chart", "description": "Spørg ind til virksomhedens data." },
+    { "id": "jira", "name": "Jira", "madeBy": "Atlassian", "section": "new", "icon": "plan", "description": "Opgaver og sager i projekter." },
+    { "id": "salesforce", "name": "Salesforce", "madeBy": "Salesforce", "section": "new", "icon": "users", "description": "Kunder og salg." },
+    { "id": "servicenow", "name": "ServiceNow", "madeBy": "ServiceNow", "section": "new", "icon": "lightning", "description": "IT-sager og arbejdsgange." },
+    { "id": "sap-erp", "name": "SAP ERP", "madeBy": "SAP", "section": "popular", "icon": "building", "description": "Ordrer, lager og økonomi." },
+    { "id": "workday-hcm", "name": "Workday HCM", "madeBy": "Workday", "section": "popular", "icon": "users", "description": "Medarbejdere, ferie og HR." },
+    { "id": "zendesk", "name": "Zendesk", "madeBy": "Zendesk", "section": "popular", "icon": "chat", "description": "Kundeservice og supportsager." }
+  ]
+}

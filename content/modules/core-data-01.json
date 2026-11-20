@@ -1,0 +1,375 @@
+{
+  "$schema": "../schema/module.schema.json",
+  "schemaVersion": 1,
+  "id": "core-data-01",
+  "version": 1,
+  "locale": "da-DK",
+  "title": "Hvad må jeg indsætte? Datasikkerhed og GDPR",
+  "summary": "Sortér oplysninger i grøn, gul og rød, fjern persondata fra en tekst, før du bruger den, og vælg det godkendte AI-værktøj frem for en privat app.",
+  "level": 1,
+  "type": "CORE",
+  "format": "STANDARD",
+  "tracks": [
+    "CHATGPT",
+    "COPILOT",
+    "CLAUDE",
+    "GEMINI"
+  ],
+  "requiresTier": "COPILOT_CHAT",
+  "roles": [],
+  "concepts": [
+    "SECURITY_PRIVACY"
+  ],
+  "featureRefs": [],
+  "minutes": 10,
+  "objectives": [
+    "Sortér oplysninger i grøn, gul og rød: offentligt, internt og persondata eller fortroligt.",
+    "Anonymisér en tekst, før du bruger den i et AI-værktøj.",
+    "Vælg virksomhedens godkendte AI-værktøj frem for en privat app."
+  ],
+  "prerequisites": [
+    "core-llm-01"
+  ],
+  "passThreshold": 0.8,
+  "requiresVerification": false,
+  "sources": [],
+  "steps": [
+    {
+      "id": "groen-gul-roed",
+      "type": "READ",
+      "title": "Grøn, gul og rød",
+      "points": 0,
+      "body": "Det, du skriver i et AI-værktøj, forlader din skærm. Derfor skal du tænke dig om, før du indsætter noget. Sortér det i tre farver:\n\n- **Grøn — offentligt:** Det, der står på hjemmesiden eller i nyhedsbrevet. Må bruges frit.\n- **Gul — internt:** Interne tal, planer og procedurer, fx lagerbelægning. Kun i Nordlys' godkendte AI-værktøj.\n- **Rød — persondata, følsomt eller fortroligt:** Navne, mails og telefonnumre på kunder og kolleger, helbred og løn, og alt mærket FORTROLIGT. Kun i det godkendte værktøj, kun når det er nødvendigt for opgaven. CPR-numre hører aldrig hjemme i en prompt.\n\nEr du i tvivl, så behandl det som rødt — og spørg din leder."
+    },
+    {
+      "id": "sorter",
+      "type": "QUIZ",
+      "title": "Hvad er rødt?",
+      "points": 20,
+      "question": "Hvilke af disse oplysninger er røde (persondata, følsomt eller fortroligt)? Vælg alle, der passer.",
+      "multiSelect": true,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Nordlys' slogan \"Til tiden. Hver gang.\"",
+          "correct": false,
+          "feedback": "Grøn. Det står på hjemmesiden og må bruges frit."
+        },
+        {
+          "id": "b",
+          "text": "Kundeservices åbningstider fra FAQ'en",
+          "correct": false,
+          "feedback": "Grøn. Det er information, kunderne gerne må få."
+        },
+        {
+          "id": "c",
+          "text": "Lagerbelægningen pr. uge frem mod jul",
+          "correct": false,
+          "feedback": "Gul. Interne tal, som kun hører hjemme i det godkendte værktøj."
+        },
+        {
+          "id": "d",
+          "text": "Hannes mailadresse og hendes klage fra Bølgegrøn Kaffe",
+          "correct": true,
+          "feedback": "Rød. Navn og mail er persondata om en kontaktperson hos en kunde."
+        },
+        {
+          "id": "e",
+          "text": "Lønrammerne for 2027 fra Saras mail mærket FORTROLIGT",
+          "correct": true,
+          "feedback": "Rød. Mærket fortroligt og må ikke deles uden for de godkendte rammer."
+        },
+        {
+          "id": "f",
+          "text": "At en af pakkerne er sygemeldt",
+          "correct": true,
+          "feedback": "Rød. Helbredsoplysninger er følsomme persondata."
+        }
+      ],
+      "explanation": "Offentligt er grønt, internt er gult, og persondata, følsomme oplysninger og alt mærket fortroligt er rødt. Jo rødere, jo mere skal du overveje, om det overhovedet er nødvendigt for opgaven.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Spørg dig selv: Handler det om en person, eller er det mærket fortroligt?"
+        },
+        {
+          "level": 2,
+          "text": "Tre er røde. To er offentlige, og én er intern."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Hannes mail og klage, lønrammerne for 2027 og sygemeldingen. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "anonymiser-read",
+      "type": "READ",
+      "title": "Sådan fjerner du persondata",
+      "points": 0,
+      "body": "Vil du bruge en rigtig mail som udgangspunkt, så fjern det, AI'en ikke har brug for:\n\n- Skift navne ud med roller eller felter: \"Hanne\" bliver til \"indkøbschefen\" eller [kunde].\n- Slet mailadresser, telefonnumre og adresser.\n- Slet ordrenumre og firmanavne, hvis de ikke er nødvendige.\n- Behold det, opgaven kræver: hvad der er sket, og hvad kunden ønsker.\n\nI øvemiljøet hjælper et filter dig. Skriver du noget, der ligner et CPR-, kort- eller kontonummer, bliver det stoppet. Ligner noget en rigtig mail eller et telefonnummer, får du en advarsel.\n\nMen filteret fanger ikke navne eller helbred. Det er stadig dit ansvar."
+    },
+    {
+      "id": "anonymiser",
+      "type": "PROMPT_TASK",
+      "title": "Brug klagen — uden persondata",
+      "points": 35,
+      "instruction": "Skriv en prompt, der beder AI'en om en svarskabelon til kunder, der er ramt af forsinkelser. Brug Hannes klage som udgangspunkt, men fjern alt, der kan pege på hende eller kunden. Du skriver prompten — ikke selve skabelonen.",
+      "scenario": "Hanne, indkøbschef hos Bølgegrøn Kaffe ApS (hanne@boelgegroen-kaffe.example), har klaget over tre forsinkede leverancer (ordre 40118, 40127 og 40133). Årsagen er, at fragtpartneren Vestvind Transport er én dag forsinket. Næste levering kommer fredag kl. 7–10. Hun vil vide, hvad Nordlys gør ved det, og hvordan hun bliver kompenseret — ellers kigger hun på en anden leverandør. Peter Skov vil have en skabelon til kundeservices fælles mappe, som alle bruger, når kunder klager over forsinkelser. Der må ikke stå noget i den, der kan pege på Hanne eller Bølgegrøn Kaffe. Kompensation afgør salgschef Jonas Bak.",
+      "attachments": [
+        "f11"
+      ],
+      "maxChars": 2000,
+      "maxSubmissions": 3,
+      "runModelAfter": true,
+      "checks": [
+        {
+          "kind": "NO_PII",
+          "severity": "BLOCK",
+          "message": "Din prompt ser ud til at indeholde et CPR-, kort- eller kontonummer. Fjern det, og prøv igen — sådanne oplysninger hører aldrig hjemme i en prompt."
+        },
+        {
+          "kind": "MIN_WORDS",
+          "value": 15,
+          "severity": "BLOCK",
+          "message": "Din prompt er meget kort. Beskriv situationen og opgaven — bare uden navne og kontaktoplysninger."
+        },
+        {
+          "kind": "EXCLUDES_ALL",
+          "terms": [
+            "hanne",
+            "@",
+            "40118",
+            "40127",
+            "40133",
+            "bølgegrøn"
+          ],
+          "severity": "WARN",
+          "message": "Der står stadig et navn, en mailadresse, et ordrenummer eller et firmanavn i din prompt. Skift det ud med en rolle eller et felt som [kunde]."
+        },
+        {
+          "kind": "INCLUDES_ANY",
+          "terms": [
+            "skabelon",
+            "genbrug",
+            "felt",
+            "[",
+            "pladsholder"
+          ],
+          "severity": "WARN",
+          "message": "Har du sagt, at det skal være en skabelon, der kan genbruges til andre kunder?"
+        }
+      ],
+      "rubric": {
+        "version": "core-data-01-anonymiser.v1",
+        "passScore": 0.7,
+        "criteria": [
+          {
+            "id": "personoplysninger-fjernet",
+            "label": "Persondata fjernet",
+            "description": "Prompten indeholder ingen oplysninger, der kan pege på kontaktpersonen eller kunden. 2 = intet personnavn (Hanne), ingen mailadresse, intet telefonnummer, ingen ordrenumre og intet firmanavn (Bølgegrøn Kaffe); kunden omtales generisk eller med felter som [kunde]. 1 = ingen navn/mail/telefon, men firmanavn eller ordrenumre står der stadig. 0 = Hannes navn, mailadresse eller andre persondata er med.",
+            "weight": 3,
+            "required": true
+          },
+          {
+            "id": "situation-bevaret",
+            "label": "Situationen er bevaret",
+            "description": "Prompten beskriver stadig situationen i generelle termer: leverancer er forsinket (gerne antal), årsagen er en forsinket fragtpartner, der er et nyt leveringstidspunkt, og kunden vil have en løsning eller kompensation / overvejer at skifte. 2 = mindst tre af disse fire. 1 = en eller to. 0 = ingen; AI'en ved ikke, hvad skabelonen skal handle om.",
+            "weight": 2,
+            "required": false
+          },
+          {
+            "id": "opgave",
+            "label": "Tydelig opgave",
+            "description": "Prompten beder om en genbrugelig skabelon/standardsvar til kunder ramt af forsinkelser. 2 = eksplicit skabelon eller standardsvar til flere kunder. 1 = beder kun om et svar på denne ene klage. 0 = ingen opgave, eller noget helt andet.",
+            "weight": 2,
+            "required": false
+          },
+          {
+            "id": "felter",
+            "label": "Felter til udfyldning",
+            "description": "Prompten beder om felter/pladsholdere til det, der skifter fra kunde til kunde (fx [kundens navn], [antal leverancer], [ny leveringsdato]). 2 = eksplicit krav om felter eller pladsholdere. 1 = vagt ('så den kan bruges igen'). 0 = intet.",
+            "weight": 1,
+            "required": false
+          },
+          {
+            "id": "ingen-loefter",
+            "label": "Ingen løfter om kompensation",
+            "description": "Prompten sikrer, at skabelonen ikke lover rabat eller kompensation (fx 'lov ikke kompensation — det afgør salgschefen'). 2 = eksplicit forbud mod at love kompensation/rabat. 1 = generel forsigtighed ('pas på hvad du lover'). 0 = intet.",
+            "weight": 1,
+            "required": false
+          }
+        ]
+      },
+      "goldenSet": "content/golden/core-data-01/anonymiser.jsonl",
+      "exampleSolution": "Lav en svarskabelon, som kundeservice kan genbruge, når kunder klager over forsinkede leverancer. Situationen er typisk: [antal] leverancer er kommet en dag for sent, fordi en af vores fragtpartnere er forsinket. Næste levering kommer [dag og tidsrum]. Kunden er utilfreds, vil vide hvad vi gør ved det, og spørger om kompensation. Lav felter i firkantede parenteser til [kundens navn], [antal leverancer] og [næste levering]. Skriv i Nordlys' tone of voice fra den vedhæftede fil: du-form, korte sætninger, ærlig. Maks 120 ord. Lov ikke rabat eller kompensation — skriv i stedet, at salgschefen vender tilbage om det.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Læs din prompt igennem som en fremmed. Kan du se, hvem kunden er?"
+        },
+        {
+          "level": 2,
+          "text": "Skift Hanne, mailadressen, ordrenumrene og firmanavnet ud med roller eller felter som [kunde]. Behold det, der er sket: forsinkelser, årsag og ny levering."
+        },
+        {
+          "level": 3,
+          "text": "Se et eksempel på en prompt, der består. Du får 0 point for trinnet, men kan stadig bestå modulet på de andre trin."
+        }
+      ]
+    },
+    {
+      "id": "cpr-loensag",
+      "type": "JUDGMENT",
+      "title": "Lønsedlen med CPR-nummer",
+      "points": 15,
+      "mustPass": true,
+      "category": "GDPR",
+      "scenario": "Line Vestergaard (HR) spørger dig om et råd. En pakker vil vide, hvorfor hans løn er lavere end ventet. Line vil kopiere hele hans lønseddel ind i Nordlys' godkendte AI-værktøj og bede om en forklaring på fradragene. Lønsedlen indeholder hans navn, adresse, CPR-nummer og en linje om sygedage.",
+      "question": "Hvad er det rigtige at gøre?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Det er fint, fordi værktøjet er godkendt af Nordlys.",
+          "verdict": "WRONG",
+          "feedback": "Et godkendt værktøj betyder ikke, at alt må indsættes. CPR-nummer og sygedage er ikke nødvendige for at forklare et fradrag."
+        },
+        {
+          "id": "b",
+          "text": "Hun skal bare fjerne CPR-nummeret først.",
+          "verdict": "PARTIAL",
+          "feedback": "Godt at fjerne CPR-nummeret. Men navn, adresse og sygedage er stadig med, og de er heller ikke nødvendige."
+        },
+        {
+          "id": "c",
+          "text": "Hun beskriver kun de linjer på lønsedlen, hun er i tvivl om — uden navn, adresse, CPR-nummer og sygedage.",
+          "verdict": "CORRECT",
+          "feedback": "Rigtigt. AI'en kan forklare et fradrag uden at vide, hvem det handler om. Del kun det nødvendige."
+        },
+        {
+          "id": "d",
+          "text": "Hun bruger en privat AI-app i stedet, så lønsedlen ikke havner i Nordlys' systemer.",
+          "verdict": "WRONG",
+          "feedback": "Det er værre. Så forlader persondata virksomheden i en tjeneste, Nordlys ikke har godkendt."
+        }
+      ],
+      "explanation": "Lønsedler indeholder persondata, og sygedage er helbredsoplysninger, som er særligt følsomme. CPR-numre hører aldrig hjemme i en prompt. Del kun det, opgaven kræver — her de linjer, der skal forklares.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvad har AI'en egentlig brug for at vide for at forklare et fradrag?"
+        },
+        {
+          "level": 2,
+          "text": "Hverken navn, adresse, CPR-nummer eller sygedage er nødvendige for at forklare en linje på en lønseddel."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Beskriv kun de linjer, hun er i tvivl om, uden navn, adresse, CPR-nummer og sygedage. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "kundeliste-privat-app",
+      "type": "JUDGMENT",
+      "title": "Kundelisten i den private app",
+      "points": 15,
+      "mustPass": true,
+      "category": "DATA_SECURITY",
+      "scenario": "Jonas har bedt dig om en top-5 over leads og prøvekunder til pipeline-reviewet. Du vil trække alle 30 kunder ud af CRM'et med kontaktpersoner, mails, omsætning og kundetilfredshed. Du synes, den gratis AI-app på din private telefon er bedst til lister. Nordlys' AI-politik siger, at kun det godkendte AI-værktøj må bruges til arbejde.",
+      "question": "Hvad er det rigtige at gøre?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Bruge den private app og slette samtalen bagefter.",
+          "verdict": "WRONG",
+          "feedback": "At slette samtalen i appen sikrer ikke, at data er slettet hos udbyderen. Og politikken er stadig brudt."
+        },
+        {
+          "id": "b",
+          "text": "Bruge Nordlys' godkendte værktøj og kun tage de felter med, der er nødvendige — fx firma, status, omsætning og sidste kontakt.",
+          "verdict": "CORRECT",
+          "feedback": "Rigtigt. Det godkendte værktøj, og kun det nødvendige. Kontaktpersoner og mails skal ikke bruges til at prioritere."
+        },
+        {
+          "id": "c",
+          "text": "Bruge den private app, men fjerne kontaktpersonernes mails først.",
+          "verdict": "PARTIAL",
+          "feedback": "Godt at fjerne mails. Men navne og kundedata er stadig med, og appen er stadig ikke godkendt til arbejde."
+        },
+        {
+          "id": "d",
+          "text": "Det er fint, fordi det mest handler om firmaer og ikke om personer.",
+          "verdict": "WRONG",
+          "feedback": "Listen indeholder navne og mails på kontaktpersoner. Og kundedata må slet ikke i ikke-godkendte værktøjer."
+        }
+      ],
+      "explanation": "Kundedata hører kun hjemme i virksomhedens godkendte værktøj. Og selv dér skal du kun tage det med, opgaven kræver. Er du i tvivl om, hvad der er godkendt, så spørg din leder.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tænk på to ting: hvilket værktøj, og hvilke oplysninger."
+        },
+        {
+          "level": 2,
+          "text": "Hvad siger AI-politikken om private apps? Og skal du bruge kontaktpersonernes mails for at prioritere leads?"
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Brug det godkendte værktøj, og tag kun de nødvendige felter med. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "fortroligt-prisudkast",
+      "type": "JUDGMENT",
+      "title": "Det fortrolige prisudkast",
+      "points": 15,
+      "category": "CONFIDENTIALITY",
+      "scenario": "Jonas har sendt dig udkastet til prislisten for 2027. Det er fortroligt, indtil Mette har godkendt det. Du vil gerne vide, hvordan priserne ligger i forhold til konkurrenterne. Du overvejer at indsætte hele udkastet i en gratis, offentlig AI-chat med websøgning og bede den sammenligne med priser på nettet.",
+      "question": "Må du gøre det?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Ja. Priserne bliver alligevel sendt til kunderne om lidt.",
+          "verdict": "WRONG",
+          "feedback": "Indtil Mette har godkendt udkastet, er det fortroligt. Tallene kan stadig ændre sig."
+        },
+        {
+          "id": "b",
+          "text": "Ja, hvis du fjerner Nordlys' navn fra filen først.",
+          "verdict": "PARTIAL",
+          "feedback": "Det mindsker risikoen lidt. Men de fortrolige tal forlader stadig Nordlys i et værktøj, der ikke er godkendt."
+        },
+        {
+          "id": "c",
+          "text": "Nej. Brug ikke den offentlige chat. Spørg Jonas, om udkastet må bruges til analysen, og brug i så fald kun Nordlys' godkendte værktøj.",
+          "verdict": "CORRECT",
+          "feedback": "Rigtigt. Fortroligt materiale hører kun hjemme i godkendte værktøjer. Og er du i tvivl, så spørg først."
+        },
+        {
+          "id": "d",
+          "text": "Ja, hvis du kun indsætter priserne og ikke undtagelserne.",
+          "verdict": "WRONG",
+          "feedback": "Det er netop priserne, der er fortrolige."
+        }
+      ],
+      "explanation": "Materiale mærket fortroligt — fx prisudkast, løn og budget — må kun behandles i Nordlys' godkendte værktøj og kun af dem, der har adgang. Offentlige AI-chats er ikke en del af det.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvad står der i AI-politikken om materiale mærket fortroligt?"
+        },
+        {
+          "level": 2,
+          "text": "Det er tallene, der er hemmelige. At fjerne navnet ændrer ikke på det."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Brug ikke den offentlige chat. Spørg Jonas først, og brug kun det godkendte værktøj. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    }
+  ]
+}

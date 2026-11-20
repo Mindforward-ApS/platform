@@ -1,0 +1,285 @@
+{
+  "$schema": "../schema/module.schema.json",
+  "schemaVersion": 1,
+  "id": "core-llm-01",
+  "version": 1,
+  "locale": "da-DK",
+  "title": "Hvad en sprogmodel er — og ikke er",
+  "summary": "Forstå hvordan en AI-assistent laver sine svar, hvorfor den kan tage fejl, og hvornår du skal tjekke svaret i en kilde hos Nordlys Logistik.",
+  "level": 1,
+  "type": "CORE",
+  "format": "STANDARD",
+  "tracks": [
+    "CHATGPT",
+    "COPILOT",
+    "CLAUDE",
+    "GEMINI"
+  ],
+  "requiresTier": "COPILOT_CHAT",
+  "roles": [],
+  "concepts": [
+    "PROMPTING"
+  ],
+  "featureRefs": [],
+  "minutes": 8,
+  "objectives": [
+    "Forklar med egne ord, at en sprogmodel forudsiger tekst og ikke slår op i en database.",
+    "Genkend fire svagheder: den opfinder, regner forkert, har forældet viden og lyder sikker.",
+    "Skeln mellem en chat med modellen alene og en chat med adgang til web eller filer."
+  ],
+  "prerequisites": [],
+  "passThreshold": 0.8,
+  "requiresVerification": false,
+  "sources": [],
+  "steps": [
+    {
+      "id": "intro",
+      "type": "READ",
+      "title": "Hvad sker der, når du skriver til en AI?",
+      "points": 0,
+      "body": "Du er Kim Lund, kunde- og salgskoordinator hos **Nordlys Logistik ApS** i Aarhus. Du vil bruge en AI-assistent til mails, opsummeringer og idéer.\n\nBag assistenten er en **sprogmodel**. Den er trænet på enorme mængder tekst. Når du skriver til den, gætter den, hvilket ord der passer bedst som det næste — ord for ord.\n\nDen slår ikke svaret op i en database. Og den ved ikke selv, om det, den skriver, er sandt.\n\nDerfor kan et svar lyde rigtigt uden at være det. Det er ikke en fejl i værktøjet. Det er sådan, det virker. I dette modul lærer du, hvad det betyder for dit arbejde."
+    },
+    {
+      "id": "to-svar",
+      "type": "READ",
+      "title": "Samme spørgsmål — to svar",
+      "points": 0,
+      "body": "Du beder AI'en om en emnelinje til oktober-nyhedsbrevet. Du stiller præcis det samme spørgsmål to gange:\n\n> **Svar 1:** Klar til julen med Nordlys\n>\n> **Svar 2:** Julen nærmer sig — er dit lager klar?\n\nBegge svar er fine. Modellen vælger ord med lidt tilfældighed, så svaret skifter fra gang til gang.\n\nTil idéer og tekst er det en fordel. Du kan trykke \"Prøv igen\" og få flere bud.\n\nTil fakta er det et advarselstegn. Får du to forskellige tal eller datoer på det samme spørgsmål, så gætter modellen. Så skal du finde svaret i kilden."
+    },
+    {
+      "id": "proev-igen",
+      "type": "QUIZ",
+      "title": "Hvad fortæller \"Prøv igen\" dig?",
+      "points": 20,
+      "question": "Du spørger AI'en: \"Hvornår skal ordrer være afgivet i julesæsonen for at blive sendt samme dag?\" Den har ikke adgang til Nordlys' filer. Første svar siger kl. 14:00. Du trykker \"Prøv igen\" og får kl. 15:00. Hvad er det rigtige at gøre?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Brug det sidste svar. Modellen har tænkt sig bedre om anden gang.",
+          "correct": false,
+          "feedback": "\"Prøv igen\" giver et nyt gæt, ikke et bedre tjek. Modellen har ikke fået ny viden."
+        },
+        {
+          "id": "b",
+          "text": "Brug det første svar. Det første bud er som regel det rigtige.",
+          "correct": false,
+          "feedback": "Rækkefølgen siger intet om, hvad der er sandt. Begge svar er gæt."
+        },
+        {
+          "id": "c",
+          "text": "Modellen gætter, fordi den ikke kender Nordlys' frister. Find svaret i kundeservices FAQ.",
+          "correct": true,
+          "feedback": "Rigtigt. I FAQ'en står der kl. 13:00 i uge 47–51. Begge svar var altså forkerte."
+        },
+        {
+          "id": "d",
+          "text": "Tryk \"Prøv igen\" et par gange mere, og vælg det svar, der kommer oftest.",
+          "correct": false,
+          "feedback": "Mange gæt bliver ikke til viden. Modellen kender stadig ikke Nordlys' interne frister."
+        }
+      ],
+      "explanation": "Når svaret skifter, hver gang du spørger, er det et tegn på, at modellen gætter. Interne fakta som frister, priser og aftaler skal du slå op i Nordlys' egne kilder.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Kan modellen overhovedet vide noget om Nordlys' interne frister?"
+        },
+        {
+          "level": 2,
+          "text": "To forskellige svar på det samme faktaspørgsmål betyder, at modellen gætter. Hvor står den rigtige frist?"
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Modellen gætter, så du finder svaret i FAQ'en (kl. 13:00 i uge 47–51). Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "fire-svagheder",
+      "type": "READ",
+      "title": "Fire typiske svagheder",
+      "points": 0,
+      "body": "1. **Den opfinder.** Mangler den viden, fylder den hullet med noget, der lyder rigtigt — fx et tilbud, en paragraf eller et navn. Det kaldes en hallucination.\n2. **Den regner forkert.** Den skriver tal, som den skriver ord. Selv simple regnestykker kan gå galt.\n3. **Forældet viden.** Den er trænet på tekst frem til en bestemt dato. Nye priser, regler og nyheder kender den ikke — medmindre den kan læse på nettet eller i dine filer.\n4. **Den lyder sikker.** Tonen er lige overbevisende, uanset om svaret er rigtigt eller forkert.\n\nDen sidste er den farligste. Et sikkert sprog er ikke et bevis."
+    },
+    {
+      "id": "hvad-passer",
+      "type": "QUIZ",
+      "title": "Hvad passer på en sprogmodel?",
+      "points": 25,
+      "question": "Hvilke udsagn passer på en sprogmodel? Vælg alle, der passer.",
+      "multiSelect": true,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Den forudsiger, hvilke ord der passer bedst som det næste.",
+          "correct": true,
+          "feedback": "Ja. Det er kernen i, hvordan den virker."
+        },
+        {
+          "id": "b",
+          "text": "Den slår svaret op i en database med kontrollerede fakta.",
+          "correct": false,
+          "feedback": "Nej. Den har ingen database med fakta. Den skriver det, der lyder mest sandsynligt."
+        },
+        {
+          "id": "c",
+          "text": "Den kan lyde helt sikker, selv når den tager fejl.",
+          "correct": true,
+          "feedback": "Ja. Tonen siger intet om, om svaret er rigtigt."
+        },
+        {
+          "id": "d",
+          "text": "Den kan regne forkert, også i simple regnestykker.",
+          "correct": true,
+          "feedback": "Ja. Regn altid efter, når tal betyder noget."
+        },
+        {
+          "id": "e",
+          "text": "Den kender altid de nyeste priser og regler.",
+          "correct": false,
+          "feedback": "Nej. Den kender kun det, den er trænet på, og det, du eller en kilde giver den."
+        },
+        {
+          "id": "f",
+          "text": "Hvis den ikke ved noget, siger den det altid.",
+          "correct": false,
+          "feedback": "Nej. Ofte finder den på et svar i stedet. Du kan bede den sige til, når den er usikker."
+        }
+      ],
+      "explanation": "En sprogmodel er god til sprog, men den er ikke en faktabase. Den kan opfinde, regne forkert og have forældet viden — og den lyder sikker uanset hvad.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tænk på de fire svagheder, og på hvordan modellen laver sine svar."
+        },
+        {
+          "level": 2,
+          "text": "Tre udsagn er rigtige. De forkerte lover, at modellen altid ved besked."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Den forudsiger ord, den kan lyde sikker selv om den tager fejl, og den kan regne forkert. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "find-det-gamle",
+      "type": "SPOT_ERROR",
+      "title": "Find det forældede i svaret",
+      "points": 30,
+      "instruction": "Peter fra kundeservice bad en AI-chat uden adgang til Nordlys' filer om et svar til en kunde. Sammenlign svaret med de gældende fakta, og markér de sætninger, der er forkerte.",
+      "userPrompt": "En kunde spørger, hvad lagerplads og pluk koster, og om der er forsinkelser på levering til Sjælland. Skriv et kort svar.",
+      "referenceFacts": "**Gældende fakta (Prisliste 2026, FAQ kundeservice, Fragtpartnere oversigt)**\n- Lagerplads: 32 kr. pr. palle pr. uge\n- Pluk: 4,50 kr. pr. ordrelinje\n- Cut-off: kl. 14:00 på hverdage (kl. 13:00 i uge 47–51)\n- Vestvind Transport, Sjælland: lige nu én dags forsinkelse i to uger\n- Kontakt om aftaler: Kim Lund",
+      "segments": [
+        {
+          "id": "s1",
+          "text": "Tak for dit spørgsmål.",
+          "isError": false
+        },
+        {
+          "id": "s2",
+          "text": "Lagerplads koster 28 kr. pr. palle pr. uge.",
+          "isError": true,
+          "errorType": "OUTDATED",
+          "explanation": "Den gældende pris er 32 kr. AI'en har brugt en ældre pris. Den kender ikke Nordlys' nye prisliste, medmindre du giver den filen."
+        },
+        {
+          "id": "s3",
+          "text": "Pluk koster 4,50 kr. pr. ordrelinje.",
+          "isError": false
+        },
+        {
+          "id": "s4",
+          "text": "Der er ingen forsinkelser, så leveringer til Sjælland kommer som normalt næste hverdag.",
+          "isError": true,
+          "errorType": "OUTDATED",
+          "explanation": "Lige nu er Vestvind Transport én dag forsinket på Sjælland. Modellen kender ikke nyheder fra de seneste dage — den kan kun gætte på, at alt er normalt."
+        },
+        {
+          "id": "s5",
+          "text": "Ordrer, der er afgivet inden kl. 14:00 på hverdage, sendes samme dag.",
+          "isError": false
+        },
+        {
+          "id": "s6",
+          "text": "Har du flere spørgsmål til din aftale, er du velkommen til at kontakte Kim Lund.",
+          "isError": false
+        }
+      ],
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tjek priser og nyheder. Hvad kan en model uden adgang til filer eller nettet ikke vide?"
+        },
+        {
+          "level": 2,
+          "text": "Der er to fejl: én pris, der ikke passer med prislisten, og én påstand om leveringen, der ikke passer med situationen lige nu."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: 28 kr. (skal være 32 kr.) og \"ingen forsinkelser\" (Vestvind er én dag forsinket på Sjælland). Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "model-eller-kilde",
+      "type": "READ",
+      "title": "Modellen alene — eller med web og filer?",
+      "points": 0,
+      "body": "Nogle AI-værktøjer svarer kun ud fra det, modellen lærte under træningen. Andre kan også søge på nettet eller læse filer, du vedhæfter.\n\n- **Kun modellen:** God til at skrive, omformulere og forklare almindelige ting. Kender ikke Nordlys' priser, kunder eller nyheder fra i går.\n- **Med web eller filer:** Kan bygge svaret på en kilde. Men den kan stadig læse forkert eller blande kilder sammen.\n\nSe efter, om svaret viser, hvor det kommer fra. Står der ingen kilde, så gå ud fra, at det er modellen alene, der svarer."
+    },
+    {
+      "id": "hvad-kan-den",
+      "type": "QUIZ",
+      "title": "Hvad kan modellen alene klare?",
+      "points": 25,
+      "question": "Din AI-chat har hverken adgang til nettet eller til Nordlys' filer. Hvilken opgave kan den bedst løse?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Giv tre forslag til en venlig afslutning på en mail til en kunde.",
+          "correct": true,
+          "feedback": "Rigtigt. Det er en skriveopgave. Den kræver sprog, ikke interne fakta."
+        },
+        {
+          "id": "b",
+          "text": "Hvad koster kølelager hos Nordlys?",
+          "correct": false,
+          "feedback": "Nordlys' priser står i prislisten. Uden filen kan modellen kun gætte."
+        },
+        {
+          "id": "c",
+          "text": "Har Vestvind Transport stadig forsinkelser i dag?",
+          "correct": false,
+          "feedback": "Det kræver nye oplysninger. Modellen alene kender ikke dagens situation."
+        },
+        {
+          "id": "d",
+          "text": "Hvilke kunder har varslet store indleveringer i uge 48?",
+          "correct": false,
+          "feedback": "Det står i Nordlys' mails og CRM. Dem kan modellen ikke se."
+        }
+      ],
+      "explanation": "Modellen alene er stærk til sprog: at skrive, omformulere og komme med idéer. Til Nordlys' egne fakta og til nyheder skal den have en kilde — eller du skal slå det op selv.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvilken opgave kræver ingen viden om Nordlys eller om, hvad der sker lige nu?"
+        },
+        {
+          "level": 2,
+          "text": "Tre af opgaverne kræver interne eller nye fakta. Én er en ren skriveopgave."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Tre forslag til en venlig afslutning på en mail. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    }
+  ]
+}

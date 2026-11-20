@@ -13,17 +13,30 @@ permissions:
   contents: read
 
 env:
-  # Dummy values: CI never talks to real third parties (CLAUDE.md). Health returns 503 without a DB, which e2e accepts.
+  # Dummy values: CI never talks to real third parties (CLAUDE.md). Postgres is a local service container.
   APP_URL: http://localhost:3100
   NEXT_PUBLIC_APP_URL: http://localhost:3100
-  DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci
+  DATABASE_URL: postgresql://greb:greb@127.0.0.1:5432/greb_e2e
+  TEST_DATABASE_URL: postgresql://greb:greb@127.0.0.1:5432/greb_test
+  BETTER_AUTH_SECRET: ci-only-secret-ci-only-secret-ci-only-xx
+  EMAIL_TRANSPORT: file
   INNGEST_DEV: "1"
   NEXT_TELEMETRY_DISABLED: "1"
 
 jobs:
   checks:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: greb
+          POSTGRES_PASSWORD: greb
+          POSTGRES_DB: greb_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U greb" --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -32,12 +45,15 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Create e2e database
+        run: PGPASSWORD=greb psql -h 127.0.0.1 -U greb -d greb_test -c "CREATE DATABASE greb_e2e"
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm check:tokens
       - run: pnpm content:validate
       - run: pnpm test
       - run: pnpm build
+      - run: pnpm check:client-secrets
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm e2e
       - uses: actions/upload-artifact@v4

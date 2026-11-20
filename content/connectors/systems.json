@@ -1,0 +1,32 @@
+[
+  { "slug": "kontor", "name": "Kontor og mail", "systems": [
+    { "slug": "microsoft-365", "name": "Microsoft 365" },
+    { "slug": "google-workspace", "name": "Google Workspace" } ] },
+  { "slug": "regnskab", "name": "Regnskab", "systems": [
+    { "slug": "e-conomic", "name": "e-conomic" },
+    { "slug": "dinero", "name": "Dinero" },
+    { "slug": "billy", "name": "Billy" },
+    { "slug": "business-central", "name": "Dynamics 365 Business Central" } ] },
+  { "slug": "kunder", "name": "Kunder og salg", "systems": [
+    { "slug": "hubspot", "name": "HubSpot" },
+    { "slug": "salesforce", "name": "Salesforce" } ] },
+  { "slug": "filer", "name": "Fildeling", "systems": [
+    { "slug": "dropbox", "name": "Dropbox" },
+    { "slug": "box", "name": "Box" } ] },
+  { "slug": "projekt", "name": "Projekter og noter", "systems": [
+    { "slug": "notion", "name": "Notion" },
+    { "slug": "asana", "name": "Asana" },
+    { "slug": "monday", "name": "monday.com" },
+    { "slug": "jira", "name": "Jira" } ] },
+  { "slug": "haandvaerk", "name": "Sagsstyring til håndværk", "systems": [
+    { "slug": "ordrestyring", "name": "Ordrestyring" },
+    { "slug": "minuba", "name": "Minuba" },
+    { "slug": "apacta", "name": "Apacta" } ] },
+  { "slug": "ehandel", "name": "Webshop og betaling", "systems": [
+    { "slug": "shopify", "name": "Shopify" },
+    { "slug": "stripe", "name": "Stripe" } ] },
+  { "slug": "samarbejde", "name": "Samarbejde og design", "systems": [
+    { "slug": "slack", "name": "Slack" },
+    { "slug": "canva", "name": "Canva" },
+    { "slug": "zapier", "name": "Zapier" } ] }
+]

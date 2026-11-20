@@ -110,7 +110,7 @@ greb/
 ## 3. Autentificering og organisationer
 
 - **Better Auth** med Prisma-adapter (`better-auth/adapters/prisma`, provider `postgresql`). Login: magic link (mail via `src/server/email/send.ts`, kategori `SERVICE`), Microsoft Entra ID (`tenantId: "common"` så alle arbejds-/skolekonti kan logge ind; `prompt: "select_account"`), Google.
-- **Organization-plugin** (`member`-tabellen omdøbes til `membership`; roller `OWNER|ADMIN|LEARNER`, `creatorRole: "OWNER"`; én rolle pr. medlem — ingen kommaseparerede roller). MindForwards ekstra felter på `Organization`/`Membership` erklæres som `additionalFields`.
+- **Organization-plugin** (`member`-tabellen omdøbes til `membership`; roller `OWNER|ADMIN|LEARNER`, `creatorRole: "OWNER"`; én rolle pr. medlem — ingen kommaseparerede roller). Grebs ekstra felter på `Organization`/`Membership` erklæres som `additionalFields`.
 - **twoFactor-plugin** kun påkrævet for `PlatformRole.GREB_ADMIN`.
 - B2C-signup: hook `user.create.after` opretter `Organization(type=PERSONAL, seatLimit=1)` + `Membership(OWNER)` i samme transaktion.
 - `session.activeOrganizationId` styrer kontekst. Bruger med flere orgs vælger i UI; server validerer altid medlemskab.

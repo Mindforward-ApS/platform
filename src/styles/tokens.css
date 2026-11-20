@@ -1,24 +1,754 @@
 /*
- * MindForward design tokens — NEUTRAL PLACEHOLDERS.
- * Design is not decided (CLAUDE.md "Designregel"). This is the ONLY file allowed to define
- * colors, fonts, radius and spacing. Final values are chosen with Marco screen by screen.
+ * Mindforward design tokens — the ONLY file allowed to define colors, fonts, radii, shadows.
+ * Source of truth: the Mindforward design system (approved by Marco 14 Oct 2026,
+ * https://claude.ai/artifact/XQwYFamA9HLSbaAbYRhMyf). Change values there and here together.
  */
-@theme {
-  --color-bg: #ffffff;
-  --color-surface: #f5f5f5;
-  --color-fg: #1a1a1a;
-  --color-muted: #6b6b6b;
-  --color-border: #d9d9d9;
-  --color-accent: #3a3a3a;
-  --color-accent-fg: #ffffff;
-  --color-danger: #8a1c1c;
 
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+/* Geist (Vercel, SIL OFL 1.1): same face as the marketing site (Marco 15 Oct 2026, "same design as the website"). */
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+/* Inter (SIL OFL 1.1): the new website's face, used on the login/signup pages (Marco 20 Oct 2026). */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/SchibstedGrotesk-Variable.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/SchibstedGrotesk-Italic-Variable.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/IBMPlexMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: url("/fonts/IBMPlexMono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+/* Raw palette per theme. Components never use these directly — use the Tailwind names in @theme below. */
+:root {
+  color-scheme: light;
+  --mf-bg: #f5f2f0;
+  --mf-surface: #ffffff;
+  --mf-surface-sunken: #f3eeeb;
+  --mf-line: #e9e3df;
+  --mf-line-strong: #8a7d77;
+  --mf-ink: #1a0f0c;
+  --mf-ink-muted: #4d423e;
+  --mf-ink-subtle: #6b5f5a;
+  --mf-accent: #b8413a;
+  --mf-accent-hover: #9e3631;
+  --mf-accent-soft: #fbe9e6;
+  --mf-accent-ink: #9e3631;
+  --mf-on-accent: #ffffff;
+  --mf-focus: #b8413a;
+  --mf-rav: #f0b03c;
+  --mf-on-rav: #0b1b2b;
+  --mf-mark-dot: #ffa282;
+  --mf-hint: #875400;
+  --mf-hint-soft: #fdf1d8;
+  --mf-success: #13724f;
+  --mf-success-soft: #e4f4ec;
+  --mf-danger: #b3261e;
+  --mf-danger-soft: #fdecea;
+  /* Fixed dark band (marketing hero/footer): same in both themes. */
+  --mf-night: #0b1b2b;
+  --mf-night-raised: #13263a;
+  --mf-night-line: #24384f;
+  --mf-on-night: #edf2f7;
+  --mf-on-night-muted: #a8b5c4;
+  --mf-night-accent: #86a0ff;
+
+  /* Module covers: soft ground + one strong shape color each (design: "covers på modulkort", 14 Oct 2026). */
+  --mf-cover-blue: #fbe9e6;
+  --mf-cover-blue-ink: #c4473f;
+  --mf-cover-amber: #fdf0d2;
+  --mf-cover-amber-ink: #e39a1c;
+  --mf-cover-mint: #dcf3e8;
+  --mf-cover-mint-ink: #13724f;
+  --mf-cover-coral: #fde6df;
+  --mf-cover-coral-ink: #d4552e;
+  --mf-cover-sky: #f3eeeb;
+  --mf-cover-sky-ink: #4a332c;
+
+  /* App-icon tiles (icon system E, Marco 14 Oct 2026): soft top-to-bottom gradient, white glyph. The only place gradients are allowed. */
+  --mf-tile-blue-from: #fb836d;
+  --mf-tile-blue-to: #d24c4c;
+  --mf-tile-amber-from: #ffa282;
+  --mf-tile-amber-to: #ea6b5e;
+  --mf-tile-mint-from: #6b4a40;
+  --mf-tile-mint-to: #3d2c28;
+  --mf-tile-coral-from: #f58a64;
+  --mf-tile-coral-to: #d9471b;
+  --mf-tile-sky-from: #4a332c;
+  --mf-tile-sky-to: #201613;
+  --mf-tile-slate-from: #a3948e;
+  --mf-tile-slate-to: #6b5f5a;
+  --mf-tile-ink-from: #3d2c28;
+  --mf-tile-ink-to: #1a0f0c;
+  --mf-shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(0, 0, 0, 0.12), 0 2px 6px -1px rgba(11, 27, 43, 0.25);
+
+  --mf-shadow-xs: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --mf-shadow-sm: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --mf-shadow-md: 0 1px 2px rgba(11, 27, 43, 0.05), 0 4px 8px rgba(11, 27, 43, 0.05), 0 12px 24px -8px rgba(11, 27, 43, 0.1);
+  --mf-shadow-lg: 0 1px 2px rgba(11, 27, 43, 0.05), 0 8px 16px -4px rgba(11, 27, 43, 0.08), 0 32px 64px -16px rgba(11, 27, 43, 0.22);
+  /* Soft accent light behind page headers (website hero "spots"). */
+  --mf-spot: rgba(234, 107, 94, 0.08);
+  --mf-spot-2: rgba(255, 162, 130, 0.06);
+  --mf-ring: 0 0 0 1px var(--mf-accent), 0 0 0 4px var(--mf-accent-soft);
+  --mf-object-shadow: 0 18px 22px rgba(11, 27, 43, 0.16);
+
+  /* ── Platform v3 (Marco 16 Oct 2026, mindforward-preview/platform-preview.html) ── */
+  /* Sidebar: almost-dark-grey dark blue (Marco 16 Oct 2026: muted slate blue, not saturated navy). Fixed in both themes. */
+  --mf-sidebar: #201613;
+  --mf-sidebar-raised: #2e1f1c;
+  --mf-sidebar-active: #c4473f;
+  --mf-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --mf-sidebar-icon: rgba(255, 255, 255, 0.07);
+  --mf-sidebar-line: rgba(255, 255, 255, 0.1);
+  --mf-on-sidebar: #ffffff;
+  --mf-on-sidebar-muted: #e7dcd7; /* 10.9:1 on --mf-sidebar */
+  --mf-on-sidebar-subtle: #b8a8a1; /* 6.9:1 */
+  --mf-on-sidebar-label: #98908f; /* 5.0:1 — group labels */
+  /* Logo mark (head + forward arrow). On the dark sidebar the navy parts turn white. */
+  --mf-logo-navy: #071b60;
+  --mf-logo-blue: #2858c4;
+  /* Public pages (niveautest, hjælp, login/signup, legal) in the new website's palette (:3400, Oct 2026): cream page,
+     chocolate for dark buttons, coral as the accent. Was blue/navy; retinted 26 Oct 2026 ("har stadig det gamle design"). */
+  --mf-site-bg: #faf6f3;
+  --mf-site-navy: #201613;
+  --mf-site-navy-hover: #2e1f1c;
+  --mf-site-ink: #17100e;
+  --mf-site-body: #433b39;
+  --mf-site-blue: #c2453f;
+  --mf-site-blue-light: #ea6b5e;
+  --mf-site-blue-deep: #a8372f;
+  --mf-site-soft: #fffdfb;
+  --mf-site-brain: #c2453f;
+  --mf-site-line: rgb(26 20 19 / 0.09);
+  --mf-site-shadow: rgb(48 30 24 / 0.35);
+  --mf-site-navy-shadow: rgb(32 22 19 / 0.6);
+  /* Website "bezel" buttons and fields: grey 3px edge, dark hairline inside, grey icon tile. */
+  --mf-site-bezel: #e5e5e5;
+  --mf-site-bezel-hover: #d6d6d6;
+  --mf-site-hairline: rgb(11 13 31 / 0.2);
+  --mf-site-lift: rgb(11 13 31 / 0.1);
+  --mf-site-tile: #f3ece8;
+  /* New website on :3400 (web-skabelon, Oct 2026): chocolate stage, cream page, coral accent. Used by forløb. */
+  --mf-web-bg: #faf6f3;
+  --mf-web-surface: #fffdfb;
+  --mf-web-ink: #17100e;
+  --mf-web-body: #433b39;
+  --mf-web-muted: #6a615f;
+  --mf-web-line: rgb(26 20 19 / 0.09);
+  --mf-web-line-strong: rgb(26 20 19 / 0.16);
+  --mf-web-coral: #ea6b5e;
+  --mf-web-coral-ink: #c2453f;
+  --mf-web-coral-soft: rgb(237 118 104 / 0.12);
+  --mf-web-coral-from: #fb836d;
+  --mf-web-coral-to: #d24c4c;
+  --mf-web-stage: #201613;
+  --mf-web-stage-deep: #1a0f0c;
+  --mf-web-stage-raised: #2e1f1c;
+  --mf-web-stage-text: #c4bbba;
+  --mf-web-stage-muted: #98908f;
+  --mf-web-stage-line: rgb(255 255 255 / 0.1);
+  --mf-web-stage-glass: rgb(255 255 255 / 0.06);
+  --mf-web-glow: rgb(244 124 107 / 0.35);
+  --mf-web-shadow: rgb(48 30 24 / 0.25);
+  --mf-web-white: #ffffff;
+  /* Hero card for the current entity (:3500 look: chocolate stage with a coral glow). White text ≥ 5:1 everywhere. */
+  --mf-hero-from: #201613;
+  --mf-hero-mid: #2a1c18;
+  --mf-hero-to: #1a0f0c;
+  --mf-hero-glow: rgba(244, 124, 107, 0.45);
+  --mf-hero-shine: rgba(255, 255, 255, 0.06);
+  --mf-hero-chip-line: rgba(255, 255, 255, 0.25);
+  --mf-hero-pill: rgba(255, 255, 255, 0.1);
+  --mf-hero-pill-line: rgba(255, 255, 255, 0.25);
+  --mf-on-hero: #ffffff;
+  /* Pill tabs and soft tags. */
+  --mf-tint: #fbe9e6;
+  --mf-tint-ink: #9e3631;
+  --mf-tag-learner: #e8f7ef;
+  --mf-tag-learner-ink: #16794a;
+  /* Charts and segmented progress. */
+  --mf-chart-bar: #c9ecd3;
+  --mf-chart-bar-hot: #3fbf6a;
+  --mf-chart-tip: #201613;
+  --mf-on-chart-tip: #ffffff;
+  --mf-seg-on: #c4473f;
+  --mf-seg-off: #efe9e6;
+  --mf-panel-radius: 28px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --mf-bg: #140d0b;
+    --mf-surface: #1c1411;
+    --mf-surface-sunken: #170f0d;
+    --mf-line: #3a2a25;
+    --mf-line-strong: #64788f;
+    --mf-ink: #f5ece8;
+    --mf-ink-muted: #cbbcb6;
+    --mf-ink-subtle: #ab9b95;
+    --mf-accent: #ff8f7d;
+    --mf-accent-hover: #ffaa9b;
+    --mf-accent-soft: #3a1f1b;
+    --mf-accent-ink: #ffb3a6;
+    --mf-on-accent: #08121c;
+    --mf-focus: #ff8f7d;
+    --mf-mark-dot: #2447cc;
+    --mf-hint: #f3c362;
+    --mf-hint-soft: #2e230b;
+    --mf-success: #4ccf9c;
+    --mf-success-soft: #0c2c22;
+    --mf-danger: #ff8b7e;
+    --mf-danger-soft: #3a1614;
+    --mf-night: #050c14;
+    --mf-night-raised: #0f1c29;
+    --mf-night-line: #21324a;
+    --mf-cover-blue: #16244d;
+    --mf-cover-blue-ink: #86a0ff;
+    --mf-cover-amber: #2e2410;
+    --mf-cover-amber-ink: #f0b03c;
+    --mf-cover-mint: #0e2a20;
+    --mf-cover-mint-ink: #4ccf9c;
+    --mf-cover-coral: #33180f;
+    --mf-cover-coral-ink: #ff8f6b;
+    --mf-cover-sky: #0d2633;
+    --mf-cover-sky-ink: #5cc2ea;
+    --mf-shadow-tile: inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.25), 0 2px 8px -1px rgba(0, 0, 0, 0.6);
+    --mf-object-shadow: 0 18px 24px rgba(0, 0, 0, 0.45);
+    --mf-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --mf-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    --mf-shadow-md: 0 8px 20px -6px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    --mf-shadow-lg: 0 24px 48px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --mf-spot: rgba(134, 160, 255, 0.10);
+    --mf-spot-2: rgba(92, 194, 234, 0.06);
+    --mf-tint: #3a1f1b;
+    --mf-tint-ink: #ffb3a6;
+    --mf-tag-learner: #0c2c22;
+    --mf-tag-learner-ink: #4ccf9c;
+    --mf-chart-bar: #1d4a33;
+    --mf-chart-bar-hot: #4ccf9c;
+    --mf-seg-on: #ff8f7d;
+    --mf-seg-off: #3a2a25;
+  }
+}
+
+@theme inline {
+  /* Colors → bg-*, text-*, border-*, fill-* … */
+  --color-bg: var(--mf-bg);
+  --color-surface: var(--mf-surface);
+  --color-sunken: var(--mf-surface-sunken);
+  --color-line: var(--mf-line);
+  --color-line-strong: var(--mf-line-strong);
+  --color-ink: var(--mf-ink);
+  --color-ink-muted: var(--mf-ink-muted);
+  --color-ink-subtle: var(--mf-ink-subtle);
+  --color-accent: var(--mf-accent);
+  --color-accent-hover: var(--mf-accent-hover);
+  --color-accent-soft: var(--mf-accent-soft);
+  --color-accent-ink: var(--mf-accent-ink);
+  --color-on-accent: var(--mf-on-accent);
+  --color-focus: var(--mf-focus);
+  --color-rav: var(--mf-rav);
+  --color-on-rav: var(--mf-on-rav);
+  --color-mark-dot: var(--mf-mark-dot);
+  --color-hint: var(--mf-hint);
+  --color-hint-soft: var(--mf-hint-soft);
+  --color-success: var(--mf-success);
+  --color-success-soft: var(--mf-success-soft);
+  --color-spot: var(--mf-spot);
+  --color-spot-2: var(--mf-spot-2);
+  --color-danger: var(--mf-danger);
+  --color-danger-soft: var(--mf-danger-soft);
+  --color-night: var(--mf-night);
+  --color-night-raised: var(--mf-night-raised);
+  --color-night-line: var(--mf-night-line);
+  --color-on-night: var(--mf-on-night);
+  --color-on-night-muted: var(--mf-on-night-muted);
+  --color-night-accent: var(--mf-night-accent);
+  --color-cover-blue: var(--mf-cover-blue);
+  --color-cover-blue-ink: var(--mf-cover-blue-ink);
+  --color-cover-amber: var(--mf-cover-amber);
+  --color-cover-amber-ink: var(--mf-cover-amber-ink);
+  --color-cover-mint: var(--mf-cover-mint);
+  --color-cover-mint-ink: var(--mf-cover-mint-ink);
+  --color-cover-coral: var(--mf-cover-coral);
+  --color-cover-coral-ink: var(--mf-cover-coral-ink);
+  --color-cover-sky: var(--mf-cover-sky);
+  --color-cover-sky-ink: var(--mf-cover-sky-ink);
+  --color-tile-blue-from: var(--mf-tile-blue-from);
+  --color-tile-blue-to: var(--mf-tile-blue-to);
+  --color-tile-amber-from: var(--mf-tile-amber-from);
+  --color-tile-amber-to: var(--mf-tile-amber-to);
+  --color-tile-mint-from: var(--mf-tile-mint-from);
+  --color-tile-mint-to: var(--mf-tile-mint-to);
+  --color-tile-coral-from: var(--mf-tile-coral-from);
+  --color-tile-coral-to: var(--mf-tile-coral-to);
+  --color-tile-sky-from: var(--mf-tile-sky-from);
+  --color-tile-sky-to: var(--mf-tile-sky-to);
+  --color-tile-slate-from: var(--mf-tile-slate-from);
+  --color-tile-slate-to: var(--mf-tile-slate-to);
+  --color-tile-ink-from: var(--mf-tile-ink-from);
+  --color-tile-ink-to: var(--mf-tile-ink-to);
+  --color-sidebar: var(--mf-sidebar);
+  --color-site-bg: var(--mf-site-bg);
+  --color-site-navy: var(--mf-site-navy);
+  --color-site-navy-hover: var(--mf-site-navy-hover);
+  --color-site-ink: var(--mf-site-ink);
+  --color-site-body: var(--mf-site-body);
+  --color-site-blue: var(--mf-site-blue);
+  --color-site-blue-light: var(--mf-site-blue-light);
+  --color-site-blue-deep: var(--mf-site-blue-deep);
+  --color-site-soft: var(--mf-site-soft);
+  --color-site-brain: var(--mf-site-brain);
+  --color-site-line: var(--mf-site-line);
+  --color-site-shadow: var(--mf-site-shadow);
+  --color-site-navy-shadow: var(--mf-site-navy-shadow);
+  --color-site-bezel: var(--mf-site-bezel);
+  --color-site-bezel-hover: var(--mf-site-bezel-hover);
+  --color-site-hairline: var(--mf-site-hairline);
+  --color-site-lift: var(--mf-site-lift);
+  --color-site-tile: var(--mf-site-tile);
+  --color-web-bg: var(--mf-web-bg);
+  --color-web-surface: var(--mf-web-surface);
+  --color-web-ink: var(--mf-web-ink);
+  --color-web-body: var(--mf-web-body);
+  --color-web-muted: var(--mf-web-muted);
+  --color-web-line: var(--mf-web-line);
+  --color-web-line-strong: var(--mf-web-line-strong);
+  --color-web-coral: var(--mf-web-coral);
+  --color-web-coral-ink: var(--mf-web-coral-ink);
+  --color-web-coral-soft: var(--mf-web-coral-soft);
+  --color-web-coral-from: var(--mf-web-coral-from);
+  --color-web-coral-to: var(--mf-web-coral-to);
+  --color-web-stage: var(--mf-web-stage);
+  --color-web-stage-deep: var(--mf-web-stage-deep);
+  --color-web-stage-raised: var(--mf-web-stage-raised);
+  --color-web-stage-text: var(--mf-web-stage-text);
+  --color-web-stage-muted: var(--mf-web-stage-muted);
+  --color-web-stage-line: var(--mf-web-stage-line);
+  --color-web-stage-glass: var(--mf-web-stage-glass);
+  --color-web-glow: var(--mf-web-glow);
+  --color-web-shadow: var(--mf-web-shadow);
+  --color-web-white: var(--mf-web-white);
+  --color-sidebar-raised: var(--mf-sidebar-raised);
+  --color-sidebar-active: var(--mf-sidebar-active);
+  --color-sidebar-hover: var(--mf-sidebar-hover);
+  --color-sidebar-icon: var(--mf-sidebar-icon);
+  --color-sidebar-line: var(--mf-sidebar-line);
+  --color-on-sidebar: var(--mf-on-sidebar);
+  --color-on-sidebar-muted: var(--mf-on-sidebar-muted);
+  --color-on-sidebar-subtle: var(--mf-on-sidebar-subtle);
+  --color-on-sidebar-label: var(--mf-on-sidebar-label);
+  --color-logo-navy: var(--mf-logo-navy);
+  --color-logo-blue: var(--mf-logo-blue);
+  --color-hero-pill: var(--mf-hero-pill);
+  --color-hero-pill-line: var(--mf-hero-pill-line);
+  --color-hero-chip-line: var(--mf-hero-chip-line);
+  --color-on-hero: var(--mf-on-hero);
+  --color-tint: var(--mf-tint);
+  --color-tint-ink: var(--mf-tint-ink);
+  --color-tag-learner: var(--mf-tag-learner);
+  --color-tag-learner-ink: var(--mf-tag-learner-ink);
+  --color-chart-bar: var(--mf-chart-bar);
+  --color-chart-bar-hot: var(--mf-chart-bar-hot);
+  --color-chart-tip: var(--mf-chart-tip);
+  --color-on-chart-tip: var(--mf-on-chart-tip);
+  --color-seg-on: var(--mf-seg-on);
+  --color-seg-off: var(--mf-seg-off);
+  /* Legacy aliases from the placeholder era — keep working, prefer the names above in new code. */
+  --color-fg: var(--mf-ink);
+  --color-muted: var(--mf-ink-muted);
+  --color-border: var(--mf-line);
+  --color-accent-fg: var(--mf-on-accent);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-site: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  /* Type scale → text-display-xl, text-title-1 … (size, leading, tracking, weight in one class) */
+  --text-display-xl: clamp(3rem, 7vw, 6rem);
+  --text-display-xl--line-height: 0.98;
+  --text-display-xl--letter-spacing: -0.04em;
+  --text-display-xl--font-weight: 500;
+  --text-display: clamp(2.5rem, 4.5vw, 4rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 500;
+  --text-title-1: clamp(2rem, 3vw, 2.75rem);
+  --text-title-1--line-height: 1.06;
+  --text-title-1--letter-spacing: -0.032em;
+  --text-title-1--font-weight: 500;
+  --text-title-2: clamp(1.5rem, 2vw, 1.75rem);
+  --text-title-2--line-height: 1.15;
+  --text-title-2--letter-spacing: -0.025em;
+  --text-title-2--font-weight: 500;
+  --text-title-3: 1.1875rem;
+  --text-title-3--line-height: 1.35;
+  --text-title-3--letter-spacing: -0.015em;
+  --text-title-3--font-weight: 500;
+  --text-body-lg: 1.25rem;
+  --text-body-lg--line-height: 1.5;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.55;
+  --text-body-sm: 0.9375rem;
+  --text-body-sm--line-height: 1.5;
+  --text-label: 0.9375rem;
+  --text-label--line-height: 1.4;
+  --text-label--font-weight: 500;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.333;
+  --text-caption--letter-spacing: 0.01em;
+  --text-caption--font-weight: 500;
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1.333;
+  --text-overline--letter-spacing: 0.06em;
+  --text-overline--font-weight: 500;
+  --text-mono: 0.8125rem;
+  --text-mono--line-height: 1.538;
+  --text-mono--font-weight: 500;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-card: 22px;
+  --radius-panel: 28px;
+
+  --shadow-xs: var(--mf-shadow-xs);
+  --shadow-sm: var(--mf-shadow-sm);
+  --shadow-md: var(--mf-shadow-md);
+  --shadow-lg: var(--mf-shadow-lg);
+  --shadow-ring: var(--mf-ring);
+  --drop-shadow-object: var(--mf-object-shadow);
+  --shadow-tile: var(--mf-shadow-tile);
+
+  --container-read: 42.5rem;
+  --container-app: 80rem;
+  --container-wide: 100rem;
+
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
   --spacing: 0.25rem;
+}
+
+@layer base {
+  /* Large screens (external monitors, 1440p, 4K, ultrawide): everything is in rem, so the whole app scales up in
+     steps via the root font size, like the website. Nothing changes below 1800px. Height counts too. */
+  @media (min-width: 1800px) and (min-height: 900px) {
+    html { font-size: 112.5%; }
+  }
+  @media (min-width: 2200px) and (min-height: 1100px) {
+    html { font-size: 125%; }
+  }
+  @media (min-width: 2500px) and (min-height: 1300px) {
+    html { font-size: 133.333%; }
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-feature-settings: "kern", "liga";
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  ::selection {
+    background: var(--mf-accent-soft);
+    color: var(--mf-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--mf-focus);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Platform v3 hero card: a multi-stop background (kept here: it is made of raw tokens). */
+@utility mf-hero {
+    color: var(--mf-on-hero);
+    background:
+      radial-gradient(500px 260px at 55% 120%, var(--mf-hero-shine), transparent 60%),
+      radial-gradient(400px 300px at 100% 0%, var(--mf-hero-glow) 0%, transparent 60%),
+      linear-gradient(120deg, var(--mf-hero-from) 0%, var(--mf-hero-mid) 55%, var(--mf-hero-to) 100%);
+}
+
+/* ───────────── Platform v4: the approved :3500 screens (mindforward-platform, Marco Nov 2026) ─────────────
+   Reference: EduSphere/CampusHub layout in Mindforward colours. Scoped to `.app` (the signed-in frame), light only:
+   the approved design has no dark version, so inside the app the greb palette is pinned to its light values too. */
+.app {
+  --bg: #f5f2f0;
+  --text: #3d322e;
+  --text-muted: #7d6e68;
+  --heading: #1a0f0c;
+  --border: #e9e3df;
+  --border-strong: #d8cfca;
+  --hover-fill: #f3eeeb;
+  --accent: oklch(0.62 0.18 28);
+  --accent-soft: oklch(0.68 0.16 28 / 0.1);
+  --coral: oklch(0.66 0.18 28);
+  --ink: #201613; /* the website's brown (hero stage + footer) */
+  --ink-2: #2e1f1c;
+  --pf-cream: #f7f2ee;
+  /* Kalender (Normal), ported 2026-11-11 */
+  --pf-3f9c6e: #3f9c6e;
+  --pf-6b625d: #6b625d;
+  --pf-8a6a5e: #8a6a5e;
+  --pf-c4bab4: #c4bab4;
+  --pf-e8664a: #e8664a;
+  --pf-ece5e0: #ece5e0;
+  --pf-f3d9cf: #f3d9cf;
+  --pf-f6c9b6: #f6c9b6;
+  background: #fff;
+  color: var(--text);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+}
+@media (prefers-color-scheme: dark) {
+  .app {
+    --mf-bg: #f5f2f0;
+    --mf-surface: #ffffff;
+    --mf-surface-sunken: #f3eeeb;
+    --mf-line: #e9e3df;
+    --mf-line-strong: #8a7d77;
+    --mf-ink: #1a0f0c;
+    --mf-ink-muted: #4d423e;
+    --mf-ink-subtle: #6b5f5a;
+    --mf-accent: #b8413a;
+    --mf-accent-hover: #9e3631;
+    --mf-accent-soft: #fbe9e6;
+    --mf-accent-ink: #9e3631;
+    --mf-on-accent: #ffffff;
+    --mf-focus: #b8413a;
+    --mf-mark-dot: #ffa282;
+    --mf-hint: #875400;
+    --mf-hint-soft: #fdf1d8;
+    --mf-success: #13724f;
+    --mf-success-soft: #e4f4ec;
+    --mf-danger: #b3261e;
+    --mf-danger-soft: #fdecea;
+    --mf-tint: #fbe9e6;
+    --mf-tint-ink: #9e3631;
+    --mf-tag-learner: #e8f7ef;
+    --mf-tag-learner-ink: #16794a;
+    --mf-chart-bar: #c9ecd3;
+    --mf-chart-bar-hot: #3fbf6a;
+    --mf-seg-on: #c4473f;
+    --mf-seg-off: #efe9e6;
+    --mf-cover-blue: #fbe9e6;
+    --mf-cover-blue-ink: #c4473f;
+    --mf-cover-amber: #fdf0d2;
+    --mf-cover-amber-ink: #e39a1c;
+    --mf-cover-mint: #dcf3e8;
+    --mf-cover-mint-ink: #13724f;
+    --mf-cover-coral: #fde6df;
+    --mf-cover-coral-ink: #d4552e;
+    --mf-cover-sky: #f3eeeb;
+    --mf-cover-sky-ink: #4a332c;
+    --mf-shadow-xs: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    --mf-shadow-sm: 0 1px 1px rgba(11, 27, 43, 0.04), 0 2px 4px rgba(11, 27, 43, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    --mf-shadow-md: 0 1px 2px rgba(11, 27, 43, 0.05), 0 4px 8px rgba(11, 27, 43, 0.05), 0 12px 24px -8px rgba(11, 27, 43, 0.1);
+    --mf-shadow-lg: 0 1px 2px rgba(11, 27, 43, 0.05), 0 8px 16px -4px rgba(11, 27, 43, 0.08), 0 32px 64px -16px rgba(11, 27, 43, 0.22);
+  }
+}
+/* Same root size as the approved screens (rem-based parts scale with the window like the website). */
+html:has(.app) {
+  font-size: clamp(16px, 0.625vw + 7px, 20px);
+}
+.app :where(h1, h2, h3, h4) {
+  color: var(--heading);
+}
+/* Pages that want the website's cream page behind white cards, and pages that fill the window to the bottom. */
+.app:has([data-pf-cream]) {
+  background: var(--pf-cream);
+}
+[data-pf-page]:has([data-pf-fill]) {
+  padding-bottom: 0;
+}
+.app-side {
+  background: radial-gradient(120% 45% at 30% 0%, oklch(0.42 0.08 32 / 0.45), transparent 70%), linear-gradient(180deg, #2e1f1c 0%, #201613 45%, #1a0f0c 100%);
+  color: #e7dcd7;
+}
+.app-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+}
+.app-card-dark {
+  background: linear-gradient(180deg, #2a1c18, #201613);
+  border: 1px solid #2e1f1c;
+  color: #e7dcd7;
+}
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 2.125rem;
+  padding: 0 0.85rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 150ms;
+}
+.app-btn-light {
+  background: #fff;
+  color: var(--heading);
+  border: 1px solid var(--border-strong);
+}
+.app-btn-light:hover {
+  background: var(--hover-fill);
+}
+.app-nav-active {
+  background: var(--coral);
+  color: #fff;
+  box-shadow: 0 6px 14px -6px oklch(0.6 0.18 28 / 0.6);
+}
+/* Mindforward brain: a soft heartbeat (two quick beats, then rest). */
+@keyframes brain-beat {
+  0%, 40%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+  10% { transform: scale(1.08); filter: drop-shadow(0 0 6px oklch(0.7 0.17 40 / 0.6)); }
+  20% { transform: scale(1); }
+  28% { transform: scale(1.05); filter: drop-shadow(0 0 4px oklch(0.7 0.17 40 / 0.45)); }
+}
+@keyframes brain-fill { 0%, 40%, 100% { opacity: 0.45; } 10% { opacity: 0.85; } 28% { opacity: 0.7; } }
+.brain-pulse { transform-origin: center; animation: brain-beat 2.4s cubic-bezier(0.2, 0, 0, 1) infinite; }
+.brain-pulse path[opacity] { opacity: 0.45; animation: brain-fill 2.4s cubic-bezier(0.2, 0, 0, 1) infinite; }
+@media (prefers-reduced-motion: reduce) { .brain-pulse, .brain-pulse path[opacity] { animation: none; } }
+@keyframes trin-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+@theme inline {
+  --color-heading: var(--heading);
+  --color-pf-text: var(--text);
+  --color-pf-muted: var(--text-muted);
+  --color-pf-white: #ffffff;
+  --color-pf-black: #000000;
+}
+
+/* Raw colours of the ported platform screens, 1:1 from the approved :3500 code (named by value so the ported markup
+   stays recognisable next to the original). Components use them as var(--pf-…). */
+:root {
+  --pf-0b0806: #0b0806;
+  --pf-0d2a19: #0d2a19;
+  --pf-111: #111;
+  --pf-1a0d06: #1a0d06;
+  --pf-1a0f0c: #1a0f0c;
+  --pf-1f1916: #1f1916;
+  --pf-201613: #201613;
+  --pf-2a211e: #2a211e;
+  --pf-2a221f: #2a221f;
+  --pf-2f8a5c: #2f8a5c;
+  --pf-33231f: #33231f;
+  --pf-362c28: #362c28;
+  --pf-3a2722: #3a2722;
+  --pf-3d1606: #3d1606;
+  --pf-3fae72: #3fae72;
+  --pf-444: #444;
+  --pf-4a332c: #4a332c;
+  --pf-5cbf8f: #5cbf8f;
+  --pf-67c48f: #67c48f;
+  --pf-7d6e68: #7d6e68;
+  --pf-7fd6a6: #7fd6a6;
+  --pf-8a4e3b: #8a4e3b;
+  --pf-8a5a00: #8a5a00;
+  --pf-a8432a: #a8432a;
+  --pf-b8a8a1: #b8a8a1;
+  --pf-c4502f: #c4502f;
+  --pf-cdcdcd: #cdcdcd;
+  --pf-d9ccc5: #d9ccc5;
+  --pf-ddd: #ddd;
+  --pf-e2643f: #e2643f;
+  --pf-e6dcd6: #e6dcd6;
+  --pf-e8f6ee: #e8f6ee;
+  --pf-ebe4e0: #ebe4e0;
+  --pf-ece4df: #ece4df;
+  --pf-eef8f2: #eef8f2;
+  --pf-efe6e1: #efe6e1;
+  --pf-efe8e4: #efe8e4;
+  --pf-f0803a: #f0803a;
+  --pf-f0b03c: #f0b03c;
+  --pf-f1e6df: #f1e6df;
+  --pf-f1e9e4: #f1e9e4;
+  --pf-f1ebe7: #f1ebe7;
+  --pf-f1f1f1: #f1f1f1;
+  --pf-f1faf5: #f1faf5;
+  --pf-f3ece8: #f3ece8;
+  --pf-f3eeeb: #f3eeeb;
+  --pf-f5efeb: #f5efeb;
+  --pf-f5f0ed: #f5f0ed;
+  --pf-f6b49b: #f6b49b;
+  --pf-f7f2ee: #f7f2ee;
+  --pf-fbf6f3: #fbf6f3;
+  --pf-fbf8f6: #fbf8f6;
+  --pf-fcfaf9: #fcfaf9;
+  --pf-fde8dc: #fde8dc;
+  --pf-fdf0ea: #fdf0ea;
+  --pf-fdf2ed: #fdf2ed;
+  --pf-fdf3dc: #fdf3dc;
+  --pf-fdf8f5: #fdf8f5;
+  --pf-ffb27a: #ffb27a;
+  --pf-ffc46e: #ffc46e;
+  --pf-fff: #fff;
+  --pf-oklch-0-7-0-17-40: oklch(0.7 0.17 40);
+  --pf-rgba-130-38-6-45: rgba(130,38,6,.45);
+  --pf-rgba-170-62-30-9: rgba(170,62,30,.9);
+  --pf-rgba-226-100-63-55: rgba(226,100,63,.55);
+  --pf-rgba-226-100-63-85: rgba(226,100,63,.85);
+  --pf-rgba-255-140-60-45: rgba(255,140,60,.45);
+  --pf-rgba-255-255-255-06: rgba(255,255,255,.06);
+  --pf-rgba-255-255-255-35: rgba(255,255,255,.35);
+  --pf-rgba-60-18-4-0: rgba(60,18,4,0);
+  --pf-rgba-92-191-143-15: rgba(92,191,143,.15);
+}
+
+/* Mindforward coral at lower opacity, for the Oversigt hero glow (Marco 2026-11-17: same orange as the brand). */
+:root {
+  --pf-coral-70: rgba(232, 102, 74, 0.7);
+  --pf-coral-55: rgba(232, 102, 74, 0.55);
+  --pf-coral-22: rgba(232, 102, 74, 0.22);
 }

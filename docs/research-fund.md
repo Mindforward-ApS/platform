@@ -14,7 +14,7 @@
 - Håndhævelse skærpes: 4,25 mio. kr. bøde for vildledende tilbud (sep 2026).
 
 ## Lovgivning — forbrugere (forbrugeraftaleloven, LBK 1184/2025)
-- Fortrydelsesret 14 dage. Bortfalder for digitalt indhold kun ved: forudgående udtrykkeligt samtykke til levering straks + erkendelse af tab af fortrydelsesret + bekræftelse på varigt medium (§ 18 stk. 2 nr. 13, § 13 stk. 2). Mangler noget: forbrugeren kan fortryde og betaler intet (§ 25). Om MindForward er "digitalt indhold" eller "tjenesteydelse" er [U] → advokat. https://www.retsinformation.dk/eli/lta/2025/1184
+- Fortrydelsesret 14 dage. Bortfalder for digitalt indhold kun ved: forudgående udtrykkeligt samtykke til levering straks + erkendelse af tab af fortrydelsesret + bekræftelse på varigt medium (§ 18 stk. 2 nr. 13, § 13 stk. 2). Mangler noget: forbrugeren kan fortryde og betaler intet (§ 25). Om Greb er "digitalt indhold" eller "tjenesteydelse" er [U] → advokat. https://www.retsinformation.dk/eli/lta/2025/1184
 - **Fortrydelsesknap** (§ 20 a, i kraft 19. juni 2026, lov 723/2025): knap "Fortryd aftale" synlig hele fortrydelsesperioden → online formular (navn, hvilken aftale, email) → knap "Bekræft fortrydelse" → kvittering på varigt medium med dato/tid. https://www.retsinformation.dk/eli/lta/2025/723
 - Opsigelse skal kunne ske på samme medie/platform som tilmelding (§ 28 a). Løbende aftaler: opsigelse med højst 1 md. varsel efter 5 mdr. (§ 28).
 - Før køb: totalpris inkl. moms, pris pr. periode og evt. minimumspris — med fed lige over bestillingsknappen; knappen skal hedde "Køb"/"Bestil med betalingsforpligtelse" ellers er forbrugeren ikke bundet (§ 12). https://www.forbrugerombudsmanden.dk/media/46756/oplysningskrav-ved-online-salg-af-abonnementer.pdf
@@ -24,12 +24,11 @@
 ## Lovgivning — AI-forordningen art. 4
 - Ændret ved forordning (EU) 2026/1744 (i kraft 27. juli 2026): virksomheder skal "tage tiltag, der understøtter udviklingen af AI-kompetencer" hos personale — ingen krav om bestemt niveau, certifikat eller test. Dokumentation anbefales, ikke krav. https://eur-lex.europa.eu/eli/reg/2026/1744/oj · Kommissionens Q&A (27. juli 2026): https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers
 - En virksomhed hvis medarbejdere bruger ChatGPT/Copilot i arbejdet er omfattet.
-- Dansk tilsynsmyndighed for art. 4 er uafklaret (L 111 bortfaldt ved valget) [U]. **Opdatering 18. nov 2026:** Digitaliseringsstyrelsen er national koordinerende tilsynsmyndighed for AI-forordningen og markedsovervågningsmyndighed for de forbudte former for AI-praksis (lov nr. 467 af 14/05/2025). Hvem der fører tilsyn med art. 4, er fortsat ikke bekræftet i en primær kilde [U] — navngiv derfor ikke en tilsynsmyndighed for art. 4 i markedsføring. Kommissionen: nationale markedsovervågningsmyndigheder fører tilsyn fra 2. august 2026. https://digital-strategy.ec.europa.eu/da/policies/ai-talent-skills-and-literacy · https://www.lovguiden.dk/loven/lov-om-supplerende-bestemmelser-til-forordningen-om-kunstig-intelligens/bilag-1-article-4
-- **DS/PAS 2500-4** (Dansk Standard, 2025): vejledning om AI-færdigheder. Dokumentet findes (https://www.ds.dk/media/0dghepwe/ds-pas-2500-4-2025-v3.pdf), men indholdet er **ikke læst af Claude Code** (ds.dk og via.ritzau.dk er spærret i byggemiljøet). Oplysningerne "gratis" og "5 trin: kortlæg, sæt mål, planlæg, gennemfør, evaluer" stammer fra `docs/research/04-ai-act.md` og er [U], indtil Marco eller en jurist har bekræftet ordlyden. Må ikke gengives i rapport eller markedsføring før da.
+- Dansk tilsynsmyndighed for art. 4 er uafklaret (L 111 bortfaldt ved valget) [U].
 - Salgsbudskab der holder: "dokumenteret, rollebaseret tiltag efter art. 4". Må IKKE sige: "lovkrav om certificering", "påkrævet niveau", bødetrusler.
 
 ## GDPR og varemærker
-- Over for B2B-kunder er MindForward databehandler → databehandleraftale med hver kunde (Datatilsynets skabelon: https://www.datatilsynet.dk/regler-og-vejledning/blanketter-og-skabeloner).
+- Over for B2B-kunder er Greb databehandler → databehandleraftale med hver kunde (Datatilsynets skabelon: https://www.datatilsynet.dk/regler-og-vejledning/blanketter-og-skabeloner).
 - Scores er almindelige persondata; fritekst-prompts kan indeholde følsomme data → PII-filter + kort opbevaring.
 - Datatilsynet 2026-fokus: arbejdsgiveres kontrol af medarbejdere → positionér scores som læring, ikke overvågning; admin ser ikke medarbejdernes prompt-tekster.
 - Microsoft og Google forbyder efterligning af deres "trade dress"/look and feel; Microsoft-skærmbilleder må ikke placeres i eget produkt-UI. OpenAI: ingen "GPT" i produktnavne, ingen antydning af godkendelse. Kilder: https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks · https://openai.com/brand/ · https://www.anthropic.com/legal/trademark-guidelines · https://partnermarketinghub.withgoogle.com/brands/google/trademarks-and-terms/trademark-guidelines-for-proper-usage/
@@ -80,12 +79,3 @@
 - Quiz-leadmagnet: ~65 % gennemfører, ~40 % afgiver kontakt (leverandørdata).
 - Meta DK: CPC ~7 kr. LinkedIn: estimat 30–45 kr/klik [U]. Google: tjek Keyword Planner.
 - API-styring af egne annoncer er mulig (Google Ads API, Meta Marketing API). LinkedIn Ads API kræver godkendelse [U]. Automatiserede LinkedIn-beskeder/scraping er forbudt.
-
-## Læring og adfærd (tilføjet 18. nov 2026)
-> Fra `docs/research/` (leveret af Marco, hentet 18. nov 2026). Claude Code har **ikke** selv efterprøvet kilderne; flere er sekundære opsummeringer. Brug dem som begrundelse for produktvalg — ikke som påstande i markedsføring. Kildeliste: `docs/research/08-kilder.md`.
-- Aktiv læring slår passiv (Freeman m.fl. 2014); øvelse med test og gentagelse over tid er blandt de mest effektive teknikker (Dunlosky m.fl. 2013) → opgaver i sandkassen, genopfriskningsspørgsmål efter ca. 1 og 3 uger.
-- Frit tempo uden struktur giver lavest gennemførelse [U, leverandørdata] → anbefalet tempo, teammål og valgfri fælles startdato — men intet fast hold-forløb (Marcos beslutning).
-- Gamification har lille, positiv effekt; ranglister og offentlige badges giver oftest bagslag, især når kolleger og ledere kan se dem (Sailer og Homner 2020; Almeida m.fl.) → ugentlig streak (privat for brugeren), fælles teammål, aldrig individuelle ranglister.
-- AI-hjælp, der giver svaret, kan sænke læringen (Bastani m.fl. 2025; Liu m.fl. 2026 [U]) → coach-princip for hints og feedback; ingen AI-tutor i MVP.
-- "Kun 10 % af træning overføres til jobbet" er en myte uden kilde → bruges aldrig.
-- Egne tal fra AI Minds: et stort, generelt webinar gav 693 leads og 1 salg (ca. 0,14 %) → små, rollespecifikke indgange; i MindForward: niveautest og "AI-tjek af teamet" i stedet for webinarer.

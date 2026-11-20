@@ -1,6 +1,6 @@
 # Research: læring og erfaringer fra AI Minds
 
-> **Kontekst — ikke byggekrav.** Filerne her er Marcos research fra 18. nov 2026 og erfaringerne fra den tidligere platform (AI Minds, community- og videobaseret). Det, der er besluttet at bygge, står i `docs/00-beslutninger.md` § 10b og § 10c. Står noget her i strid med beslutningsloggen, vinder beslutningsloggen.
+> **Kontekst — ikke byggekrav.** Filerne her er Marcos research fra 18. nov 2026 og erfaringerne fra den tidligere platform (AI Minds, community- og videobaseret). Marcos beslutninger på baggrund af researchen står som udkast i `udkast-beslutninger-18-nov.md` (ikke indarbejdet i specifikationen endnu). Står noget her i strid med `docs/00-beslutninger.md`, vinder beslutningsloggen.
 > Filerne 01–03 fra samme researchpakke er ikke modtaget (se `docs/OPEN-QUESTIONS.md`).
 
 | Fil | Indhold |
@@ -11,11 +11,11 @@
 | `07-risici-og-beslutninger.md` | "Djævelens advokat": 11 antagelser, der kan være forkerte |
 | `08-kilder.md` | Kildeliste |
 
-Filerne er skrevet til et andet format (videoer, live-sessioner, community-platform). De dele er **ikke** med i MindForward.
+Filerne er skrevet til et andet format (videoer, live-sessioner, community-platform). De dele er **ikke** med i Mindforward.
 
-## Erfaringer fra AI Minds → sådan håndterer MindForward dem
+## Erfaringer fra AI Minds → sådan håndterer Mindforward dem
 
-| # | Erfaring / risiko (fra `07`) | Hvad MindForward gør | Hvor |
+| # | Erfaring / risiko (fra `07`) | Hvad Mindforward gør | Hvor |
 |---|---|---|---|
 | 1 | Kurser i selve værktøjerne er næsten intet værd, når producenterne giver dem væk gratis | Moduler navngives efter arbejdsopgaven; øvelse i praksis på dansk; skabelon til eget job efter hvert modul | § 10b, docs/05 § 10.1, curriculum |
 | 2 | Flere værktøjer giver mere vedligehold; forældet indhold ødelægger tilliden | Pensum er begrebsbaseret; funktionsnavne er data; indholdsmotoren holder NEWS ajour; ingen videoer at genindspille | § 10, docs/06 |
@@ -30,4 +30,4 @@ Filerne er skrevet til et andet format (videoer, live-sessioner, community-platf
 | 11 | Ranglister og badges giver bagslag, især når kolleger og ledere kan se dem | Ugentlig streak (privat for brugeren), fælles teammål, aldrig individuelle ranglister | § 10b, docs/10 § 1.6 |
 
 ## Ikke overført (bevidst)
-Videoer, live kickoff og ugentlige Q&A, hold med fast start og slut, ambassadørprogram, tre prispakker, adfærdsgaranti, partnerkanaler, pilot som standardkøb og "B2B som eneste spor i 6 måneder". De er salgs- og leveranceformer, der kræver timer fra mennesker, og ændrer ikke på webappen. Vil Marco tilbyde dem ved siden af MindForward, hører de hjemme i `forretningsplan.md`.
+Videoer, live kickoff og ugentlige Q&A, hold med fast start og slut, ambassadørprogram, tre prispakker, adfærdsgaranti, partnerkanaler, pilot som standardkøb og "B2B som eneste spor i 6 måneder". De er salgs- og leveranceformer, der kræver timer fra mennesker, og ændrer ikke på webappen. Vil Marco tilbyde dem ved siden af Mindforward, hører de hjemme i `forretningsplan.md`.

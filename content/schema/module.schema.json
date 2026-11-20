@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://greb.dk/schema/module.schema.json",
-  "title": "MindForward ModuleVersion content",
+  "title": "Greb ModuleVersion content",
   "description": "Contract for one module version (ModuleVersion.content). Spec: docs/05-moduler-og-scoring.md. Word limits (READ <= 120 words) are enforced additionally in Zod.",
   "type": "object",
   "additionalProperties": false,
@@ -1014,6 +1014,36 @@
         },
         {
           "$ref": "#/$defs/gradedStep"
+        },
+        {
+          "if": {
+            "properties": {
+              "multiSelect": {
+                "const": false
+              }
+            },
+            "required": [
+              "multiSelect"
+            ]
+          },
+          "then": {
+            "properties": {
+              "options": {
+                "contains": {
+                  "properties": {
+                    "correct": {
+                      "const": true
+                    }
+                  },
+                  "required": [
+                    "correct"
+                  ]
+                },
+                "minContains": 1,
+                "maxContains": 1
+              }
+            }
+          }
         }
       ],
       "required": [
@@ -1086,34 +1116,6 @@
         },
         "claims": {
           "$ref": "#/$defs/claims"
-        }
-      },
-      "if": {
-        "properties": {
-          "multiSelect": {
-            "const": false
-          }
-        },
-        "required": [
-          "multiSelect"
-        ]
-      },
-      "then": {
-        "properties": {
-          "options": {
-            "contains": {
-              "properties": {
-                "correct": {
-                  "const": true
-                }
-              },
-              "required": [
-                "correct"
-              ]
-            },
-            "minContains": 1,
-            "maxContains": 1
-          }
         }
       },
       "unevaluatedProperties": false
@@ -1227,6 +1229,31 @@
         },
         {
           "$ref": "#/$defs/gradedStep"
+        },
+        {
+          "if": {
+            "properties": {
+              "category": {
+                "enum": [
+                  "DATA_SECURITY",
+                  "GDPR"
+                ]
+              }
+            },
+            "required": [
+              "category"
+            ]
+          },
+          "then": {
+            "required": [
+              "mustPass"
+            ],
+            "properties": {
+              "mustPass": {
+                "const": true
+              }
+            }
+          }
         }
       ],
       "required": [
@@ -1309,29 +1336,6 @@
         "explanation": {
           "type": "string",
           "maxLength": 800
-        }
-      },
-      "if": {
-        "properties": {
-          "category": {
-            "enum": [
-              "DATA_SECURITY",
-              "GDPR"
-            ]
-          }
-        },
-        "required": [
-          "category"
-        ]
-      },
-      "then": {
-        "required": [
-          "mustPass"
-        ],
-        "properties": {
-          "mustPass": {
-            "const": true
-          }
         }
       },
       "unevaluatedProperties": false

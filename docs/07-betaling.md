@@ -37,7 +37,7 @@ export const billingRules = {
 };
 ```
 
-- Stripe Products: `MindForward Personlig`, `MindForward Virksomhed`. Prices: `currency: "dkk"`, `recurring.interval`, B2B med `usage_type: "licensed"` (quantity = seats). `tax_behavior` på Price sættes som `inclusive` (B2C) / `exclusive` (B2B).
+- Stripe Products: `Greb Personlig`, `Greb Virksomhed`. Prices: `currency: "dkk"`, `recurring.interval`, B2B med `usage_type: "licensed"` (quantity = seats). `tax_behavior` på Price sættes som `inclusive` (B2C) / `exclusive` (B2B).
 - **Prisændring = ny Stripe Price + env/config-ændring.** Eksisterende abonnenter flyttes kun efter varsel `[JURA: verificeres — varslingsfrist for prisændring på løbende forbrugeraftaler]`.
 - Rabat/kampagne: kun Stripe promotion codes efter reglerne i `docs/09-email-og-marketing.md` §7.
 
@@ -125,7 +125,7 @@ Konfigureres via API ved deploy (`src/server/billing/portal-config.ts`, idempote
    }, { idempotencyKey: `trial:${organizationId}` });
    ```
 3. Status `trialing` via webhook → entitlements. Maks 5 aktive brugere (invitationer blokeres derover).
-4. Konvertering ("Fortsæt med MindForward"): vælg måned/år + antal seats (≥ 5) → Checkout `mode: "setup"` for kort → webhook `checkout.session.completed` → sæt default payment method → `subscriptions.update` (pris/quantity, `trial_end: "now"` hvis kunden vil starte straks; ellers kører trial til udløb).
+4. Konvertering ("Fortsæt med Greb"): vælg måned/år + antal seats (≥ 5) → Checkout `mode: "setup"` for kort → webhook `checkout.session.completed` → sæt default payment method → `subscriptions.update` (pris/quantity, `trial_end: "now"` hvis kunden vil starte straks; ellers kører trial til udløb).
 5. Udløb uden kort → `paused` → `READ_ONLY`. Kort tilføjet senere → `subscriptions.resume(id, { billing_cycle_anchor: "now" })` `[verificér]`.
 6. Trial-mails (SERVICE, ingen tilbud): se `docs/09-email-og-marketing.md` §5 (onboarding dag 0/3/7, "prøveperiode slutter" dag 11 og 13 via `customer.subscription.trial_will_end` + egen tidsplan).
 
@@ -140,9 +140,9 @@ Rækkefølge på siden, oppefra:
 2. Oplysninger før køb (forbrugeraftaleloven § 12 iflg. research-fund): hvad man køber, at abonnementet **fornyes automatisk** hver måned/år indtil opsigelse, at det kan opsiges i appen når som helst med virkning fra periodens udløb, link til handelsbetingelser og privatlivspolitik.
 3. Payment Element (kortoplysninger, faktureringsadresse).
 4. To **ikke-forudafkrydsede** checkbokse (begge påkrævet for straks-adgang; teksterne versioneres i `content/legal/checkout-consent.v1.json`, endelig ordlyd `[JURA: verificeres]`):
-   - ☐ "Jeg ønsker adgang til MindForward med det samme, inden fortrydelsesfristen på 14 dage er udløbet."
+   - ☐ "Jeg ønsker adgang til Greb med det samme, inden fortrydelsesfristen på 14 dage er udløbet."
    - ☐ "Jeg er indforstået med, at min fortrydelsesret bortfalder, når adgangen er begyndt."
-   (Om MindForward er "digitalt indhold" eller "tjenesteydelse" er uafklaret → advokat; teksten tilpasses efter svaret. Fortrydelsesknappen §8.4 vises uanset.)
+   (Om Greb er "digitalt indhold" eller "tjenesteydelse" er uafklaret → advokat; teksten tilpasses efter svaret. Fortrydelsesknappen §8.4 vises uanset.)
 5. **Med fed, lige over knappen:** "49 kr pr. md. inkl. moms" (årlig: "490 kr pr. år inkl. moms") + linje "Fornyes automatisk. Opsig når som helst." Beløb fra Stripe Price.
 6. Knap med teksten **"Køb"** (ingen anden tekst på knappen). Knappen er deaktiveret til begge checkbokse er sat; klientside + serverside validering.
 
@@ -189,7 +189,7 @@ Supportagenten refunderer aldrig — den henviser til "Fortryd aftale"-knappen e
 - `/konto/abonnement` → knap **"Opsig abonnement"** → én bekræftelsesside ("Dit abonnement stopper [dato]. Du har adgang indtil da.") → **"Bekræft opsigelse"**. Ikke flere trin end tilmelding. Ingen tilbud/fastholdelse i flowet.
 - `subscriptions.update(id, { cancel_at_period_end: true })` → SERVICE-mail `cancellation-confirmed` med slutdato.
 - "Genoptag" muligt indtil slutdato.
-- B2B: kun OWNER; samme flow; gemmer `READ_ONLY`-periode.
+- B2B: OWNER og ADMIN (Marco 2026-11-11); samme flow; gemmer `READ_ONLY`-periode.
 - **B2C (00-beslutninger § 10, 13. okt 2026):** ingen binding, intet varsel — opsig fra dag til dag; adgang resten af den betalte løbende måned, ingen refusion for påbegyndt måned. Opfylder § 28 (maks. 1 md. varsel efter 5 mdr.). B2C-årsplan: åben (OPEN-QUESTIONS).
 
 ## 9. Dunning (mislykkede betalinger)
@@ -225,7 +225,7 @@ Endpoint `POST /api/webhooks/stripe`: rå body, `stripe.webhooks.constructEvent(
 Ukendte events: log + 200. Fejl i handler: Inngest retry (5 forsøg, backoff) → Sentry.
 
 ## 11. Fakturaer og B2B-felter
-- Stripe-faktura: firmanavn, adresse, CVR (custom field + tax id), reference/PO, linje "MindForward Virksomhed — N brugere × 49 kr" (fra Price), moms 25 % særskilt, fortløbende nummerering via Stripe-kontoens fakturaprefix `GREB-` `[JURA: verificeres — fakturakrav i momsbekendtgørelsen]`.
+- Stripe-faktura: firmanavn, adresse, CVR (custom field + tax id), reference/PO, linje "Greb Virksomhed — N brugere × 49 kr" (fra Price), moms 25 % særskilt, fortløbende nummerering via Stripe-kontoens fakturaprefix `GREB-` `[JURA: verificeres — fakturakrav i momsbekendtgørelsen]`.
 - Sælgeroplysninger (navn, CVR, adresse) i Stripe-kontoens public business details + config `legalEntity`.
 - **EAN gemmes** på `Organization` (og Customer metadata), men bruges ikke i MVP. Stripe-fakturaer er ikke e-fakturaer → offentlige kunder (EAN/Nemhandel) faktureres i **fase 2 via e-conomic API (`sendBy: "ean"`)**. MVP: offentlige kunder → "Kontakt os" → manuel håndtering.
 - Faktura-email kan være en anden end OWNER's login-email.
@@ -251,7 +251,7 @@ Beregnes på beløb inkl. moms (det er det, der trækkes). Konsekvens: årsplan 
 
 ## 14. Sikkerhed
 - Secret key kun server. Restricted key til scripts. Webhook-secret pr. miljø.
-- Server actions tjekker rolle: kun OWNER (B2B) / ejer af PERSONAL-org må købe, ændre seats, opsige, fortryde.
+- Server actions tjekker rolle: OWNER eller ADMIN (B2B, Marco 2026-11-11) / ejer af PERSONAL-org må købe, ændre seats, opsige, fortryde.
 - `organizationId` tages aldrig fra klienten ved webhooks — kun fra Stripe metadata + Customer-link i DB.
 - Rate limit på checkout-oprettelse (5/time/org) og offentlig fortrydelsesformular (10/time/IP + Turnstile-lignende bot-værn uden at blokere legitime brugere `[verificér løsning]`).
 

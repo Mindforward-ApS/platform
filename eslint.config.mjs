@@ -18,5 +18,5 @@ export default defineConfig([
     files: ["src/server/ai/**"],
     rules: { "no-restricted-imports": "off" },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "src/generated/**", "playwright-report/**", "test-results/**"]),
+  globalIgnores([".claude/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "src/generated/**", "playwright-report/**", "test-results/**"]),
 ]);

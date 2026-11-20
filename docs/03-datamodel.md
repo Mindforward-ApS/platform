@@ -22,13 +22,11 @@
 | Læring | `TrackEnrollment`, `PlacementResult`, `Assignment`, `Attempt`, `StepResult` | M4–M5 (`TrackEnrollment` M2) |
 | Certifikat | `Certificate` | M7 |
 | Månedlig | `MonthlyCycle`, `MonthlyAssignment` | M8 |
-| Vane og overførsel (§ 15) | `WeeklyActivity`, `ReviewItem`, `UsageCheckIn` | M8 |
-| Team (§ 15, kun BUSINESS) | `TeamGoal`, `ContextAcknowledgement` | M7 |
-| Kontekst og personalisering (§ 15) | `ContextItem`, `PersonalizedContent` | M5 (privat) / M7 (erhverv) |
 | Betaling | `Plan`, `Subscription`, `WithdrawalRequest` | M2 (Plan-seed) / M6 |
 | Email/samtykke | `EmailMessage`, `EmailSuppression`, `ConsentRecord` | M1 (`EmailMessage`) / M5 (`ConsentRecord`) / M8 |
 | Indholdsmotor | `ContentSource`, `SourceSnapshot`, `ChangeEvent`, `PipelineRun` | M9 |
 | Support | `SupportConversation`, `SupportMessage`, `Escalation` | M10 |
+| Kalender | `CalendarEvent` | Platform (Marco nov. 2026) |
 | Drift | `AuditLog` (M1), `SandboxSession`, `SandboxEvent` (M3), `AiCall`, `AiUsageDaily` (M3), `BudgetMonth` (M3; alarm M10), `WebhookEvent` (M6), `FeatureFlag` (M3) | — |
 
 `TrackEnrollment`, `Plan`, `WithdrawalRequest`, `TwoFactor`, `RateLimit`, `EmailSuppression`, `AiCall`, `AiUsageDaily`, `BudgetMonth`, `WebhookEvent` og `FeatureFlag` er **tilføjet ud over § 9** fordi beslutninger i § 2–10 kræver dem (licensniveau pr. bruger, priser i DB, fortrydelses-kvittering, 2FA for admin, rate limits, bounce-håndtering, AI-lofter, webhook-idempotens, kill switches). De er ikke nye navne for eksisterende begreber. → Tilføjes til § 9 af ejeren af `00-beslutninger.md`.
@@ -72,10 +70,12 @@ Seat-regel: aktive `Membership` (uden `deactivatedAt`) + åbne `Invitation` ≤ 
 |---|---|---|---|---|
 | `TrackEnrollment` | Brugerens valgte spor + Copilot-niveau | `licenseTier`, `level`, `active` | unik `(organizationId, userId, trackId)`, idx `(trackId, active)` | Følger `Membership` |
 | `PlacementResult` | 5-min niveautest (også offentlig, før konto) | `anonymousTokenHash` (unik, offentlig test), `answers` (kun option-id'er), `scorePct`, `level`, `licenseTier`, `jobRole`, `recommendedModuleIds[]`, `testVersion`, `claimedAt` | idx `(userId, trackId, createdAt)`, `organizationId` | Anonyme, ikke-claimede: slettes efter 30 dage. Ellers som `User` |
-| `Assignment` | Modul tildelt en lærer | `source` PLACEMENT/ADMIN/MONTHLY/SELF, `status`, `sortOrder`, `bestAttemptId`, `bestScorePct`, `passedAt`, `assignedById` | unik `(organizationId, userId, moduleId)`, idx `(userId, status)`, `(organizationId, status)` | Som `User` |
+| `Assignment` | Modul tildelt en lærer | `source` PLACEMENT/ADMIN/MONTHLY/SELF/CARRIED_OVER (bestået i brugerens anden konto; `carriedFromAssignmentId`, ingen forsøg kopieres), `status`, `sortOrder`, `bestAttemptId`, `bestScorePct`, `passedAt`, `assignedById` | unik `(organizationId, userId, moduleId)`, idx `(userId, status)`, `(organizationId, status)` | Som `User` |
 | `Attempt` | Ét forsøg på en `ModuleVersion` | `points`, `maxPoints`, `scorePct`, `passed`, `mustPassFailed`, `status` | idx `(userId, moduleVersionId)`, `(organizationId, completedAt)`, `assignmentId` | Som `User` |
 | `StepResult` | Resultat pr. trin pr. forsøg | `stepId`, `stepType`, `points`, `hintLevelUsed` (3 → 0 point), `tryCount`, `flags` (statistik, fx hurtigt svar), `answer` (struktureret), `gradingStatus` (ERROR ≠ 0 point), `checksReport`, `rubricScores`, `rubricVersion`, `modelId`, `promptVersion`, `matchedSandboxEventId`; **fritekst:** `promptText`, `aiFeedback`, `promptTextPurgedAt` | unik `(attemptId, stepId)`, idx `createdAt` | **`promptText`/`aiFeedback` sættes til null efter 30 dage** (`retention.purge-prompt-text`); score/rubric-flag bevares |
 | `Certificate` | Bestået spor-niveau | `verificationCode` (unik, offentlig `/certifikat/<code>`), `level`, `levelLabel`, `holderName` (snapshot), `licenseTier`, `moduleVersionIds[]`, `contentVersion`, `publicVerificationEnabled`, `pdfStorageKey`, `revokedAt` | unik `(userId, organizationId, trackId, level)` | Bevares til brugersletning; verifikationssiden viser kun navn, spor, niveau, dato |
+| `CertificateShare` | Et certifikat fra brugerens anden konto, som brugeren selv har valgt at vise i denne org (samme kode, dato og indholdsversion — udstedes aldrig igen) | `certificateId`, `organizationId`, `userId` | unik `(certificateId, organizationId)`, idx `organizationId` | Følger `Certificate` og org |
+| `CredentialTransfer` | Brugerens ja/nej til at tage beståede moduler og certifikater med mellem egne konti (privat → virksomhed, virksomhed → privat). Ét valg pr. par | `fromOrganizationId` (ingen FK), `toOrganizationId`, `decision` ACCEPTED/DECLINED, `modulesCarried`, `certificatesShared`, `decidedAt` | unik `(userId, fromOrganizationId, toOrganizationId)` | Følger brugeren og mål-org; `AuditLog` CREDENTIALS_CARRIED_OVER/_DECLINED |
 
 Hvad org-admin ser (M7): pr. medarbejder — spor, niveau, `Assignment.status`, `bestScorePct`, `passedAt`, certifikater, månedsstatus. **Aldrig** `promptText`, `aiFeedback`, `SandboxEvent.contentText`, `rubricScores` med citater, `PlacementResult.answers`.
 
@@ -130,6 +130,14 @@ Supportagentens værktøjer er org- og bruger-scopede og kan ikke læse prompt-t
 | `SandboxSession` | Én øvesession (seed-verden + overlay-state) | `trackId`, `skinKey`, `worldVersion`, `moduleVersionId`, `sceneId`, `attemptId`, `state` (Json overlay), `nextSeq`, `status`, `expiresAt` | idx `(userId, status)`, `attemptId`, `organizationId` | Lukkes efter 7 dages inaktivitet; slettes 30 dage efter lukning (events med `matchedSandboxEventId` bevares som bevis indtil attempt slettes) |
 | `SandboxEvent` | Typet event (bedømmes af `CLICK_TASK`) | `seq` (server-tildelt), `type` (`SandboxEventType`), `actor`, `target`, `payload` (Zod pr. type, **ingen fritekst**), `contentText` (fritekst, **30 dage**), `stepId` | unik `(sessionId, seq)`, idx `(sessionId, type)`, `(organizationId, createdAt)`, `createdAt` | `contentText` → null efter 30 dage; øvrigt følger session |
 
+## 11a. Kalender (`/kalender`)
+
+| Entitet | Formål | Nøglefelter | Indekser | Opbevaring |
+|---|---|---|---|---|
+| `CalendarEvent` | Lærerens egne planlagte blokke i Kalender (Lektion/Øvelse/Holdmøde) | `userId`, `organizationId`, `title` (≤ 120), `type` (`CalendarEventType`: LESSON/PRACTICE/MEETING), `startsAt`, `endsAt` (> start, ≤ 12 t), `href` (kun intern sti) | idx `(userId, startsAt)`, `organizationId` | Brugerens egne data: med i GDPR-eksport; slettes ved `gdpr.erase-user` (cascade) og ved sletning af medarbejderens data i en org (`eraseMemberFromOrg`). Kun ejeren læser/ændrer (where `userId` + `organizationId`) |
+
+Gennemførte lektioner (`CourseLessonCompletion`) og øvemiljø-sessioner (`SandboxSession`) vises i kalenderen som skrivebeskyttet aktivitet; de beregnes ved visning og gemmes ikke som `CalendarEvent`.
+
 ## 12. Drift
 
 | Entitet | Formål | Nøglefelter | Indekser | Opbevaring |
@@ -158,29 +166,4 @@ Retention-test (M4): rækker ældre end 30 dage mister fritekst, scores er uænd
 
 ## 14. Enums (oversigt)
 
-`OrganizationType`, `MembershipRole`, `PlatformRole`, `JobRole`, `TrackKey`, `LicenseTier`, `ModuleType`, `ModuleVersionStatus`, `ModuleOrigin`, `StepType`, `AssignmentSource`, `AssignmentStatus`, `AttemptStatus`, `GradingStatus`, `MonthlyAssignmentStatus`, `PlanAudience`, `BillingInterval`, `TaxBehavior`, `SubscriptionStatus`, `WithdrawalStatus`, `ParserType`, `FetchMode`, `SourceStatus`, `SnapshotOrigin`, `ChangeKind`, `ChangeEventStatus`, `PipelineRunKind`, `PipelineRunStatus`, `ConsentChannel`, `ConsentPurpose`, `ConsentAction`, `ConsentSource`, `SuppressionReason`, `EmailCategory`, `EmailStatus`, `SupportConversationStatus`, `SupportMessageRole`, `EscalationReason`, `EscalationPriority`, `EscalationStatus`, `ActorType`, `SandboxSessionStatus`, `SandboxEventType`, `AiFeature`, `AiCallStatus`, `BudgetScope`, `WebhookProvider`, `WebhookStatus`. Værdier: se skemaet. `Invitation.status` er bevidst `String` (Better Auth skriver små bogstaver).
-Tilføjes med § 15: `PlacementKind`, `MinutesSavedBucket`, `TeamGoalMetric`, `ContextKind`, `PersonalizedContentKind`, `ModuleArea`; `AiFeature` får værdien `PERSONALIZATION`.
-
-## 15. Tilføjelser fra beslutning § 10b og § 10c (18. nov 2026)
-
-Tilføjes `prisma/schema.prisma` i **M2** (skemaet er ikke ændret endnu). Alle er org-scopede og følger brugerens/organisationens sletning. Fritekst findes kun i `ContextItem.body` og `PersonalizedContent.text` (ejerens egne oplysninger — ikke prompt-tekster).
-
-| Entitet | Formål | Nøglefelter | Relationer / indekser | Opbevaring | Bruges fra |
-|---|---|---|---|---|---|
-| `WeeklyActivity` | Grundlag for ugentlig streak | `weekStart` (mandag, København), `activityCount` | unik `(userId, organizationId, weekStart)` | Som `User` | M8 |
-| `ReviewItem` | Genopfriskningsspørgsmål fra et bestået modul | `moduleId`, `moduleVersionId`, `stepId`, `round` (1 = ca. 1 uge, 2 = ca. 3 uger), `dueAt`, `answeredAt`, `correct` | idx `(userId, dueAt)`, unik `(userId, organizationId, moduleVersionId, stepId, round)` | Som `User` | M8 (oprettes ved bestået modul) |
-| `UsageCheckIn` | Ugentligt tjek-ind (selvrapporteret) | `weekStart`, `usedAiAtWork` (bool), `minutesSaved` (enum: NONE/UNDER_30/FROM_30_TO_60/FROM_60_TO_120/OVER_120), valgfri `moduleId` ("fik du brugt det?") — **ingen fritekst** | unik `(userId, organizationId, weekStart)`, idx `(organizationId, weekStart)` | 24 mdr. | M8 |
-| `TeamGoal` | Fælles teammål (kun BUSINESS) | `metric` (LEVEL_PASSED_PCT/MODULES_PASSED/ACTIVE_MEMBERS_PCT), `targetValue`, `level`, `trackId`, `startsAt`, `dueAt`, `achievedAt`, `createdById`, `archivedAt` | idx `(organizationId, archivedAt)`; ét aktivt pr. org (partiel unik index) | Følger org | M7 |
-| `ContextItem` | Element i kontekstbiblioteket (BUSINESS: virksomhedens; PERSONAL: brugerens eget — § 10c) | `kind` (AI_POLICY/APPROVED_TOOLS/DATA_RULES/CONTACT/ABOUT_BUSINESS/ABOUT_ME/GOALS/OTHER), `title`, `body` (tekst, maks. længde i config), `linkUrl`, `fileStorageKey` (PDF), `version`, `requiresAcknowledgement` (kun BUSINESS), `usedForPersonalization` (bool; `false` for CONTACT), `publishedAt`, `archivedAt`, `updatedById` | idx `(organizationId, kind, archivedAt)` | Følger org/bruger; ejeren kan slette når som helst; gamle versioner bevares kun så længe en bekræftelse henviser til dem | M5 (privat) / M7 (erhverv) |
-| `ContextAcknowledgement` | Medarbejderens bekræftelse af en version (kun BUSINESS) | `itemId`, `itemVersion`, `acknowledgedAt` | unik `(userId, itemId, itemVersion)`, idx `organizationId` | Følger `Membership` (indgår i rapport) | M7 |
-| `PersonalizedContent` | Gemt personaliseret tekst (genbruges til kontekst eller modul ændres) | `kind` (MODULE_RELEVANCE/TAKEAWAY/PLAN_NOTE), `organizationId` (null = delt profil-tekst uden kontekstbibliotek), `userId` (kun privat med kontekst), `profileKey` (spor + licensniveau + jobrolle + niveau pr. område), `moduleVersionId` (null for PLAN_NOTE), `contextHash` (null uden kontekst), `text`, `modelId`, `promptVersion`, `status` (READY/FAILED) | unik `(organizationId, userId, profileKey, moduleVersionId, kind, contextHash)` | Slettes når kildekonteksten slettes/ændres, og med bruger/org | M5 |
-
-Nye felter på eksisterende entiteter:
-- `PlacementResult.kind` (`ENTRY` | `EXIT`, default `ENTRY`) + `level` bruges til sluttjek. Anonyme resultater er altid `ENTRY`.
-- `TrackEnrollment.weeklyGoalModules` (nullable int) — brugerens valgte tempo; `null` = slået fra.
-- `Organization.programStartsAt` (nullable) — valgfri fælles startdato (kun BUSINESS).
-- Modul-JSON: valgfrit `takeaway` og påkrævet `area` (docs/05 § 10); `Module.area` denormaliseres fra publiceret version (`ModuleArea`: AI_FUNDAMENTALS/RESPONSIBLE_AI/TOOL_SKILLS).
-
-Hvad org-admin ser af disse: `TeamGoal` og virksomhedens `ContextItem` fuldt ud; `ContextAcknowledgement` pr. medarbejder (version + dato); `PlacementResult` ENTRY/EXIT som `scorePct`/`level` pr. medarbejder (aldrig `answers`). `WeeklyActivity`, `UsageCheckIn` og `ReviewItem` **kun som samlede tal for organisationen og kun når mindst 5 personer indgår** — håndhæves i datalaget og testes (M8).
-
-Kontekstbiblioteket læses kun af AI-featuren `PERSONALIZATION` (ny værdi i `AiFeature`) — aldrig af sandkasse-chat, bedømmelse, support eller indholdsmotor (test i M5: kun `PERSONALIZATION`-kald må indeholde `ContextItem`-indhold). `ContextItem.body` og `PersonalizedContent.text` er fritekst fra ejeren/modellen: de logges ikke, indgår ikke i `AiCall` eller `AuditLog.metadata`, og MindForwards interne admin kan ikke gennemse dem.
+`OrganizationType`, `MembershipRole`, `PlatformRole`, `JobRole`, `TrackKey`, `LicenseTier`, `ModuleType`, `ModuleVersionStatus`, `ModuleOrigin`, `StepType`, `AssignmentSource`, `AssignmentStatus`, `AttemptStatus`, `GradingStatus`, `MonthlyAssignmentStatus`, `PlanAudience`, `BillingInterval`, `TaxBehavior`, `SubscriptionStatus`, `WithdrawalStatus`, `ParserType`, `FetchMode`, `SourceStatus`, `SnapshotOrigin`, `ChangeKind`, `ChangeEventStatus`, `PipelineRunKind`, `PipelineRunStatus`, `ConsentChannel`, `ConsentPurpose`, `ConsentAction`, `ConsentSource`, `SuppressionReason`, `EmailCategory`, `EmailStatus`, `SupportConversationStatus`, `SupportMessageRole`, `EscalationReason`, `EscalationPriority`, `EscalationStatus`, `ActorType`, `SandboxSessionStatus`, `SandboxEventType`, `CalendarEventType`, `AiFeature`, `AiCallStatus`, `BudgetScope`, `WebhookProvider`, `WebhookStatus`. Værdier: se skemaet. `Invitation.status` er bevidst `String` (Better Auth skriver små bogstaver).

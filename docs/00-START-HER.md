@@ -1,6 +1,6 @@
 # 00 — Start her
 
-Sådan bygger du MindForward med Claude Code: én milestone ad gangen, med plan før kode og test før merge.
+Sådan bygger du Greb med Claude Code: én milestone ad gangen, med plan før kode og test før merge.
 
 ## 1. Før M0 — konti du skal oprette
 
@@ -17,7 +17,7 @@ Opret med firma-mail under Esther Gruppen ApS. Brug 2FA overalt. Gem nøgler i e
 | Inngest | Baggrundsjobs + cron | Forbind til Vercel |
 | PostHog | Produktanalyse | **EU Cloud**-region |
 | Sentry | Fejl- og performance-overvågning | EU-datalagring hvis muligt |
-| Domæne | Produktdomæne + mail-domæne | Navnet "MindForward" er ikke tjekket — tjek domæne og varemærke først |
+| Domæne | Produktdomæne + mail-domæne | Navnet "Greb" er ikke tjekket — tjek domæne og varemærke først |
 | e-conomic | Bogføring (+ Pairy eller Integrationspartner til Stripe-posteringer) | EAN-fakturering er fase 2 |
 
 SSO kræver også app-registreringer hos Microsoft Entra ID og Google Cloud (OAuth) — gøres i M1, Claude Code guider dig.
@@ -29,15 +29,15 @@ SSO kræver også app-registreringer hos Microsoft Entra ID og Google Cloud (OAu
 3. **Godkend** — læs planen. Svar "Godkendt" eller ret til. Besvar åbne spørgsmål (eller opdatér `docs/00-beslutninger.md`).
 4. **Byg** — tests først for logik, derefter kode, små commits.
 5. **Checks** — `pnpm typecheck && pnpm lint && pnpm test` (+ `pnpm e2e` for berørte flows) skal være grønne.
-6. **Push til `main`** — rapport i chatten pr. milestone: hvert acceptkriterie + bevis, åbne spørgsmål.
-7. **Du tester på Vercel-deployet fra `main`** — følg "Sådan tester Marco"-punkterne i rapporten. Fejl → bug-skabelon (§ 5). Til sidst review-skabelon (§ 6).
+6. **Push til `main`** — rapport i chatten: hvert acceptkriterie + bevis, åbne spørgsmål.
+7. **Du tester på Vercel-deployet fra `main`** — følg "Sådan tester Marco"-punkterne i rapporten. Fejl → bug-skabelon (§ 5). Til sidst review-skabelon (§ 6), derefter merge.
 
 Designsessioner: før M3, M4, M5 (offentlig testside) og M7 (admin-UI) skal du vælge design. Se `docs/11-roadmap.md`. Claude Code laver flere visuelle versioner af én skærm ad gangen; du vælger. Indtil da bruges neutrale placeholders.
 
 ## 3. Kickoff-prompt (indsæt ordret i første session)
 
 ```
-Du skal bygge "MindForward" — en dansk SaaS til hands-on AI-træning af medarbejdere.
+Du skal bygge "Greb" — en dansk SaaS til hands-on AI-træning af medarbejdere.
 Hele specifikationen ligger i dette repo.
 
 Læs i denne rækkefølge, FØR du gør noget andet:
@@ -48,7 +48,7 @@ Læs i denne rækkefølge, FØR du gør noget andet:
 5. docs/02-arkitektur.md og docs/03-datamodel.md
 
 Skriv derefter IKKE kode. Svar med:
-A) Din forståelse af MindForward i 5 linjer.
+A) Din forståelse af Greb i 5 linjer.
 B) Konflikter eller uklarheder du har fundet mellem dokumenterne (med filnavn + afsnit).
    Tilføj dem også til docs/OPEN-QUESTIONS.md (opret filen).
 C) Plan for M0 efter skabelonen nedenfor.

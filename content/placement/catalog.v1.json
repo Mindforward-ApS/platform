@@ -1,0 +1,478 @@
+{
+  "$comment": "Module catalog derived from content/curriculum.md for the placement plan generator. Published DB modules decide availability.",
+  "version": 1,
+  "source": "content/curriculum.md (v1)",
+  "modules": [
+    {
+      "id": "core-llm-01",
+      "title": "Hvad en sprogmodel er — og ikke er",
+      "level": 1,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 8
+    },
+    {
+      "id": "core-prompt-01",
+      "title": "Din første gode prompt",
+      "level": 1,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 10
+    },
+    {
+      "id": "core-prompt-02",
+      "title": "Fra første svar til godt svar",
+      "level": 1,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 8
+    },
+    {
+      "id": "core-fact-01",
+      "title": "Hallucinationer og faktatjek",
+      "level": 1,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 10
+    },
+    {
+      "id": "core-data-01",
+      "title": "Hvad må jeg indsætte? Datasikkerhed og GDPR",
+      "level": 1,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 10
+    },
+    {
+      "id": "core-policy-01",
+      "title": "Virksomhedens AI-politik i praksis",
+      "level": 1,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 7
+    },
+    {
+      "id": "core-mail-01",
+      "title": "Mails og korte tekster",
+      "level": 1,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 8
+    },
+    {
+      "id": "core-meeting-01",
+      "title": "Mødenoter og opsummeringer",
+      "level": 1,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 8
+    },
+    {
+      "id": "core-aiact-01",
+      "title": "Ansvarlig brug og AI-forordningen",
+      "level": 1,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 7
+    },
+    {
+      "id": "feat-orient-01",
+      "title": "Rundt i dit AI-værktøj",
+      "level": 1,
+      "type": "FEATURE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 6
+    },
+    {
+      "id": "feat-copilot-chat-01",
+      "title": "Copilot Chat: web, arbejde og licens",
+      "level": 1,
+      "type": "FEATURE",
+      "tracks": [
+        "COPILOT"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 7
+    },
+    {
+      "id": "core-files-01",
+      "title": "Arbejd med filer og dokumenter",
+      "level": 2,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 10
+    },
+    {
+      "id": "core-sheet-01",
+      "title": "Regneark og dataanalyse",
+      "level": 2,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 12
+    },
+    {
+      "id": "core-report-01",
+      "title": "Rapporter og længere tekster",
+      "level": 2,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 10
+    },
+    {
+      "id": "core-prompt-03",
+      "title": "Genbrugelige prompts og skabeloner",
+      "level": 2,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 8
+    },
+    {
+      "id": "feat-workspace-01",
+      "title": "Arbejdsrum, projekter og hukommelse",
+      "level": 2,
+      "type": "FEATURE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 9
+    },
+    {
+      "id": "feat-research-01",
+      "title": "Research-funktioner og kildekritik",
+      "level": 2,
+      "type": "FEATURE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 10
+    },
+    {
+      "id": "core-image-01",
+      "title": "Billeder og ophavsret",
+      "level": 2,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 8
+    },
+    {
+      "id": "feat-assist-01",
+      "title": "Egne assistenter",
+      "level": 2,
+      "type": "FEATURE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 12
+    },
+    {
+      "id": "feat-copilot-m365-01",
+      "title": "Copilot i Office-apps og arbejdsdata",
+      "level": 2,
+      "type": "FEATURE",
+      "tracks": [
+        "COPILOT"
+      ],
+      "requiresTier": "COPILOT_M365",
+      "roles": [],
+      "minutes": 12
+    },
+    {
+      "id": "role-sales-01",
+      "title": "Salg: forbered og følg op",
+      "level": 2,
+      "type": "ROLE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [
+        "SALES"
+      ],
+      "minutes": 10
+    },
+    {
+      "id": "role-hr-01",
+      "title": "HR: tekster ja — vurdering af mennesker nej",
+      "level": 2,
+      "type": "ROLE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [
+        "HR"
+      ],
+      "minutes": 10
+    },
+    {
+      "id": "role-finance-01",
+      "title": "Økonomi: tal, afvigelser og forklaringer",
+      "level": 2,
+      "type": "ROLE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [
+        "FINANCE"
+      ],
+      "minutes": 12
+    },
+    {
+      "id": "role-cs-01",
+      "title": "Kundeservice: hurtige svar, rigtig tone, rigtig eskalering",
+      "level": 2,
+      "type": "ROLE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [
+        "CUSTOMER_SERVICE"
+      ],
+      "minutes": 10
+    },
+    {
+      "id": "role-lead-01",
+      "title": "Ledelse: rammer, beslutninger og forandring",
+      "level": 2,
+      "type": "ROLE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [
+        "LEADERSHIP"
+      ],
+      "minutes": 12
+    },
+    {
+      "id": "role-ops-01",
+      "title": "Drift og håndværk: tilbud, arbejdssedler og tjeklister",
+      "level": 2,
+      "type": "ROLE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [
+        "OPERATIONS"
+      ],
+      "minutes": 8
+    },
+    {
+      "id": "feat-connect-01",
+      "title": "Forbindelser til systemer",
+      "level": 3,
+      "type": "FEATURE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_M365",
+      "roles": [],
+      "minutes": 12
+    },
+    {
+      "id": "feat-sched-01",
+      "title": "Planlagte opgaver og automationer",
+      "level": 3,
+      "type": "FEATURE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_M365",
+      "roles": [],
+      "minutes": 12
+    },
+    {
+      "id": "feat-agent-01",
+      "title": "Agenter — og hvornår du ikke skal bruge dem",
+      "level": 3,
+      "type": "FEATURE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_M365",
+      "roles": [],
+      "minutes": 12
+    },
+    {
+      "id": "core-quality-01",
+      "title": "Kvalitetssikring af AI-arbejde",
+      "level": 3,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 10
+    },
+    {
+      "id": "core-workflow-01",
+      "title": "Design din egen AI-arbejdsgang",
+      "level": 3,
+      "type": "CORE",
+      "tracks": [
+        "CHATGPT",
+        "COPILOT",
+        "CLAUDE",
+        "GEMINI"
+      ],
+      "requiresTier": "COPILOT_CHAT",
+      "roles": [],
+      "minutes": 12
+    }
+  ]
+}

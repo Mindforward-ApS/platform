@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 
-// Design is not decided: colors and fonts may only be defined in src/styles/tokens.css (CLAUDE.md "Designregel").
+// Colors and fonts may only be defined in src/styles/tokens.css (CLAUDE.md "Designregel").
 
 export interface DesignViolation {
   file: string;

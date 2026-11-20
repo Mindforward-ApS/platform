@@ -119,7 +119,7 @@ Unit-tests: hver op, hver kombinator, prototype-forsøg, dybde/node-loft, tom ev
 ### 4.1 Grader-systemprompt (`src/server/ai/prompts/grade-prompt-task.v1.ts`, `graderPromptVersion = "grade-prompt-task.v1"`)
 
 ```
-Du er bedømmer i MindForward, en dansk træningsplatform hvor medarbejdere øver sig i at bruge AI-værktøjer i arbejdet. Du bedømmer ÉN prompt, som en kursist har skrevet til en opgave. Du bedømmer prompten — ikke hvad en AI ville svare på den.
+Du er bedømmer i Greb, en dansk træningsplatform hvor medarbejdere øver sig i at bruge AI-værktøjer i arbejdet. Du bedømmer ÉN prompt, som en kursist har skrevet til en opgave. Du bedømmer prompten — ikke hvad en AI ville svare på den.
 
 Du får:
 - <opgave>: opgaveteksten kursisten så.
@@ -225,7 +225,7 @@ Alle ganges med **hint-multiplikator** for højeste brugte hint-niveau: ingen/1 
 ## 8. Certifikater
 - Udstedes pr. **spor + niveau** (fx "ChatGPT · Niveau 1 Grundlag"), når alle moduler i niveauets påkrævede sæt for sporet (og evt. `requiresTier`) er bestået. Grundforløbet har eget certifikat (content/curriculum.md § Grundforløb).
 - Indhold: navn, spor (beskrivende produktnavn), niveau, beståede moduler med dato, samlet vejledende læringstid, gennemsnitsscore, udstedelsesdato, indholdsversion, unikt id + verifikations-URL `/certifikat/[id]`, disclaimer om øvemiljø.
-- Fast tekst: **"Certifikatet dokumenterer gennemført træning i MindForward. Det er ikke en juridisk certificering, en offentlig godkendelse eller et krav efter AI-forordningen."** Ingen leverandør-logoer, ingen "certificeret af".
+- Fast tekst: **"Certifikatet dokumenterer gennemført træning i Greb. Det er ikke en juridisk certificering, en offentlig godkendelse eller et krav efter AI-forordningen."** Ingen leverandør-logoer, ingen "certificeret af".
 - PDF genereres server-side; certifikater udløber ikke, men viser indholdsversion. Brugeren kan slå den offentlige verifikationsside fra (den viser kun navn, spor, niveau, dato).
 
 ## 9. Tilgængelighed (WCAG 2.2 AA)
@@ -236,57 +236,3 @@ Alle ganges med **hint-multiplikator** for højeste brugte hint-niveau: ingen/1 
 - PROMPT_TASK bevarer brugerens tekst mellem indsendelser (3.3.7); tegn-tæller annonceres ved 90 %.
 - DEMO har tekst pr. frame og pause; READ-billeder kræver `alt`.
 - CLICK_TASK i sandkassen: alle sandkasse-kontroller er rigtige knapper/links med tilgængelige navne fra skin'et, så skærmlæser-brugere kan løse dem.
-
-## 10. Tilføjelser fra beslutning § 10b (18. nov 2026)
-
-### 10.1 `takeaway` — "Brug det i dit eget job"
-Valgfrit felt på modulet (påkrævet for CORE- og ROLE-moduler fra Niveau 1, undtagen rene JUDGMENT-moduler). Tilføjes `content/schema/module.schema.json` i M2.
-
-| Felt | Type | Regel |
-|---|---|---|
-| `takeaway.title` | string ≤ 60 | Navngivet efter arbejdsopgaven ("Svar på en reklamation"), ikke værktøjet. |
-| `takeaway.template` | string ≤ 800 | Prompt-skabelon med pladsholdere i kantede parenteser (`[kundens navn]`). Ingen Nordlys-data, ingen leverandør-funktionsnavne. |
-| `takeaway.tip` | string ≤ 200 | Én sætning om, hvad man skal tjekke i svaret. |
-
-Vises på resultatskærmen ved bestået og i "Mine skabeloner". Fast påmindelse ved siden af: indsæt aldrig persondata eller fortrolige oplysninger i et værktøj, virksomheden ikke har godkendt. NEWS-moduler har ikke `takeaway`.
-
-### 10.2 Genopfriskningsspørgsmål
-- Når et modul bestås, oprettes `ReviewItem`s for op til 3 af modulets `QUIZ`/`SPOT_ERROR`/`JUDGMENT`-trin (must-pass først, derefter de trin brugeren fik lavest score i) med forfald efter 7 og 21 dage.
-- Besvares i "Ugens genopfriskning" og i månedspakken. Ingen LLM-kald. Ingen hints; forklaringen vises efter svar.
-- Resultatet påvirker ikke modulets score (§ 6: genopfriskning kan ikke sænke et bestået resultat). Forkert svar → modulet foreslås som månedens genopfriskning.
-
-### 10.3 Sluttjek
-- Samme motor og områder som niveautesten (curriculum.md "Niveautest → plan"), parallel spørgsmålsbank (andre spørgsmål), 12 spørgsmål, ingen LLM-kald.
-- Tilbydes, når et niveaus påkrævede moduler er bestået. Gemmes som `PlacementResult(kind = EXIT)`. Vises som før/efter pr. område.
-- Frivilligt. Ikke en betingelse for certifikat og sænker intet (AI-forordningen kræver ikke test — research-fund).
-
-### 10.4 Coach-princip for hints og feedback
-- Hint 1 er et spørgsmål eller en retning ("Hvem skal læse svaret?"). Hint 2 er konkret, men uden den færdige formulering. Kun hint 3 viser løsningen (0 point).
-- Grader-feedback siger, hvad der mangler — den omskriver ikke brugerens prompt (allerede regel 6 i § 4.1: "Afslør ikke den fulde løsning").
-- Indholdsregel for forfattere og indholdsmotor: et hint 1–2, der indeholder `exampleSolution` eller en parafrase af den, afvises i `content:validate` (enkel overlap-test).
-- Baggrund: AI-hjælp, der giver svaret, kan sænke læringen (docs/research/08-kilder.md, Bastani m.fl. 2025).
-
-### 10.5 Streak og aktivitet
-En uge (mandag–søndag, København) tæller som aktiv ved mindst én af: afsluttet modulforsøg, besvaret genopfriskningsspørgsmål, gennemført del af månedspakken, sluttjek. Tjek-ind alene tæller ikke. Én uge uden aktivitet = pause; to i træk = nulstil. Værdier i config.
-
-### 10.6 `area` — fem indgange (beslutning § 10c)
-Nyt påkrævet modul-felt `area`: `AI_FUNDAMENTALS` (Fundamental AI), `RESPONSIBLE_AI` (AI Act og ansvarlig brug) eller `TOOL_SKILLS` (værktøjssporene; standard for FEATURE/ROLE/NEWS). Tilføjes `content/schema/module.schema.json` i M2. Planen og kataloget grupperer efter `area`; de to første områder er `CORE`-moduler for alle spor og ligger først i planen. **`AI_FUNDAMENTALS` er anbefalet, ikke påkrævet:** modulerne har `required: false` i planen (`Assignment` oprettes med status som "anbefalet"), tæller ikke i kravene til niveau-certifikat og blokerer intet. Scoring og bestået-regler er de samme, når modulet tages. Moduler i `AI_FUNDAMENTALS` og `RESPONSIBLE_AI` er værktøjsneutrale: ingen `CLICK_TASK`, og `DEMO` kun i neutral visning — de kan tages på mobil. Certifikater er uændrede (pr. spor + niveau); der findes intet "AI Act-certifikat".
-
-### 10.7 Personalisering ud fra udgangspunkt og kontekstbibliotek (beslutning § 10c)
-- **Hvor:** kun AI-featuren `PERSONALIZATION` i `src/server/ai/` (prompt `personalize.v1.ts`, lille model, struktureret output valideret med Zod, prompt caching af systemprompten). Aldrig i sandkasse-chat, scener, bedømmelse eller spørgsmål.
-- **For hvem:** alle indloggede brugere, også på gratis niveau og uden kontekstbibliotek.
-- **Input:** brugerens **udgangspunkt** — niveau pr. område fra niveautesten (`PlacementResult.level` + områdeniveauer; aldrig `answers`), hvor i planen brugeren står, specifik jobrolle, spor og licensniveau — samt modulets titel/mål/`takeaway`. Hvis de findes: publicerede `ContextItem`s med `usedForPersonalization = true`. Aldrig prompt-tekster, sandkasse-indhold eller andre brugeres data.
-- **Effekt af niveau:** begyndere får enklere sprog og et første lille skridt; øvede får en mere avanceret vinkel og besked om, hvad de kan gå let hen over. Selve modulets indhold, spørgsmål og bedømmelse er ens for alle.
-- **Output** (gemmes i `PersonalizedContent`):
-
-| `kind` | Indhold | Grænse |
-|---|---|---|
-| `MODULE_RELEVANCE` | "Derfor er det relevant for dig" på modulintro | ≤ 2 sætninger |
-| `TAKEAWAY` | Modulets skabelon tilpasset rolle/branche/virksomhed; pladsholdere i kantede parenteser bevares for alt, der kan være persondata | samme længdegrænser som `takeaway` |
-| `PLAN_NOTE` | Anbefalet fokus og tempo øverst på planen | ≤ 3 sætninger |
-
-- **Genbrug:** uden kontekstbibliotek er nøglen `profileKey` (spor + licensniveau + jobrolle + niveau pr. område) + modulversion, og teksten deles på tværs af alle brugere med samme profil (få LLM-kald). Med kontekstbibliotek tilføjes `contextHash`: erhverv pr. virksomhed + `profileKey`, privat pr. bruger. Genereres asynkront (Inngest) første gang; indtil da — og ved fejl — vises den generelle tekst. Modulet blokeres aldrig af personalisering.
-- **Værn:** konteksten behandles som data, ikke instrukser (injektionsværn som i § 4.1); output går gennem `banned-claims`; AI-politik og dataregler gengives aldrig af modellen (vises ordret fra `ContextItem`); modellen må ikke tilføje oplysninger om virksomheden, som ikke står i konteksten; teksten mærkes "Tilpasset til dig — automatisk genereret".
-- **PII:** filteret (docs/04) kører ved gem af `ContextItem` og igen før LLM-kaldet; fund blokerer.
-- **Omkostning:** eget dagligt loft pr. bruger/organisation og samlet kontekst-størrelse i config; alle kald logges i `AiCall` (uden tekst). Overskredet loft → generel tekst, ingen fejl.
-- **Påvirker aldrig** score, bestået-regler, certifikat eller virksomhedsrapport.

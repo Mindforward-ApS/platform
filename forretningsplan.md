@@ -1,4 +1,4 @@
-# MindForward — Forretningsplan og automatiseret marketing
+# Greb — Forretningsplan og automatiseret marketing
 
 > Version 12. okt. 2026. Bygger kun på `docs/00-beslutninger.md` (afsnit 10 går forud) og `docs/research-fund.md`.
 > Kontekst for forretningen, ikke byggekrav. Ved konflikt vinder `docs/00-beslutninger.md`.
@@ -8,11 +8,11 @@
 
 ## 1. Kort fortalt
 
-- **Hvad:** MindForward er en dansk webapp, hvor medarbejdere lærer ChatGPT, Microsoft 365 Copilot og Claude ved at *gøre ting* i en sandkasse. Ingen webinarer og ingen videoer. Det tager 15 minutter om måneden at holde sig opdateret.
+- **Hvad:** Greb er en dansk webapp, hvor medarbejdere lærer ChatGPT, Microsoft 365 Copilot og Claude ved at *gøre ting* i en sandkasse. Ingen webinarer og ingen videoer. Det tager 15 minutter om måneden at holde sig opdateret.
 - **For hvem:** SMV'er med 10–250 ansatte (B2B) og privatpersoner (B2C).
 - **Hvorfor nu:** 42 % af danske virksomheder bruger AI, men 45 % bruger det kun ad hoc. Manglende kompetencer er den største barriere. AI-forordningens art. 4 kræver nu "tiltag, der understøtter" AI-kompetencer, og værktøjerne skifter hver måned.
 - **Pris:** 49 kr/bruger/md ex. moms (B2B, min. 5 brugere). 49 kr/md inkl. moms (B2C). Årspris 490 kr.
-- **Fordelen:** MindForward er den eneste danske sandkasse på tværs af værktøjer. Den måler kompetence med score i stedet for gennemførelse, holder sig selv opdateret via indholdsmotoren og laver dokumentationsrapporten til art. 4. Prisen er en brøkdel af en kursusdag til 4.000–6.000 kr.
+- **Fordelen:** Greb er den eneste danske sandkasse på tværs af værktøjer. Den måler kompetence med score i stedet for gennemførelse, holder sig selv opdateret via indholdsmotoren og laver dokumentationsrapporten til art. 4. Prisen er en brøkdel af en kursusdag til 4.000–6.000 kr.
 
 ---
 
@@ -27,15 +27,15 @@
 | e | Sælge på "AI Act-krav" | Forordning 2026/1744 ændrede art. 4 (i kraft 27. juli 2026). Virksomheder skal "tage tiltag, der understøtter udviklingen af AI-kompetencer". Der er **intet krav** om et bestemt niveau, certifikat eller test, og dokumentation anbefales, men er ikke et krav. Hvilken dansk myndighed der fører tilsyn, er uafklaret. | Budskabet er "dokumenteret, rollebaseret tiltag efter art. 4". Se tabellen nedenfor. | [EUR-Lex 2026/1744](https://eur-lex.europa.eu/eli/reg/2026/1744/oj) · [Kommissionens Q&A](https://digital-strategy.ec.europa.eu/en/faqs/ai-literacy-questions-answers) |
 | f | MobilePay som betaling | MobilePay via Stripe understøtter ikke tilbagevendende betalinger. | Abonnementer betales med **kort via Stripe**. | [Stripe MobilePay](https://docs.stripe.com/payments/mobilepay) |
 | g | Lære folk de konkrete funktioner | Værktøjerne skifter hurtigt. Custom GPTs udfases fx 11. dec. 2026 og erstattes af Plugins/Skills, og Gems hos Google bliver til Skills. | Pensum bygges på **begreber**: egne assistenter, forbindelser til systemer, planlagte opgaver og agenter. Funktionsnavne er data, som indholdsmotoren holder ajour. | research-fund "Værktøjerne lige nu" |
-| h | Almindeligt checkout | Siden 19. juni 2026 skal knappen **"Fortryd aftale"** være synlig i hele fortrydelsesperioden (§ 20 a). Prisen inkl. moms skal stå med fed over knappen, og knappen skal hedde "Køb" (§ 12). Opsigelse skal kunne ske på samme platform (§ 28 a). | B2C-checkout får en fed pris pr. md. inkl. moms og en "Køb"-knap. Kunden giver samtykke og erkender tab af fortrydelsesret ved straks-adgang. Kvittering sendes på mail, "Fortryd aftale" er synlig i 14 dage, og opsigelse sker i appen. **Advokaten afklarer**, om MindForward er "digitalt indhold" eller en "tjenesteydelse". | [Lov 723/2025](https://www.retsinformation.dk/eli/lta/2025/723) · [Forbrugeraftaleloven](https://www.retsinformation.dk/eli/lta/2025/1184) · [Oplysningskrav](https://www.forbrugerombudsmanden.dk/media/46756/oplysningskrav-ved-online-salg-af-abonnementer.pdf) |
-| i | Færch & Co. som første kunde | Det er en oplagt pilot, fordi du allerede er AI-implementør der. Men du er ansat, så der kan være klausuler om bibeskæftigelse, immaterielle rettigheder og interessekonflikt. | **Læs din ansættelseskontrakt først.** Få ledelsens skriftlige accept af MindForward som sideprojekt og af en pilotaftale på almindelige vilkår. Hold MindForward-udvikling uden for arbejdstid og på eget udstyr. | Egen kontrakt (ikke i research) |
+| h | Almindeligt checkout | Siden 19. juni 2026 skal knappen **"Fortryd aftale"** være synlig i hele fortrydelsesperioden (§ 20 a). Prisen inkl. moms skal stå med fed over knappen, og knappen skal hedde "Køb" (§ 12). Opsigelse skal kunne ske på samme platform (§ 28 a). | B2C-checkout får en fed pris pr. md. inkl. moms og en "Køb"-knap. Kunden giver samtykke og erkender tab af fortrydelsesret ved straks-adgang. Kvittering sendes på mail, "Fortryd aftale" er synlig i 14 dage, og opsigelse sker i appen. **Advokaten afklarer**, om Greb er "digitalt indhold" eller en "tjenesteydelse". | [Lov 723/2025](https://www.retsinformation.dk/eli/lta/2025/723) · [Forbrugeraftaleloven](https://www.retsinformation.dk/eli/lta/2025/1184) · [Oplysningskrav](https://www.forbrugerombudsmanden.dk/media/46756/oplysningskrav-ved-online-salg-af-abonnementer.pdf) |
+| i | Færch & Co. som første kunde | Det er en oplagt pilot, fordi du allerede er AI-implementør der. Men du er ansat, så der kan være klausuler om bibeskæftigelse, immaterielle rettigheder og interessekonflikt. | **Læs din ansættelseskontrakt først.** Få ledelsens skriftlige accept af Greb som sideprojekt og af en pilotaftale på almindelige vilkår. Hold Greb-udvikling uden for arbejdstid og på eget udstyr. | Egen kontrakt (ikke i research) |
 
 **AI-forordningen: tilladte og forbudte formuleringer**
 
 | Brug | Brug aldrig |
 |---|---|
 | "Et dokumenteret, rollebaseret tiltag efter AI-forordningens art. 4" | "AI Act-certificering" / "certificeret efter AI Act" |
-| "Art. 4 kræver tiltag, der understøtter AI-kompetencer. MindForward er sådan et tiltag." | "Lovkrav om certificering" |
+| "Art. 4 kræver tiltag, der understøtter AI-kompetencer. Greb er sådan et tiltag." | "Lovkrav om certificering" |
 | "Rapporten dokumenterer, hvad I har gjort, og hvem der har gennemført hvad" | "Påkrævet niveau" / "I skal bestå" |
 | "Bruger jeres medarbejdere ChatGPT eller Copilot, er I omfattet af art. 4" | Bødetrusler: "Undgå bøder", "Risikér millionbøder" |
 
@@ -79,7 +79,7 @@
 
 **Admin-dashboard:** Invitation via mail, link eller domæne. SSO med Microsoft Entra ID og Google. Admin ser status, score og certifikater. **Virksomhedsrapporten** (CSV og PDF) dokumenterer AI-kompetencerne og sælges som en selvstændig feature.
 
-**Privacy by design:** Admins ser **ikke** medarbejdernes prompt-tekster, og prompt-tekster slettes efter 30 dage. Scores markedsføres som læring, ikke overvågning, fordi Datatilsynet i 2026 har fokus på arbejdsgiveres kontrol med medarbejdere. MindForward er databehandler for B2B-kunder, så hver kunde får en databehandleraftale.
+**Privacy by design:** Admins ser **ikke** medarbejdernes prompt-tekster, og prompt-tekster slettes efter 30 dage. Scores markedsføres som læring, ikke overvågning, fordi Datatilsynet i 2026 har fokus på arbejdsgiveres kontrol med medarbejdere. Greb er databehandler for B2B-kunder, så hver kunde får en databehandleraftale.
 
 ---
 
@@ -174,7 +174,7 @@
 
 ### Positionering
 
-**MindForward er den danske øvebane for AI på jobbet.** Medarbejderne lærer ChatGPT, Copilot og Claude ved at gøre det, ikke ved at se video, og I får dokumentationen med.
+**Greb er den danske øvebane for AI på jobbet.** Medarbejderne lærer ChatGPT, Copilot og Claude ved at gøre det, ikke ved at se video, og I får dokumentationen med.
 
 > One-liner: **"Få greb om AI — 15 minutters øvelse om måneden, på dansk, for 49 kr."**
 
@@ -190,7 +190,7 @@
 
 1. **Gratis 5-min "AI-niveautest"** (forventet ~65 % gennemførelse, ~40 % afgiver kontakt; leverandørdata).
 2. **Resultatside:** niveau, 3 konkrete næste skridt og en knap til at starte en prøveperiode eller de gratis moduler.
-3. **Aktivt samtykke:** en checkbox, der *ikke* er sat på forhånd, hvor kunden siger ja til at modtage tips og tilbud fra MindForward på mail. Testresultatet må ikke afhænge af svaret. Derefter dobbelt opt-in.
+3. **Aktivt samtykke:** en checkbox, der *ikke* er sat på forhånd, hvor kunden siger ja til at modtage tips og tilbud fra Greb på mail. Testresultatet må ikke afhænge af svaret. Derefter dobbelt opt-in.
 4. **Nurture:** kun til dem med samtykke (se flow 5).
 5. **Prøveperiode og køb:** B2B får 14 dage uden kort for op til 5 brugere (forventet 18–25 % konvertering til betalende). B2C køber direkte efter 3 gratis moduler.
 
@@ -224,9 +224,9 @@
 
 Det er din hurtigste vej. Sæt 2 × 2 timer om ugen af de første 90 dage.
 
-- **Åbning:** "Marco fra MindForward. Jeg ringer, fordi I kører Microsoft 365. Har du 30 sekunder?"
+- **Åbning:** "Marco fra Greb. Jeg ringer, fordi I kører Microsoft 365. Har du 30 sekunder?"
 - **Diagnose:** "Bruger jeres folk ChatGPT eller Copilot systematisk, eller mest når nogen lige kommer i tanke om det?" (45 % gør det kun ad hoc.)
-- **Kontrast:** En kursusdag koster 4.000–6.000 kr pr. person og er forældet efter et halvt år. MindForward koster 49 kr/md, er øvelse i stedet for video og tager 15 min om måneden.
+- **Kontrast:** En kursusdag koster 4.000–6.000 kr pr. person og er forældet efter et halvt år. Greb koster 49 kr/md, er øvelse i stedet for video og tager 15 min om måneden.
 - **Art. 4 uden frygt:** "Rapporten dokumenterer jeres tiltag efter art. 4." Ingen bødetale.
 - **Tilbud:** 14 dages prøve uden kort for 5 brugere. Opret den sammen med kunden i telefonen, eller send linket, de beder om.
 - **Luk og log:** Book 15 minutters opfølgning på dag 10 i prøveperioden. Oplys om frameldingsret ("sig til, så ringer jeg ikke igen"). Tjek Robinsonlisten ved enkeltpersoner og enkeltmandsvirksomheder.
@@ -236,7 +236,7 @@ Det er din hurtigste vej. Sæt 2 × 2 timer om ugen af de første 90 dage.
 | Partner | Hvorfor de gider | Tilbud |
 |---|---|---|
 | Revisorer og bogholderier | Deres SMV-kunder spørger til AI | Partnerlink med fx 15 % af første års betaling (hypotese) |
-| IT- og Microsoft-partnere | De sælger M365/Copilot-licenser, og MindForward får kunderne til at bruge dem | Henvisningsprovision eller videresalg. MindForward som "adoption"-pakke |
+| IT- og Microsoft-partnere | De sælger M365/Copilot-licenser, og Greb får kunderne til at bruge dem | Henvisningsprovision eller videresalg. Greb som "adoption"-pakke |
 | Brancheforeninger | Et medlemsgode | Reel medlemspris. Foreningen sender selv til sin liste efter sine egne samtykker |
 | Kompetencefonde (fx HK) | Fonden betaler op til 3.500 kr pr. kursusdag | "Grundforløb" (6 timer + certifikat) på fondenes positivlister |
 
@@ -252,7 +252,7 @@ Det er din hurtigste vej. Sæt 2 × 2 timer om ugen af de første 90 dage.
 
 ### Motor 6: Henvisning, "Inviter en virksomhed"
 
-- Admin eller bruger deler **sit eget** link. MindForward sender ikke mails til de adresser, de henviser til.
+- Admin eller bruger deler **sit eget** link. Greb sender ikke mails til de adresser, de henviser til.
 - Belønning: 1 gratis måned til begge virksomheder, når den henviste betaler første gang (5 brugere). Det er et fast program, ikke et tidsbegrænset tilbud.
 
 ### Automatiseret vs. Marco
@@ -313,7 +313,7 @@ Det er din hurtigste vej. Sæt 2 × 2 timer om ugen af de første 90 dage.
 
 | Uge | Byg | Engangsopgaver og salg |
 |---|---|---|
-| 1 | M0: repo, CI og konti | **Tjek ansættelseskontrakten** (bibeskæftigelse/IP). Tjek domæne og varemærke for "MindForward". Opret konti (GitHub, Vercel, Neon, Anthropic, Stripe testmode, Resend, Inngest, PostHog EU, Sentry, e-conomic). Afgør selskabsstruktur under Esther Gruppen med revisor |
+| 1 | M0: repo, CI og konti | **Tjek ansættelseskontrakten** (bibeskæftigelse/IP). Tjek domæne og varemærke for "Greb". Opret konti (GitHub, Vercel, Neon, Anthropic, Stripe testmode, Resend, Inngest, PostHog EU, Sentry, e-conomic). Afgør selskabsstruktur under Esther Gruppen med revisor |
 | 2 | M1: auth, organisationer, SSO (Entra ID, Google) | Indhent tilbud fra advokat. Begynd at bygge en ringeliste over SMV'er i Østjylland (kun telefon) |
 | 3–4 | Moduler, scoring og første CORE-indhold. Designsession før M3 | Spørg Færch & Co.s ledelse om pilot, når kontrakten er afklaret |
 | 5–6 | Sandkassen med Nordlys Logistik. Designsession før M4 | Advokat: handelsbetingelser, DPA og fortrydelsesflow |

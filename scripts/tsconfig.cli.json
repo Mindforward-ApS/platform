@@ -1,0 +1,10 @@
+{
+  "//": "CLI scripts that render React Email (needs react-dom/server, i.e. NOT --conditions=react-server) and import server-only modules. `server-only` only guards client bundles; a CLI process is server-side by definition.",
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["../src/*"],
+      "server-only": ["./server-only-cli.ts"]
+    }
+  }
+}

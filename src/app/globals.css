@@ -1,2 +1,73 @@
 @import "tailwindcss";
 @import "../styles/tokens.css";
+
+/* ───────── Website motion and surfaces, carried into the app (Marco 15 Oct 2026) ─────────
+   Everything is visible at rest: animations only run from a visible state and are switched off by
+   prefers-reduced-motion (tokens.css @layer base). */
+
+/* Design v3 inside the signed-in app panel, except inside the sandbox (which mimics the vendor apps and keeps its
+   own look). `.mf-v3` opts other areas in (auth, niveautest). Used by the UI kit as `app:` — e.g. `app:rounded-full` turns buttons into pills only in the app. */
+@custom-variant app (&:where(.app-panel *, .mf-v3 *):not(:where(.mf-sandbox, .mf-sandbox *)));
+
+@theme {
+  --animate-rise: mf-rise 0.6s var(--ease-out-expo) both;
+}
+
+@keyframes mf-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@layer components {
+  /* Page sections rise in one after another (website "reveal" + stagger). */
+  .mf-stagger > * {
+    animation: var(--animate-rise);
+  }
+  .mf-stagger > :nth-child(2) { animation-delay: 60ms; }
+  .mf-stagger > :nth-child(3) { animation-delay: 120ms; }
+  .mf-stagger > :nth-child(4) { animation-delay: 180ms; }
+  .mf-stagger > :nth-child(5) { animation-delay: 240ms; }
+  .mf-stagger > :nth-child(n + 6) { animation-delay: 300ms; }
+
+  /* Soft accent light behind a page header (website hero spots). Decorative only. */
+  .mf-spots {
+    position: relative;
+    isolation: isolate;
+  }
+  .mf-spots::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 auto 0;
+    height: 24rem;
+    pointer-events: none;
+    /* Both ellipses fade out well inside the box, so no edge ever shows. */
+    background:
+      radial-gradient(28% 55% at 28% 30%, var(--color-spot), transparent 100%),
+      radial-gradient(24% 45% at 72% 22%, var(--color-spot-2), transparent 100%);
+  }
+
+  /* Pointer spotlight on cards (website .card-spot); --mx/--my are set by <Spotlight />. */
+  [data-spot] {
+    position: relative;
+    isolation: isolate;
+  }
+  [data-spot]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out);
+    background: radial-gradient(22rem circle at var(--mx, 50%) var(--my, 50%), var(--color-spot), transparent 60%);
+  }
+  @media (hover: hover) {
+    [data-spot]:hover::after {
+      opacity: 1;
+    }
+  }
+}

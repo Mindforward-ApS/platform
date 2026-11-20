@@ -1,24 +1,22 @@
-# CLAUDE.md — MindForward (kodenavn: greb)
+# CLAUDE.md — Greb
 
-MindForward er en dansk SaaS, hvor medarbejdere lærer AI-værktøjer (ChatGPT, Microsoft 365 Copilot og Claude — senere Gemini) ved at **gøre ting** i en neutral sandkasse med den fiktive virksomhed "Nordlys Logistik ApS".
-Pensum har fem indgange: Fundamental AI, AI Act og ansvarlig brug samt de tre værktøjsspor. Et kontekstbibliotek (privat og erhverv) gør undervisningen personlig uden for sandkassen.
+Greb er en dansk SaaS, hvor medarbejdere lærer AI-værktøjer (ChatGPT, Microsoft 365 Copilot og Claude — senere Gemini) ved at **gøre ting** i en neutral sandkasse med den fiktive virksomhed "Nordlys Logistik ApS".
 Kort niveautest → personlig modulplan → praktiske opgaver med score, hints og certifikat → månedlig genopfriskning, der holdes ajour af en indholdsmotor.
 Kunder: virksomheder (seats, admin, dokumentationsrapport efter AI-forordningens art. 4) og privatpersoner. Solo-founder: Marco.
 
 ## Gyldne regler
-1. `docs/00-beslutninger.md` er sandheden. Afsnit 10 "Rettelser", 10a, 10b og 10c går forud for resten (nyeste vinder ved konflikt: 10c > 10b > 10a > 10). Er noget i strid med den, følger du den og noterer konflikten i `docs/OPEN-QUESTIONS.md`.
+1. `docs/00-beslutninger.md` er sandheden. Afsnit 10 "Rettelser" og 10a går forud for resten (10a vinder ved konflikt). Er noget i strid med den, følger du den og noterer konflikten i `docs/OPEN-QUESTIONS.md`.
 2. Byg én milestone ad gangen fra `docs/11-roadmap.md`. Ingen arbejde uden for milestonens scope.
 3. Plan før kode: filliste + tilgang → vent på Marcos godkendelse → tests først for logik → kode → checks.
 4. Ingen gætterier: er en beslutning uklar eller virker forkert, stop og skriv den i `docs/OPEN-QUESTIONS.md`. Improvisér ikke.
 5. Juridiske regler (forbrugeraftaleloven, markedsføringsloven, GDPR, varemærker) er krav, ikke forslag. Se `docs/10-compliance.md`.
-6. Design er ikke besluttet. Byg funktion med neutrale placeholders — ikke færdigt look.
+6. Design er besluttet (Mindforward-designsystemet, godkendt af Marco 14. okt. 2026, se 00-beslutninger § 10d). Brug UI-kittet i `src/components/ui/` og tokens fra `src/styles/tokens.css`.
 
 ## Dokumentkort — hvilket dokument til hvilken opgave
 | Opgave | Læs |
 |---|---|
 | Alt (altid) | `CLAUDE.md`, `docs/00-beslutninger.md`, din milestone i `docs/11-roadmap.md` |
 | Fakta, lovparagraffer, kilder | `docs/research-fund.md` |
-| Læringsresearch og erfaringer fra AI Minds (kontekst — ikke byggekrav) | `docs/research/README.md` |
 | Arbejdsgang, prompt-skabeloner | `docs/00-START-HER.md` |
 | Produkt, flows, skærme | `docs/01-produkt.md` |
 | Arkitektur, mappestruktur i detaljer, integrationer | `docs/02-arkitektur.md` |
@@ -110,31 +108,30 @@ docs/               # spec + OPEN-QUESTIONS.md
 Verificér aktuelle library-docs (API'er, versioner, model-id'er) før installation eller brug — din viden kan være forældet. Virker en beslutning forkert, umulig eller modstridende: **stop**, tilføj den til `docs/OPEN-QUESTIONS.md` (spørgsmål, kontekst, dit forslag, hvad der er blokeret) og spørg Marco. Improvisér ikke.
 
 ## Designregel
-- Design er **IKKE** besluttet. Brug neutrale placeholder-tokens kun i `src/styles/tokens.css` (farver, typografi, radius, spacing). Ingen farver/fonte direkte i komponenter.
-- Marco designer skærm for skærm og vælger mellem **flere visuelle versioner**. Byg ikke et færdigt design i blinde, og lås ikke standard-layouts fast.
-- Sandkassen har egen visuel identitet. Skins spejler kun layout-regioner og generiske menubegreber. Aldrig leverandørernes logoer, farver, fonte, ikoner, skærmbilleder eller "look and feel".
+- Designsystemet er **besluttet**: https://claude.ai/artifact/XQwYFamA9HLSbaAbYRhMyf (brandbog, tokens, komponenter). Forbillede: Stripe — roligt, præcist, én farve der betyder noget.
+- Farver, fonte, skygger og radier defineres **kun** i `src/styles/tokens.css` (håndhæves af `pnpm check:tokens`). Komponenter bruger Tailwind-navnene (`bg-surface`, `text-ink-muted`, `text-title-1` …), aldrig rå værdier.
+- Byg med UI-kittet: `src/components/ui/primitives.tsx` (Page, Card, Button/ButtonLink, Field, Badge, Notice, Table …), `icons.tsx`, `brand.tsx`; skaller i `src/components/shell/`.
+- Én primær knap pr. visning. Kanter før skygger. Status aldrig med farve alene. Ingen emoji eller farvede venstrekanter. Gradienter kun i app-ikonfelter (`AppIcon`).
+- Ikoner: `Icon` (Phosphor, små UI-ikoner) og `AppIcon` (farvefelt med gradient og hvidt ikon) til menu, feature-lister, dashboards og tomme tilstande. Licenser: `docs/design/third-party-assets.md`.
+- Sandkassen ligner de rigtige desktop-apps så meget som muligt i **opbygning og arbejdsgang** (sidebjælke, startskærm, skrivefelt med "+"-menu og forbindelser, app-bjælke + sidepanel) — Marco 15. okt. 2026: "ligne dem så meget som muligt uden at ligne dem". Udseendet er altid Mindforwards: aldrig leverandørernes logoer, farver, fonte, ikoner, navne, skærmbilleder eller trade dress.
 - Fast disclaimer i sandkassen: "Øvemiljø. Ikke tilknyttet eller godkendt af OpenAI, Microsoft, Anthropic eller Google." Svar mærkes "Øvemodel".
+- Connector-navne (Marco 26. okt. 2026, 00 § 10e): Forbindelser i sandkassen bruger de rigtige navne fra `content/sandbox-connectors/catalog.json` — kun som tekst, aldrig logoer, og de forbinder kun til Nordlys-øvedata.
 
 ## Git
 - Små commits med Conventional Commits (`feat:`, `fix:`, `test:`, `chore:`, `docs:`, `refactor:`).
-- Der arbejdes og pushes direkte på `main` (push til `main` deployer til produktion på Vercel). Kør checks før hvert push.
-- Milestone-rapport (i chatten): acceptkriterier som tjekliste med bevis + åbne spørgsmål.
+- Der arbejdes og pushes direkte på `main` (besluttet af Marco 18. nov 2026; push til `main` deployer til produktion på Vercel og kører `prisma migrate deploy`). Kør checks før hvert push.
+- Rapport i chatten: acceptkriterier som tjekliste med bevis + åbne spørgsmål.
 
 ## ALDRIG
 - Hardcode priser (49 kr m.fl. kommer fra config/DB).
 - Sende MARKETING-email uden at gå gennem samtykke-gaten (gyldigt `ConsentRecord` + dobbelt opt-in).
 - Lægge tilbud, rabatter eller upsell i påmindelses- eller andre SERVICE-mails.
 - Lade sandkassen kalde rigtige tredjepartstjenester (mail, kalender, CRM, OpenAI, Microsoft …). Alt kører mod Nordlys-data.
-- Bruge leverandørernes logoer, farver, skærmbilleder eller trade dress i UI.
+- Bruge leverandørernes logoer, farver, skærmbilleder eller trade dress i UI. (Eneste undtagelse, besluttet af Marco 14. okt. 2026: logoerne ved spornavnene i appens navigation via `BrandIcon` — se 00 § 10d og OPEN-QUESTIONS. Aldrig i sandkassen.)
 - Auto-publicere `CORE`-moduler eller moduler, der kræver ny sandkasse-UI.
 - Bruge rigtige kundedata i sandkassen eller i seed/tests.
 - Springe webhook-signaturverifikation over.
 - Påstå "AI Act-certificering", "lovkrav om certificering", "påkrævet niveau" eller bruge bødetrusler. Budskab: "dokumenteret, rollebaseret tiltag efter art. 4".
 - Påstå at ChatGPT/Copilot/Claude/Gemini svarer i sandkassen.
 - Vise medarbejderes prompt-tekster til admins.
-- Vise individuelle ranglister, eller vise en medarbejders streak eller ugentlige tjek-ind til admin (kun samlede tal, mindst 5 svar).
-- Sende kontekstbiblioteket til sandkassen, øvemodellen eller bedømmelsen (det bruges kun til personalisering uden for sandkassen), eller lade det indeholde kundedata, andres persondata eller CPR-/kort-/kontonumre.
-- Lade personaliseret tekst ændre score, spørgsmål, certifikat eller rapport, eller omskrive virksomhedens AI-politik/dataregler (vises ordret).
-- Kalde noget "AI Act-certifikat" — "AI Act" er navnet på et emneområde, ikke et bevis.
-- Lade hints (trin 1–2) eller feedback aflevere det færdige svar.
 - Lave falske nedtællere eller "kun i dag"-tilbud.

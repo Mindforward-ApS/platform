@@ -1,0 +1,149 @@
+[
+  {
+    "id": "c01",
+    "dayOffset": 0,
+    "start": "08:30",
+    "end": "09:00",
+    "title": "Morgenmøde salg",
+    "attendees": [
+      "e03",
+      "e01",
+      "e08"
+    ],
+    "note": "Fast, dagligt"
+  },
+  {
+    "id": "c02",
+    "dayOffset": 0,
+    "start": "13:00",
+    "end": "13:30",
+    "title": "Opkald: Havtorn Hudpleje",
+    "attendees": [
+      "e01"
+    ],
+    "externalAttendees": [
+      "Ida (Havtorn Hudpleje)"
+    ],
+    "note": "Forbered ud fra forespørgslen",
+    "relatedMailId": "m10"
+  },
+  {
+    "id": "c03",
+    "dayOffset": 1,
+    "start": "09:00",
+    "end": "10:00",
+    "title": "Driftsmøde lager",
+    "attendees": [
+      "e05",
+      "e01",
+      "e07"
+    ],
+    "note": "Kapacitet uge 49"
+  },
+  {
+    "id": "c04",
+    "dayOffset": 1,
+    "start": "14:00",
+    "end": "15:00",
+    "title": "Kundemøde: Fjordlys Møbler",
+    "attendees": [
+      "e01",
+      "e03"
+    ],
+    "externalAttendees": [
+      "Rasmus (Fjordlys Møbler)"
+    ],
+    "note": "Returgebyr",
+    "relatedMailId": "m08"
+  },
+  {
+    "id": "c05",
+    "dayOffset": 2,
+    "start": "10:00",
+    "end": "11:00",
+    "title": "Pipeline-review",
+    "attendees": [
+      "e03",
+      "e01"
+    ],
+    "note": "Top-5-leads med begrundelse",
+    "relatedMailId": "m03"
+  },
+  {
+    "id": "c06",
+    "dayOffset": 3,
+    "start": "15:00",
+    "end": "16:00",
+    "title": "Budgetopfølgning Q3",
+    "attendees": [
+      "e04",
+      "e02",
+      "e01"
+    ],
+    "note": "Afvigelser på brændstof og overtid",
+    "relatedMailId": "m04"
+  },
+  {
+    "id": "c07",
+    "dayOffset": 4,
+    "start": "12:00",
+    "end": "13:00",
+    "title": "Fredagsfrokost",
+    "attendees": [
+      "e01",
+      "e02",
+      "e03",
+      "e04",
+      "e05",
+      "e06",
+      "e07",
+      "e08"
+    ]
+  },
+  {
+    "id": "c08",
+    "dayOffset": 7,
+    "start": "09:00",
+    "end": "15:00",
+    "title": "Strategidag",
+    "attendees": [
+      "e02",
+      "e03",
+      "e04",
+      "e05",
+      "e01"
+    ],
+    "note": "Tre spørgsmål hver",
+    "relatedMailId": "m19"
+  },
+  {
+    "id": "c09",
+    "dayOffset": 8,
+    "start": "11:00",
+    "end": "11:30",
+    "title": "1:1 med Jonas",
+    "attendees": [
+      "e03",
+      "e01"
+    ]
+  },
+  {
+    "id": "c10",
+    "dayOffset": 21,
+    "start": "18:00",
+    "end": "23:00",
+    "title": "Julefrokost",
+    "attendees": [
+      "e01",
+      "e02",
+      "e03",
+      "e04",
+      "e05",
+      "e06",
+      "e07",
+      "e08"
+    ],
+    "note": "Tilmelding via Line",
+    "relatedMailId": "m07"
+  }
+]

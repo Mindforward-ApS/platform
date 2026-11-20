@@ -1,0 +1,308 @@
+{
+  "$schema": "../schema/module.schema.json",
+  "schemaVersion": 1,
+  "id": "core-policy-01",
+  "version": 1,
+  "locale": "da-DK",
+  "title": "Virksomhedens AI-politik i praksis",
+  "summary": "Brug Nordlys' AI-politik til at svare på \"må jeg?\", ved hvem du spørger, når du er i tvivl, og forstå, hvorfor politikken findes.",
+  "level": 1,
+  "type": "CORE",
+  "format": "STANDARD",
+  "tracks": [
+    "CHATGPT",
+    "COPILOT",
+    "CLAUDE",
+    "GEMINI"
+  ],
+  "requiresTier": "COPILOT_CHAT",
+  "roles": [],
+  "concepts": [
+    "SECURITY_PRIVACY"
+  ],
+  "featureRefs": [],
+  "minutes": 7,
+  "objectives": [
+    "Find svaret på \"må jeg?\" i en AI-politik.",
+    "Vælg den rigtige person at spørge, når du er i tvivl.",
+    "Forklar, hvorfor politikken findes: ansvar, data og kvalitet."
+  ],
+  "prerequisites": [
+    "core-data-01"
+  ],
+  "passThreshold": 0.8,
+  "requiresVerification": false,
+  "sources": [],
+  "steps": [
+    {
+      "id": "hvorfor",
+      "type": "READ",
+      "title": "Hvorfor en AI-politik?",
+      "points": 0,
+      "body": "Mette Krogh, direktør hos Nordlys, har sendt en ny AI-politik ud til alle. Den gælder for alle medarbejdere, vikarer og studentermedhjælpere.\n\nPolitikken findes af tre grunde:\n\n- **Ansvar:** Du har altid ansvaret for det, du sender — også når AI'en har skrevet det.\n- **Data:** Kunders data og Nordlys' fortrolige tal må ikke havne de forkerte steder.\n- **Kvalitet:** AI kan tage fejl. Kunderne skal kunne stole på det, Nordlys skriver.\n\nPolitikken er kort med vilje. Du finder hele teksten i filerne under \"AI-politik Nordlys v1\". På de næste sider øver du dig i at bruge den."
+    },
+    {
+      "id": "seks-punkter",
+      "type": "READ",
+      "title": "De seks punkter",
+      "points": 0,
+      "body": "1. **Ingen kundedata eller persondata** i AI-værktøjer, som Nordlys ikke har godkendt.\n2. **Brug kun Nordlys' godkendte AI-værktøj** til arbejde. Ikke private konti eller gratis værktøjer.\n3. **Læs altid AI-output igennem**, og tjek fakta, priser og vilkår, før du bruger det.\n4. **Mærk AI-tekst** til kunder, partnere eller offentligheden, hvis den helt eller mest er skrevet af AI.\n5. **Del aldrig fortrolige oplysninger** — fx løn, budget og prisudkast — i værktøjer, der ikke er godkendt.\n6. **Spørg din leder**, hvis du er i tvivl.\n\nHar du delt noget ved en fejl? Sig det straks til din leder. Jo hurtigere, jo bedre."
+    },
+    {
+      "id": "find-punktet",
+      "type": "QUIZ",
+      "title": "Find det rigtige punkt",
+      "points": 20,
+      "question": "Du vil bruge en gratis AI-app på din private telefon til at skrive et kundebrev, fordi den er hurtig. Hvilket punkt i politikken svarer på, om du må?",
+      "multiSelect": false,
+      "shuffle": false,
+      "options": [
+        {
+          "id": "a",
+          "text": "Punkt 2: Brug kun Nordlys' godkendte AI-værktøj til arbejde.",
+          "correct": true,
+          "feedback": "Rigtigt. Private konti og gratis værktøjer må ikke bruges til arbejde — heller ikke, når de er hurtige."
+        },
+        {
+          "id": "b",
+          "text": "Punkt 3: Læs altid AI-output igennem.",
+          "correct": false,
+          "feedback": "Det gælder også, men det siger ikke noget om, hvilket værktøj du må bruge."
+        },
+        {
+          "id": "c",
+          "text": "Punkt 4: Mærk AI-tekst i ekstern kommunikation.",
+          "correct": false,
+          "feedback": "Mærkning handler om teksten, ikke om valget af værktøj."
+        },
+        {
+          "id": "d",
+          "text": "Ingen af punkterne — det er op til dig selv.",
+          "correct": false,
+          "feedback": "Politikken svarer klart på det. Kig på punktet om godkendte værktøjer."
+        }
+      ],
+      "explanation": "Punkt 2 er det, du oftest får brug for: Arbejde løses i Nordlys' godkendte AI-værktøj. Er du i tvivl om, hvilket værktøj der er godkendt, så spørg din leder (punkt 6).",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Spørgsmålet handler om værktøjet, ikke om teksten."
+        },
+        {
+          "level": 2,
+          "text": "Find det punkt, der nævner private konti og gratis værktøjer."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Punkt 2 — brug kun Nordlys' godkendte AI-værktøj til arbejde. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "sendt-uden-at-laese",
+      "type": "JUDGMENT",
+      "title": "Sendt uden at læse",
+      "points": 25,
+      "category": "AI_POLICY",
+      "scenario": "Peter havde travlt. Han lod AI'en skrive et svar til Kragsø Vin om fakturaen og sendte det uden at læse det. Bagefter ser han, at svaret lover en kreditnota på 512 kr. Det har ingen besluttet, og tallet er forkert.",
+      "question": "Hvad er det rigtige at gøre nu?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Ingenting. Det var AI'en, der skrev det, så det er ikke Peters ansvar.",
+          "verdict": "WRONG",
+          "feedback": "Forkert. Ifølge politikken har du altid ansvaret for det, du sender — også når AI'en har skrevet det."
+        },
+        {
+          "id": "b",
+          "text": "Vente og se, om kunden opdager det.",
+          "verdict": "WRONG",
+          "feedback": "Det gør det værre. Kunden kan regne med et løfte, Nordlys ikke kan holde."
+        },
+        {
+          "id": "c",
+          "text": "Sige det til sin leder med det samme, så de sammen kan rette svaret over for kunden.",
+          "verdict": "CORRECT",
+          "feedback": "Rigtigt. Politikken siger: Sig det straks. Ingen skyld, bare hurtig handling. Næste gang læser han svaret igennem først."
+        },
+        {
+          "id": "d",
+          "text": "Sende en ny mail med det rigtige beløb uden at nævne det for nogen.",
+          "verdict": "PARTIAL",
+          "feedback": "Det er godt at rette fejlen, men kreditnotaen er ikke besluttet. Hans leder skal vide det og være med til at rette op."
+        }
+      ],
+      "explanation": "Punkt 3: Læs altid AI-output igennem, og tjek tal mod prislisten. Du er ansvarlig for det, du sender. Går det galt alligevel, så sig det straks til din leder — det er sådan, skaden bliver mindst.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvem har ansvaret for en mail, der er sendt fra Peters konto?"
+        },
+        {
+          "level": 2,
+          "text": "Læs det sidste afsnit af politikken om, hvad du gør, når noget er gået galt."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Sig det straks til lederen, og ret svaret over for kunden sammen. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "ai-billede",
+      "type": "JUDGMENT",
+      "title": "Et AI-billede til LinkedIn",
+      "points": 25,
+      "category": "AI_POLICY",
+      "scenario": "Freja vil bruge et AI-genereret billede af glade pakkere på et lager i et LinkedIn-opslag om julesæsonen. Billedet ligner Nordlys' lager, men personerne findes ikke. Politikken nævner mærkning af tekst, men ikke billeder.",
+      "question": "Hvad er det rigtige at gøre?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Bruge det. Politikken nævner kun tekst, så billeder er frit.",
+          "verdict": "WRONG",
+          "feedback": "Når politikken ikke dækker noget, betyder det ikke, at alt er tilladt. Så skal du spørge."
+        },
+        {
+          "id": "b",
+          "text": "Spørge Mette først. Bruges billedet, så mærk det som AI-genereret, så ingen tror, det er rigtige medarbejdere.",
+          "verdict": "CORRECT",
+          "feedback": "Rigtigt. Er du i tvivl, så spørg (punkt 6). Og ligesom med tekst skal modtageren ikke vildledes."
+        },
+        {
+          "id": "c",
+          "text": "Bruge det, men skrive i opslaget, at det er \"vores hold\".",
+          "verdict": "WRONG",
+          "feedback": "Det vildleder læserne. Personerne findes ikke."
+        },
+        {
+          "id": "d",
+          "text": "Bruge det uden mærkning. Ingen kan se forskel alligevel.",
+          "verdict": "WRONG",
+          "feedback": "Netop derfor skal det mærkes. Nordlys' troværdighed står på spil."
+        }
+      ],
+      "explanation": "Ingen politik kan dække alt. Når du står med noget, den ikke nævner, så følg ånden i den: ingen vildledning, du har ansvaret — og spørg din leder eller den, der ejer politikken.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvad siger punkt 6 om situationer, du er i tvivl om?"
+        },
+        {
+          "level": 2,
+          "text": "Tænk på, hvorfor AI-tekst skal mærkes. Gælder samme grund for et billede af personer, der ikke findes?"
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Spørg Mette først, og mærk billedet som AI-genereret, hvis det bruges. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "hvorfor-quiz",
+      "type": "QUIZ",
+      "title": "Hvorfor findes politikken?",
+      "points": 15,
+      "question": "Hvorfor har Nordlys en AI-politik? Vælg alle, der passer.",
+      "multiSelect": true,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "For at gøre det klart, at du har ansvaret for det, du sender.",
+          "correct": true,
+          "feedback": "Ja. AI'en kan skrive, men du står inde for det."
+        },
+        {
+          "id": "b",
+          "text": "For at beskytte kunders data og Nordlys' fortrolige oplysninger.",
+          "correct": true,
+          "feedback": "Ja. Data må ikke havne i værktøjer, Nordlys ikke har godkendt."
+        },
+        {
+          "id": "c",
+          "text": "For at sikre kvaliteten af det, kunderne får.",
+          "correct": true,
+          "feedback": "Ja. Fejl i priser og løfter kan blive dyre."
+        },
+        {
+          "id": "d",
+          "text": "For at forbyde AI, så alle skriver alt selv.",
+          "correct": false,
+          "feedback": "Nej. Nordlys vil gerne bruge AI til at spare tid. Politikken viser hvordan."
+        },
+        {
+          "id": "e",
+          "text": "For at ledelsen kan læse alle dine prompts.",
+          "correct": false,
+          "feedback": "Nej. Politikken handler om sikker brug, ikke om at overvåge dig."
+        }
+      ],
+      "explanation": "Ansvar, data og kvalitet. Politikken er ikke et forbud — den gør det trygt at bruge AI i arbejdet.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Tænk på de tre grunde fra første side."
+        },
+        {
+          "level": 2,
+          "text": "Tre udsagn er rigtige. Politikken er hverken et forbud eller en overvågning."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: ansvar, beskyttelse af data og kvalitet. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    },
+    {
+      "id": "hvem-spoerger-du",
+      "type": "QUIZ",
+      "title": "Hvem spørger du?",
+      "points": 15,
+      "question": "En kunde anbefaler dig et nyt AI-værktøj til fragtberegninger. Du er ikke sikker på, om Nordlys har godkendt det. Hvad gør du?",
+      "multiSelect": false,
+      "shuffle": true,
+      "options": [
+        {
+          "id": "a",
+          "text": "Prøver det af med et par rigtige ordrer for at se, om det virker.",
+          "correct": false,
+          "feedback": "Så har du allerede delt kundedata i et værktøj, der måske ikke er godkendt."
+        },
+        {
+          "id": "b",
+          "text": "Spørger kunden, om værktøjet er sikkert.",
+          "correct": false,
+          "feedback": "Kunden kan ikke godkende værktøjer for Nordlys."
+        },
+        {
+          "id": "c",
+          "text": "Spørger Jonas, din nærmeste leder, før du bruger det.",
+          "correct": true,
+          "feedback": "Rigtigt. Ved tvivl spørger du din nærmeste leder, før du gør noget."
+        },
+        {
+          "id": "d",
+          "text": "Bruger det, hvis det er gratis.",
+          "correct": false,
+          "feedback": "Gratis værktøjer må netop ikke bruges til arbejde, medmindre de er godkendt."
+        }
+      ],
+      "explanation": "Punkt 6: Er du i tvivl om et værktøj eller om data, så spørg din nærmeste leder, før du gør det. For dig som Kim er det salgschef Jonas Bak.",
+      "hints": [
+        {
+          "level": 1,
+          "text": "Hvad siger punkt 6?"
+        },
+        {
+          "level": 2,
+          "text": "Svaret skal komme fra en hos Nordlys — og før du bruger værktøjet."
+        },
+        {
+          "level": 3,
+          "text": "Løsning: Spørg Jonas, din nærmeste leder, før du bruger værktøjet. Trinnet giver 0 point, når løsningen vises."
+        }
+      ]
+    }
+  ]
+}
