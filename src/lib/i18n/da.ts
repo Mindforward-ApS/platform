@@ -7,6 +7,7 @@ export const da = {
   home: {
     heading: "MindForward",
     tagline: "Få greb om AI. Kommer snart.",
+    deployCheck: "Deploy-test 20. november 2026",
   },
 } as const;
 
