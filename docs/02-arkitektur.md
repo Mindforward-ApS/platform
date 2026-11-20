@@ -296,7 +296,7 @@ Health: `/api/health` (DB-ping, version) + ekstern uptime-check på `/`, `/api/h
 | Preview | Vercel preview (`fra1`) | Neon branch pr. PR (Vercel-integration), seedet | testmode | kun `EMAIL_ALLOWLIST` | Inngest branch environment | rigtig API, globalt loft 200 kr |
 | Produktion | Vercel prod (`fra1`) | Neon `main` (`aws-eu-central-1`) | live | Resend `eu-west-1`-domæne | Inngest prod | fuldt loft |
 
-Migrationer: `prisma migrate deploy` i build-step på preview/prod (mod `DATABASE_URL_UNPOOLED`). Seed kun automatisk på preview. Feature-flags pr. miljø i `FeatureFlag`.
+Migrationer: `prisma migrate deploy` i build-step på preview/prod (mod `DATABASE_URL_UNPOOLED`; mangler den, udledes den direkte Neon-adresse fra `DATABASE_URL` ved at fjerne `-pooler` fra værtsnavnet — `src/lib/migration-database-url.ts`). Seed kun automatisk på preview. Feature-flags pr. miljø i `FeatureFlag`.
 
 ## 10. Backup og gendannelse
 
